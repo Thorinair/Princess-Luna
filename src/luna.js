@@ -1,18 +1,16 @@
-// Modules
-var Discord = require('discord.io');
-var CronJob = require('cron').CronJob;
-var XMLHttpRequest = require('xhr2');
-
-// Data
-var token = require("./token.json");
-var show = require("./show.json");
-
 // Version
-var version = "v1.1.2";
+var version = "v1.2.0";
 
-// Now Playing
-var url_nowplaying = "https://ponyvillefm.com/data/nowplaying";
-var timeout_nowplaying = 5;
+// Modules
+var fs             = require('fs');
+var Discord        = require('discord.io');
+var CronJob        = require('cron').CronJob;
+var XMLHttpRequest = require('xhr2');
+var jsmegahal      = require('jsmegahal');
+
+// Load file data
+var token  = require("./token.json");
+var config = require("./config.json");
 
 // Server Channels
 var channels = {};
@@ -24,21 +22,15 @@ channels["music"]         = "277840722592399362";
 channels["offtopic"]      = "277573384496480257";
 channels["thorinair"]     = "81244981343297536";
 
-var whitelist = [
-	"gotn",
-	"general",
-	"luna",
-	"music",
-	"offtopic"
-];
-
 // Status Variables
 var jobs = [];
 var started = false;
 var np = "";
 var toggle_np = false;
+var messages = [];
 
 var bot;
+var brain;
 
 function parseTime(date) {
 	var string = "";
@@ -97,9 +89,12 @@ function isMentioned(id, data) {
 	return mentioned;
 }
 
-function processWhitelist(channelID) {
+function processWhitelist(channelID, doWhitelist) {
+	if (!doWhitelist) {
+		return true;
+	}
 	var okay = false;
-	whitelist.forEach(function(c) {
+	config.whitelist.list.forEach(function(c) {
 		if (channels[c] == channelID)
 			okay = true;
 	});
@@ -109,7 +104,7 @@ function processWhitelist(channelID) {
 function loadAnnouncements() {
 
 	// Long Message
-	var partsLong = show.announce.long.split(':');
+	var partsLong = config.show.announce.long.split(':');
 	var long = (parseInt(partsLong[0]) * 60 + parseInt(partsLong[1])) * 60000;
 
 	var dateLong = {};
@@ -117,7 +112,7 @@ function loadAnnouncements() {
 	dateLong.minutes = parseInt(partsLong[1]);
 
 	// Short Message
-	var partsShort = show.announce.short.split(':');
+	var partsShort = config.show.announce.short.split(':');
 	var short = (parseInt(partsShort[0]) * 60 + parseInt(partsShort[1])) * 60000;
 
 	var dateShort = {};
@@ -125,7 +120,7 @@ function loadAnnouncements() {
 	dateShort.minutes = parseInt(partsShort[1]);
 
 	// After Message
-	var partsAfter = show.announce.after.split(':');
+	var partsAfter = config.show.announce.after.split(':');
 	var after = - (parseInt(partsAfter[0]) * 60 + parseInt(partsAfter[1])) * 60000;
 
 	var messageLong  = "@everyone, a new episode of Glory of The Night starts in " + parseTime(dateLong) + "! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>";
@@ -133,10 +128,10 @@ function loadAnnouncements() {
 	var messageNow   = "@here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!";
 	var messageAfter = "@here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
 
-	show.dates.forEach(function(d) {
+	config.show.dates.forEach(function(d) {
 
 		var partsDate = d.split('-');
-		var partsTime = show.time.split(':');
+		var partsTime = config.show.time.split(':');
 
 		var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
 		console.log("  Loading air date: " + date);
@@ -174,6 +169,25 @@ function loadAnnouncements() {
 	});
 }
 
+function loadBrain() {
+	brain = new jsmegahal(config.brain.markov, config.brain.default);
+
+	if (fs.existsSync(config.brain.path)) {
+		console.log("Loading an existing brain...");
+
+		messages = JSON.parse(fs.readFileSync(config.brain.path, 'utf8'));
+		messages.forEach(function(message) {
+			brain.addMass(message);
+		});
+
+		console.log("Finished loading.");
+	}
+	else {
+	    fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
+		console.log("Initialized a new brain.");
+	}
+}
+
 function loadBot() {
 	bot = new Discord.Client({
 	    "token": token.value,
@@ -208,10 +222,10 @@ function loadBot() {
 			var now = new Date();
 			var next = false;
 
-			show.dates.forEach(function(d) {
+			config.show.dates.forEach(function(d) {
 				if (!next) {
 					var partsDate = d.split('-');
-					var partsTime = show.time.split(':');
+					var partsTime = config.show.time.split(':');
 
 					var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
 					if (date > now) {
@@ -224,7 +238,7 @@ function loadBot() {
 						time.hours = Math.floor(diff % 24);
 						time.days = Math.floor(diff / 24);
 
-	    				send(channelID, "<@!" + userID + ">, next episode of Glory of The Night airs in " + parseTime(time) + " on " + date.toDateString() + " at " + show.time + " (UTC).");
+	    				send(channelID, "<@!" + userID + ">, next episode of Glory of The Night airs in " + parseTime(time) + " on " + date.toDateString() + " at " + config.show.time + " (UTC).");
 						next = true;
 					}
 				}
@@ -250,12 +264,14 @@ function loadBot() {
 	    }
 	    // When the bot is mentioned.
 	    else if (isMentioned(bot.id, data)) {
-	    	console.log("Mentioned!");
+	    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message));
 	    }
 	    // All other messages.
 	    else if (data.d.author.id != bot.id) {
-	    	if (processWhitelist(channelID)) {
-	    		console.log("Whitelisted!");
+	    	if (processWhitelist(channelID, config.whitelist.do)) {
+	    		brain.addMass(message);
+	    		messages.push(message);
+	    		fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
 	    	}
 	    }
 	});
@@ -266,10 +282,9 @@ function loadBot() {
 	});
 }
 
-
 function loopNowPlaying() {
 	var xhr = new XMLHttpRequest();
-	xhr.open("GET", url_nowplaying, true);
+	xhr.open("GET", config.nowplaying.url, true);
 
 	xhr.onreadystatechange = function () { 
 	    if (xhr.readyState == 4 && xhr.status == 200) {
@@ -283,8 +298,9 @@ function loopNowPlaying() {
 	}
 
 	xhr.send();
-	setTimeout(loopNowPlaying, timeout_nowplaying * 1000);
+	setTimeout(loopNowPlaying, config.nowplaying.timeout * 1000);
 }
 
 loadAnnouncements();
+loadBrain();
 loadBot();
