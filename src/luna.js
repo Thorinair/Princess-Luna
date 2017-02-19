@@ -202,7 +202,13 @@ function loadBot() {
 			});	  
 	    }
 	    else if (message == "!np") {
-	    	send(channelID, "<@!" + userID + ">, the track currently playing is: "+ np);
+	    	send(channelID, "<@!" + userID + ">, the track currently playing is: " + np);
+	    }
+	    else if (message == "!help") {
+	    	send(channelID, "<@!" + userID + ">, here are some of the commands you can use: " +
+	    		"\n`!gotn` Ask me about the time left until the next GOTN episode." +
+				"\n`!np` Ask me which is the currently playing track on PonyvilleFM." +
+				"\n`!help` Ask me to repeat this messsage.");
 	    }
 	    else if (message == "!toggle np") {
 	    	if (userID == channels["thorinair"]) {
