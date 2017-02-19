@@ -80,6 +80,17 @@ function send(id, message) {
     });	
 }
 
+function isMentioned(id, data) {
+	var mentioned = false;
+	data.d.mentions.forEach(function(m) {
+		console.log(m.id + " ?= " + id);
+		if (m.id == id) {
+			mentioned = true;
+		}
+	});
+	return mentioned;
+}
+
 function loadAnnouncements() {
 
 	// Long Message
@@ -107,7 +118,7 @@ function loadAnnouncements() {
 	var messageNow   = "@here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!";
 	var messageAfter = "@here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
 
-	show.dates.forEach(function(d, i) {
+	show.dates.forEach(function(d) {
 
 		var partsDate = d.split('-');
 		var partsTime = show.time.split(':');
@@ -176,12 +187,12 @@ function loadBot() {
 		});
 	});
 
-	bot.on('message', function(user, userID, channelID, message, event) {
+	bot.on('message', function(user, userID, channelID, message, data) {
 	    if (message == "!gotn") {
 			var now = new Date();
 			var next = false;
 
-			show.dates.forEach(function(d, i) {
+			show.dates.forEach(function(d) {
 				if (!next) {
 					var partsDate = d.split('-');
 					var partsTime = show.time.split(':');
@@ -217,6 +228,9 @@ function loadBot() {
 	    		toggle_np = !toggle_np;
 	    		send(channels["thorinair"], "Thori, I've changed the Now Playing listing to **" + toggle_np + "**.");
 	    	}
+	    }
+	    else if (isMentioned(bot.id, data)) {
+	    	console.log("Mentioned!");
 	    }
 	});
 
