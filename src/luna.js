@@ -1,16 +1,16 @@
 // Version
-var version = "v1.2.0";
+const version = "v1.2.1";
 
 // Modules
-var fs             = require('fs');
-var Discord        = require('discord.io');
-var CronJob        = require('cron').CronJob;
-var XMLHttpRequest = require('xhr2');
-var jsmegahal      = require('jsmegahal');
+const fs             = require('fs');
+const Discord        = require('discord.io');
+const CronJob        = require('cron').CronJob;
+const XMLHttpRequest = require('xhr2');
+const jsmegahal      = require('jsmegahal');
 
 // Load file data
-var token  = require("./token.json");
-var config = require("./config.json");
+const token  = require("./token.json");
+const config = require("./config.json");
 
 // Server Channels
 var channels = {};
