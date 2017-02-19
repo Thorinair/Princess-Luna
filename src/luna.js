@@ -8,7 +8,7 @@ var token = require("./token.json");
 var show = require("./show.json");
 
 // Version
-var version = "v1.0.2";
+var version = "v1.1.0";
 
 // Server Channels
 var channels = {};
@@ -234,8 +234,8 @@ function loopNowPlaying() {
 	xhr.onreadystatechange = function () { 
 	    if (xhr.readyState == 4 && xhr.status == 200) {
 	        var response = JSON.parse(xhr.responseText);
-	        if (np != response.free.nowplaying) {
-	        	np = response.free.nowplaying;
+	        if (np != response.one.nowplaying) {
+	        	np = response.one.nowplaying;
 	        	if (toggle_np)
 	    			send(channels["gotn"], "**Now playing:** " + np);
 	        }
