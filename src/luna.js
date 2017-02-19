@@ -1,7 +1,9 @@
+// Modules
 var Discord = require('discord.io');
 var CronJob = require('cron').CronJob;
 var XMLHttpRequest = require('xhr2');
 
+// Data
 var token = require("./token.json");
 var show = require("./show.json");
 
@@ -18,17 +20,17 @@ channels["music"] 			= "277840722592399362";
 channels["offtopic"] 		= "277573384496480257";
 channels["thorinair"]		= "81244981343297536";
 
+// Now Playing
 var url_nowplaying = "https://ponyvillefm.com/data/nowplaying";
-
 var timeout_nowplaying = 5;
 
+// Status Variables
 var jobs = [];
-
 var started = false;
-
-var bot;
 var np = "";
 var toggle_np = false;
+
+var bot;
 
 function parseTime(date) {
 	var string = "";
@@ -103,7 +105,7 @@ function loadAnnouncements() {
 	var messageLong  = "@everyone, a new episode of Glory of The Night starts in " + parseTime(dateLong) + "! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>";
 	var messageShort = "@everyone, Glory of The Night begins in only " + parseTime(dateShort) + "! Tune in to PonyvilleFM now! I suggest using the OGG stream for best sound quality. https://ponyvillefm.com/player";
 	var messageNow   = "@everyone, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!";
-	var messageAfter = "@everyone, The show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
+	var messageAfter = "@everyone, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
 
 	show.dates.forEach(function(d, i) {
 
@@ -202,7 +204,7 @@ function loadBot() {
 			});	  
 	    }
 	    else if (message == "!np") {
-	    	send(channelID, "<@!" + userID + ">, the track currently playing is: " + np);
+	    	send(channelID, "<@!" + userID + ">, the track currently playing on PonyvilleFM is: " + np);
 	    }
 	    else if (message == "!help") {
 	    	send(channelID, "<@!" + userID + ">, here are some of the commands you can use: " +
