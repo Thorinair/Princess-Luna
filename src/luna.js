@@ -8,21 +8,21 @@ var token = require("./token.json");
 var show = require("./show.json");
 
 // Version
-var version = "v1.1.1";
-
-// Server Channels
-var channels = {};
-channels["announcements"] 	= "277568055393910785";
-channels["gotn"] 			= "277568155344175104";
-channels["general"] 		= "277563243050827776";
-channels["luna"] 			= "277572380442886146";
-channels["music"] 			= "277840722592399362";
-channels["offtopic"] 		= "277573384496480257";
-channels["thorinair"]		= "81244981343297536";
+var version = "v1.1.2";
 
 // Now Playing
 var url_nowplaying = "https://ponyvillefm.com/data/nowplaying";
 var timeout_nowplaying = 5;
+
+// Server Channels
+var channels = {};
+channels["announcements"] = "277568055393910785";
+channels["gotn"]          = "277568155344175104";
+channels["general"]       = "277563243050827776";
+channels["luna"]          = "277572380442886146";
+channels["music"]         = "277840722592399362";
+channels["offtopic"]      = "277573384496480257";
+channels["thorinair"]     = "81244981343297536";
 
 // Status Variables
 var jobs = [];
