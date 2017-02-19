@@ -1,5 +1,5 @@
 // Version
-const version = "v1.2.1";
+const version = "v1.2.2";
 
 // Modules
 const fs             = require('fs');
@@ -246,7 +246,7 @@ function loadBot() {
 	    }
 	    // Command: !np
 	    else if (message == "!np") {
-	    	send(channelID, "<@!" + userID + ">, the track currently playing on PonyvilleFM is: " + np);
+	    	send(channelID, "<@!" + userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*");
 	    }
 	    // Command: !help
 	    else if (message == "!help") {
