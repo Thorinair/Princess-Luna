@@ -1,5 +1,5 @@
 // Version
-const version = "v1.2.2";
+const version = "v1.2.3";
 
 // Modules
 const fs             = require('fs');
@@ -253,7 +253,8 @@ function loadBot() {
 	    	send(channelID, "<@!" + userID + ">, here are some of the commands you can use: " +
 	    		"\n`!gotn` Ask me about the time left until the next GOTN episode." +
 				"\n`!np` Ask me which is the currently playing track on PonyvilleFM." +
-				"\n`!help` Ask me to repeat this messsage.");
+				"\n`!help` Ask me to repeat this messsage." +
+				"\nYou can also talk with me by mentioning me in the chat.");
 	    }
 	    // Command: !toggle np
 	    else if (message == "!toggle np") {
