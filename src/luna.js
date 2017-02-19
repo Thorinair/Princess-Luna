@@ -8,7 +8,7 @@ var token = require("./token.json");
 var show = require("./show.json");
 
 // Version
-var version = "v1.1.0";
+var version = "v1.1.1";
 
 // Server Channels
 var channels = {};
@@ -103,9 +103,9 @@ function loadAnnouncements() {
 	var after = - (parseInt(partsAfter[0]) * 60 + parseInt(partsAfter[1])) * 60000;
 
 	var messageLong  = "@everyone, a new episode of Glory of The Night starts in " + parseTime(dateLong) + "! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>";
-	var messageShort = "@everyone, Glory of The Night begins in only " + parseTime(dateShort) + "! Tune in to PonyvilleFM now! I suggest using the OGG stream for best sound quality. https://ponyvillefm.com/player";
-	var messageNow   = "@everyone, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!";
-	var messageAfter = "@everyone, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
+	var messageShort = "@here, Glory of The Night begins in only " + parseTime(dateShort) + "! Tune in to PonyvilleFM now! I suggest using the OGG stream for best sound quality. https://ponyvillefm.com/player";
+	var messageNow   = "@here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!";
+	var messageAfter = "@here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
 
 	show.dates.forEach(function(d, i) {
 
