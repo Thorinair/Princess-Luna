@@ -24,6 +24,14 @@ channels["music"]         = "277840722592399362";
 channels["offtopic"]      = "277573384496480257";
 channels["thorinair"]     = "81244981343297536";
 
+var whitelist = [
+	"gotn",
+	"general",
+	"luna",
+	"music",
+	"offtopic"
+];
+
 // Status Variables
 var jobs = [];
 var started = false;
@@ -83,12 +91,19 @@ function send(id, message) {
 function isMentioned(id, data) {
 	var mentioned = false;
 	data.d.mentions.forEach(function(m) {
-		console.log(m.id + " ?= " + id);
-		if (m.id == id) {
+		if (m.id == id)
 			mentioned = true;
-		}
 	});
 	return mentioned;
+}
+
+function processWhitelist(channelID) {
+	var okay = false;
+	whitelist.forEach(function(c) {
+		if (channels[c] == channelID)
+			okay = true;
+	});
+	return okay;
 }
 
 function loadAnnouncements() {
@@ -188,7 +203,8 @@ function loadBot() {
 	});
 
 	bot.on('message', function(user, userID, channelID, message, data) {
-	    if (message == "!gotn") {
+		// Command: !gotn
+		if (message == "!gotn") {
 			var now = new Date();
 			var next = false;
 
@@ -214,23 +230,33 @@ function loadBot() {
 				}
 			});	  
 	    }
+	    // Command: !np
 	    else if (message == "!np") {
 	    	send(channelID, "<@!" + userID + ">, the track currently playing on PonyvilleFM is: " + np);
 	    }
+	    // Command: !help
 	    else if (message == "!help") {
 	    	send(channelID, "<@!" + userID + ">, here are some of the commands you can use: " +
 	    		"\n`!gotn` Ask me about the time left until the next GOTN episode." +
 				"\n`!np` Ask me which is the currently playing track on PonyvilleFM." +
 				"\n`!help` Ask me to repeat this messsage.");
 	    }
+	    // Command: !toggle np
 	    else if (message == "!toggle np") {
 	    	if (userID == channels["thorinair"]) {
 	    		toggle_np = !toggle_np;
 	    		send(channels["thorinair"], "Thori, I've changed the Now Playing listing to **" + toggle_np + "**.");
 	    	}
 	    }
+	    // When the bot is mentioned.
 	    else if (isMentioned(bot.id, data)) {
 	    	console.log("Mentioned!");
+	    }
+	    // All other messages.
+	    else if (data.d.author.id != bot.id) {
+	    	if (processWhitelist(channelID)) {
+	    		console.log("Whitelisted!");
+	    	}
 	    }
 	});
 
