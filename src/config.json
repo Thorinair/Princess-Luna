@@ -49,7 +49,7 @@
 	},
 	"brain": {
 		"path": "/var/www/node/brain.json",
-		"markov": 4,
+		"markov": 2,
 		"default": "I am The Night."
 	}
 }

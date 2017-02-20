@@ -1,5 +1,5 @@
 // Version
-const version = "v1.2.3";
+const version = "v1.2.4";
 
 // Modules
 const fs             = require('fs');
