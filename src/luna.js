@@ -1,5 +1,5 @@
 // Version
-const version = "v1.2.5";
+const version = "v1.2.6";
 
 // Modules
 const fs             = require('fs');
@@ -195,6 +195,7 @@ function loadBot() {
 	});
 	 
 	bot.on('ready', function() {
+		bot.setPresence(config.opts);
 	    console.log(bot.username + " - (" + bot.id + ") Started.");
 	    if (!started) {
 	    	started = true;
@@ -269,7 +270,7 @@ function loadBot() {
 	    // All other messages.
 	    else if (data.d.author.id != bot.id) {
 	    	if (processWhitelist(channelID, config.whitelist.do)) {
-	    		brain.addMass(message);
+	    		brain.addMass(message.replace(/<.*>/g, ""));
 	    		messages.push(message);
 	    		fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
 	    	}

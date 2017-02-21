@@ -51,5 +51,10 @@
 		"path": "/var/www/node/brain.json",
 		"markov": 2,
 		"default": "I am The Night."
+	},
+	"opts": {
+		"game": {
+			"name": "with your dreams."
+		}
 	}
 }
