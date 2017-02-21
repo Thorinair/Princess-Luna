@@ -1,5 +1,5 @@
 // Version
-const version = "v1.2.7";
+const version = "v1.2.8";
 
 // Modules
 const fs             = require("fs");
@@ -251,11 +251,19 @@ function loadBot() {
 	    else if (message == "!np") {
 	    	send(channelID, "<@!" + userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*");
 	    }
+	    // Command: !hug
+	    else if (message.replace(/ <.*>/g, "") == "!hug") {
+	    	if (data.d.mentions[0] != null)
+	    		send(channelID, "*Gives <@!" + data.d.mentions[0].id + "> a big warm hug!*");
+	    	else
+	    		send(channelID, "*Gives <@!" + userID + "> a big warm hug!*");
+	    }
 	    // Command: !help
 	    else if (message == "!help") {
 	    	send(channelID, "<@!" + userID + ">, here are some of the commands you can use: " +
 	    		"\n`!gotn` Ask me about the time left until the next GOTN episode." +
 				"\n`!np` Ask me which is the currently playing track on PonyvilleFM." +
+				"\n`!hug` Ask me to hug you. If you mention somepony with it, I will hug them instead." +
 				"\n`!help` Ask me to repeat this messsage." +
 				"\nYou can also talk with me by mentioning me in the chat.");
 	    }
