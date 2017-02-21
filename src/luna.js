@@ -1,5 +1,5 @@
 // Version
-const version = "v1.2.6";
+const version = "v1.2.7";
 
 // Modules
 const fs             = require("fs");
@@ -73,7 +73,7 @@ function send(id, message) {
 			channel = k;
 		}
 	}
-	console.log("Sending message to #" + channel + ": \"" + message + "\"");
+	console.log("> I'm sending the following message to #" + channel + ": \"" + message + "\"");
 	bot.sendMessage({
         "to": id,
         "message": message
@@ -128,13 +128,14 @@ function loadAnnouncements() {
 	var messageNow   = "@here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!";
 	var messageAfter = "@here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
 
+	console.log("I'm loading all of the upcoming show dates...");
 	config.show.dates.forEach(function(d) {
 
 		var partsDate = d.split("-");
 		var partsTime = config.show.time.split(":");
 
 		var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
-		console.log("  Loading air date: " + date);
+		console.log("- Loading air date: " + date);
 
 		// Long air-time announcement.
 		var jobLong = new CronJob(new Date(date - long), function() {
@@ -173,18 +174,18 @@ function loadBrain() {
 	brain = new jsmegahal(config.brain.markov, config.brain.default);
 
 	if (fs.existsSync(config.brain.path)) {
-		console.log("Loading an existing brain...");
+		console.log("A brain already seems to exit. Loading it now...");
 
 		messages = JSON.parse(fs.readFileSync(config.brain.path, "utf8"));
 		messages.forEach(function(message) {
 			brain.addMass(message.replace(/<.*>/g, ""));
 		});
 
-		console.log("Finished loading.");
+		console.log("I've finished loading my brain.");
 	}
 	else {
 	    fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
-		console.log("Initialized a new brain.");
+		console.log("I don't seem to have a brain. I have created a new one.");
 	}
 }
 
@@ -196,7 +197,7 @@ function loadBot() {
 	 
 	bot.on("ready", function() {
 		bot.setPresence(config.opts);
-	    console.log(bot.username + " - (" + bot.id + ") Started.");
+	    console.log("I've successfully joined Discord. My name is " + bot.username + " with ID #" + bot.id + ".");
 	    if (!started) {
 	    	started = true;
 	    	send(channels["thorinair"], "Hey Thori, I'm back! My current version is " + version + ".");
@@ -207,14 +208,14 @@ function loadBot() {
 	});
 
 	bot.on("guildMemberAdd", function(user) {
-		console.log("New user: " + user.username + " Promoting them to Children of The Night!");
+		console.log("New user, \"" + user.username + "\" has joined our server! I'm promoting them to Children of The Night!");
 		send(channels["general"], "**My children, welcome <@!" + user.id + "> to our beautiful night!**");
 		bot.addToRole( {
 			"serverID": user.guild_id,
 			"userID": user.id,
 			"roleID": "277564526940127243"
 		}, function(err, response) {
-	  		if (err) console.error(err);
+	  		if (err) console.error("Something bad has happened during the promotion. Here is more info: " + err);
 		});
 	});
 
@@ -270,7 +271,10 @@ function loadBot() {
 	    	if (userID == channels["thorinair"]) {
 	    		send(channels["thorinair"], "I'm just going to go quickly reboot myself. Be right back, Thori!");
 	    		fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
-	    		setTimeout(function() { process.exit(); }, config.options.reboot.timeout * 1000);
+	    		setTimeout(function() {
+					console.log("<STOPPED>");
+	    			process.exit();
+	    		}, config.options.reboot.timeout * 1000);
 	    	}
 	    }
 	    // When the bot is mentioned.
@@ -316,6 +320,7 @@ function loopBrainSave() {
 	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 }
 
+console.log("<STARTED>");
 loadAnnouncements();
 loadBrain();
 loadBot();
