@@ -57,5 +57,10 @@
 		"game": {
 			"name": "with your dreams."
 		}
+	},
+	"options": {
+		"reboot": {
+			"timeout": 2
+		}
 	}
 }

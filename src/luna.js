@@ -2,11 +2,11 @@
 const version = "v1.2.6";
 
 // Modules
-const fs             = require('fs');
-const Discord        = require('discord.io');
-const CronJob        = require('cron').CronJob;
-const XMLHttpRequest = require('xhr2');
-const jsmegahal      = require('jsmegahal');
+const fs             = require("fs");
+const Discord        = require("discord.io");
+const CronJob        = require("cron").CronJob;
+const XMLHttpRequest = require("xhr2");
+const jsmegahal      = require("jsmegahal");
 
 // Load file data
 const token  = require("./token.json");
@@ -104,7 +104,7 @@ function processWhitelist(channelID, doWhitelist) {
 function loadAnnouncements() {
 
 	// Long Message
-	var partsLong = config.show.announce.long.split(':');
+	var partsLong = config.show.announce.long.split(":");
 	var long = (parseInt(partsLong[0]) * 60 + parseInt(partsLong[1])) * 60000;
 
 	var dateLong = {};
@@ -112,7 +112,7 @@ function loadAnnouncements() {
 	dateLong.minutes = parseInt(partsLong[1]);
 
 	// Short Message
-	var partsShort = config.show.announce.short.split(':');
+	var partsShort = config.show.announce.short.split(":");
 	var short = (parseInt(partsShort[0]) * 60 + parseInt(partsShort[1])) * 60000;
 
 	var dateShort = {};
@@ -120,7 +120,7 @@ function loadAnnouncements() {
 	dateShort.minutes = parseInt(partsShort[1]);
 
 	// After Message
-	var partsAfter = config.show.announce.after.split(':');
+	var partsAfter = config.show.announce.after.split(":");
 	var after = - (parseInt(partsAfter[0]) * 60 + parseInt(partsAfter[1])) * 60000;
 
 	var messageLong  = "@everyone, a new episode of Glory of The Night starts in " + parseTime(dateLong) + "! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>";
@@ -130,8 +130,8 @@ function loadAnnouncements() {
 
 	config.show.dates.forEach(function(d) {
 
-		var partsDate = d.split('-');
-		var partsTime = config.show.time.split(':');
+		var partsDate = d.split("-");
+		var partsTime = config.show.time.split(":");
 
 		var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
 		console.log("  Loading air date: " + date);
@@ -175,7 +175,7 @@ function loadBrain() {
 	if (fs.existsSync(config.brain.path)) {
 		console.log("Loading an existing brain...");
 
-		messages = JSON.parse(fs.readFileSync(config.brain.path, 'utf8'));
+		messages = JSON.parse(fs.readFileSync(config.brain.path, "utf8"));
 		messages.forEach(function(message) {
 			brain.addMass(message.replace(/<.*>/g, ""));
 		});
@@ -183,7 +183,7 @@ function loadBrain() {
 		console.log("Finished loading.");
 	}
 	else {
-	    fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
+	    fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
 		console.log("Initialized a new brain.");
 	}
 }
@@ -194,7 +194,7 @@ function loadBot() {
 	    "autorun": true
 	});
 	 
-	bot.on('ready', function() {
+	bot.on("ready", function() {
 		bot.setPresence(config.opts);
 	    console.log(bot.username + " - (" + bot.id + ") Started.");
 	    if (!started) {
@@ -206,7 +206,7 @@ function loadBot() {
 	    }
 	});
 
-	bot.on('guildMemberAdd', function(user) {
+	bot.on("guildMemberAdd", function(user) {
 		console.log("New user: " + user.username + " Promoting them to Children of The Night!");
 		send(channels["general"], "**My children, welcome <@!" + user.id + "> to our beautiful night!**");
 		bot.addToRole( {
@@ -218,7 +218,7 @@ function loadBot() {
 		});
 	});
 
-	bot.on('message', function(user, userID, channelID, message, data) {
+	bot.on("message", function(user, userID, channelID, message, data) {
 		// Command: !gotn
 		if (message == "!gotn") {
 			var now = new Date();
@@ -226,8 +226,8 @@ function loadBot() {
 
 			config.show.dates.forEach(function(d) {
 				if (!next) {
-					var partsDate = d.split('-');
-					var partsTime = config.show.time.split(':');
+					var partsDate = d.split("-");
+					var partsTime = config.show.time.split(":");
 
 					var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
 					if (date > now) {
@@ -269,8 +269,8 @@ function loadBot() {
 	    else if (message == "!reboot") {
 	    	if (userID == channels["thorinair"]) {
 	    		send(channels["thorinair"], "I'm just going to go quickly reboot myself. Be right back, Thori!");
-	    		fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
-	    		setTimeout(function() { process.exit(); }, 2000);
+	    		fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
+	    		setTimeout(function() { process.exit(); }, config.options.reboot.timeout * 1000);
 	    	}
 	    }
 	    // When the bot is mentioned.
@@ -286,8 +286,8 @@ function loadBot() {
 	    }
 	});
 
-	bot.on('disconnect', function(erMsg, code) {
-	    console.log('Disconnected from Discord with code ' + code + ' for reason: ' + erMsg);
+	bot.on("disconnect", function(erMsg, code) {
+	    console.log("I seem to have disconnected from Discord... Reconnecting.");
 	    bot.connect();
 	});
 }
@@ -312,7 +312,7 @@ function loopNowPlaying() {
 }
 
 function loopBrainSave() {
-	fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
+	fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
 	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 }
 
