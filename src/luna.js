@@ -1,8 +1,9 @@
 // Version
-const version = "v1.3.0";
+const version = "v1.3.1";
 
 // Modules
 const fs             = require("fs");
+const readline       = require("readline");
 const Discord        = require("discord.io");
 const CronJob        = require("cron").CronJob;
 const XMLHttpRequest = require("xhr2");
@@ -67,7 +68,7 @@ commands.togglenp = function(data) {
 // Command: !reboot
 commands.reboot = function(data) {
 	send(parseChannel("thorinair"), "I'm just going to go quickly reboot myself. Be right back, Thori!");
-	fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
+	saveBrain();
 	setTimeout(function() {
 		console.log("<STOPPED>");
 		process.exit();
@@ -209,6 +210,38 @@ function processWhitelist(channelID, doWhitelist) {
 }
 
 /*
+ * Opens the brain data from a file.
+ */
+function openBrain() {
+	if (fs.existsSync(config.brain.path)) {
+		readline.createInterface({
+		    "input": fs.createReadStream(config.brain.path),
+		    "terminal": false
+		}).on("line", function(line) {
+			messages.push(line);
+			brain.addMass(line.replace(/<.*>/g, ""));
+		});
+	}
+}
+
+/*
+ * Saves the brain data to a file.
+ */
+function saveBrain() {
+	var file = fs.createWriteStream(config.brain.path);
+
+	file.on("error", function(err) {
+		console.log("I am having some trouble saving my brain. Here is more info: " + err);
+	});
+
+	messages.forEach(function(m) {
+		file.write(m + "\n", "utf-8");
+	});
+
+	file.end();
+}
+
+/*
  * Loads all announcements from the config.
  */
 function loadAnnouncements() {
@@ -288,16 +321,11 @@ function loadBrain() {
 
 	if (fs.existsSync(config.brain.path)) {
 		console.log("A brain already seems to exit. Loading it now...");
-
-		messages = JSON.parse(fs.readFileSync(config.brain.path, "utf8"));
-		messages.forEach(function(message) {
-			brain.addMass(message.replace(/<.*>/g, ""));
-		});
-
+		openBrain();
 		console.log("I've finished loading my brain.");
 	}
 	else {
-	    fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
+		saveBrain();
 		console.log("I don't seem to have a brain. I have created a new one.");
 	}
 }
@@ -409,7 +437,7 @@ function loopNowPlaying() {
  * Loops to continuously save brain data.
  */
 function loopBrainSave() {
-	fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
+	saveBrain();
 	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 }
 

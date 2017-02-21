@@ -48,7 +48,7 @@
 		]
 	},
 	"brain": {
-		"path": "/var/www/node/brain.json",
+		"path": "/var/www/node/brain",
 		"markov": 2,
 		"default": "I am The Night.",
 		"timeout": 60
