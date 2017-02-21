@@ -53,14 +53,82 @@
 		"default": "I am The Night.",
 		"timeout": 60
 	},
-	"opts": {
-		"game": {
-			"name": "with your dreams."
+	"channels": [
+		{
+			"name": "announcements",
+			"id": "277568055393910785"
+		},
+		{
+			"name": "gotn",
+			"id": "277568155344175104"
+		},
+		{
+			"name": "general",
+			"id": "277563243050827776"
+		},
+		{
+			"name": "luna",
+			"id": "277572380442886146"
+		},
+		{
+			"name": "music",
+			"id": "277840722592399362"
+		},
+		{
+			"name": "offtopic",
+			"id": "277573384496480257"
+		},
+		{
+			"name": "thorinair",
+			"id": "81244981343297536"
 		}
-	},
+	],
+	"commands": [
+		{
+			"command": "!gotn",
+			"method": "gotn",
+			"help": "Ask me about the time left until the next GOTN episode.",
+			"private": false
+		},
+		{
+			"command": "!np",
+			"method": "np",
+			"help": "Ask me which is the currently playing track on PonyvilleFM.",
+			"private": false
+		},
+		{
+			"command": "!hug",
+			"method": "hug",
+			"help": "Ask me to hug you. If you mention somepony with it, I will hug them instead.",
+			"private": false
+		},
+		{
+			"command": "!toggle np",
+			"method": "togglenp",
+			"help": "",
+			"private": true
+		},
+		{
+			"command": "!reboot",
+			"method": "reboot",
+			"help": "",
+			"private": true
+		},
+		{
+			"command": "!help",
+			"method": "help",
+			"help": "Ask me to repeat this messsage.",
+			"private": false
+		}
+	],
 	"options": {
 		"reboot": {
 			"timeout": 2
+		}
+	},
+	"opts": {
+		"game": {
+			"name": "with your dreams."
 		}
 	}
 }

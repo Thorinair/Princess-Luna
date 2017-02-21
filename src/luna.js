@@ -1,5 +1,5 @@
 // Version
-const version = "v1.2.8";
+const version = "v1.3.0";
 
 // Modules
 const fs             = require("fs");
@@ -12,15 +12,81 @@ const jsmegahal      = require("jsmegahal");
 const token  = require("./token.json");
 const config = require("./config.json");
 
-// Server Channels
-var channels = {};
-channels["announcements"] = "277568055393910785";
-channels["gotn"]          = "277568155344175104";
-channels["general"]       = "277563243050827776";
-channels["luna"]          = "277572380442886146";
-channels["music"]         = "277840722592399362";
-channels["offtopic"]      = "277573384496480257";
-channels["thorinair"]     = "81244981343297536";
+// Commands
+var commands = {};
+
+// Command: !gotn
+commands.gotn = function(data) {
+	var now = new Date();
+	var found = false;
+
+	config.show.dates.forEach(function(d) {
+		if (!found) {
+			var partsDate = d.split("-");
+			var partsTime = config.show.time.split(":");
+
+			var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
+			if (date > now) {
+
+				var diff = (date - now) / 60000;
+				var time = {};
+
+				time.minutes = Math.floor(diff % 60);
+				diff = Math.floor(diff / 60);
+				time.hours = Math.floor(diff % 24);
+				time.days = Math.floor(diff / 24);
+
+				send(data.channelID, "<@!" + data.userID + ">, next episode of Glory of The Night airs in " + parseTime(time) + " on " + date.toDateString() + " at " + config.show.time + " (UTC).");
+				found = true;
+			}
+		}
+	});	
+};
+
+// Command: !np
+commands.np = function(data) {
+	send(data.channelID, "<@!" + data.userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*");
+};
+
+// Command: !hug
+commands.hug = function(data) {
+	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
+		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*");
+	}
+	else {
+		send(data.channelID, "*Gives <@!" + data.userID + "> a big warm hug!*");
+	}
+};
+
+// Command: !togglenp
+commands.togglenp = function(data) {
+	toggle_np = !toggle_np;
+	send(parseChannel("thorinair"), "Thori, I've changed the Now Playing listing to **" + toggle_np + "**.");
+};
+
+// Command: !reboot
+commands.reboot = function(data) {
+	send(parseChannel("thorinair"), "I'm just going to go quickly reboot myself. Be right back, Thori!");
+	fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
+	setTimeout(function() {
+		console.log("<STOPPED>");
+		process.exit();
+	}, config.options.reboot.timeout * 1000);
+};
+
+// Command: !help
+commands.help = function(data) {
+	var reply = "";
+
+	reply += "<@!" + data.userID + ">, here are some of the commands you can use:";
+	config.commands.forEach(function(c) {
+		if (!c.private)
+			reply += "\n`" + c.command + "` " + c.help;
+	});
+	reply += "\nYou can also talk with me by mentioning me in the chat.";
+
+	send(data.channelID, reply);
+};
 
 // Status Variables
 var jobs = [];
@@ -29,9 +95,33 @@ var np = "";
 var toggle_np = false;
 var messages = [];
 
+// Persistant Objects
 var bot;
 var brain;
 
+/*
+ * Parses a given channel name to retrieve the correct ID.
+ * @param  name  The input name to look for.
+ * @return       ID of the channel.
+ */
+function parseChannel(name) {
+	var found = false;
+	var id = null;
+
+	config.channels.forEach(function(c) {
+		if (c.name == name && !found) {
+			id = c.id;
+		}
+	});
+
+	return id;
+}
+
+/*
+ * Parses a given date to a more readable format.
+ * @param  date  The input date, this is not the JS Date object.
+ * @return       Formatted string.
+ */
 function parseTime(date) {
 	var string = "";
 
@@ -66,13 +156,18 @@ function parseTime(date) {
 	return string;
 }
 
+/*
+ * Sends a message to a channel on Discord.
+ * @param  id       ID of the channel to send to.
+ * @param  message  String message to send.
+ */
 function send(id, message) {
 	var channel = "unknown";
-	for (var k in channels) {
-		if (channels.hasOwnProperty(k) && channels[k] == id) {
-			channel = k;
+	config.channels.forEach(function(c) {
+		if (c.id == id) {
+			channel = c.name;
 		}
-	}
+	});
 	console.log("> I'm sending the following message to #" + channel + ": \"" + message + "\"");
 	bot.sendMessage({
         "to": id,
@@ -80,6 +175,12 @@ function send(id, message) {
     });	
 }
 
+/*
+ * Parses whether a certain ID was mentioned.
+ * @param  id    ID to check the mentions of.
+ * @param  data  Discord's event data.
+ * @return       Boolean whether the ID was mentioned.
+ */
 function isMentioned(id, data) {
 	var mentioned = false;
 	data.d.mentions.forEach(function(m) {
@@ -89,18 +190,27 @@ function isMentioned(id, data) {
 	return mentioned;
 }
 
+/*
+ * Processes the channel whitelist and checks if the channel is whitelisted.
+ * @param  channelID    ID of the channel to check whitelist of.
+ * @param  doWhitelist  Whether the processing should even be done.
+ * @return              Boolean whether the channel is whitelisted.
+ */
 function processWhitelist(channelID, doWhitelist) {
 	if (!doWhitelist) {
 		return true;
 	}
 	var okay = false;
 	config.whitelist.list.forEach(function(c) {
-		if (channels[c] == channelID)
+		if (parseChannel(c) == channelID)
 			okay = true;
 	});
 	return okay;
 }
 
+/*
+ * Loads all announcements from the config.
+ */
 function loadAnnouncements() {
 
 	// Long Message
@@ -139,26 +249,26 @@ function loadAnnouncements() {
 
 		// Long air-time announcement.
 		var jobLong = new CronJob(new Date(date - long), function() {
-				send(channels["announcements"], messageLong);
+				send(parseChannel("announcements"), messageLong);
 			}, function () {}, true);
 		//console.log("  Long:  " + new Date(date - long));
 
 		// Short air-time announcement.
 		var jobShort = new CronJob(new Date(date - short), function() {
-				send(channels["announcements"], messageShort);
+				send(parseChannel("announcements"), messageShort);
 			}, function () {}, true);
 		//console.log("  Short: " + new Date(date - short));
 
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
-				send(channels["announcements"], messageNow);
+				send(parseChannel("announcements"), messageNow);
 				toggle_np = true;
 			}, function () {}, true);
 		//console.log("  Now:   " + new Date(date));
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
-				send(channels["announcements"], messageAfter);
+				send(parseChannel("announcements"), messageAfter);
 				toggle_np = false;
 			}, function () {}, true);
 		//console.log("  After: " + new Date(date - after));
@@ -170,6 +280,9 @@ function loadAnnouncements() {
 	});
 }
 
+/*
+ * Loads the brain data, or creates new.
+ */
 function loadBrain() {
 	brain = new jsmegahal(config.brain.markov, config.brain.default);
 
@@ -189,6 +302,9 @@ function loadBrain() {
 	}
 }
 
+/*
+ * Loads the discord bot.
+ */
 function loadBot() {
 	bot = new Discord.Client({
 	    "token": token.value,
@@ -200,7 +316,7 @@ function loadBot() {
 	    console.log("I've successfully joined Discord. My name is " + bot.username + " with ID #" + bot.id + ".");
 	    if (!started) {
 	    	started = true;
-	    	send(channels["thorinair"], "Hey Thori, I'm back! My current version is " + version + ".");
+	    	send(parseChannel("thorinair"), "Hey Thori, I'm back! My current version is " + version + ".");
 
 	    	loopNowPlaying();
 	    	loopBrainSave();
@@ -209,7 +325,7 @@ function loadBot() {
 
 	bot.on("guildMemberAdd", function(user) {
 		console.log("New user, \"" + user.username + "\" has joined our server! I'm promoting them to Children of The Night!");
-		send(channels["general"], "**My children, welcome <@!" + user.id + "> to our beautiful night!**");
+		send(parseChannel("general"), "**My children, welcome <@!" + user.id + "> to our beautiful night!**");
 		bot.addToRole( {
 			"serverID": user.guild_id,
 			"userID": user.id,
@@ -220,82 +336,45 @@ function loadBot() {
 	});
 
 	bot.on("message", function(user, userID, channelID, message, data) {
-		// Command: !gotn
-		if (message == "!gotn") {
-			var now = new Date();
-			var next = false;
 
-			config.show.dates.forEach(function(d) {
-				if (!next) {
-					var partsDate = d.split("-");
-					var partsTime = config.show.time.split(":");
+	    var packed = {};
+	    packed.user      = user;
+	    packed.userID    = userID;
+	    packed.channelID = channelID;
+	    packed.message   = message;
+	    packed.data      = data;
 
-					var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
-					if (date > now) {
+	    var nocommand = true;
+	    var command = message.replace(/ <.*>/g, "");
 
-						var diff = (date - now) / 60000;
-						var time = {};
-
-						time.minutes = Math.floor(diff % 60);
-						diff = Math.floor(diff / 60);
-						time.hours = Math.floor(diff % 24);
-						time.days = Math.floor(diff / 24);
-
-	    				send(channelID, "<@!" + userID + ">, next episode of Glory of The Night airs in " + parseTime(time) + " on " + date.toDateString() + " at " + config.show.time + " (UTC).");
-						next = true;
-					}
-				}
-			});	  
-	    }
-	    // Command: !np
-	    else if (message == "!np") {
-	    	send(channelID, "<@!" + userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*");
-	    }
-	    // Command: !hug
-	    else if (message.replace(/ <.*>/g, "") == "!hug") {
-	    	if (data.d.mentions[0] != null)
-	    		send(channelID, "*Gives <@!" + data.d.mentions[0].id + "> a big warm hug!*");
-	    	else
-	    		send(channelID, "*Gives <@!" + userID + "> a big warm hug!*");
-	    }
-	    // Command: !help
-	    else if (message == "!help") {
-	    	send(channelID, "<@!" + userID + ">, here are some of the commands you can use: " +
-	    		"\n`!gotn` Ask me about the time left until the next GOTN episode." +
-				"\n`!np` Ask me which is the currently playing track on PonyvilleFM." +
-				"\n`!hug` Ask me to hug you. If you mention somepony with it, I will hug them instead." +
-				"\n`!help` Ask me to repeat this messsage." +
-				"\nYou can also talk with me by mentioning me in the chat.");
-	    }
-	    // Private Command: !toggle np
-	    else if (message == "!toggle np") {
-	    	if (userID == channels["thorinair"]) {
-	    		toggle_np = !toggle_np;
-	    		send(channels["thorinair"], "Thori, I've changed the Now Playing listing to **" + toggle_np + "**.");
+	    config.commands.forEach(function(c) {
+	    	if (command == c.command && nocommand) {
+	    		if (c.private) {
+	    			if (userID == parseChannel("thorinair")) {
+			    		commands[c.method](packed);
+			    		nocommand = false;
+	    			}
+	    		}
+	    		else {
+		    		commands[c.method](packed);
+		    		nocommand = false;
+		    	}
 	    	}
-	    }
-	    // Private Command: !reboot
-	    else if (message == "!reboot") {
-	    	if (userID == channels["thorinair"]) {
-	    		send(channels["thorinair"], "I'm just going to go quickly reboot myself. Be right back, Thori!");
-	    		fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
-	    		setTimeout(function() {
-					console.log("<STOPPED>");
-	    			process.exit();
-	    		}, config.options.reboot.timeout * 1000);
-	    	}
-	    }
-	    // When the bot is mentioned.
-	    else if (isMentioned(bot.id, data)) {
-	    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message));
-	    }
-	    // All other messages.
-	    else if (data.d.author.id != bot.id) {
-	    	if (processWhitelist(channelID, config.whitelist.do)) {
-	    		brain.addMass(message.replace(/<.*>/g, ""));
-	    		messages.push(message);
-	    	}
-	    }
+	    });
+
+	    if (nocommand) {
+		    // When the bot is mentioned.
+		    if (isMentioned(bot.id, data)) {
+		    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message));
+		    }
+		    // All other messages.
+		    else if (data.d.author.id != bot.id) {
+		    	if (processWhitelist(channelID, config.whitelist.do)) {
+		    		brain.addMass(message.replace(/<.*>/g, ""));
+		    		messages.push(message);
+		    	}
+		    }
+		}
 	});
 
 	bot.on("disconnect", function(erMsg, code) {
@@ -304,6 +383,9 @@ function loadBot() {
 	});
 }
 
+/*
+ * Loops to continuously retrieve now playing data.
+ */
 function loopNowPlaying() {
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", config.nowplaying.url, true);
@@ -314,7 +396,7 @@ function loopNowPlaying() {
 	        if (np != response.one.nowplaying) {
 	        	np = response.one.nowplaying;
 	        	if (toggle_np)
-	    			send(channels["gotn"], "**Now playing:** " + np);
+	    			send(parseChannel("gotn"), "**Now playing:** " + np);
 	        }
 	    }
 	}
@@ -323,11 +405,15 @@ function loopNowPlaying() {
 	setTimeout(loopNowPlaying, config.nowplaying.timeout * 1000);
 }
 
+/*
+ * Loops to continuously save brain data.
+ */
 function loopBrainSave() {
 	fs.writeFileSync(config.brain.path, JSON.stringify(messages), "utf-8");
 	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 }
 
+// Start the bot.
 console.log("<STARTED>");
 loadAnnouncements();
 loadBrain();
