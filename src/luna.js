@@ -200,7 +200,9 @@ function loadBot() {
 	    if (!started) {
 	    	started = true;
 	    	send(channels["thorinair"], "Hey Thori, I'm back! My current version is " + version + ".");
+
 	    	loopNowPlaying();
+	    	loopBrainSave();
 	    }
 	});
 
@@ -256,11 +258,19 @@ function loadBot() {
 				"\n`!help` Ask me to repeat this messsage." +
 				"\nYou can also talk with me by mentioning me in the chat.");
 	    }
-	    // Command: !toggle np
+	    // Private Command: !toggle np
 	    else if (message == "!toggle np") {
 	    	if (userID == channels["thorinair"]) {
 	    		toggle_np = !toggle_np;
 	    		send(channels["thorinair"], "Thori, I've changed the Now Playing listing to **" + toggle_np + "**.");
+	    	}
+	    }
+	    // Private Command: !reboot
+	    else if (message == "!reboot") {
+	    	if (userID == channels["thorinair"]) {
+	    		send(channels["thorinair"], "I'm just going to go quickly reboot myself. Be right back, Thori!");
+	    		fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
+	    		setTimeout(function() { process.exit(); }, 2000);
 	    	}
 	    }
 	    // When the bot is mentioned.
@@ -272,7 +282,6 @@ function loadBot() {
 	    	if (processWhitelist(channelID, config.whitelist.do)) {
 	    		brain.addMass(message.replace(/<.*>/g, ""));
 	    		messages.push(message);
-	    		fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
 	    	}
 	    }
 	});
@@ -300,6 +309,11 @@ function loopNowPlaying() {
 
 	xhr.send();
 	setTimeout(loopNowPlaying, config.nowplaying.timeout * 1000);
+}
+
+function loopBrainSave() {
+	fs.writeFileSync(config.brain.path, JSON.stringify(messages), 'utf-8');
+	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 }
 
 loadAnnouncements();

@@ -50,7 +50,8 @@
 	"brain": {
 		"path": "/var/www/node/brain.json",
 		"markov": 2,
-		"default": "I am The Night."
+		"default": "I am The Night.",
+		"timeout": 60
 	},
 	"opts": {
 		"game": {
