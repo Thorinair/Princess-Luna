@@ -90,11 +90,11 @@ commands.help = function(data) {
 };
 
 // Status Variables
-var jobs = [];
-var started = false;
-var np = "";
+var jobs      = [];
+var messages  = [];
+var started   = false;
 var toggle_np = false;
-var messages = [];
+var np        = "";
 
 // Persistant Objects
 var bot;
