@@ -1,5 +1,5 @@
 // Version
-const version = "v1.2.4";
+const version = "v1.2.5";
 
 // Modules
 const fs             = require('fs');
@@ -177,7 +177,7 @@ function loadBrain() {
 
 		messages = JSON.parse(fs.readFileSync(config.brain.path, 'utf8'));
 		messages.forEach(function(message) {
-			brain.addMass(message);
+			brain.addMass(message.replace(/<.*>/g, ""));
 		});
 
 		console.log("Finished loading.");
@@ -199,7 +199,6 @@ function loadBot() {
 	    if (!started) {
 	    	started = true;
 	    	send(channels["thorinair"], "Hey Thori, I'm back! My current version is " + version + ".");
-
 	    	loopNowPlaying();
 	    }
 	});
