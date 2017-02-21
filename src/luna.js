@@ -1,5 +1,5 @@
 // Version
-const version = "v1.3.1";
+const version = "v1.3.2";
 
 // Modules
 const fs             = require("fs");
@@ -396,11 +396,9 @@ function loadBot() {
 		    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message));
 		    }
 		    // All other messages.
-		    else if (data.d.author.id != bot.id) {
-		    	if (processWhitelist(channelID, config.whitelist.do)) {
-		    		brain.addMass(message.replace(/<.*>/g, ""));
-		    		messages.push(message);
-		    	}
+		    if (data.d.author.id != bot.id && processWhitelist(channelID, config.whitelist.do)) {
+	    		brain.addMass(message.replace(/<.*>/g, ""));
+	    		messages.push(message);
 		    }
 		}
 	});
