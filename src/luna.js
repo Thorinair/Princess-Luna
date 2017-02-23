@@ -1,8 +1,9 @@
 // Version
-const version = "v1.4.1";
+const version = "v1.5.0";
 
 // Modules
 const fs             = require("fs");
+const request        = require("request");
 const readline       = require("readline");
 const Discord        = require("discord.io");
 const CronJob        = require("cron").CronJob;
@@ -116,6 +117,30 @@ commands.phase = function(data) {
 	}
 };
 
+// Command: !moon
+commands.moon = function(data) {
+	send(data.channelID, "<@!" + data.userID + ">" + ", give me a moment...");
+
+	var download = function(uri, filename, callback) {
+		request.head(uri, function(err, res, body) {
+			console.log("I'm downloading the current Moon image...");
+
+			request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
+		});
+	};
+
+	download(config.options.moonurl, config.options.moonimg, function() {
+		console.log("Finished downloading!");
+
+		bot.uploadFile({
+			"to": data.channelID,
+			"file": config.options.moonimg,
+			"filename": "Moon " + (new Date()) + ".png",
+			"message": "Here is how the Moon looks like right now."
+		});
+	});
+}
+
 // Command: !togglenp
 commands.togglenp = function(data) {
 	toggle_np = !toggle_np;
@@ -129,7 +154,7 @@ commands.reboot = function(data) {
 	setTimeout(function() {
 		console.log("<STOPPED>");
 		process.exit();
-	}, config.options.reboot.timeout * 1000);
+	}, config.options.reboottime * 1000);
 };
 
 // Command: !help
@@ -434,6 +459,20 @@ function loadPhases() {
 			loadBot();
 	    }
 	}
+	xhr.onerror = function() {
+	    console.log("I've encountered some problems loading the dates. Retrying...");
+	    window.setTimeout(function() {
+	    	xhr.abort();
+	    	loadPhases();
+	    }, 1000);
+	}
+	xhr.ontimeout = function() {
+	    console.log("My attempt to load the dates took too long. Retrying...");
+	    window.setTimeout(function() {
+	    	xhr.abort();
+	    	loadPhases();
+	    }, 1000);
+	}
 
 	xhr.send();
 }
@@ -465,7 +504,11 @@ function loadBot() {
 	});
 	 
 	bot.on("ready", function() {
-		bot.setPresence(config.opts);
+		bot.setPresence({
+	        "game": {
+	        	"name": config.options.game
+	        }
+	    });
 	    console.log("I've successfully joined Discord. My name is " + bot.username + " with ID #" + bot.id + ".");
 	    if (!started) {
 	    	started = true;

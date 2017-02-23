@@ -109,6 +109,12 @@
 			"private": false
 		},
 		{
+			"command": "!moon",
+			"method": "moon",
+			"help": "Ask me to show how the Moon looks like right now.",
+			"private": false
+		},
+		{
 			"command": "!toggle np",
 			"method": "togglenp",
 			"help": "",
@@ -162,15 +168,11 @@
 		}
 	],
 	"options": {
-		"fullmoon": "Full Moon",
 		"phaseurl": "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
-		"reboot": {
-			"timeout": 2
-		}
-	},
-	"opts": {
-		"game": {
-			"name": "with your dreams."
-		}
+		"moonurl": "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
+		"moonimg": "/var/www/node/moon.png",
+		"fullmoon": "Full Moon",
+		"game": "with your dreams.",
+		"reboottime": 2
 	}
 }
