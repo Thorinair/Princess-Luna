@@ -1,5 +1,5 @@
 // Version
-const version = "v1.5.1";
+const version = "v1.5.2";
 
 // Modules
 const fs             = require("fs");
@@ -38,7 +38,7 @@ commands.gotn = function(data) {
 				time.hours = Math.floor(diff % 24);
 				time.days = Math.floor(diff / 24);
 
-				send(data.channelID, "<@!" + data.userID + ">, next episode of Glory of The Night airs in " + parseTime(time) + " on " + date.toDateString() + " at " + config.show.time + " (UTC).");
+				send(data.channelID, "<@!" + data.userID + ">, next episode of Glory of The Night airs in " + parseTime(time) + " on " + date.toDateString() + " at " + config.show.time + " (UTC).", true);
 				found = true;
 			}
 		}
@@ -47,7 +47,7 @@ commands.gotn = function(data) {
 
 // Command: !np
 commands.np = function(data) {
-	send(data.channelID, "<@!" + data.userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*");
+	send(data.channelID, "<@!" + data.userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*", true);
 };
 
 // Command: !phase
@@ -98,18 +98,18 @@ commands.phase = function(data) {
 		});
 
 		if (found) {
-			send(data.channelID, message);
+			send(data.channelID, message, true);
 		}
 	}
 
 	if (!found) {
-		send(data.channelID, "<@!" + data.userID + ">" + ", I'm sorry, but I can't tell you anything about the Moon phases at the moment...");
+		send(data.channelID, "<@!" + data.userID + ">" + ", I'm sorry, but I can't tell you anything about the Moon phases at the moment...", true);
 	}
 };
 
 // Command: !moon
 commands.moon = function(data) {
-	send(data.channelID, "<@!" + data.userID + ">" + ", give me a moment...");
+	send(data.channelID, "<@!" + data.userID + ">" + ", give me a moment...", true);
 
 	var download = function(uri, filename, callback) {
 		request.head(uri, function(err, res, body) {
@@ -122,44 +122,46 @@ commands.moon = function(data) {
 	download(config.options.moonurl, config.options.moonimg, function() {
 		console.log("Finished downloading!");
 
-		bot.uploadFile({
-			"to": data.channelID,
-			"file": config.options.moonimg,
-			"filename": "Moon " + (new Date()) + ".png",
-			"message": "Here is how the Moon looks like right now."
-		});
+    	setTimeout(function() {
+			bot.uploadFile({
+				"to": data.channelID,
+				"file": config.options.moonimg,
+				"filename": "Moon " + (new Date()) + ".png",
+				"message": "Here is how the Moon looks like right now."
+			});
+    	}, config.options.typetime * 1000);	
 	});
 };
 
 // Command: !hug
 commands.hug = function(data) {
 	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
-		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*");
+		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*", true);
 	}
 	else {
-		send(data.channelID, "*Gives <@!" + data.userID + "> a big warm hug!*");
+		send(data.channelID, "*Gives <@!" + data.userID + "> a big warm hug!*", true);
 	}
 };
 
 // Command: !kiss
 commands.kiss = function(data) {
 	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
-		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a kiss on the cheek!*");
+		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a kiss on the cheek!*", true);
 	}
 	else {
-		send(data.channelID, "*Gives <@!" + data.userID + "> a kiss on the cheek!*");
+		send(data.channelID, "*Gives <@!" + data.userID + "> a kiss on the cheek!*", true);
 	}
 };
 
 // Command: !togglenp
 commands.togglenp = function(data) {
 	toggle_np = !toggle_np;
-	send(parseChannel("thorinair"), "Thori, I've changed the Now Playing listing to **" + toggle_np + "**.");
+	send(parseChannel("thorinair"), "Thori, I've changed the Now Playing listing to **" + toggle_np + "**.", false);
 };
 
 // Command: !reboot
 commands.reboot = function(data) {
-	send(parseChannel("thorinair"), "I'm just going to go quickly reboot myself. Be right back, Thori!");
+	send(parseChannel("thorinair"), "I'm just going to go quickly reboot myself. Be right back, Thori!", false);
 	saveBrain();
 	setTimeout(function() {
 		console.log("<STOPPED>");
@@ -178,7 +180,7 @@ commands.help = function(data) {
 	});
 	reply += "\nYou can also talk with me by mentioning me in the chat.";
 
-	send(data.channelID, reply);
+	send(data.channelID, reply, true);
 };
 
 // Status Variables
@@ -279,8 +281,9 @@ function parsePhase(name, offset) {
  * Sends a message to a channel on Discord.
  * @param  id       ID of the channel to send to.
  * @param  message  String message to send.
+ * @param  type  	Whether the typing delay should be added.
  */
-function send(id, message) {
+function send(id, message, type) {
 	var channel = "unknown";
 	config.channels.forEach(function(c) {
 		if (c.id == id) {
@@ -288,10 +291,20 @@ function send(id, message) {
 		}
 	});
 	console.log("> I'm sending the following message to #" + channel + ": \"" + message + "\"");
-	bot.sendMessage({
-        "to": id,
-        "message": message
-    });	
+	var msg = {
+		"to": id,
+		"message": message
+    };
+
+    if (type) {
+    	bot.simulateTyping(id);
+    	setTimeout(function() {
+			bot.sendMessage(msg);
+    	}, config.options.typetime * 1000);	
+    }
+    else {
+		bot.sendMessage(msg);	
+    }
 }
 
 /*
@@ -401,26 +414,26 @@ function loadAnnouncements() {
 
 		// Long air-time announcement.
 		var jobLong = new CronJob(new Date(date - long), function() {
-				send(parseChannel("announcements"), messageLong);
+				send(parseChannel("announcements"), messageLong, true);
 			}, function () {}, true);
 		//console.log("  Long:  " + new Date(date - long));
 
 		// Short air-time announcement.
 		var jobShort = new CronJob(new Date(date - short), function() {
-				send(parseChannel("announcements"), messageShort);
+				send(parseChannel("announcements"), messageShort, true);
 			}, function () {}, true);
 		//console.log("  Short: " + new Date(date - short));
 
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
-				send(parseChannel("announcements"), messageNow);
+				send(parseChannel("announcements"), messageNow, true);
 				toggle_np = true;
 			}, function () {}, true);
 		//console.log("  Now:   " + new Date(date));
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
-				send(parseChannel("announcements"), messageAfter);
+				send(parseChannel("announcements"), messageAfter, true);
 				toggle_np = false;
 			}, function () {}, true);
 		//console.log("  After: " + new Date(date - after));
@@ -456,7 +469,7 @@ function loadPhases() {
 
 					var job = new CronJob(date, function() {
 			    			send(parseChannel("general"), "@here My children, the Moon has reached its " + config.phases[parsePhase(p.phase, 0)].name + " " + config.phases[parsePhase(p.phase, 0)].icon +
-			    				" phase! Let the moonlight shine upon you in all its might!");
+			    				" phase! Let the moonlight shine upon you in all its might!", true);
 						}, function () {}, true);
 
 					jobs.push(job);
@@ -522,7 +535,7 @@ function loadBot() {
 	    console.log("I've successfully joined Discord. My name is " + bot.username + " with ID #" + bot.id + ".");
 	    if (!started) {
 	    	started = true;
-	    	send(parseChannel("thorinair"), "Hey Thori, I'm back! My current version is " + version + ".");
+	    	send(parseChannel("thorinair"), "Hey Thori, I'm back! My current version is " + version + ".", false);
 
 	    	loopNowPlaying();
 	    	loopBrainSave();
@@ -531,7 +544,7 @@ function loadBot() {
 
 	bot.on("guildMemberAdd", function(user) {
 		console.log("New user, \"" + user.username + "\" has joined our server! I'm promoting them to Children of The Night!");
-		send(parseChannel("general"), "**My children, welcome <@!" + user.id + "> to our beautiful night!**");
+		send(parseChannel("general"), "**My children, welcome <@!" + user.id + "> to our beautiful night!**", true);
 		bot.addToRole( {
 			"serverID": user.guild_id,
 			"userID": user.id,
@@ -571,7 +584,7 @@ function loadBot() {
 	    if (nocommand) {
 		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
-		    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message));
+		    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message), true);
 		    }
 		    // All other messages.
 		    if (data.d.author.id != bot.id && processWhitelist(channelID, config.whitelist.do)) {
@@ -600,7 +613,7 @@ function loopNowPlaying() {
 	        if (np != response.one.nowplaying) {
 	        	np = response.one.nowplaying;
 	        	if (toggle_np)
-	    			send(parseChannel("gotn"), "**Now playing:** " + np);
+	    			send(parseChannel("gotn"), "**Now playing:** " + np, true);
 	        }
 	    }
 	}

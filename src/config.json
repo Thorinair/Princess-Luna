@@ -179,6 +179,7 @@
 		"moonimg": "/var/www/node/moon.png",
 		"fullmoon": "Full Moon",
 		"game": "with your dreams.",
+		"typetime": 2,
 		"reboottime": 2
 	}
 }
