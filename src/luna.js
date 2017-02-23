@@ -1,5 +1,5 @@
 // Version
-const version = "v1.4.0";
+const version = "v1.4.1";
 
 // Modules
 const fs             = require("fs");
@@ -100,12 +100,19 @@ commands.phase = function(data) {
 
 					message += "The next " + config.phases[parsePhase(config.options.fullmoon, 0)].name + " " + config.phases[parsePhase(config.options.fullmoon, 0)].icon +
 						" is in " + parseTime(time) + " on " + datePhase.toDateString() + " at " + p.time + " (UTC).";
-			    	send(data.channelID, message);
-
+			    	
 			    	found = true;
 				}
 			}
 		});
+
+		if (found) {
+			send(data.channelID, message);
+		}
+	}
+
+	if (!found) {
+		send(data.channelID, "<@!" + data.userID + ">" + ", I'm sorry, but I can't tell you anything about the Moon phases at the moment...");
 	}
 };
 
