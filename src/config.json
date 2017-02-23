@@ -103,6 +103,12 @@
 			"private": false
 		},
 		{
+			"command": "!phase",
+			"method": "phase",
+			"help": "Ask me about the status of the Moon's phase.",
+			"private": false
+		},
+		{
 			"command": "!toggle np",
 			"method": "togglenp",
 			"help": "",
@@ -121,7 +127,43 @@
 			"private": false
 		}
 	],
+	"phases": [
+		{
+			"name": "New Moon",
+			"icon": ":new_moon:"
+		},
+		{
+			"name": "Waxing Crescent",
+			"icon": ":waxing_crescent_moon:"
+		},
+		{
+			"name": "First Quarter",
+			"icon": ":first_quarter_moon:"
+		},
+		{
+			"name": "Waxing Gibbous",
+			"icon": ":waxing_gibbous_moon:"
+		},
+		{
+			"name": "Full Moon",
+			"icon": ":full_moon:"
+		},
+		{
+			"name": "Waning Gibbous",
+			"icon": ":waning_gibbous_moon:"
+		},
+		{
+			"name": "Last Quarter",
+			"icon": ":last_quarter_moon:"
+		},
+		{
+			"name": "Waning Crescent",
+			"icon": ":waning_crescent_moon:"
+		}
+	],
 	"options": {
+		"fullmoon": "Full Moon",
+		"phaseurl": "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
 		"reboot": {
 			"timeout": 2
 		}

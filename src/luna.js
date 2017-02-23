@@ -1,5 +1,5 @@
 // Version
-const version = "v1.3.2";
+const version = "v1.4.0";
 
 // Modules
 const fs             = require("fs");
@@ -59,6 +59,56 @@ commands.hug = function(data) {
 	}
 };
 
+// Command: !phase
+commands.phase = function(data) {
+	var dateNow = new Date();
+	var message = "";
+
+	var found = false;
+	phases.forEach(function(p) {
+		if (!found) {
+
+			var datePhase = new Date(p.date + " " + p.time);
+			if (datePhase > dateNow) {
+
+				var phaseLast = parsePhase(p.name, -2);
+				var phaseNow  = parsePhase(p.name, -1);
+
+				message = "<@!" + data.userID + ">" + ", the Moon's previous phase was the " + config.phases[phaseLast].name + " " + config.phases[phaseLast].icon + 
+					" and it is now a " + config.phases[phaseNow].name + " " + config.phases[phaseNow].icon + ". ";
+
+		    	found = true;
+			}
+		}
+	});
+
+	if (found) {
+		found = false;
+		phases.forEach(function(p) {
+			if (!found) {
+
+				var datePhase = new Date(p.date + " " + p.time);
+				if (datePhase > dateNow && p.phase == config.options.fullmoon) {
+
+					var diff = (datePhase - dateNow) / 60000;
+					var time = {};
+
+					time.minutes = Math.floor(diff % 60);
+					diff = Math.floor(diff / 60);
+					time.hours = Math.floor(diff % 24);
+					time.days = Math.floor(diff / 24);
+
+					message += "The next " + config.phases[parsePhase(config.options.fullmoon, 0)].name + " " + config.phases[parsePhase(config.options.fullmoon, 0)].icon +
+						" is in " + parseTime(time) + " on " + datePhase.toDateString() + " at " + p.time + " (UTC).";
+			    	send(data.channelID, message);
+
+			    	found = true;
+				}
+			}
+		});
+	}
+};
+
 // Command: !togglenp
 commands.togglenp = function(data) {
 	toggle_np = !toggle_np;
@@ -92,6 +142,7 @@ commands.help = function(data) {
 // Status Variables
 var jobs      = [];
 var messages  = [];
+var phases    = [];
 var started   = false;
 var toggle_np = false;
 var np        = "";
@@ -154,7 +205,32 @@ function parseTime(date) {
 			string += "s";
 	}
 
+	if (string == "")
+		string = "0 minutes";
+
 	return string;
+}
+
+/*
+ * Parses the moon list to return an ID of a given phase name.
+ * @param  name    Name of the Moon phse to look for.
+ * @param  offset  Offset of the phase ID.
+ * @return         ID of the found moon phase.
+ */
+function parsePhase(name, offset) {
+	var id = 0;
+	config.phases.forEach(function(n, i) {
+		if (n.name == name)
+			id = i;
+	});
+
+	id += offset;
+	if (id >= config.phases.length)
+		id -= config.phases.length;
+	else if (id < 0)
+		id += config.phases.length;
+
+	return id;
 }
 
 /*
@@ -272,6 +348,7 @@ function loadAnnouncements() {
 	var messageAfter = "@here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
 
 	console.log("I'm loading all of the upcoming show dates...");
+
 	config.show.dates.forEach(function(d) {
 
 		var partsDate = d.split("-");
@@ -311,6 +388,47 @@ function loadAnnouncements() {
 		jobs.push(jobNow);
 		jobs.push(jobAfter);
 	});
+
+	console.log("I've finished loading the announcement dates!");
+}
+
+/*
+ * Loads all moon phases from web.
+ */
+function loadPhases() {
+	console.log("I'm loading all of the upcoming phase dates...");
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", config.options.phaseurl, true);
+
+	xhr.onreadystatechange = function () { 
+	    if (xhr.readyState == 4 && xhr.status == 200) {
+	        var response = JSON.parse(xhr.responseText);
+	        phases = response.phasedata;
+
+	        phases.forEach(function(p) {
+
+				if (p.phase == config.options.fullmoon) {
+					var date = new Date(p.date + " " + p.time);
+					console.log("- Loading Full Moon date: " + date);
+
+					var job = new CronJob(date, function() {
+			    			send(parseChannel("general"), "@here My children, the Moon has reached its " + config.phases[parsePhase(p.phase, 0)].name + " " + config.phases[parsePhase(p.phase, 0)].icon +
+			    				" phase! Let the moonlight shine upon you in all its might!");
+						}, function () {}, true);
+
+					jobs.push(job);
+				}
+			});
+
+			console.log("I've finished loading the phase dates!");
+
+			loadBrain();
+			loadBot();
+	    }
+	}
+
+	xhr.send();
 }
 
 /*
@@ -442,5 +560,4 @@ function loopBrainSave() {
 // Start the bot.
 console.log("<STARTED>");
 loadAnnouncements();
-loadBrain();
-loadBot();
+loadPhases();
