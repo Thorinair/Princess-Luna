@@ -97,12 +97,6 @@
 			"private": false
 		},
 		{
-			"command": "!hug",
-			"method": "hug",
-			"help": "Ask me to hug you. If you mention somepony with it, I will hug them instead.",
-			"private": false
-		},
-		{
 			"command": "!phase",
 			"method": "phase",
 			"help": "Ask me about the status of the Moon's phase.",
@@ -112,6 +106,18 @@
 			"command": "!moon",
 			"method": "moon",
 			"help": "Ask me to show how the Moon looks like right now.",
+			"private": false
+		},
+		{
+			"command": "!hug",
+			"method": "hug",
+			"help": "Ask me to hug you. If you mention somepony with it, I will hug them instead.",
+			"private": false
+		},
+		{
+			"command": "!kiss",
+			"method": "kiss",
+			"help": "Ask me to give you a kiss. If you mention somepony with it, I will kiss them instead.",
 			"private": false
 		},
 		{

@@ -1,5 +1,5 @@
 // Version
-const version = "v1.5.0";
+const version = "v1.5.1";
 
 // Modules
 const fs             = require("fs");
@@ -48,16 +48,6 @@ commands.gotn = function(data) {
 // Command: !np
 commands.np = function(data) {
 	send(data.channelID, "<@!" + data.userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*");
-};
-
-// Command: !hug
-commands.hug = function(data) {
-	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
-		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*");
-	}
-	else {
-		send(data.channelID, "*Gives <@!" + data.userID + "> a big warm hug!*");
-	}
 };
 
 // Command: !phase
@@ -139,7 +129,27 @@ commands.moon = function(data) {
 			"message": "Here is how the Moon looks like right now."
 		});
 	});
-}
+};
+
+// Command: !hug
+commands.hug = function(data) {
+	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
+		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*");
+	}
+	else {
+		send(data.channelID, "*Gives <@!" + data.userID + "> a big warm hug!*");
+	}
+};
+
+// Command: !kiss
+commands.kiss = function(data) {
+	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
+		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a kiss on the cheek!*");
+	}
+	else {
+		send(data.channelID, "*Gives <@!" + data.userID + "> a kiss on the cheek!*");
+	}
+};
 
 // Command: !togglenp
 commands.togglenp = function(data) {
