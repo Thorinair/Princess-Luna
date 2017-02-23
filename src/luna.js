@@ -1,5 +1,5 @@
 // Version
-const version = "v1.5.2";
+const version = "v1.5.3";
 
 // Modules
 const fs             = require("fs");
@@ -122,12 +122,21 @@ commands.moon = function(data) {
 	download(config.options.moonurl, config.options.moonimg, function() {
 		console.log("Finished downloading!");
 
+		var message = "Here is how the Moon looks like right now.";
+		var channel = "unknown";
+		config.channels.forEach(function(c) {
+			if (c.id == data.channelID) {
+				channel = c.name;
+			}
+		});
+
     	setTimeout(function() {
+			console.log("> I'm sending the following message with image to #" + channel + ": \"" + message + "\"");
 			bot.uploadFile({
 				"to": data.channelID,
 				"file": config.options.moonimg,
 				"filename": "Moon " + (new Date()) + ".png",
-				"message": "Here is how the Moon looks like right now."
+				"message": message
 			});
     	}, config.options.typetime * 1000);	
 	});
@@ -290,7 +299,7 @@ function send(id, message, type) {
 			channel = c.name;
 		}
 	});
-	console.log("> I'm sending the following message to #" + channel + ": \"" + message + "\"");
+
 	var msg = {
 		"to": id,
 		"message": message
@@ -299,10 +308,12 @@ function send(id, message, type) {
     if (type) {
     	bot.simulateTyping(id);
     	setTimeout(function() {
+			console.log("> I'm sending the following message to #" + channel + ": \"" + message + "\"");
 			bot.sendMessage(msg);
     	}, config.options.typetime * 1000);	
     }
     else {
+		console.log("> I'm sending the following message to #" + channel + ": \"" + message + "\"");
 		bot.sendMessage(msg);	
     }
 }
@@ -484,14 +495,14 @@ function loadPhases() {
 	}
 	xhr.onerror = function() {
 	    console.log("I've encountered some problems loading the dates. Retrying...");
-	    window.setTimeout(function() {
+	    setTimeout(function() {
 	    	xhr.abort();
 	    	loadPhases();
 	    }, 1000);
 	}
 	xhr.ontimeout = function() {
 	    console.log("My attempt to load the dates took too long. Retrying...");
-	    window.setTimeout(function() {
+	    setTimeout(function() {
 	    	xhr.abort();
 	    	loadPhases();
 	    }, 1000);
@@ -584,6 +595,7 @@ function loadBot() {
 	    if (nocommand) {
 		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
+				console.log("< I've received the following message: \"" + message + "\", replying...");
 		    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message), true);
 		    }
 		    // All other messages.
