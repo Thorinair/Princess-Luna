@@ -1,5 +1,5 @@
 // Version
-const version = "v1.5.3";
+const version = "v1.5.4";
 
 // Modules
 const fs             = require("fs");
@@ -54,6 +54,10 @@ commands.np = function(data) {
 commands.phase = function(data) {
 	var dateNow = new Date();
 	var message = "";
+	var diff;
+	var time;
+	var phaseNow;
+	var phaseNext;
 
 	var found = false;
 	phases.forEach(function(p) {
@@ -62,11 +66,22 @@ commands.phase = function(data) {
 			var datePhase = new Date(p.date + " " + p.time);
 			if (datePhase > dateNow) {
 
-				var phaseLast = parsePhase(p.name, -2);
-				var phaseNow  = parsePhase(p.name, -1);
+				phaseNow  = parsePhase(p.phase, -1);
+				phaseNext = parsePhase(p.phase, 0);
 
-				message = "<@!" + data.userID + ">" + ", the Moon's previous phase was the " + config.phases[phaseLast].name + " " + config.phases[phaseLast].icon + 
-					" and it is now a " + config.phases[phaseNow].name + " " + config.phases[phaseNow].icon + ". ";
+				diff = (datePhase - dateNow) / 60000;
+				console.log(datePhase);
+				console.log(dateNow);
+				time = {};
+
+				time.minutes = Math.floor(diff % 60);
+				diff = Math.floor(diff / 60);
+				time.hours = Math.floor(diff % 24);
+				time.days = Math.floor(diff / 24);
+
+				message = "<@!" + data.userID + ">" + ", the Moon is currently in its " + config.phases[phaseNow].name + " " + config.phases[phaseNow].icon + " phase. " +
+					"The next phase is the " + config.phases[phaseNext].name + " " + config.phases[phaseNext].icon + 
+					", and it happens in " + parseTime(time) + " on " + datePhase.toDateString() + " at " + p.time + " (UTC).";
 
 		    	found = true;
 			}
@@ -74,28 +89,31 @@ commands.phase = function(data) {
 	});
 
 	if (found) {
-		found = false;
-		phases.forEach(function(p) {
-			if (!found) {
 
-				var datePhase = new Date(p.date + " " + p.time);
-				if (datePhase > dateNow && p.phase == config.options.fullmoon) {
+		if (config.phases[phaseNext].name != config.options.fullmoon) {
+			found = false;
+			phases.forEach(function(p) {
+				if (!found) {
 
-					var diff = (datePhase - dateNow) / 60000;
-					var time = {};
+					var datePhase = new Date(p.date + " " + p.time);
+					if (datePhase > dateNow && p.phase == config.options.fullmoon) {
 
-					time.minutes = Math.floor(diff % 60);
-					diff = Math.floor(diff / 60);
-					time.hours = Math.floor(diff % 24);
-					time.days = Math.floor(diff / 24);
+						diff = (datePhase - dateNow) / 60000;
+						time = {};
 
-					message += "The next " + config.phases[parsePhase(config.options.fullmoon, 0)].name + " " + config.phases[parsePhase(config.options.fullmoon, 0)].icon +
-						" is in " + parseTime(time) + " on " + datePhase.toDateString() + " at " + p.time + " (UTC).";
-			    	
-			    	found = true;
+						time.minutes = Math.floor(diff % 60);
+						diff = Math.floor(diff / 60);
+						time.hours = Math.floor(diff % 24);
+						time.days = Math.floor(diff / 24);
+
+						message += " The next " + config.phases[parsePhase(config.options.fullmoon, 0)].name + " " + config.phases[parsePhase(config.options.fullmoon, 0)].icon +
+							" is in " + parseTime(time) + " on " + datePhase.toDateString() + " at " + p.time + " (UTC).";
+				    	
+				    	found = true;
+					}
 				}
-			}
-		});
+			});
+		}
 
 		if (found) {
 			send(data.channelID, message, true);
@@ -473,18 +491,22 @@ function loadPhases() {
 	        phases = response.phasedata;
 
 	        phases.forEach(function(p) {
+				var date = new Date(p.date + " " + p.time);
+				var message;
+				console.log("- Loading phase date: " + date + " - " + p.phase);
 
 				if (p.phase == config.options.fullmoon) {
-					var date = new Date(p.date + " " + p.time);
-					console.log("- Loading Full Moon date: " + date);
-
-					var job = new CronJob(date, function() {
-			    			send(parseChannel("general"), "@here My children, the Moon has reached its " + config.phases[parsePhase(p.phase, 0)].name + " " + config.phases[parsePhase(p.phase, 0)].icon +
-			    				" phase! Let the moonlight shine upon you in all its might!", true);
-						}, function () {}, true);
-
-					jobs.push(job);
+					message = "Everypony @here, the Moon has reached its " + config.phases[parsePhase(p.phase, 0)].name + " " + config.phases[parsePhase(p.phase, 0)].icon +
+		    				" phase! Let the moonlight shine upon you in all its might!";
 				}
+				else {
+					message = "The Moon has reached its " + config.phases[parsePhase(p.phase, 0)].name + " " + config.phases[parsePhase(p.phase, 0)].icon +	" phase...";
+				}
+
+				var job = new CronJob(date, function() {
+		    			send(parseChannel("general"), message, true);
+					}, function () {}, true);
+				jobs.push(job);
 			});
 
 			console.log("I've finished loading the phase dates!");
