@@ -1,5 +1,5 @@
 // Version
-const version = "v1.5.6";
+const version = "v1.6.0";
 
 // Modules
 const fs             = require("fs");
@@ -165,20 +165,25 @@ commands.moon = function(data) {
 
 // Command: !hug
 commands.hug = function(data) {
-	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
-		if (data.data.d.mentions.length <= 1) {
-			send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*", true);
+	if (data.data.d.mentions[0] != null) {
+		if (isMentioned(bot.id, data.data)) {
+			send(data.channelID, "*Awkwardly gives herself a big warm hug!*", true);
 		}
 		else {
-			var mentions = "";
-			var i;
-			for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-				mentions += "<@!" + data.data.d.mentions[i].id + ">";
-				if (i < data.data.d.mentions.length - 2) {
-					mentions += ", "
-				}
+			if (data.data.d.mentions.length <= 1) {
+				send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*", true);
 			}
-			send(data.channelID, "*Gives " + mentions + " and <@!" + data.data.d.mentions[i].id + "> big warm hugs!*", true);
+			else {
+				var mentions = "";
+				var i;
+				for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+					mentions += "<@!" + data.data.d.mentions[i].id + ">";
+					if (i < data.data.d.mentions.length - 2) {
+						mentions += ", "
+					}
+				}
+				send(data.channelID, "*Gives " + mentions + " and <@!" + data.data.d.mentions[i].id + "> big warm hugs!*", true);
+			}
 		}
 	}
 	else {
@@ -188,20 +193,25 @@ commands.hug = function(data) {
 
 // Command: !kiss
 commands.kiss = function(data) {
-	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
-		if (data.data.d.mentions.length <= 1) {
-			send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a kiss on the cheek!*", true);
+	if (data.data.d.mentions[0] != null) {
+		if (isMentioned(bot.id, data.data)) {
+			send(data.channelID, "*Opens two magical portals and uses them to give herself a kiss on the cheek!*", true);
 		}
 		else {
-			var mentions = "";
-			var i;
-			for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-				mentions += "<@!" + data.data.d.mentions[i].id + ">";
-				if (i < data.data.d.mentions.length - 2) {
-					mentions += ", "
-				}
+			if (data.data.d.mentions.length <= 1) {
+				send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a kiss on the cheek!*", true);
 			}
-			send(data.channelID, "*Gives " + mentions + " and <@!" + data.data.d.mentions[i].id + "> kisses on their cheeks!*", true);
+			else {
+				var mentions = "";
+				var i;
+				for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+					mentions += "<@!" + data.data.d.mentions[i].id + ">";
+					if (i < data.data.d.mentions.length - 2) {
+						mentions += ", "
+					}
+				}
+				send(data.channelID, "*Gives " + mentions + " and <@!" + data.data.d.mentions[i].id + "> kisses on their cheeks!*", true);
+			}
 		}
 	}
 	else {
@@ -232,7 +242,7 @@ commands.help = function(data) {
 	reply += "<@!" + data.userID + ">, here are some of the commands you can use:";
 	config.commands.forEach(function(c) {
 		if (!c.private)
-			reply += "\n`" + c.command + "` " + c.help;
+			reply += "\n`" + config.options.commandsymbol + c.command + "` " + c.help;
 	});
 	reply += "\nYou can also talk with me by mentioning me in the chat.";
 
@@ -618,32 +628,37 @@ function loadBot() {
 
 	bot.on("message", function(user, userID, channelID, message, data) {
 
-	    var packed = {};
-	    packed.user      = user;
-	    packed.userID    = userID;
-	    packed.channelID = channelID;
-	    packed.message   = message;
-	    packed.data      = data;
+	    if (message[0] == "!") {
 
-	    var nocommand = true;
-	    var command = message.replace(/ <.*>/g, "");
+	    	var nocommand = true;
+	    	var command = message.split(" ")[0];
 
-	    config.commands.forEach(function(c) {
-	    	if (command == c.command && nocommand) {
-	    		if (c.private) {
-	    			if (userID == parseChannel("thorinair")) {
-			    		commands[c.method](packed);
+		    var packed = {};
+		    packed.user      = user;
+		    packed.userID    = userID;
+		    packed.channelID = channelID;
+		    packed.message   = message;
+		    packed.data      = data;
+
+		    config.commands.forEach(function(c) {
+		    	if (command == config.options.commandsymbol + c.command && nocommand) {
+		    		if (c.private) {
+		    			if (userID == parseChannel("thorinair")) {
+				    		commands[c.command](packed);
+				    		nocommand = false;
+		    			}
+		    		}
+		    		else {
+			    		commands[c.command](packed);
 			    		nocommand = false;
-	    			}
-	    		}
-	    		else {
-		    		commands[c.method](packed);
-		    		nocommand = false;
+			    	}
 		    	}
-	    	}
-	    });
+		    });
 
-	    if (nocommand) {
+		    if (nocommand)
+			    send(channelID, "I'm sorry <@!" + userID + ">, but I'm afraid I can't do that.", true);
+		}
+		else {
 		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
 				console.log("< I've received the following message: \"" + message + "\", replying...");

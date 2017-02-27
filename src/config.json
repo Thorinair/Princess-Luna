@@ -85,56 +85,47 @@
 	],
 	"commands": [
 		{
-			"command": "!gotn",
-			"method": "gotn",
+			"command": "gotn",
 			"help": "Ask me about the time left until the next GOTN episode.",
 			"private": false
 		},
 		{
-			"command": "!np",
-			"method": "np",
+			"command": "np",
 			"help": "Ask me which is the currently playing track on PonyvilleFM.",
 			"private": false
 		},
 		{
-			"command": "!phase",
-			"method": "phase",
+			"command": "phase",
 			"help": "Ask me about the status of the Moon's phase.",
 			"private": false
 		},
 		{
-			"command": "!moon",
-			"method": "moon",
+			"command": "moon",
 			"help": "Ask me to show how the Moon looks like right now.",
 			"private": false
 		},
 		{
-			"command": "!hug",
-			"method": "hug",
+			"command": "hug",
 			"help": "Ask me to hug you. If you mention somepony with it, I will hug them instead.",
 			"private": false
 		},
 		{
-			"command": "!kiss",
-			"method": "kiss",
+			"command": "kiss",
 			"help": "Ask me to give you a kiss. If you mention somepony with it, I will kiss them instead.",
 			"private": false
 		},
 		{
-			"command": "!toggle np",
-			"method": "togglenp",
+			"command": "togglenp",
 			"help": "",
 			"private": true
 		},
 		{
-			"command": "!reboot",
-			"method": "reboot",
+			"command": "reboot",
 			"help": "",
 			"private": true
 		},
 		{
-			"command": "!help",
-			"method": "help",
+			"command": "help",
 			"help": "Ask me to repeat this messsage.",
 			"private": false
 		}
@@ -174,6 +165,7 @@
 		}
 	],
 	"options": {
+		"commandsymbol": "!",
 		"phaseurl": "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
 		"moonurl": "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
 		"moonimg": "/var/www/node/moon.png",
