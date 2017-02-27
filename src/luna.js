@@ -1,5 +1,5 @@
 // Version
-const version = "v1.6.0";
+const version = "v1.6.1";
 
 // Modules
 const fs             = require("fs");
@@ -661,7 +661,7 @@ function loadBot() {
 		else {
 		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
-				console.log("< I've received the following message: \"" + message + "\", replying...");
+				console.log("< I've received the following message from \"" + user + "\": \"" + message + "\", replying...");
 		    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message), true);
 		    }
 		    // All other messages.
