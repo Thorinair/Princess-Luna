@@ -33,8 +33,27 @@
 			"2017-12-23"
 		]
 	},
+	"options": {
+		"commandsymbol": "!",
+		"mention":       "<@!%s>",
+		"roleid":        "277564526940127243",
+		"phaseurl":      "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
+		"moonurl":       "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
+		"moonimg":       "/var/www/node/moon.png",
+		"fullmoon":      "Full Moon",
+		"game":          "with your dreams.",
+		"typetime":      2,
+		"reboottime":    2,
+		"channels": {
+			"announcements": "announcements",
+			"welcome":       "general",
+			"phases":        "general",
+			"nowplaying":    "gotn",
+			"private":       "thorinair"
+		}
+	},
 	"nowplaying": {
-		"url": "https://ponyvillefm.com/data/nowplaying",
+		"url":     "https://ponyvillefm.com/data/nowplaying",
 		"timeout": 5
 	},
 	"whitelist": {
@@ -48,85 +67,85 @@
 		]
 	},
 	"brain": {
-		"path": "/var/www/node/brain",
-		"markov": 2,
+		"path":    "/var/www/node/brain",
 		"default": "I am The Night.",
+		"markov":  2,
 		"timeout": 60
 	},
 	"channels": [
 		{
 			"name": "announcements",
-			"id": "277568055393910785"
+			"id":   "277568055393910785"
 		},
 		{
 			"name": "gotn",
-			"id": "277568155344175104"
+			"id":   "277568155344175104"
 		},
 		{
 			"name": "general",
-			"id": "277563243050827776"
+			"id":   "277563243050827776"
 		},
 		{
 			"name": "luna",
-			"id": "277572380442886146"
+			"id":   "277572380442886146"
 		},
 		{
 			"name": "music",
-			"id": "277840722592399362"
+			"id":   "277840722592399362"
 		},
 		{
 			"name": "offtopic",
-			"id": "277573384496480257"
+			"id":   "277573384496480257"
 		},
 		{
 			"name": "thorinair",
-			"id": "81244981343297536"
+			"id":   "81244981343297536"
 		}
 	],
 	"commands": [
 		{
 			"command": "gotn",
-			"help": "Ask me about the time left until the next GOTN episode.",
+			"help":    "Ask me about the time left until the next GOTN episode.",
 			"private": false
 		},
 		{
 			"command": "np",
-			"help": "Ask me which is the currently playing track on PonyvilleFM.",
+			"help":    "Ask me which is the currently playing track on PonyvilleFM.",
 			"private": false
 		},
 		{
 			"command": "phase",
-			"help": "Ask me about the status of the Moon's phase.",
+			"help":    "Ask me about the status of the Moon's phase.",
 			"private": false
 		},
 		{
 			"command": "moon",
-			"help": "Ask me to show how the Moon looks like right now.",
+			"help":    "Ask me to show how the Moon looks like right now.",
 			"private": false
 		},
 		{
 			"command": "hug",
-			"help": "Ask me to hug you. If you mention somepony with it, I will hug them instead.",
+			"help":    "Ask me to hug you. If you mention somepony with it, I will hug them instead.",
 			"private": false
 		},
 		{
 			"command": "kiss",
-			"help": "Ask me to give you a kiss. If you mention somepony with it, I will kiss them instead.",
+			"help":    "Ask me to give you a kiss. If you mention somepony with it, I will kiss them instead.",
 			"private": false
 		},
 		{
 			"command": "togglenp",
-			"help": "",
+			"help":    "",
 			"private": true
 		},
 		{
 			"command": "reboot",
-			"help": "",
+			"help":    "",
 			"private": true
 		},
 		{
 			"command": "help",
-			"help": "Ask me to repeat this messsage.",
+			"help":    "Ask me to repeat this messsage.",
 			"private": false
 		}
 	],
@@ -164,18 +183,6 @@
 			"icon": ":waning_crescent_moon:"
 		}
 	],
-	"options": {
-		"commandsymbol": "!",
-		"mention": "<@!%s>",
-		"roleid": "277564526940127243",
-		"phaseurl": "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
-		"moonurl": "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
-		"moonimg": "/var/www/node/moon.png",
-		"fullmoon": "Full Moon",
-		"game": "with your dreams.",
-		"typetime": 2,
-		"reboottime": 2
-	},
 	"separators": {
 		"list": ", ",
 		"lend": " and ",

@@ -1,5 +1,5 @@
 // Version
-const version = "v1.7.0";
+const version = "v1.7.1";
 
 // Modules
 const util           = require("util")
@@ -31,9 +31,11 @@ commands.gotn = function(data) {
 
 			var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
 			if (date > now) {
-				send(data.channelID, util.format(strings.commands.gotn.message, 
+				send(data.channelID, util.format(
+					strings.commands.gotn.message, 
 					mention(data.userID), 
-					parseLeft(now, date)), true);
+					getTimeLeft(now, date)
+				), true);
 				found = true;
 			}
 		}
@@ -43,19 +45,22 @@ commands.gotn = function(data) {
 // Command: !np
 commands.np = function(data) {
 	if (np != undefined)
-		send(data.channelID, util.format(strings.commands.np.message, 
+		send(data.channelID, util.format(
+			strings.commands.np.message, 
 			mention(data.userID), 
-			np), true);
+			np
+		), true);
 	else
-		send(data.channelID, util.format(strings.commands.np.error, 
-			mention(data.userID)), true);
+		send(data.channelID, util.format(
+			strings.commands.np.error, 
+			mention(data.userID)
+		), true);
 };
 
 // Command: !phase
 commands.phase = function(data) {
 	var dateNow = new Date();
-	var message = "";
-	var phaseNow;
+	var message;
 	var phaseNext;
 
 	var found = false;
@@ -65,16 +70,18 @@ commands.phase = function(data) {
 			var datePhase = new Date(p.date + " " + p.time);
 			if (datePhase > dateNow) {
 
-				phaseNow  = parsePhase(p.phase, -1);
-				phaseNext = parsePhase(p.phase, 0);
+				config.phases.forEach(function(n, i) {
+					if (n.name == p.phase)
+						phaseNext = config.phases[i].name;
+				});
 
-				message = util.format(strings.commands.phase.messageA, 
+				message = util.format(
+					strings.commands.phase.messageA, 
 					mention(data.userID), 
-					config.phases[phaseNow].name, 
-					config.phases[phaseNow].icon,
-					config.phases[phaseNext].name,
-					config.phases[phaseNext].icon,
-					parseLeft(dateNow, datePhase));
+					getPhaseString(p.phase, -1), 
+					getPhaseString(p.phase, 0),
+					getTimeLeft(dateNow, datePhase)
+				);
 
 		    	found = true;
 			}
@@ -83,7 +90,7 @@ commands.phase = function(data) {
 
 	if (found) {
 
-		if (config.phases[phaseNext].name != config.options.fullmoon) {
+		if (phaseNext != config.options.fullmoon) {
 			found = false;
 			phases.forEach(function(p) {
 				if (!found) {
@@ -91,10 +98,11 @@ commands.phase = function(data) {
 					var datePhase = new Date(p.date + " " + p.time);
 					if (datePhase > dateNow && p.phase == config.options.fullmoon) {
 
-						send(data.channelID, message + util.format(" " + strings.commands.phase.messageB,
-							config.phases[parsePhase(config.options.fullmoon, 0)].name,
-							config.phases[parsePhase(config.options.fullmoon, 0)].icon,
-							parseLeft(dateNow, datePhase)), true);
+						message += util.format(
+							" " + strings.commands.phase.messageB,
+							getPhaseString(config.options.fullmoon, 0),
+							getTimeLeft(dateNow, datePhase)
+						);
 				    	
 				    	found = true;
 					}
@@ -104,15 +112,22 @@ commands.phase = function(data) {
 	}
 
 	if (!found) {
-		send(data.channelID, util.format(strings.commands.phase.error,
-			mention(data.userID)), true);
+		send(data.channelID, util.format(
+			strings.commands.phase.error,
+			mention(data.userID)
+		), true);
+	}
+	else {
+		send(data.channelID, message, true);
 	}
 };
 
 // Command: !moon
 commands.moon = function(data) {
-	send(data.channelID, util.format(strings.commands.moon.messageA,
-		mention(data.userID)), true);
+	send(data.channelID, util.format(
+		strings.commands.moon.messageA,
+		mention(data.userID)
+	), true);
 
 	var download = function(uri, filename, callback) {
 		request.head(uri, function(err, res, body) {
@@ -131,80 +146,26 @@ commands.moon = function(data) {
 
 // Command: !hug
 commands.hug = function(data) {
-	if (data.data.d.mentions[0] != null) {
-		if (isMentioned(bot.id, data.data)) {
-			send(data.channelID, strings.commands.hug.self, true);
-		}
-		else {
-			if (data.data.d.mentions.length <= 1) {
-				send(data.channelID, util.format(strings.commands.hug.single,
-					mention(data.data.d.mentions[0].id)), true);
-			}
-			else {
-				var mentions = "";
-				var i;
-				for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-					mentions += mention(data.data.d.mentions[i].id);
-					if (i < data.data.d.mentions.length - 2) {
-						mentions += config.separators.list;
-					}
-				}
-				mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
-
-				send(data.channelID, util.format(strings.commands.hug.multiple,
-					mentions), true);
-			}
-		}
-	}
-	else {
-		send(data.channelID, util.format(strings.commands.hug.single, 
-			mention(data.userID)), true);
-	}
+	doMultiCommand(data);
 };
 
 // Command: !kiss
 commands.kiss = function(data) {
-	if (data.data.d.mentions[0] != null) {
-		if (isMentioned(bot.id, data.data)) {
-			send(data.channelID, strings.commands.kiss.self, true);
-		}
-		else {
-			if (data.data.d.mentions.length <= 1) {
-				send(data.channelID, util.format(strings.commands.kiss.single, 
-					mention(data.data.d.mentions[0].id)), true);
-			}
-			else {
-				var mentions = "";
-				var i;
-				for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-					mentions += mention(data.data.d.mentions[i].id);
-					if (i < data.data.d.mentions.length - 2) {
-						mentions += config.separators.list;
-					}
-				}
-				mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
-
-				send(data.channelID, util.format(strings.commands.kiss.multiple,
-					mentions), true);
-			}
-		}
-	}
-	else {
-		send(data.channelID, util.format(strings.commands.kiss.single, 
-			mention(data.userID)), true);
-	}
+	doMultiCommand(data);
 };
 
 // Command: !togglenp
 commands.togglenp = function(data) {
 	toggle_np = !toggle_np;
-	send(parseChannel("thorinair"), util.format(strings.commands.togglenp.message, 
-		toggle_np), false);
+	send(parseChannel(config.options.channels.private), util.format(
+		strings.commands.togglenp.message, 
+		toggle_np
+	), false);
 };
 
 // Command: !reboot
 commands.reboot = function(data) {
-	send(parseChannel("thorinair"), strings.commands.reboot.message, false);
+	send(parseChannel(config.options.channels.private), strings.commands.reboot.message, false);
 	saveBrain();
 	setTimeout(function() {
 		console.log(strings.debug.stopped);
@@ -216,14 +177,18 @@ commands.reboot = function(data) {
 commands.help = function(data) {
 	var reply = "";
 
-	reply += util.format(strings.commands.help.messageA, 
-		mention(data.userID));
+	reply += util.format(
+		strings.commands.help.messageA, 
+		mention(data.userID)
+	);
 	config.commands.forEach(function(c) {
 		if (!c.private)
-			reply += util.format(strings.commands.help.messageB, 
+			reply += util.format(
+				strings.commands.help.messageB, 
 				config.options.commandsymbol,
 				c.command,
-				c.help);
+				c.help
+			);
 	});
 	reply += strings.commands.help.messageC;
 
@@ -264,6 +229,48 @@ function expand(num) {
 }
 
 /*
+ * Executes a command on one person or more people.
+ * @param  data  Data of the message.
+ */
+function doMultiCommand(data) {
+	if (data.data.d.mentions[0] != null) {
+		if (isMentioned(bot.id, data.data)) {
+			send(data.channelID, strings.commands[data.command].self, true);
+		}
+		else {
+			if (data.data.d.mentions.length <= 1) {
+				send(data.channelID, util.format(
+					strings.commands[data.command].single, 
+					mention(data.data.d.mentions[0].id)
+				), true);
+			}
+			else {
+				var mentions = "";
+				var i;
+				for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+					mentions += mention(data.data.d.mentions[i].id);
+					if (i < data.data.d.mentions.length - 2) {
+						mentions += config.separators.list;
+					}
+				}
+				mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
+
+				send(data.channelID, util.format(
+					strings.commands[data.command].multiple,
+					mentions
+				), true);
+			}
+		}
+	}
+	else {
+		send(data.channelID, util.format(
+			strings.commands[data.command].single, 
+			mention(data.userID)
+		), true);
+	}
+}
+
+/*
  * Parses a given channel name to retrieve the correct ID.
  * @param  name  The input name to look for.
  * @return       ID of the channel.
@@ -282,11 +289,11 @@ function parseChannel(name) {
 }
 
 /*
- * Parses a given date to a more readable format.
+ * Converts a given date to a more readable format.
  * @param  date  The input date, this is not the JS Date object.
  * @return       Formatted string.
  */
-function parseTime(date) {
+function getTimeString(date) {
 	var string = "";
 
 	if (date.days != null && date.days != 0) {
@@ -329,7 +336,7 @@ function parseTime(date) {
  * @param  stop   Final date.
  * @return        String of time left and final time.
  */
-function parseLeft(start, stop) {
+function getTimeLeft(start, stop) {
 	var diff = (stop - start) / 60000;
 	var time = {};
 
@@ -338,16 +345,22 @@ function parseLeft(start, stop) {
 	time.hours = Math.floor(diff % 24);
 	time.days = Math.floor(diff / 24);
 
-	return util.format(strings.misc.left, parseTime(time), stop.toDateString(), expand(stop.getHours()), expand(stop.getMinutes()));
+	return util.format(
+		strings.misc.left, 
+		getTimeString(time), 
+		stop.toDateString(), 
+		expand(stop.getHours()), 
+		expand(stop.getMinutes())
+	);
 }
 
 /*
- * Parses the moon list to return an ID of a given phase name.
+ * Parses the phase list to return a string compatible with Discord chat.
  * @param  name    Name of the Moon phse to look for.
- * @param  offset  Offset of the phase ID.
- * @return         ID of the found moon phase.
+ * @param  offset  Offset of the phase.
+ * @return         String compatible with Discord chat.
  */
-function parsePhase(name, offset) {
+function getPhaseString(name, offset) {
 	var id = 0;
 	config.phases.forEach(function(n, i) {
 		if (n.name == name)
@@ -360,7 +373,7 @@ function parsePhase(name, offset) {
 	else if (id < 0)
 		id += config.phases.length;
 
-	return id;
+	return config.phases[id].name + " " + config.phases[id].icon;
 }
 
 /*
@@ -385,16 +398,20 @@ function send(id, message, type) {
     if (type) {
     	bot.simulateTyping(id);
     	setTimeout(function() {
-			console.log(util.format(strings.debug.message,
+			console.log(util.format(
+				strings.debug.message,
 				channel,
-				message));
+				message
+			));
 			bot.sendMessage(msg);
     	}, config.options.typetime * 1000);	
     }
     else {
-		console.log(util.format(strings.debug.message,
+		console.log(util.format(
+			strings.debug.message,
 			channel,
-			message));
+			message
+		));
 		bot.sendMessage(msg);	
     }
 }
@@ -424,20 +441,24 @@ function embed(id, message, file, filename, type) {
 
     if (type) {
     	setTimeout(function() {
-			console.log(util.format(strings.debug.embed,
+			console.log(util.format(
+				strings.debug.embed,
 				channel,
 				message,
 				msg.filename,
-				msg.file));
+				msg.file
+			));
 			bot.uploadFile(msg);
     	}, config.options.typetime * 1000);	
     }
     else {
-		console.log(util.format(strings.debug.embed,
+		console.log(util.format(
+			strings.debug.embed,
 			channel,
 			message,
 			msg.filename,
-			msg.file));
+			msg.file
+		));
 		bot.uploadFile(msg);	
     }
 }
@@ -497,8 +518,10 @@ function saveBrain() {
 	var file = fs.createWriteStream(config.brain.path);
 
 	file.on("error", function(err) {
-		console.log(util.format(strings.debug.brain.error, 
-			err));
+		console.log(util.format(
+			strings.debug.brain.error, 
+			err
+		));
 	});
 
 	messages.forEach(function(m) {
@@ -514,7 +537,7 @@ function saveBrain() {
 function loadAnnouncements() {
 
 	// Long Message
-	var partsLong = config.show.announce.long.split(":");
+	var partsLong = config.show.announce.long.split(config.separators.time);
 	var long = (parseInt(partsLong[0]) * 60 + parseInt(partsLong[1])) * 60000;
 
 	var dateLong = {};
@@ -522,7 +545,7 @@ function loadAnnouncements() {
 	dateLong.minutes = parseInt(partsLong[1]);
 
 	// Short Message
-	var partsShort = config.show.announce.short.split(":");
+	var partsShort = config.show.announce.short.split(config.separators.time);
 	var short = (parseInt(partsShort[0]) * 60 + parseInt(partsShort[1])) * 60000;
 
 	var dateShort = {};
@@ -530,41 +553,47 @@ function loadAnnouncements() {
 	dateShort.minutes = parseInt(partsShort[1]);
 
 	// After Message
-	var partsAfter = config.show.announce.after.split(":");
+	var partsAfter = config.show.announce.after.split(config.separators.time);
 	var after = - (parseInt(partsAfter[0]) * 60 + parseInt(partsAfter[1])) * 60000;
 
 	console.log(strings.debug.announcements.load);
 
 	config.show.dates.forEach(function(d) {
 
-		var partsDate = d.split("-");
-		var partsTime = config.show.time.split(":");
+		var partsDate = d.split(config.separators.date);
+		var partsTime = config.show.time.split(config.separators.time);
 
 		var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
-		console.log(util.format(strings.debug.announcements.item,
-			date));
+		console.log(util.format(
+			strings.debug.announcements.item,
+			date
+		));
 
 		// Long air-time announcement.
 		var jobLong = new CronJob(new Date(date - long), function() {
-				send(parseChannel("announcements"), util.format(strings.announcements.show.long,
-					parseTime(dateLong)), true);
+				send(parseChannel(config.options.channels.announcements), util.format(
+					strings.announcements.show.long,
+					getTimeString(dateLong)
+				), true);
 			}, function () {}, true);
 
 		// Short air-time announcement.
 		var jobShort = new CronJob(new Date(date - short), function() {
-				send(parseChannel("announcements"), util.format(strings.announcements.show.short,
-					parseTime(dateShort)), true);
+				send(parseChannel(config.options.channels.announcements), util.format(
+					strings.announcements.show.short,
+					getTimeString(dateShort)
+				), true);
 			}, function () {}, true);
 
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
-				send(parseChannel("announcements"), strings.announcements.show.now, true);
+				send(parseChannel(config.options.channels.announcements), strings.announcements.show.now, true);
 				toggle_np = true;
 			}, function () {}, true);
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
-				send(parseChannel("announcements"), strings.announcements.show.after, true);
+				send(parseChannel(config.options.channels.announcements), strings.announcements.show.after, true);
 				toggle_np = false;
 			}, function () {}, true);
 
@@ -594,23 +623,27 @@ function loadPhases() {
 	        phases.forEach(function(p) {
 				var date = new Date(p.date + " " + p.time);
 				var message;
-				console.log(util.format(strings.debug.phases.item,
+				console.log(util.format(
+					strings.debug.phases.item,
 					date,
-					p.phase));
+					p.phase
+				));
 
 				if (p.phase == config.options.fullmoon) {
-					message = util.format(strings.announcements.phases.full, 
-						config.phases[parsePhase(p.phase, 0)].name,
-						config.phases[parsePhase(p.phase, 0)].icon);
+					message = util.format(
+						strings.announcements.phases.full, 
+						getPhaseString(p.phase, 0)
+					);
 				}
 				else {
-					message = util.format(strings.announcements.phases.else, 
-						config.phases[parsePhase(p.phase, 0)].name,
-						config.phases[parsePhase(p.phase, 0)].icon);
+					message = util.format(
+						strings.announcements.phases.else, 
+						getPhaseString(p.phase, 0)
+					);
 				}
 
 				var job = new CronJob(date, function() {
-		    			send(parseChannel("general"), message, true);
+		    			send(parseChannel(config.options.channels.phases), message, true);
 					}, function () {}, true);
 				jobs.push(job);
 			});
@@ -621,8 +654,11 @@ function loadPhases() {
 			loadBot();
 	    }
 	}
-	xhr.onerror = function() {
-	    console.log(strings.debug.phases.error);
+	xhr.onerror = function(err) {
+	    console.log(util.format(
+	    	strings.debug.phases.error,
+	    	err.target.status
+	    ));
 	    setTimeout(function() {
 	    	xhr.abort();
 	    	loadPhases();
@@ -671,13 +707,17 @@ function loadBot() {
 	        	"name": config.options.game
 	        }
 	    });
-	    console.log(util.format(strings.debug.join,
+	    console.log(util.format(
+	    	strings.debug.join,
 	    	bot.username,
-	    	bot.id));
+	    	bot.id
+	    ));
 	    if (!started) {
 	    	started = true;
-	    	send(parseChannel("thorinair"), util.format(strings.misc.load,
-	    		version), false);
+	    	send(parseChannel(config.options.channels.private), util.format(
+	    		strings.misc.load,
+	    		version
+	    	), false);
 
 	    	loopNowPlaying();
 	    	loopBrainSave();
@@ -685,18 +725,24 @@ function loadBot() {
 	});
 
 	bot.on("guildMemberAdd", function(user) {
-		console.log(util.format(strings.debug.welcome,
-			user.username));
-		send(parseChannel("general"), util.format(strings.misc.welcome,
-			mention(user.id)), true);
+		console.log(util.format(
+			strings.debug.welcome,
+			user.username
+		));
+		send(parseChannel(config.options.channels.welcome), util.format(
+			strings.misc.welcome,
+			mention(user.id)
+		), true);
 		bot.addToRole( {
 			"serverID": user.guild_id,
 			"userID": user.id,
 			"roleID": config.options.roleid
 		}, function(err, response) {
 	  		if (err) 
-	  			console.error(util.format(strings.debug.welcomefail, 
-	  				err));
+	  			console.error(util.format(
+	  				strings.debug.welcomefail, 
+	  				err
+	  			));
 		});
 	});
 
@@ -713,11 +759,12 @@ function loadBot() {
 		    packed.channelID = channelID;
 		    packed.message   = message;
 		    packed.data      = data;
+		    packed.command   = command.replace(config.options.commandsymbol, "");
 
 		    config.commands.forEach(function(c) {
 		    	if (command == config.options.commandsymbol + c.command && nocommand) {
 		    		if (c.private) {
-		    			if (userID == parseChannel("thorinair")) {
+		    			if (userID == parseChannel(config.options.channels.private)) {
 				    		commands[c.command](packed);
 				    		nocommand = false;
 		    			}
@@ -730,15 +777,19 @@ function loadBot() {
 		    });
 
 		    if (nocommand)
-			    send(channelID, util.format(strings.commands.error,
-			    	mention(userID)), true);
+			    send(channelID, util.format(
+			    	strings.commands.error,
+			    	mention(userID)
+			    ), true);
 		}
 		else {
 		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
-				console.log(util.format(strings.debug.chatting,
+				console.log(util.format(
+					strings.debug.chatting,
 					user,
-					message));
+					message
+				));
 		    	send(channelID, mention(userID) + " " + brain.getReplyFromSentence(message), true);
 		    }
 		    // All other messages.
@@ -768,8 +819,10 @@ function loopNowPlaying() {
 	        if (np != response.one.nowplaying) {
 	        	np = response.one.nowplaying;
 	        	if (toggle_np)
-	    			send(parseChannel("gotn"), util.format(strings.announcements.nowplaying,
-	    				np), true);
+	    			send(parseChannel(config.options.channels.nowplaying), util.format(
+	    				strings.announcements.nowplaying,
+	    				np
+	    			), true);
 	        }
 	    }
 	}
