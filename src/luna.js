@@ -1,5 +1,5 @@
 // Version
-const version = "v1.5.4";
+const version = "v1.5.6";
 
 // Modules
 const fs             = require("fs");
@@ -47,7 +47,10 @@ commands.gotn = function(data) {
 
 // Command: !np
 commands.np = function(data) {
-	send(data.channelID, "<@!" + data.userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*", true);
+	if (np != undefined)
+		send(data.channelID, "<@!" + data.userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*", true);
+	else
+		send(data.channelID, "<@!" + data.userID + ">, for some reason, I am unable to tell you which track is currently playing on PonyvilleFM.", true);
 };
 
 // Command: !phase
@@ -163,7 +166,20 @@ commands.moon = function(data) {
 // Command: !hug
 commands.hug = function(data) {
 	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
-		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*", true);
+		if (data.data.d.mentions.length <= 1) {
+			send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*", true);
+		}
+		else {
+			var mentions = "";
+			var i;
+			for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+				mentions += "<@!" + data.data.d.mentions[i].id + ">";
+				if (i < data.data.d.mentions.length - 2) {
+					mentions += ", "
+				}
+			}
+			send(data.channelID, "*Gives " + mentions + " and <@!" + data.data.d.mentions[i].id + "> big warm hugs!*", true);
+		}
 	}
 	else {
 		send(data.channelID, "*Gives <@!" + data.userID + "> a big warm hug!*", true);
@@ -173,7 +189,20 @@ commands.hug = function(data) {
 // Command: !kiss
 commands.kiss = function(data) {
 	if (data.data.d.mentions[0] != null && !isMentioned(bot.id, data.data)) {
-		send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a kiss on the cheek!*", true);
+		if (data.data.d.mentions.length <= 1) {
+			send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a kiss on the cheek!*", true);
+		}
+		else {
+			var mentions = "";
+			var i;
+			for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+				mentions += "<@!" + data.data.d.mentions[i].id + ">";
+				if (i < data.data.d.mentions.length - 2) {
+					mentions += ", "
+				}
+			}
+			send(data.channelID, "*Gives " + mentions + " and <@!" + data.data.d.mentions[i].id + "> kisses on their cheeks!*", true);
+		}
 	}
 	else {
 		send(data.channelID, "*Gives <@!" + data.userID + "> a kiss on the cheek!*", true);
