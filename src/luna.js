@@ -1,7 +1,8 @@
 // Version
-const version = "v1.6.1";
+const version = "v1.7.0";
 
 // Modules
+const util           = require("util")
 const fs             = require("fs");
 const request        = require("request");
 const readline       = require("readline");
@@ -11,8 +12,9 @@ const XMLHttpRequest = require("xhr2");
 const jsmegahal      = require("jsmegahal");
 
 // Load file data
-const token  = require("./token.json");
-const config = require("./config.json");
+const token   = require("./token.json");
+const config  = require("./config.json");
+const strings = require("./strings.json");
 
 // Commands
 var commands = {};
@@ -24,21 +26,14 @@ commands.gotn = function(data) {
 
 	config.show.dates.forEach(function(d) {
 		if (!found) {
-			var partsDate = d.split("-");
-			var partsTime = config.show.time.split(":");
+			var partsDate = d.split(config.separators.date);
+			var partsTime = config.show.time.split(config.separators.time);
 
 			var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
 			if (date > now) {
-
-				var diff = (date - now) / 60000;
-				var time = {};
-
-				time.minutes = Math.floor(diff % 60);
-				diff = Math.floor(diff / 60);
-				time.hours = Math.floor(diff % 24);
-				time.days = Math.floor(diff / 24);
-
-				send(data.channelID, "<@!" + data.userID + ">, next episode of Glory of The Night airs in " + parseTime(time) + " on " + date.toDateString() + " at " + config.show.time + " (UTC).", true);
+				send(data.channelID, util.format(strings.commands.gotn.message, 
+					mention(data.userID), 
+					parseLeft(now, date)), true);
 				found = true;
 			}
 		}
@@ -48,17 +43,18 @@ commands.gotn = function(data) {
 // Command: !np
 commands.np = function(data) {
 	if (np != undefined)
-		send(data.channelID, "<@!" + data.userID + ">, the track currently playing on PonyvilleFM is:\n*" + np + "*", true);
+		send(data.channelID, util.format(strings.commands.np.message, 
+			mention(data.userID), 
+			np), true);
 	else
-		send(data.channelID, "<@!" + data.userID + ">, for some reason, I am unable to tell you which track is currently playing on PonyvilleFM.", true);
+		send(data.channelID, util.format(strings.commands.np.error, 
+			mention(data.userID)), true);
 };
 
 // Command: !phase
 commands.phase = function(data) {
 	var dateNow = new Date();
 	var message = "";
-	var diff;
-	var time;
 	var phaseNow;
 	var phaseNext;
 
@@ -72,19 +68,13 @@ commands.phase = function(data) {
 				phaseNow  = parsePhase(p.phase, -1);
 				phaseNext = parsePhase(p.phase, 0);
 
-				diff = (datePhase - dateNow) / 60000;
-				console.log(datePhase);
-				console.log(dateNow);
-				time = {};
-
-				time.minutes = Math.floor(diff % 60);
-				diff = Math.floor(diff / 60);
-				time.hours = Math.floor(diff % 24);
-				time.days = Math.floor(diff / 24);
-
-				message = "<@!" + data.userID + ">" + ", the Moon is currently in its " + config.phases[phaseNow].name + " " + config.phases[phaseNow].icon + " phase. " +
-					"The next phase is the " + config.phases[phaseNext].name + " " + config.phases[phaseNext].icon + 
-					", and it happens in " + parseTime(time) + " on " + datePhase.toDateString() + " at " + p.time + " (UTC).";
+				message = util.format(strings.commands.phase.messageA, 
+					mention(data.userID), 
+					config.phases[phaseNow].name, 
+					config.phases[phaseNow].icon,
+					config.phases[phaseNext].name,
+					config.phases[phaseNext].icon,
+					parseLeft(dateNow, datePhase));
 
 		    	found = true;
 			}
@@ -101,65 +91,41 @@ commands.phase = function(data) {
 					var datePhase = new Date(p.date + " " + p.time);
 					if (datePhase > dateNow && p.phase == config.options.fullmoon) {
 
-						diff = (datePhase - dateNow) / 60000;
-						time = {};
-
-						time.minutes = Math.floor(diff % 60);
-						diff = Math.floor(diff / 60);
-						time.hours = Math.floor(diff % 24);
-						time.days = Math.floor(diff / 24);
-
-						message += " The next " + config.phases[parsePhase(config.options.fullmoon, 0)].name + " " + config.phases[parsePhase(config.options.fullmoon, 0)].icon +
-							" is in " + parseTime(time) + " on " + datePhase.toDateString() + " at " + p.time + " (UTC).";
+						send(data.channelID, message + util.format(" " + strings.commands.phase.messageB,
+							config.phases[parsePhase(config.options.fullmoon, 0)].name,
+							config.phases[parsePhase(config.options.fullmoon, 0)].icon,
+							parseLeft(dateNow, datePhase)), true);
 				    	
 				    	found = true;
 					}
 				}
 			});
 		}
-
-		if (found) {
-			send(data.channelID, message, true);
-		}
 	}
 
 	if (!found) {
-		send(data.channelID, "<@!" + data.userID + ">" + ", I'm sorry, but I can't tell you anything about the Moon phases at the moment...", true);
+		send(data.channelID, util.format(strings.commands.phase.error,
+			mention(data.userID)), true);
 	}
 };
 
 // Command: !moon
 commands.moon = function(data) {
-	send(data.channelID, "<@!" + data.userID + ">" + ", give me a moment...", true);
+	send(data.channelID, util.format(strings.commands.moon.messageA,
+		mention(data.userID)), true);
 
 	var download = function(uri, filename, callback) {
 		request.head(uri, function(err, res, body) {
-			console.log("I'm downloading the current Moon image...");
+			console.log(strings.debug.commands.moon.start);
 
 			request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
 		});
 	};
 
 	download(config.options.moonurl, config.options.moonimg, function() {
-		console.log("Finished downloading!");
+		console.log(strings.debug.commands.moon.stop);
 
-		var message = "Here is how the Moon looks like right now.";
-		var channel = "unknown";
-		config.channels.forEach(function(c) {
-			if (c.id == data.channelID) {
-				channel = c.name;
-			}
-		});
-
-    	setTimeout(function() {
-			console.log("> I'm sending the following message with image to #" + channel + ": \"" + message + "\"");
-			bot.uploadFile({
-				"to": data.channelID,
-				"file": config.options.moonimg,
-				"filename": "Moon " + (new Date()) + ".png",
-				"message": message
-			});
-    	}, config.options.typetime * 1000);	
+		embed(data.channelID, strings.commands.moon.messageB, config.options.moonimg, "Moon " + (new Date()) + ".png", true);
 	});
 };
 
@@ -167,27 +133,32 @@ commands.moon = function(data) {
 commands.hug = function(data) {
 	if (data.data.d.mentions[0] != null) {
 		if (isMentioned(bot.id, data.data)) {
-			send(data.channelID, "*Awkwardly gives herself a big warm hug!*", true);
+			send(data.channelID, strings.commands.hug.self, true);
 		}
 		else {
 			if (data.data.d.mentions.length <= 1) {
-				send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a big warm hug!*", true);
+				send(data.channelID, util.format(strings.commands.hug.single,
+					mention(data.data.d.mentions[0].id)), true);
 			}
 			else {
 				var mentions = "";
 				var i;
 				for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-					mentions += "<@!" + data.data.d.mentions[i].id + ">";
+					mentions += mention(data.data.d.mentions[i].id);
 					if (i < data.data.d.mentions.length - 2) {
-						mentions += ", "
+						mentions += config.separators.list;
 					}
 				}
-				send(data.channelID, "*Gives " + mentions + " and <@!" + data.data.d.mentions[i].id + "> big warm hugs!*", true);
+				mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
+
+				send(data.channelID, util.format(strings.commands.hug.multiple,
+					mentions), true);
 			}
 		}
 	}
 	else {
-		send(data.channelID, "*Gives <@!" + data.userID + "> a big warm hug!*", true);
+		send(data.channelID, util.format(strings.commands.hug.single, 
+			mention(data.userID)), true);
 	}
 };
 
@@ -195,42 +166,48 @@ commands.hug = function(data) {
 commands.kiss = function(data) {
 	if (data.data.d.mentions[0] != null) {
 		if (isMentioned(bot.id, data.data)) {
-			send(data.channelID, "*Opens two magical portals and uses them to give herself a kiss on the cheek!*", true);
+			send(data.channelID, strings.commands.kiss.self, true);
 		}
 		else {
 			if (data.data.d.mentions.length <= 1) {
-				send(data.channelID, "*Gives <@!" + data.data.d.mentions[0].id + "> a kiss on the cheek!*", true);
+				send(data.channelID, util.format(strings.commands.kiss.single, 
+					mention(data.data.d.mentions[0].id)), true);
 			}
 			else {
 				var mentions = "";
 				var i;
 				for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-					mentions += "<@!" + data.data.d.mentions[i].id + ">";
+					mentions += mention(data.data.d.mentions[i].id);
 					if (i < data.data.d.mentions.length - 2) {
-						mentions += ", "
+						mentions += config.separators.list;
 					}
 				}
-				send(data.channelID, "*Gives " + mentions + " and <@!" + data.data.d.mentions[i].id + "> kisses on their cheeks!*", true);
+				mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
+
+				send(data.channelID, util.format(strings.commands.kiss.multiple,
+					mentions), true);
 			}
 		}
 	}
 	else {
-		send(data.channelID, "*Gives <@!" + data.userID + "> a kiss on the cheek!*", true);
+		send(data.channelID, util.format(strings.commands.kiss.single, 
+			mention(data.userID)), true);
 	}
 };
 
 // Command: !togglenp
 commands.togglenp = function(data) {
 	toggle_np = !toggle_np;
-	send(parseChannel("thorinair"), "Thori, I've changed the Now Playing listing to **" + toggle_np + "**.", false);
+	send(parseChannel("thorinair"), util.format(strings.commands.togglenp.message, 
+		toggle_np), false);
 };
 
 // Command: !reboot
 commands.reboot = function(data) {
-	send(parseChannel("thorinair"), "I'm just going to go quickly reboot myself. Be right back, Thori!", false);
+	send(parseChannel("thorinair"), strings.commands.reboot.message, false);
 	saveBrain();
 	setTimeout(function() {
-		console.log("<STOPPED>");
+		console.log(strings.debug.stopped);
 		process.exit();
 	}, config.options.reboottime * 1000);
 };
@@ -239,12 +216,16 @@ commands.reboot = function(data) {
 commands.help = function(data) {
 	var reply = "";
 
-	reply += "<@!" + data.userID + ">, here are some of the commands you can use:";
+	reply += util.format(strings.commands.help.messageA, 
+		mention(data.userID));
 	config.commands.forEach(function(c) {
 		if (!c.private)
-			reply += "\n`" + config.options.commandsymbol + c.command + "` " + c.help;
+			reply += util.format(strings.commands.help.messageB, 
+				config.options.commandsymbol,
+				c.command,
+				c.help);
 	});
-	reply += "\nYou can also talk with me by mentioning me in the chat.";
+	reply += strings.commands.help.messageC;
 
 	send(data.channelID, reply, true);
 };
@@ -260,6 +241,27 @@ var np        = "";
 // Persistant Objects
 var bot;
 var brain;
+
+/*
+ * Formats a mention string.
+ * @param  id  ID to mention.
+ * @return     String usable by Discord as a mention.
+ */
+function mention(id) {
+	return util.format(config.options.mention, id);
+}
+
+/*
+ * Expands a given number to 2 digits.
+ * @param  num  Number to expand.
+ * @return      String of the expanded number.
+ */
+function expand(num) {
+	if (num < 10)
+		return "0" + num;
+	else
+		return "" + num;
+}
 
 /*
  * Parses a given channel name to retrieve the correct ID.
@@ -322,6 +324,24 @@ function parseTime(date) {
 }
 
 /*
+ * Parses two given dates to return the time left and final time.
+ * @param  start  Starting date.
+ * @param  stop   Final date.
+ * @return        String of time left and final time.
+ */
+function parseLeft(start, stop) {
+	var diff = (stop - start) / 60000;
+	var time = {};
+
+	time.minutes = Math.floor(diff % 60);
+	diff = Math.floor(diff / 60);
+	time.hours = Math.floor(diff % 24);
+	time.days = Math.floor(diff / 24);
+
+	return util.format(strings.misc.left, parseTime(time), stop.toDateString(), expand(stop.getHours()), expand(stop.getMinutes()));
+}
+
+/*
  * Parses the moon list to return an ID of a given phase name.
  * @param  name    Name of the Moon phse to look for.
  * @param  offset  Offset of the phase ID.
@@ -365,13 +385,60 @@ function send(id, message, type) {
     if (type) {
     	bot.simulateTyping(id);
     	setTimeout(function() {
-			console.log("> I'm sending the following message to #" + channel + ": \"" + message + "\"");
+			console.log(util.format(strings.debug.message,
+				channel,
+				message));
 			bot.sendMessage(msg);
     	}, config.options.typetime * 1000);	
     }
     else {
-		console.log("> I'm sending the following message to #" + channel + ": \"" + message + "\"");
+		console.log(util.format(strings.debug.message,
+			channel,
+			message));
 		bot.sendMessage(msg);	
+    }
+}
+
+/*
+ * Sends a message with image to a channel on Discord.
+ * @param  id        ID of the channel to send to.
+ * @param  message   String message to send.
+ * @param  file      Path to the image file.
+ * @param  filename  Name of the image as seeon on Discord.
+ * @param  type  	 Whether the typing delay should be added.
+ */
+function embed(id, message, file, filename, type) {
+	var channel = "unknown";
+	config.channels.forEach(function(c) {
+		if (c.id == id) {
+			channel = c.name;
+		}
+	});
+
+	var msg = {
+		"to": id,
+		"file": file,
+		"filename": filename,
+		"message": message
+    };
+
+    if (type) {
+    	setTimeout(function() {
+			console.log(util.format(strings.debug.embed,
+				channel,
+				message,
+				msg.filename,
+				msg.file));
+			bot.uploadFile(msg);
+    	}, config.options.typetime * 1000);	
+    }
+    else {
+		console.log(util.format(strings.debug.embed,
+			channel,
+			message,
+			msg.filename,
+			msg.file));
+		bot.uploadFile(msg);	
     }
 }
 
@@ -430,7 +497,8 @@ function saveBrain() {
 	var file = fs.createWriteStream(config.brain.path);
 
 	file.on("error", function(err) {
-		console.log("I am having some trouble saving my brain. Here is more info: " + err);
+		console.log(util.format(strings.debug.brain.error, 
+			err));
 	});
 
 	messages.forEach(function(m) {
@@ -465,12 +533,7 @@ function loadAnnouncements() {
 	var partsAfter = config.show.announce.after.split(":");
 	var after = - (parseInt(partsAfter[0]) * 60 + parseInt(partsAfter[1])) * 60000;
 
-	var messageLong  = "@everyone, a new episode of Glory of The Night starts in " + parseTime(dateLong) + "! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>";
-	var messageShort = "@here, Glory of The Night begins in only " + parseTime(dateShort) + "! Tune in to PonyvilleFM now! I suggest using the OGG stream for best sound quality. https://ponyvillefm.com/player";
-	var messageNow   = "@here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!";
-	var messageAfter = "@here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.";
-
-	console.log("I'm loading all of the upcoming show dates...");
+	console.log(strings.debug.announcements.load);
 
 	config.show.dates.forEach(function(d) {
 
@@ -478,33 +541,32 @@ function loadAnnouncements() {
 		var partsTime = config.show.time.split(":");
 
 		var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
-		console.log("- Loading air date: " + date);
+		console.log(util.format(strings.debug.announcements.item,
+			date));
 
 		// Long air-time announcement.
 		var jobLong = new CronJob(new Date(date - long), function() {
-				send(parseChannel("announcements"), messageLong, true);
+				send(parseChannel("announcements"), util.format(strings.announcements.show.long,
+					parseTime(dateLong)), true);
 			}, function () {}, true);
-		//console.log("  Long:  " + new Date(date - long));
 
 		// Short air-time announcement.
 		var jobShort = new CronJob(new Date(date - short), function() {
-				send(parseChannel("announcements"), messageShort, true);
+				send(parseChannel("announcements"), util.format(strings.announcements.show.short,
+					parseTime(dateShort)), true);
 			}, function () {}, true);
-		//console.log("  Short: " + new Date(date - short));
 
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
-				send(parseChannel("announcements"), messageNow, true);
+				send(parseChannel("announcements"), strings.announcements.show.now, true);
 				toggle_np = true;
 			}, function () {}, true);
-		//console.log("  Now:   " + new Date(date));
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
-				send(parseChannel("announcements"), messageAfter, true);
+				send(parseChannel("announcements"), strings.announcements.show.after, true);
 				toggle_np = false;
 			}, function () {}, true);
-		//console.log("  After: " + new Date(date - after));
 
 		jobs.push(jobLong);
 		jobs.push(jobShort);
@@ -512,14 +574,14 @@ function loadAnnouncements() {
 		jobs.push(jobAfter);
 	});
 
-	console.log("I've finished loading the announcement dates!");
+	console.log(strings.debug.announcements.done);
 }
 
 /*
  * Loads all moon phases from web.
  */
 function loadPhases() {
-	console.log("I'm loading all of the upcoming phase dates...");
+	console.log(strings.debug.phases.load);
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", config.options.phaseurl, true);
@@ -532,14 +594,19 @@ function loadPhases() {
 	        phases.forEach(function(p) {
 				var date = new Date(p.date + " " + p.time);
 				var message;
-				console.log("- Loading phase date: " + date + " - " + p.phase);
+				console.log(util.format(strings.debug.phases.item,
+					date,
+					p.phase));
 
 				if (p.phase == config.options.fullmoon) {
-					message = "Everypony @here, the Moon has reached its " + config.phases[parsePhase(p.phase, 0)].name + " " + config.phases[parsePhase(p.phase, 0)].icon +
-		    				" phase! Let the moonlight shine upon you in all its might!";
+					message = util.format(strings.announcements.phases.full, 
+						config.phases[parsePhase(p.phase, 0)].name,
+						config.phases[parsePhase(p.phase, 0)].icon);
 				}
 				else {
-					message = "The Moon has reached its " + config.phases[parsePhase(p.phase, 0)].name + " " + config.phases[parsePhase(p.phase, 0)].icon +	" phase...";
+					message = util.format(strings.announcements.phases.else, 
+						config.phases[parsePhase(p.phase, 0)].name,
+						config.phases[parsePhase(p.phase, 0)].icon);
 				}
 
 				var job = new CronJob(date, function() {
@@ -548,21 +615,21 @@ function loadPhases() {
 				jobs.push(job);
 			});
 
-			console.log("I've finished loading the phase dates!");
+			console.log(strings.debug.phases.done);
 
 			loadBrain();
 			loadBot();
 	    }
 	}
 	xhr.onerror = function() {
-	    console.log("I've encountered some problems loading the dates. Retrying...");
+	    console.log(strings.debug.phases.error);
 	    setTimeout(function() {
 	    	xhr.abort();
 	    	loadPhases();
 	    }, 1000);
 	}
 	xhr.ontimeout = function() {
-	    console.log("My attempt to load the dates took too long. Retrying...");
+	    console.log(strings.debug.phases.timeout);
 	    setTimeout(function() {
 	    	xhr.abort();
 	    	loadPhases();
@@ -579,13 +646,13 @@ function loadBrain() {
 	brain = new jsmegahal(config.brain.markov, config.brain.default);
 
 	if (fs.existsSync(config.brain.path)) {
-		console.log("A brain already seems to exit. Loading it now...");
+		console.log(strings.debug.brain.old);
 		openBrain();
-		console.log("I've finished loading my brain.");
+		console.log(strings.debug.brain.done);
 	}
 	else {
 		saveBrain();
-		console.log("I don't seem to have a brain. I have created a new one.");
+		console.log(strings.debug.brain.new);
 	}
 }
 
@@ -604,10 +671,13 @@ function loadBot() {
 	        	"name": config.options.game
 	        }
 	    });
-	    console.log("I've successfully joined Discord. My name is " + bot.username + " with ID #" + bot.id + ".");
+	    console.log(util.format(strings.debug.join,
+	    	bot.username,
+	    	bot.id));
 	    if (!started) {
 	    	started = true;
-	    	send(parseChannel("thorinair"), "Hey Thori, I'm back! My current version is " + version + ".", false);
+	    	send(parseChannel("thorinair"), util.format(strings.misc.load,
+	    		version), false);
 
 	    	loopNowPlaying();
 	    	loopBrainSave();
@@ -615,20 +685,24 @@ function loadBot() {
 	});
 
 	bot.on("guildMemberAdd", function(user) {
-		console.log("New user, \"" + user.username + "\" has joined our server! I'm promoting them to Children of The Night!");
-		send(parseChannel("general"), "**My children, welcome <@!" + user.id + "> to our beautiful night!**", true);
+		console.log(util.format(strings.debug.welcome,
+			user.username));
+		send(parseChannel("general"), util.format(strings.misc.welcome,
+			mention(user.id)), true);
 		bot.addToRole( {
 			"serverID": user.guild_id,
 			"userID": user.id,
-			"roleID": "277564526940127243"
+			"roleID": config.options.roleid
 		}, function(err, response) {
-	  		if (err) console.error("Something bad has happened during the promotion. Here is more info: " + err);
+	  		if (err) 
+	  			console.error(util.format(strings.debug.welcomefail, 
+	  				err));
 		});
 	});
 
 	bot.on("message", function(user, userID, channelID, message, data) {
 
-	    if (message[0] == "!") {
+	    if (message[0] == config.options.commandsymbol) {
 
 	    	var nocommand = true;
 	    	var command = message.split(" ")[0];
@@ -656,13 +730,16 @@ function loadBot() {
 		    });
 
 		    if (nocommand)
-			    send(channelID, "I'm sorry <@!" + userID + ">, but I'm afraid I can't do that.", true);
+			    send(channelID, util.format(strings.commands.error,
+			    	mention(userID)), true);
 		}
 		else {
 		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
-				console.log("< I've received the following message from \"" + user + "\": \"" + message + "\", replying...");
-		    	send(channelID, "<@!" + userID + "> " + brain.getReplyFromSentence(message), true);
+				console.log(util.format(strings.debug.chatting,
+					user,
+					message));
+		    	send(channelID, mention(userID) + " " + brain.getReplyFromSentence(message), true);
 		    }
 		    // All other messages.
 		    if (data.d.author.id != bot.id && processWhitelist(channelID, config.whitelist.do)) {
@@ -673,7 +750,7 @@ function loadBot() {
 	});
 
 	bot.on("disconnect", function(erMsg, code) {
-	    console.log("I seem to have disconnected from Discord... Reconnecting.");
+	    console.error(strings.debug.disconnected);
 	    bot.connect();
 	});
 }
@@ -691,7 +768,8 @@ function loopNowPlaying() {
 	        if (np != response.one.nowplaying) {
 	        	np = response.one.nowplaying;
 	        	if (toggle_np)
-	    			send(parseChannel("gotn"), "**Now playing:** " + np, true);
+	    			send(parseChannel("gotn"), util.format(strings.announcements.nowplaying,
+	    				np), true);
 	        }
 	    }
 	}
@@ -709,6 +787,6 @@ function loopBrainSave() {
 }
 
 // Start the bot.
-console.log("<STARTED>");
+console.log(strings.debug.started);
 loadAnnouncements();
 loadPhases();

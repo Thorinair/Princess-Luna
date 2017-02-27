@@ -1,0 +1,95 @@
+{
+	"commands": {
+		"gotn": {
+			"message":  "%s, next episode of Glory of The Night airs in %s."
+		},
+		"np": {
+			"message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
+			"error":    "%s, for some reason, I am unable to tell you which track is currently playing on PonyvilleFM."
+		},
+		"phase": {
+			"messageA": "%s, the Moon is currently in its %s %s phase. The next phase is the %s %s, and it happens in %s.",
+			"messageB": "The next %s %s is in %s.",
+			"error":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment..."
+		},
+		"moon": {
+			"messageA": "%s, give me a moment...",
+			"messageB": "Here is how the Moon looks like right now."
+		},
+		"hug": {
+			"single":   "*Gives %s a big warm hug!*",
+			"multiple": "*Gives %s big warm hugs!*",
+			"self":     "*Awkwardly gives herself a big warm hug!*"
+		},
+		"kiss": {
+			"single":   "*Gives %s a kiss on the cheek!*",
+			"multiple": "*Gives %s kisses on their cheeks!*",
+			"self":     "*Opens two magical portals and uses them to give herself a kiss on the cheek!*"
+		},
+		"togglenp": {
+			"message":  "Thori, I've changed the automatic Now Playing listing to **%s**."
+		},
+		"reboot": {
+			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
+		},
+		"help": {
+			"messageA": "%s, here are some of the commands you can use:",
+			"messageB": "\n`%s%s` %s",
+			"messageC": "\nYou can also talk with me by mentioning me in the chat."
+		},
+		"error":        "I'm sorry %s, but I'm afraid I can't do that."
+	},
+	"announcements": {
+		"show": {
+			"long":   "@everyone, a new episode of Glory of The Night starts in %s! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>",
+			"short":  "Everyone @here, Glory of The Night begins in only %s! Tune in to PonyvilleFM now! I suggest using the OGG stream for best sound quality. https://ponyvillefm.com/player",
+			"now":    "Everyone @here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!",
+			"after":  "Everyone @here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud."
+		},
+		"phases": {
+			"full":   "Everypony @here, the Moon has reached its %s %s phase! Let the moonlight shine upon you in all its might!",
+			"else":   "The Moon has reached its %s %s phase..."
+		},
+		"nowplaying": "**Now playing:** %s"
+	},
+	"misc": {
+		"welcome": "**My children, welcome %s to our beautiful night!**",
+		"load":    "Hey Thori, I'm back! My current version is %s.",
+		"left":    "%s on %s at %s:%s (UTC)"
+	},
+	"debug": {
+		"message":       "> I'm sending the following message to #%s: \"%s\"",
+		"embed":         "> I'm sending the following message to #%s: \"%s\" with image \"%s\" and path \"%s\"",
+		"started":       "<STARTED>",
+		"stopped":       "<STOPPED>",
+		"disconnected":  "I seem to have disconnected from Discord... Reconnecting.",
+		"chatting":      "< I've received the following message from \"%s\": \"%s\", replying...",
+		"welcome":       "New user, \"%s\" has joined our server! I'm promoting them to Children of The Night!",
+		"welcomefail":   "Something bad has happened during the promotion. Here is more info: %s",
+		"join":          "I've successfully joined Discord. My name is \"%s\" with ID #%s.",
+		"commands": {
+			"moon": {
+				"start": "I'm downloading the current Moon image...",
+				"stop":  "Finished downloading!"
+			}
+		},
+		"brain": {
+			"old":       "A brain already seems to exit. Loading it now...",
+			"new":       "I don't seem to have a brain. I have created a new one.",
+			"done":      "I've finished loading my brain.",
+			"error":     "I am having some trouble saving my brain. Here is more info: %s"
+		},
+		"phases": {
+			"load":      "I'm loading all of the upcoming phase dates...",
+			"item":      "- Loading phase date: %s - %s",
+			"done":      "I've finished loading the phase dates!",
+			"error":     "I've encountered some problems loading the dates. Retrying...",
+			"timeout":   "My attempt to load the dates took too long. Retrying..."
+		},
+		"announcements": {
+			"load":      "I'm loading all of the upcoming show dates...",
+			"item":      "- Loading air date: %s",
+			"done":      "I've finished loading the announcement dates!"
+		}
+	}
+}
