@@ -1,5 +1,5 @@
 // Version
-const version = "v1.7.3";
+const version = "v1.8.0";
 
 // Modules
 const util           = require("util")
@@ -67,6 +67,60 @@ commands.np = function(data) {
 		send(data.channelID, util.format(
 			strings.commands.np.missing, 
 			mention(data.userID)
+		), true);
+	}
+};
+
+// Command: !lyrics
+commands.lyrics = function(data) {
+	var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (param == "" || param == config.options.commandsymbol + data.command)
+		param = config.options.defstation;
+
+	if (param == "list") {
+		var list = "";
+		var tracks = Object.keys(lyrics).sort();
+
+		tracks.forEach(function(t) {
+			list += t + "\n";
+		})
+
+		send(data.channelID, util.format(
+			strings.commands.lyrics.list,
+			mention(data.userID),
+			list
+		), true);
+	}
+	else if (lyrics[param] != undefined) {
+		send(data.channelID, util.format(
+			strings.commands.lyrics.message,
+			mention(data.userID),
+			lyrics[param]
+		), true);
+	}
+	else if (np[param] != undefined) {
+		var track = np[param].artist + config.separators.track + np[param].title;
+		if (lyrics[track] != undefined) {
+			send(data.channelID, util.format(
+				strings.commands.lyrics.radio,
+				mention(data.userID),
+				param,
+				lyrics[track]
+			), true);
+		}
+		else {
+			send(data.channelID, util.format(
+				strings.commands.lyrics.errorB,
+				mention(data.userID), 
+				param
+			), true);
+		}
+	}
+	else {
+		send(data.channelID, util.format(
+			strings.commands.lyrics.errorA,
+			mention(data.userID), 
+			param
 		), true);
 	}
 };
@@ -177,6 +231,65 @@ commands.togglenp = function(data) {
 	), false);
 };
 
+// Command: !addlyrics
+commands.addlyrics = function(data) {
+	var lines = data.message.split("\n");
+
+	var track = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
+	if (track == "" || track == config.options.commandsymbol + data.command) {
+		send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorA, false);
+	}
+	else {
+		if (lyrics[track] == undefined) {
+			var lyriclines = "";
+			lines.forEach(function(l, i) {
+				if (i != 0) {
+					lyriclines += l + "\n"; 
+				}
+			});
+
+			if (lyriclines != "") {
+				lyrics[track] = lyriclines;
+				fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
+
+				send(parseChannel(config.options.channels.private), util.format(
+					strings.commands.addlyrics.message, 
+					track
+				), false);
+			}
+			else {
+				send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorB, false);
+			}
+		}
+		else {
+			send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorC, false);
+		}
+	}
+};
+
+// Command: !dellyrics
+commands.dellyrics = function(data) {
+	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (track == "" || track == config.options.commandsymbol + data.command) {
+		send(parseChannel(config.options.channels.private), strings.commands.dellyrics.errorA, false);
+	}
+	else {
+		if (lyrics[track] != undefined) {
+			delete lyrics[track];
+
+			fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
+
+			send(parseChannel(config.options.channels.private), util.format(
+				strings.commands.dellyrics.message, 
+				track
+			), false);
+		}
+		else {
+			send(parseChannel(config.options.channels.private), strings.commands.dellyrics.errorB, false);
+		}
+	}
+};
+
 // Command: !reboot
 commands.reboot = function(data) {
 	send(parseChannel(config.options.channels.private), strings.commands.reboot.message, false);
@@ -220,6 +333,7 @@ var np        = {};
 // Persistant Objects
 var bot;
 var brain;
+var lyrics;
 
 /*
  * Formats a mention string.
@@ -665,6 +779,7 @@ function loadPhases() {
 			console.log(strings.debug.phases.done);
 
 			loadBrain();
+			loadLyrics();
 			loadBot();
 	    }
 	}
@@ -703,6 +818,23 @@ function loadBrain() {
 	else {
 		saveBrain();
 		console.log(strings.debug.brain.new);
+	}
+}
+
+/*
+ * Loads the lyrics data, or creates new.
+ */
+function loadLyrics() {
+	lyrics = {};
+
+	if (fs.existsSync(config.options.lyricspath)) {
+		console.log(strings.debug.lyrics.old);
+		lyrics = JSON.parse(fs.readFileSync(config.options.lyricspath, "utf8"));
+		console.log(strings.debug.lyrics.done);
+	}
+	else {
+	    fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
+		console.log(strings.debug.lyrics.new);
 	}
 }
 

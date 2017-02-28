@@ -40,6 +40,7 @@
 		"phaseurl":      "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
 		"moonurl":       "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
 		"moonimg":       "/var/www/node/moon.png",
+		"lyricspath":    "/var/www/node/lyrics.json",
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
 		"defstation":    "one",
@@ -115,6 +116,11 @@
 			"private": false
 		},
 		{
+			"command": "lyrics",
+			"help":    "Ask me about lyrics for a specific track. You can also use it like the previous command to get lyrics for music on PonyvilleFM. Use the \"list\" parameter to see all the tracks I know.",
+			"private": false
+		},
+		{
 			"command": "phase",
 			"help":    "Ask me about the status of the Moon's phase.",
 			"private": false
@@ -126,16 +132,26 @@
 		},
 		{
 			"command": "hug",
-			"help":    "Ask me to hug you. If you mention somepony with it, I will hug them instead.",
+			"help":    "Ask me to hug you. If you mention somepony with it, I will hug them instead. You can mention multiple ponies.",
 			"private": false
 		},
 		{
 			"command": "kiss",
-			"help":    "Ask me to give you a kiss. If you mention somepony with it, I will kiss them instead.",
+			"help":    "Ask me to give you a kiss. If you mention somepony with it, I will kiss them instead. You can mention multiple ponies.",
 			"private": false
 		},
 		{
 			"command": "togglenp",
+			"help":    "",
+			"private": true
+		},
+		{
+			"command": "addlyrics",
+			"help":    "",
+			"private": true
+		},
+		{
+			"command": "dellyrics",
 			"help":    "",
 			"private": true
 		},

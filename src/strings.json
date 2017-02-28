@@ -8,6 +8,13 @@
 			"error":    "%s, for some reason, I am unable to tell you which track is currently playing on PonyvilleFM %s.",
 			"missing":  "%s, I don't know of that station."
 		},
+		"lyrics": {
+			"message":  "%s, here are the lyrics of that track:\n\n%s",
+			"radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM %s:\n\n%s",
+			"list":     "%s, here are all the tracks I know the lyrics of:\n\n%s",
+			"errorA":   "%s, I don't know the lyrics of that track.",
+			"errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM %s."
+		},
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
 			"messageB": "The next %s is in %s.",
@@ -29,6 +36,17 @@
 		},
 		"togglenp": {
 			"message":  "Thori, I've changed the automatic Now Playing listing to **%s**."
+		},
+		"addlyrics": {
+			"message":  "Thori, I've added lyrics for the track \"%s\".",
+			"errorA":   "Thori, you need to specify the track name.",
+			"errorB":   "Thori, you need to specify the lyrics as well.",
+			"errorC":   "Thori, I already know the lyrics for a track with same name."
+		},
+		"dellyrics": {
+			"message":  "Thori, I've removed lyrics for the track \"%s\".",
+			"errorA":   "Thori, you need to specify the track name.",
+			"errorB":   "Thori, I don't know of any track with that name."
 		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
@@ -79,6 +97,11 @@
 			"new":     "I don't seem to have a brain. I have created a new one.",
 			"done":    "I've finished loading my brain.",
 			"error":   "I am having some trouble saving my brain. Here is more info: %s"
+		},
+		"lyrics": {
+			"old":     "A lyrics file already seems to exit. Loading it now...",
+			"new":     "I don't seem to have a lyrics file. I have created a new one.",
+			"done":    "I've finished loading my lyrics file."
 		},
 		"phases": {
 			"load":    "I'm loading all of the upcoming phase dates...",
