@@ -18,6 +18,6 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!help` Lists all available commands.
 * Internal commands for the admin:
     - `!togglenp` Manually toggles the automatic listing of now playing info.
-    - `!addlyrics` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below.
+    - `!addlyrics` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
     - `!dellyrics` Removes lyrics from the database. Specify a track name after the command.
     - `!reboot` Reboots the bot.

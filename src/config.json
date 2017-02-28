@@ -44,6 +44,7 @@
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
 		"defstation":    "one",
+		"maxlength":     2000,
 		"typetime":      2,
 		"reboottime":    2,
 		"channels": {

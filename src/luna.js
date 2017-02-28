@@ -1,5 +1,5 @@
 // Version
-const version = "v1.8.0";
+const version = "v1.8.1";
 
 // Modules
 const util           = require("util")
@@ -78,35 +78,31 @@ commands.lyrics = function(data) {
 		param = config.options.defstation;
 
 	if (param == "list") {
-		var list = "";
-		var tracks = Object.keys(lyrics).sort();
 
-		tracks.forEach(function(t) {
-			list += t + "\n";
-		})
-
-		send(data.channelID, util.format(
+		sendLargeMessage(data, Object.keys(lyrics).sort(), util.format(
 			strings.commands.lyrics.list,
-			mention(data.userID),
-			list
-		), true);
+			mention(data.userID)
+		));
+
 	}
 	else if (lyrics[param] != undefined) {
-		send(data.channelID, util.format(
+
+		sendLargeMessage(data, lyrics[param].split("\n"), util.format(
 			strings.commands.lyrics.message,
-			mention(data.userID),
-			lyrics[param]
-		), true);
+			mention(data.userID)
+		));
+
 	}
 	else if (np[param] != undefined) {
 		var track = np[param].artist + config.separators.track + np[param].title;
 		if (lyrics[track] != undefined) {
-			send(data.channelID, util.format(
+
+			sendLargeMessage(data, lyrics[track].split("\n"), util.format(
 				strings.commands.lyrics.radio,
 				mention(data.userID),
-				param,
-				lyrics[track]
-			), true);
+				param
+			));
+
 		}
 		else {
 			send(data.channelID, util.format(
@@ -240,29 +236,29 @@ commands.addlyrics = function(data) {
 		send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorA, false);
 	}
 	else {
-		if (lyrics[track] == undefined) {
-			var lyriclines = "";
-			lines.forEach(function(l, i) {
-				if (i != 0) {
-					lyriclines += l + "\n"; 
-				}
-			});
+		var lyriclines = "";
+		lines.forEach(function(l, i) {
+			if (i != 0) {
+				lyriclines += l + "\n"; 
+			}
+		});
 
-			if (lyriclines != "") {
+		if (lyriclines != "") {
+
+			if (lyrics[track] == undefined)
 				lyrics[track] = lyriclines;
-				fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
+			else
+				lyrics[track] += lyriclines;
 
-				send(parseChannel(config.options.channels.private), util.format(
-					strings.commands.addlyrics.message, 
-					track
-				), false);
-			}
-			else {
-				send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorB, false);
-			}
+			fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
+
+			send(parseChannel(config.options.channels.private), util.format(
+				strings.commands.addlyrics.message, 
+				track
+			), false);
 		}
 		else {
-			send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorC, false);
+			send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorB, false);
 		}
 	}
 };
@@ -354,6 +350,40 @@ function expand(num) {
 		return "0" + num;
 	else
 		return "" + num;
+}
+
+/*
+ * Sends a large message to some chat using multiple messages. Used for lyrics.
+ * @param  data     Data of the message.
+ * @param  list     List to be sent.
+ * @param  message  Initial message string.
+ */
+function sendLargeMessage(data, list, message) {
+
+	var length = message.length;
+	var multi = [];
+
+	list.forEach(function(l, i) {
+		var line = l + "\n";
+		if (length + line.length >= config.options.maxlength) {
+			multi.push(message);
+			length = line.length;
+			message = line;
+		}
+		else {
+			length += line.length;
+			message += line;
+		}
+	});
+
+	if (message != "")
+		multi.push(message);
+
+	multi.forEach(function(m, i){
+    	setTimeout(function() {
+			send(data.channelID, m, true);
+    	}, i * 1000);			
+	});
 }
 
 /*

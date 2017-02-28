@@ -9,9 +9,9 @@
 			"missing":  "%s, I don't know of that station."
 		},
 		"lyrics": {
-			"message":  "%s, here are the lyrics of that track:\n\n%s",
-			"radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM %s:\n\n%s",
-			"list":     "%s, here are all the tracks I know the lyrics of:\n\n%s",
+			"message":  "%s, here are the lyrics of that track:\n\n",
+			"radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM %s:\n\n",
+			"list":     "%s, here are all the tracks I know the lyrics of:\n\n",
 			"errorA":   "%s, I don't know the lyrics of that track.",
 			"errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM %s."
 		},
@@ -40,8 +40,7 @@
 		"addlyrics": {
 			"message":  "Thori, I've added lyrics for the track \"%s\".",
 			"errorA":   "Thori, you need to specify the track name.",
-			"errorB":   "Thori, you need to specify the lyrics as well.",
-			"errorC":   "Thori, I already know the lyrics for a track with same name."
+			"errorB":   "Thori, you need to specify the lyrics as well."
 		},
 		"dellyrics": {
 			"message":  "Thori, I've removed lyrics for the track \"%s\".",
