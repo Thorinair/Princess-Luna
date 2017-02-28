@@ -1,5 +1,5 @@
 // Version
-const version = "v1.7.2";
+const version = "v1.7.3";
 
 // Modules
 const util           = require("util")
@@ -46,7 +46,7 @@ commands.gotn = function(data) {
 commands.np = function(data) {
 	var station = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (station == "" || station == config.options.commandsymbol + data.command)
-		station = "one";
+		station = config.options.defstation;
 
 	if (np[station] != undefined) {
 		if (np[station].artist != undefined && np[station].title != undefined)
