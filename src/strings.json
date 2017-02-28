@@ -4,8 +4,9 @@
 			"message":  "%s, next episode of Glory of The Night airs in %s."
 		},
 		"np": {
-			"message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
-			"error":    "%s, for some reason, I am unable to tell you which track is currently playing on PonyvilleFM."
+			"message":  "%s, the track currently playing on PonyvilleFM %s is:\n*%s*",
+			"error":    "%s, for some reason, I am unable to tell you which track is currently playing on PonyvilleFM %s.",
+			"missing":  "%s, I don't know of that station."
 		},
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",

@@ -110,7 +110,7 @@
 		},
 		{
 			"command": "np",
-			"help":    "Ask me which is the currently playing track on PonyvilleFM.",
+			"help":    "Ask me which track is currently playing on a specified PonyvilleFM station. No station name will default to \"one\". You can use \"one\", \"two\" or \"free\".",
 			"private": false
 		},
 		{
@@ -184,9 +184,10 @@
 		}
 	],
 	"separators": {
-		"list": ", ",
-		"lend": " and ",
-		"date": "-",
-		"time": ":"
+		"date":  "-",
+		"time":  ":",
+		"list":  ", ",
+		"lend":  " and ",
+		"track": " - "
 	}
 }

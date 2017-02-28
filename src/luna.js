@@ -1,5 +1,5 @@
 // Version
-const version = "v1.7.1";
+const version = "v1.7.2";
 
 // Modules
 const util           = require("util")
@@ -44,17 +44,31 @@ commands.gotn = function(data) {
 
 // Command: !np
 commands.np = function(data) {
-	if (np != undefined)
+	var station = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (station == "" || station == config.options.commandsymbol + data.command)
+		station = "one";
+
+	if (np[station] != undefined) {
+		if (np[station].artist != undefined && np[station].title != undefined)
+			send(data.channelID, util.format(
+				strings.commands.np.message, 
+				mention(data.userID),
+				station,
+				np[station].artist + config.separators.track + np[station].title
+			), true);
+		else
+			send(data.channelID, util.format(
+				strings.commands.np.error, 
+				mention(data.userID),
+				station
+			), true);
+	}
+	else {
 		send(data.channelID, util.format(
-			strings.commands.np.message, 
-			mention(data.userID), 
-			np
-		), true);
-	else
-		send(data.channelID, util.format(
-			strings.commands.np.error, 
+			strings.commands.np.missing, 
 			mention(data.userID)
 		), true);
+	}
 };
 
 // Command: !phase
@@ -201,7 +215,7 @@ var messages  = [];
 var phases    = [];
 var started   = false;
 var toggle_np = false;
-var np        = "";
+var np        = {};
 
 // Persistant Objects
 var bot;
@@ -816,14 +830,14 @@ function loopNowPlaying() {
 	xhr.onreadystatechange = function () { 
 	    if (xhr.readyState == 4 && xhr.status == 200) {
 	        var response = JSON.parse(xhr.responseText);
-	        if (np != response.one.nowplaying) {
-	        	np = response.one.nowplaying;
+	        if (np.one == undefined || np.one.nowplaying != response.one.nowplaying) {
 	        	if (toggle_np)
 	    			send(parseChannel(config.options.channels.nowplaying), util.format(
 	    				strings.announcements.nowplaying,
-	    				np
+	    				response.one.artist + config.separators.track + response.one.title
 	    			), true);
 	        }
+	        np = response;
 	    }
 	}
 

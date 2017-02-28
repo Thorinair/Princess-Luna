@@ -9,7 +9,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Features a chatbot which learns from the messages sent in the server.
 * Features a variety of commands:
     - `!gotn` Lists the time left until the next GOTN episode.
-    - `!np` Lists the currently playing track on PonyvilleFM.
+    - `!np` Lists the currently playing track on a PonyvilleFM station. Use "one", "two" or "free". Defaults to "one".
     - `!phase` Lists info about the Moon phases.
     - `!moon` Sends an image of the Moon as it is right now.
     - `!hug` Makes her hug the user. Mentioning someone will hug them instead.
