@@ -1,5 +1,5 @@
 // Version
-const version = "v1.8.1";
+const version = "v1.8.2";
 
 // Modules
 const util           = require("util")
@@ -107,7 +107,7 @@ commands.lyrics = function(data) {
 		else {
 			send(data.channelID, util.format(
 				strings.commands.lyrics.errorB,
-				mention(data.userID), 
+				mention(data.userID),
 				param
 			), true);
 		}
@@ -115,8 +115,7 @@ commands.lyrics = function(data) {
 	else {
 		send(data.channelID, util.format(
 			strings.commands.lyrics.errorA,
-			mention(data.userID), 
-			param
+			mention(data.userID)
 		), true);
 	}
 };
