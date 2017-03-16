@@ -1,5 +1,5 @@
 // Version
-const version = "v1.8.2";
+const version = "v1.8.3";
 
 // Modules
 const util           = require("util")
@@ -216,6 +216,12 @@ commands.hug = function(data) {
 commands.kiss = function(data) {
 	doMultiCommand(data);
 };
+
+// Command: !boop
+commands.boop = function(data) {
+	doMultiCommand(data);
+};
+
 
 // Command: !togglenp
 commands.togglenp = function(data) {
@@ -745,13 +751,23 @@ function loadAnnouncements() {
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
 				send(parseChannel(config.options.channels.announcements), strings.announcements.show.now, true);
-				toggle_np = true;
+			    setTimeout(function() {
+			    	toggle_np = true;
+			    	send(parseChannel(config.options.channels.private), util.format(
+						strings.commands.togglenp.message, 
+						toggle_np
+					), false);
+			    }, starttime * 1000);
 			}, function () {}, true);
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
 				send(parseChannel(config.options.channels.announcements), strings.announcements.show.after, true);
 				toggle_np = false;
+		    	send(parseChannel(config.options.channels.private), util.format(
+					strings.commands.togglenp.message, 
+					toggle_np
+				), false);
 			}, function () {}, true);
 
 		jobs.push(jobLong);

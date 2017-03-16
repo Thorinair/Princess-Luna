@@ -34,6 +34,11 @@
 			"multiple": "*Gives %s kisses on their cheeks!*",
 			"self":     "*Opens two magical portals and uses them to give herself a kiss on the cheek!*"
 		},
+		"boop": {
+			"single":   "*Gives %s a boop on the snout!*",
+			"multiple": "*Gives %s boops on their snouts!*",
+			"self":     "*Boops her own snout and makes a confused face!*"
+		},
 		"togglenp": {
 			"message":  "Thori, I've changed the automatic Now Playing listing to **%s**."
 		},

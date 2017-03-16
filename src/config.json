@@ -47,6 +47,7 @@
 		"maxlength":     2000,
 		"typetime":      2,
 		"reboottime":    2,
+		"starttime":     60,
 		"channels": {
 			"announcements": "announcements",
 			"welcome":       "general",
@@ -139,6 +140,11 @@
 		{
 			"command": "kiss",
 			"help":    "Ask me to give you a kiss. If you mention somepony with it, I will kiss them instead. You can mention multiple ponies.",
+			"private": false
+		},
+		{
+			"command": "boop",
+			"help":    "Ask me to boop your snout. If you mention somepony with it, I will boop them instead. You can mention multiple ponies.",
 			"private": false
 		},
 		{
