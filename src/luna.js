@@ -1,5 +1,5 @@
 // Version
-const version = "v1.8.4";
+const version = "v1.8.5";
 
 // Modules
 const util           = require("util")
@@ -757,7 +757,7 @@ function loadAnnouncements() {
 						strings.commands.togglenp.message, 
 						toggle_np
 					), false);
-			    }, starttime * 1000);
+			    }, config.options.starttime * 1000);
 			}, function () {}, true);
 
 		// After air-time announcement.

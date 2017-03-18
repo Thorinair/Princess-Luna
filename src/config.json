@@ -68,6 +68,7 @@
 			"general",
 			"luna",
 			"music",
+			"dreams",
 			"offtopic"
 		]
 	},
@@ -97,6 +98,10 @@
 		{
 			"name": "music",
 			"id":   "277840722592399362"
+		},
+		{
+			"name": "dreams",
+			"id":   "291858069913337856"
 		},
 		{
 			"name": "offtopic",
