@@ -1,5 +1,5 @@
 // Version
-const version = "v1.8.3";
+const version = "v1.8.4";
 
 // Modules
 const util           = require("util")
@@ -916,25 +916,27 @@ function loadBot() {
 	});
 
 	bot.on("guildMemberAdd", function(user) {
-		console.log(util.format(
-			strings.debug.welcome,
-			user.username
-		));
-		send(parseChannel(config.options.channels.welcome), util.format(
-			strings.misc.welcome,
-			mention(user.id)
-		), true);
-		bot.addToRole( {
-			"serverID": user.guild_id,
-			"userID": user.id,
-			"roleID": config.options.roleid
-		}, function(err, response) {
-	  		if (err) 
-	  			console.error(util.format(
-	  				strings.debug.welcomefail, 
-	  				err
-	  			));
-		});
+		if (user.guild_id == config.options.serverid) {
+			console.log(util.format(
+				strings.debug.welcome,
+				user.username
+			));
+			send(parseChannel(config.options.channels.welcome), util.format(
+				strings.misc.welcome,
+				mention(user.id)
+			), true);
+			bot.addToRole( {
+				"serverID": user.guild_id,
+				"userID": user.id,
+				"roleID": config.options.roleid
+			}, function(err, response) {
+		  		if (err) 
+		  			console.error(util.format(
+		  				strings.debug.welcomefail, 
+		  				err
+		  			));
+			});
+		}
 	});
 
 	bot.on("message", function(user, userID, channelID, message, data) {
