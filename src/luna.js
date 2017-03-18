@@ -753,7 +753,7 @@ function loadAnnouncements() {
 				send(parseChannel(config.options.channels.announcements), strings.announcements.show.now, true);
 			    setTimeout(function() {
 			    	toggle_np = true;
-			    	send(parseChannel(config.options.channels.private), util.format(
+					send(parseChannel(config.options.channels.private), util.format(
 						strings.commands.togglenp.message, 
 						toggle_np
 					), false);
@@ -764,7 +764,7 @@ function loadAnnouncements() {
 		var jobAfter = new CronJob(new Date(date - after), function() {
 				send(parseChannel(config.options.channels.announcements), strings.announcements.show.after, true);
 				toggle_np = false;
-		    	send(parseChannel(config.options.channels.private), util.format(
+				send(parseChannel(config.options.channels.private), util.format(
 					strings.commands.togglenp.message, 
 					toggle_np
 				), false);
