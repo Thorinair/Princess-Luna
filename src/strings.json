@@ -39,6 +39,10 @@
 			"multiple": "*Gives %s boops on their snouts!*",
 			"self":     "*Boops her own snout and makes a confused face!*"
 		},
+		"learn": {
+			"message":  "Thori, I've learned the text you gave me.",
+			"error":    "Thori, you need to specify the text which I should learn after the command."
+		},
 		"togglenp": {
 			"message":  "Thori, I've changed the automatic Now Playing listing to **%s**."
 		},

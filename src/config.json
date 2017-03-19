@@ -154,6 +154,11 @@
 			"private": false
 		},
 		{
+			"command": "learn",
+			"help":    "",
+			"private": true
+		},
+		{
 			"command": "togglenp",
 			"help":    "",
 			"private": true

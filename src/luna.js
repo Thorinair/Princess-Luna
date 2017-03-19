@@ -1,5 +1,5 @@
 // Version
-const version = "v1.8.5";
+const version = "v1.8.6";
 
 // Modules
 const util           = require("util")
@@ -222,6 +222,18 @@ commands.boop = function(data) {
 	doMultiCommand(data);
 };
 
+// Command: !learn
+commands.learn = function(data) {
+	var text = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (text == "" || text == config.options.commandsymbol + data.command) {
+		send(parseChannel(config.options.channels.private), strings.commands.learn.error, false);
+	}
+	else {
+		brain.addMass(text.replace(/<.*>/g, ""));
+	    messages.push(text);
+		send(parseChannel(config.options.channels.private), strings.commands.learn.message, false);
+	}
+};
 
 // Command: !togglenp
 commands.togglenp = function(data) {

@@ -13,11 +13,12 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!lyrics` Lists lyrics of a specified track. Also functions similar like previous command to list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
     - `!phase` Lists info about the Moon phases.
     - `!moon` Sends an image of the Moon as it is right now.
-    - `!hug` Makes her hug the user. Mentioning someone will hug them instead. You can mention multiple people.
-    - `!kiss` Makes her kiss the user. Mentioning someone will kiss them instead. You can mention multiple people.
-    - `!boop` Makes her boop the user. Mentioning someone will boop them instead. You can mention multiple people.
+    - `!hug` Hug the user. Mentioning someone will hug them instead. You can mention multiple people.
+    - `!kiss` Kiss the user. Mentioning someone will kiss them instead. You can mention multiple people.
+    - `!boop` Boop the user. Mentioning someone will boop them instead. You can mention multiple people.
     - `!help` Lists all available commands.
 * Internal commands for the admin:
+    - `!learn` Manually trains the bot using specified text.
     - `!togglenp` Manually toggles the automatic listing of now playing info.
     - `!addlyrics` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
     - `!dellyrics` Removes lyrics from the database. Specify a track name after the command.
