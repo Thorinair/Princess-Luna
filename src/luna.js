@@ -1,5 +1,5 @@
 // Version
-const version = "v1.8.6";
+const version = "v1.8.7";
 
 // Modules
 const util           = require("util")
@@ -15,6 +15,7 @@ const jsmegahal      = require("jsmegahal");
 const token   = require("./token.json");
 const config  = require("./config.json");
 const strings = require("./strings.json");
+const gotn    = require("./gotn.json")
 
 // Commands
 var commands = {};
@@ -24,10 +25,10 @@ commands.gotn = function(data) {
 	var now = new Date();
 	var found = false;
 
-	config.show.dates.forEach(function(d) {
+	gotn.dates.forEach(function(d) {
 		if (!found) {
 			var partsDate = d.split(config.separators.date);
-			var partsTime = config.show.time.split(config.separators.time);
+			var partsTime = gotn.time.split(config.separators.time);
 
 			var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
 			if (date > now) {
@@ -712,7 +713,7 @@ function saveBrain() {
 function loadAnnouncements() {
 
 	// Long Message
-	var partsLong = config.show.announce.long.split(config.separators.time);
+	var partsLong = gotn.announce.long.split(config.separators.time);
 	var long = (parseInt(partsLong[0]) * 60 + parseInt(partsLong[1])) * 60000;
 
 	var dateLong = {};
@@ -720,7 +721,7 @@ function loadAnnouncements() {
 	dateLong.minutes = parseInt(partsLong[1]);
 
 	// Short Message
-	var partsShort = config.show.announce.short.split(config.separators.time);
+	var partsShort = gotn.announce.short.split(config.separators.time);
 	var short = (parseInt(partsShort[0]) * 60 + parseInt(partsShort[1])) * 60000;
 
 	var dateShort = {};
@@ -728,15 +729,15 @@ function loadAnnouncements() {
 	dateShort.minutes = parseInt(partsShort[1]);
 
 	// After Message
-	var partsAfter = config.show.announce.after.split(config.separators.time);
+	var partsAfter = gotn.announce.after.split(config.separators.time);
 	var after = - (parseInt(partsAfter[0]) * 60 + parseInt(partsAfter[1])) * 60000;
 
 	console.log(strings.debug.announcements.load);
 
-	config.show.dates.forEach(function(d) {
+	gotn.dates.forEach(function(d) {
 
 		var partsDate = d.split(config.separators.date);
-		var partsTime = config.show.time.split(config.separators.time);
+		var partsTime = gotn.time.split(config.separators.time);
 
 		var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
 		console.log(util.format(
@@ -747,7 +748,7 @@ function loadAnnouncements() {
 		// Long air-time announcement.
 		var jobLong = new CronJob(new Date(date - long), function() {
 				send(parseChannel(config.options.channels.announcements), util.format(
-					strings.announcements.show.long,
+					strings.announcements.gotn.long,
 					getTimeString(dateLong)
 				), true);
 			}, function () {}, true);
@@ -755,14 +756,14 @@ function loadAnnouncements() {
 		// Short air-time announcement.
 		var jobShort = new CronJob(new Date(date - short), function() {
 				send(parseChannel(config.options.channels.announcements), util.format(
-					strings.announcements.show.short,
+					strings.announcements.gotn.short,
 					getTimeString(dateShort)
 				), true);
 			}, function () {}, true);
 
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
-				send(parseChannel(config.options.channels.announcements), strings.announcements.show.now, true);
+				send(parseChannel(config.options.channels.announcements), strings.announcements.gotn.now, true);
 			    setTimeout(function() {
 			    	toggle_np = true;
 					send(parseChannel(config.options.channels.private), util.format(
@@ -774,7 +775,7 @@ function loadAnnouncements() {
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
-				send(parseChannel(config.options.channels.announcements), strings.announcements.show.after, true);
+				send(parseChannel(config.options.channels.announcements), strings.announcements.gotn.after, true);
 				toggle_np = false;
 				send(parseChannel(config.options.channels.private), util.format(
 					strings.commands.togglenp.message, 
