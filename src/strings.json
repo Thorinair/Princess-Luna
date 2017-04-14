@@ -3,6 +3,9 @@
 		"gotn": {
 			"message":  "%s, next episode of Glory of The Night airs in %s."
 		},
+		"mlp": {
+			"message":  "%s, next episode of My Little Pony: Friendship is Magic, %s, airs in %s."
+		},
 		"np": {
 			"message":  "%s, the track currently playing on PonyvilleFM %s is:\n*%s*",
 			"error":    "%s, for some reason, I am unable to tell you which track is currently playing on PonyvilleFM %s.",

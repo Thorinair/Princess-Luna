@@ -81,7 +81,12 @@
 	"commands": [
 		{
 			"command": "gotn",
-			"help":    "Ask me about the time left until the next GOTN episode.",
+			"help":    "Ask me about the time left until the next Glory of The Night episode.",
+			"private": false
+		},
+		{
+			"command": "mlp",
+			"help":    "Ask me about the time left until the next My Little Pony: Friendship is Magic episode.",
 			"private": false
 		},
 		{

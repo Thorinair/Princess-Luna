@@ -1,0 +1,44 @@
+{
+	"episodes": [
+		{
+			"name": "S07E01 - Celestial Advice",
+			"date": "2017-04-15",
+			"time": "15:30"
+		},
+		{
+			"name": "S07E02 - All Bottled Up",
+			"date": "2017-04-15",
+			"time": "16:00"
+		},
+		{
+			"name": "S07E03 - A Flurry of Emotions",
+			"date": "2017-04-22",
+			"time": "16:00"
+		},
+		{
+			"name": "S07E04 - Rock Solid Friendship",
+			"date": "2017-04-29",
+			"time": "16:00"
+		},
+		{
+			"name": "S07E05 - Fluttershy Leans In",
+			"date": "2017-05-06",
+			"time": "16:00"
+		},
+		{
+			"name": "S07E06 - Forever Filly",
+			"date": "2017-05-13",
+			"time": "16:00"
+		},
+		{
+			"name": "S07E07 - Parental Glideance",
+			"date": "2017-05-20",
+			"time": "16:00"
+		},
+		{
+			"name": "S07E08 - Hard to Say Anything",
+			"date": "2017-05-27",
+			"time": "16:00"
+		}
+	]
+}

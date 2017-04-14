@@ -1,5 +1,5 @@
 // Version
-const version = "v1.8.7";
+const version = "v1.9.0";
 
 // Modules
 const util           = require("util")
@@ -15,7 +15,8 @@ const jsmegahal      = require("jsmegahal");
 const token   = require("./token.json");
 const config  = require("./config.json");
 const strings = require("./strings.json");
-const gotn    = require("./gotn.json")
+const gotn    = require("./gotn.json");
+const mlp     = require("./mlp.json");
 
 // Commands
 var commands = {};
@@ -35,6 +36,30 @@ commands.gotn = function(data) {
 				send(data.channelID, util.format(
 					strings.commands.gotn.message, 
 					mention(data.userID), 
+					getTimeLeft(now, date)
+				), true);
+				found = true;
+			}
+		}
+	});	
+};
+
+// Command: !mlp
+commands.mlp = function(data) {
+	var now = new Date();
+	var found = false;
+
+	mlp.episodes.forEach(function(e) {
+		if (!found) {
+			var partsDate = e.date.split(config.separators.date);
+			var partsTime = e.time.split(config.separators.time);
+
+			var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
+			if (date > now) {
+				send(data.channelID, util.format(
+					strings.commands.mlp.message, 
+					mention(data.userID),
+					e.name,
 					getTimeLeft(now, date)
 				), true);
 				found = true;
