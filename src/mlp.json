@@ -1,4 +1,5 @@
 {
+	"channel": "Treehouse",
 	"episodes": [
 		{
 			"name": "S07E01 - Celestial Advice",
@@ -13,32 +14,57 @@
 		{
 			"name": "S07E03 - A Flurry of Emotions",
 			"date": "2017-04-22",
-			"time": "16:00"
+			"time": "15:30"
 		},
 		{
 			"name": "S07E04 - Rock Solid Friendship",
 			"date": "2017-04-29",
-			"time": "16:00"
+			"time": "15:30"
 		},
 		{
 			"name": "S07E05 - Fluttershy Leans In",
-			"date": "2017-05-06",
-			"time": "16:00"
+			"date": "2017-04-30",
+			"time": "15:15"
 		},
 		{
 			"name": "S07E06 - Forever Filly",
-			"date": "2017-05-13",
-			"time": "16:00"
+			"date": "2017-05-06",
+			"time": "15:15"
 		},
 		{
 			"name": "S07E07 - Parental Glideance",
-			"date": "2017-05-20",
-			"time": "16:00"
+			"date": "2017-05-07",
+			"time": "15:15"
 		},
 		{
 			"name": "S07E08 - Hard to Say Anything",
+			"date": "2017-05-13",
+			"time": "15:15"
+		},
+		{
+			"name": "S07E09 - Honest Apple",
+			"date": "2017-05-14",
+			"time": "15:15"
+		},
+		{
+			"name": "S07E10 - A Royal Problem",
+			"date": "2017-05-20",
+			"time": "15:15"
+		},
+		{
+			"name": "S07E11 - Not Asking For Trouble",
+			"date": "2017-05-21",
+			"time": "15:15"
+		},
+		{
+			"name": "S07E12 - Discordant Harmony",
 			"date": "2017-05-27",
-			"time": "16:00"
+			"time": "15:15"
+		},
+		{
+			"name": "S07E13 - The Perfect Pear",
+			"date": "2017-05-28",
+			"time": "15:30"
 		}
 	]
 }

@@ -1,5 +1,5 @@
 // Version
-const version = "v1.9.0";
+const version = "v1.9.1";
 
 // Modules
 const util           = require("util")
@@ -60,7 +60,8 @@ commands.mlp = function(data) {
 					strings.commands.mlp.message, 
 					mention(data.userID),
 					e.name,
-					getTimeLeft(now, date)
+					getTimeLeft(now, date),
+					mlp.channel
 				), true);
 				found = true;
 			}

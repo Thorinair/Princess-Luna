@@ -4,7 +4,7 @@
 			"message":  "%s, next episode of Glory of The Night airs in %s."
 		},
 		"mlp": {
-			"message":  "%s, next episode of My Little Pony: Friendship is Magic, %s, airs in %s."
+			"message":  "%s, next episode of My Little Pony: Friendship is Magic, **%s**, airs in %s on the **%s** channel."
 		},
 		"np": {
 			"message":  "%s, the track currently playing on PonyvilleFM %s is:\n*%s*",
