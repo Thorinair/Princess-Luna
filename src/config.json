@@ -30,11 +30,13 @@
 	"whitelist": {
 		"do": true,
 		"list": [
-			"gotn",
 			"general",
+			"gotn",
 			"luna",
+			"art",
 			"music",
 			"dreams",
+			"tech",
 			"offtopic"
 		]
 	},
@@ -50,16 +52,20 @@
 			"id":   "277568055393910785"
 		},
 		{
-			"name": "gotn",
-			"id":   "277568155344175104"
-		},
-		{
 			"name": "general",
 			"id":   "277563243050827776"
 		},
 		{
+			"name": "gotn",
+			"id":   "277568155344175104"
+		},
+		{
 			"name": "luna",
 			"id":   "277572380442886146"
+		},
+		{
+			"name": "art",
+			"id":   "310771126722625536"
 		},
 		{
 			"name": "music",
@@ -68,6 +74,10 @@
 		{
 			"name": "dreams",
 			"id":   "291858069913337856"
+		},
+		{
+			"name": "tech",
+			"id":   "310771325016997889"
 		},
 		{
 			"name": "offtopic",

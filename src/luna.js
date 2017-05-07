@@ -1,5 +1,5 @@
 // Version
-const version = "v1.9.1";
+const version = "v1.9.2";
 
 // Modules
 const util           = require("util")
