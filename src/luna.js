@@ -1,5 +1,5 @@
 // Version
-const version = "v1.9.2";
+const version = "v1.10.0";
 
 // Modules
 const util           = require("util")
@@ -12,11 +12,12 @@ const XMLHttpRequest = require("xhr2");
 const jsmegahal      = require("jsmegahal");
 
 // Load file data
-const token   = require("./token.json");
-const config  = require("./config.json");
-const strings = require("./strings.json");
-const gotn    = require("./gotn.json");
-const mlp     = require("./mlp.json");
+const token    = require("./token.json");
+const config   = require("./config.json");
+const strings  = require("./strings.json");
+const gotn     = require("./gotn.json");
+const mlp      = require("./mlp.json");
+const channels = require("./channels.json");
 
 // Commands
 var commands = {};
@@ -251,21 +252,41 @@ commands.boop = function(data) {
 
 // Command: !learn
 commands.learn = function(data) {
-	var text = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-	if (text == "" || text == config.options.commandsymbol + data.command) {
-		send(parseChannel(config.options.channels.private), strings.commands.learn.error, false);
+	var lines = data.message.split("\n");
+
+
+	var brain = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
+	if (brain == "" || brain == config.options.commandsymbol + data.command) {
+		send(channelNameToID(config.options.channels.private), strings.commands.learn.errorA, false);
 	}
 	else {
-		brain.addMass(text.replace(/<.*>/g, ""));
-	    messages.push(text);
-		send(parseChannel(config.options.channels.private), strings.commands.learn.message, false);
+		if (brains[brain] != null) {
+			var text = "";
+			lines.forEach(function(l, i) {
+				if (i != 0) {
+					text += l + "\n"; 
+				}
+			});
+
+			if (text != "") {
+				brains[brain].addMass(text.replace(/<.*>/g, ""));
+		    	messages[brain].push(text);
+				send(channelNameToID(config.options.channels.private), strings.commands.learn.message, false);
+			}
+			else {
+				send(channelNameToID(config.options.channels.private), strings.commands.learn.errorC, false);
+			}
+		}
+		else {
+			send(channelNameToID(config.options.channels.private), strings.commands.learn.errorB, false);
+		}
 	}
 };
 
 // Command: !togglenp
 commands.togglenp = function(data) {
 	toggle_np = !toggle_np;
-	send(parseChannel(config.options.channels.private), util.format(
+	send(channelNameToID(config.options.channels.private), util.format(
 		strings.commands.togglenp.message, 
 		toggle_np
 	), false);
@@ -277,7 +298,7 @@ commands.addlyrics = function(data) {
 
 	var track = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
-		send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorA, false);
+		send(channelNameToID(config.options.channels.private), strings.commands.addlyrics.errorA, false);
 	}
 	else {
 		var lyriclines = "";
@@ -296,13 +317,13 @@ commands.addlyrics = function(data) {
 
 			fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
 
-			send(parseChannel(config.options.channels.private), util.format(
+			send(channelNameToID(config.options.channels.private), util.format(
 				strings.commands.addlyrics.message, 
 				track
 			), false);
 		}
 		else {
-			send(parseChannel(config.options.channels.private), strings.commands.addlyrics.errorB, false);
+			send(channelNameToID(config.options.channels.private), strings.commands.addlyrics.errorB, false);
 		}
 	}
 };
@@ -311,7 +332,7 @@ commands.addlyrics = function(data) {
 commands.dellyrics = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
-		send(parseChannel(config.options.channels.private), strings.commands.dellyrics.errorA, false);
+		send(channelNameToID(config.options.channels.private), strings.commands.dellyrics.errorA, false);
 	}
 	else {
 		if (lyrics[track] != undefined) {
@@ -319,21 +340,21 @@ commands.dellyrics = function(data) {
 
 			fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
 
-			send(parseChannel(config.options.channels.private), util.format(
+			send(channelNameToID(config.options.channels.private), util.format(
 				strings.commands.dellyrics.message, 
 				track
 			), false);
 		}
 		else {
-			send(parseChannel(config.options.channels.private), strings.commands.dellyrics.errorB, false);
+			send(channelNameToID(config.options.channels.private), strings.commands.dellyrics.errorB, false);
 		}
 	}
 };
 
 // Command: !reboot
 commands.reboot = function(data) {
-	send(parseChannel(config.options.channels.private), strings.commands.reboot.message, false);
-	saveBrain();
+	send(channelNameToID(config.options.channels.private), strings.commands.reboot.message, false);
+	saveAllBrains();
 	setTimeout(function() {
 		console.log(strings.debug.stopped);
 		process.exit();
@@ -364,15 +385,15 @@ commands.help = function(data) {
 
 // Status Variables
 var jobs      = [];
-var messages  = [];
 var phases    = [];
 var started   = false;
 var toggle_np = false;
 var np        = {};
+var brains    = {};
+var messages  = {};
 
 // Persistant Objects
 var bot;
-var brain;
 var lyrics;
 
 /*
@@ -477,17 +498,53 @@ function doMultiCommand(data) {
  * @param  name  The input name to look for.
  * @return       ID of the channel.
  */
-function parseChannel(name) {
+function channelNameToID(name) {
 	var found = false;
 	var id = null;
 
-	config.channels.forEach(function(c) {
-		if (c.name == name && !found) {
+	channels.list.forEach(function(c) {
+		if (c.name == name && !found)
 			id = c.id;
-		}
 	});
 
 	return id;
+}
+
+/*
+ * Parses a given channel ID to retrieve the correct name.
+ * @param  id  The input ID to look for.
+ * @return     Name of the channel.
+ */
+function channelIDToName(id) {
+	var found = false;
+	var name = "unknown";
+
+	channels.list.forEach(function(c) {
+		if (c.id == id && !found)
+			name = c.name;
+	});
+
+	return name;
+}
+
+/*
+ * Parses a given channel ID to retrieve the correct brain.
+ * @param  id  The input ID to look for.
+ * @return     Brain of the channel.
+ */
+function channelIDToBrain(id) {
+	var found = false;
+	var brain = null;
+
+	channels.list.forEach(function(c) {
+		if (c.id == id && !found)
+			brain = c.brain;
+	});
+
+	if (brain == null)
+		brain = channels.default.brain;
+
+	return brain;
 }
 
 /*
@@ -585,12 +642,7 @@ function getPhaseString(name, offset) {
  * @param  type  	Whether the typing delay should be added.
  */
 function send(id, message, type) {
-	var channel = "unknown";
-	config.channels.forEach(function(c) {
-		if (c.id == id) {
-			channel = c.name;
-		}
-	});
+	var channel = channelIDToName(id);
 
 	var msg = {
 		"to": id,
@@ -627,12 +679,7 @@ function send(id, message, type) {
  * @param  type  	 Whether the typing delay should be added.
  */
 function embed(id, message, file, filename, type) {
-	var channel = "unknown";
-	config.channels.forEach(function(c) {
-		if (c.id == id) {
-			channel = c.name;
-		}
-	});
+	var channel = channelIDToName(id);
 
 	var msg = {
 		"to": id,
@@ -682,42 +729,44 @@ function isMentioned(id, data) {
 
 /*
  * Processes the channel whitelist and checks if the channel is whitelisted.
- * @param  channelID    ID of the channel to check whitelist of.
- * @param  doWhitelist  Whether the processing should even be done.
- * @return              Boolean whether the channel is whitelisted.
+ * @param  channelID  ID of the channel to check whitelist of.
+ * @return            Boolean whether the channel is whitelisted.
  */
-function processWhitelist(channelID, doWhitelist) {
-	if (!doWhitelist) {
-		return true;
-	}
+function processWhitelist(channelID) {
 	var okay = false;
-	config.whitelist.list.forEach(function(c) {
-		if (parseChannel(c) == channelID)
+	channels.list.forEach(function(c) {
+		if (c.id == channelID && c.learn)
 			okay = true;
 	});
 	return okay;
 }
 
 /*
- * Opens the brain data from a file.
+ * Opens brain data from a file.
+ * @param  name  Name of the brain.
  */
-function openBrain() {
-	if (fs.existsSync(config.brain.path)) {
+function openBrain(name) {
+	var path = config.brain.path + name;
+
+	if (fs.existsSync(path)) {
 		readline.createInterface({
-		    "input": fs.createReadStream(config.brain.path),
+		    "input": fs.createReadStream(path),
 		    "terminal": false
 		}).on("line", function(line) {
-			messages.push(line);
-			brain.addMass(line.replace(/<.*>/g, ""));
+			messages[name].push(line);
+			brains[name].addMass(line.replace(/<.*>/g, ""));
 		});
 	}
 }
 
 /*
- * Saves the brain data to a file.
+ * Saves brain data to a file.
+ * @param  name  Name of the brain.
  */
-function saveBrain() {
-	var file = fs.createWriteStream(config.brain.path);
+function saveBrain(name) {
+	var path = config.brain.path + name;
+
+	var file = fs.createWriteStream(path);
 
 	file.on("error", function(err) {
 		console.log(util.format(
@@ -726,11 +775,20 @@ function saveBrain() {
 		));
 	});
 
-	messages.forEach(function(m) {
+	messages[name].forEach(function(m) {
 		file.write(m + "\n", "utf-8");
 	});
 
 	file.end();
+}
+
+/*
+ * Saves all brain data.
+ */
+function saveAllBrains() {
+	Object.keys(brains).forEach(function(b) {
+		saveBrain(b);
+	});
 }
 
 /*
@@ -773,7 +831,7 @@ function loadAnnouncements() {
 
 		// Long air-time announcement.
 		var jobLong = new CronJob(new Date(date - long), function() {
-				send(parseChannel(config.options.channels.announcements), util.format(
+				send(channelNameToID(config.options.channels.announcements), util.format(
 					strings.announcements.gotn.long,
 					getTimeString(dateLong)
 				), true);
@@ -781,7 +839,7 @@ function loadAnnouncements() {
 
 		// Short air-time announcement.
 		var jobShort = new CronJob(new Date(date - short), function() {
-				send(parseChannel(config.options.channels.announcements), util.format(
+				send(channelNameToID(config.options.channels.announcements), util.format(
 					strings.announcements.gotn.short,
 					getTimeString(dateShort)
 				), true);
@@ -789,10 +847,10 @@ function loadAnnouncements() {
 
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
-				send(parseChannel(config.options.channels.announcements), strings.announcements.gotn.now, true);
+				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.now, true);
 			    setTimeout(function() {
 			    	toggle_np = true;
-					send(parseChannel(config.options.channels.private), util.format(
+					send(channelNameToID(config.options.channels.private), util.format(
 						strings.commands.togglenp.message, 
 						toggle_np
 					), false);
@@ -801,9 +859,9 @@ function loadAnnouncements() {
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
-				send(parseChannel(config.options.channels.announcements), strings.announcements.gotn.after, true);
+				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.after, true);
 				toggle_np = false;
-				send(parseChannel(config.options.channels.private), util.format(
+				send(channelNameToID(config.options.channels.private), util.format(
 					strings.commands.togglenp.message, 
 					toggle_np
 				), false);
@@ -855,7 +913,7 @@ function loadPhases() {
 				}
 
 				var job = new CronJob(date, function() {
-		    			send(parseChannel(config.options.channels.phases), message, true);
+		    			send(channelNameToID(config.options.channels.phases), message, true);
 					}, function () {}, true);
 				jobs.push(job);
 			});
@@ -892,17 +950,35 @@ function loadPhases() {
  * Loads the brain data, or creates new.
  */
 function loadBrain() {
-	brain = new jsmegahal(config.brain.markov, config.brain.default);
+	channels.list.forEach(function(c) {
+		if (brains[c.brain] == undefined) {
+			brains[c.brain] = new jsmegahal(config.brain.markov, config.brain.default);
+		}
+		if (messages[c.brain] == undefined) {
+			messages[c.brain] = [];
+		}
+	});
 
-	if (fs.existsSync(config.brain.path)) {
-		console.log(strings.debug.brain.old);
-		openBrain();
-		console.log(strings.debug.brain.done);
-	}
-	else {
-		saveBrain();
-		console.log(strings.debug.brain.new);
-	}
+	Object.keys(brains).forEach(function(b) {
+		if (fs.existsSync(config.brain.path + b)) {
+			console.log(util.format(
+				strings.debug.brain.old,
+				b
+			));
+			openBrain(b);
+			console.log(util.format(
+				strings.debug.brain.done,
+				b
+			));
+		}
+		else {
+			saveBrain(b);
+			console.log(util.format(
+				strings.debug.brain.new,
+				b
+			));
+		}
+	});	
 }
 
 /*
@@ -944,7 +1020,7 @@ function loadBot() {
 	    ));
 	    if (!started) {
 	    	started = true;
-	    	send(parseChannel(config.options.channels.private), util.format(
+	    	send(channelNameToID(config.options.channels.private), util.format(
 	    		strings.misc.load,
 	    		version
 	    	), false);
@@ -960,7 +1036,7 @@ function loadBot() {
 				strings.debug.welcome,
 				user.username
 			));
-			send(parseChannel(config.options.channels.welcome), util.format(
+			send(channelNameToID(config.options.channels.welcome), util.format(
 				strings.misc.welcome,
 				mention(user.id)
 			), true);
@@ -996,7 +1072,7 @@ function loadBot() {
 		    config.commands.forEach(function(c) {
 		    	if (command == config.options.commandsymbol + c.command && nocommand) {
 		    		if (c.private) {
-		    			if (userID == parseChannel(config.options.channels.private)) {
+		    			if (userID == channelNameToID(config.options.channels.private)) {
 				    		commands[c.command](packed);
 				    		nocommand = false;
 		    			}
@@ -1022,12 +1098,12 @@ function loadBot() {
 					user,
 					message
 				));
-		    	send(channelID, mention(userID) + " " + brain.getReplyFromSentence(message), true);
+		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(message), true);
 		    }
 		    // All other messages.
-		    if (data.d.author.id != bot.id && processWhitelist(channelID, config.whitelist.do)) {
-	    		brain.addMass(message.replace(/<.*>/g, ""));
-	    		messages.push(message);
+		    if (data.d.author.id != bot.id && processWhitelist(channelID)) {
+	    		brains[channelIDToBrain(channelID)].addMass(message.replace(/<.*>/g, ""));
+	    		messages[channelIDToBrain(channelID)].push(message);
 		    }
 		}
 	});
@@ -1050,7 +1126,7 @@ function loopNowPlaying() {
 	        var response = JSON.parse(xhr.responseText);
 	        if (np.one == undefined || np.one.nowplaying != response.one.nowplaying) {
 	        	if (toggle_np)
-	    			send(parseChannel(config.options.channels.nowplaying), util.format(
+	    			send(channelNameToID(config.options.channels.nowplaying), util.format(
 	    				strings.announcements.nowplaying,
 	    				response.one.artist + config.separators.track + response.one.title
 	    			), true);
@@ -1067,7 +1143,7 @@ function loopNowPlaying() {
  * Loops to continuously save brain data.
  */
 function loopBrainSave() {
-	saveBrain();
+	saveAllBrains();
 	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 }
 

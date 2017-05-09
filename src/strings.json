@@ -44,7 +44,9 @@
 		},
 		"learn": {
 			"message":  "Thori, I've learned the text you gave me.",
-			"error":    "Thori, you need to specify the text which I should learn after the command."
+			"errorA":    "Thori, you need to specify the brain which I should learn with after the command.",
+			"errorB":    "Thori, I don't have a brain with that name.",
+			"errorC":    "Thori, you need to specify the text to learn as well."
 		},
 		"togglenp": {
 			"message":  "Thori, I've changed the automatic Now Playing listing to **%s**."
@@ -104,9 +106,9 @@
 			}
 		},
 		"brain": {
-			"old":     "A brain already seems to exit. Loading it now...",
-			"new":     "I don't seem to have a brain. I have created a new one.",
-			"done":    "I've finished loading my brain.",
+			"old":     "A brain \"%s\" already seems to exit. Loading it now...",
+			"new":     "I don't seem to have a brain \"%s\". I have created a new one.",
+			"done":    "I've finished loading my brain \"%s\".",
 			"error":   "I am having some trouble saving my brain. Here is more info: %s"
 		},
 		"lyrics": {

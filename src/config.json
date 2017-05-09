@@ -27,67 +27,12 @@
 		"url":     "https://ponyvillefm.com/data/nowplaying",
 		"timeout": 5
 	},
-	"whitelist": {
-		"do": true,
-		"list": [
-			"general",
-			"gotn",
-			"luna",
-			"art",
-			"music",
-			"dreams",
-			"tech",
-			"offtopic"
-		]
-	},
 	"brain": {
-		"path":    "/var/www/node/brain",
+		"path":    "/var/www/node/brain_",
 		"default": "I am The Night.",
 		"markov":  2,
 		"timeout": 60
 	},
-	"channels": [
-		{
-			"name": "announcements",
-			"id":   "277568055393910785"
-		},
-		{
-			"name": "general",
-			"id":   "277563243050827776"
-		},
-		{
-			"name": "gotn",
-			"id":   "277568155344175104"
-		},
-		{
-			"name": "luna",
-			"id":   "277572380442886146"
-		},
-		{
-			"name": "art",
-			"id":   "310771126722625536"
-		},
-		{
-			"name": "music",
-			"id":   "277840722592399362"
-		},
-		{
-			"name": "dreams",
-			"id":   "291858069913337856"
-		},
-		{
-			"name": "tech",
-			"id":   "310771325016997889"
-		},
-		{
-			"name": "offtopic",
-			"id":   "277573384496480257"
-		},
-		{
-			"name": "thorinair",
-			"id":   "81244981343297536"
-		}
-	],
 	"commands": [
 		{
 			"command": "gotn",
