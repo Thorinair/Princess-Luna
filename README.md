@@ -8,11 +8,11 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Sends info about tracks playing on PonyvilleFM during the show.
 * Features a chatbot which learns from the messages sent in the server.
 * Features a variety of commands:
-    - `!gotn` Lists the time left until the next Glory of The Night episode.
-    - `!mlp` Lists the time left until the next My Little Pony: Friendship is Magic episode.
+    - `!gotn` Lists the time left until the next Glory of The Night episode. You may also specify the timezone after the command.
+    - `!mlp` Lists the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.
     - `!np` Lists the currently playing track on a PonyvilleFM station. Use "one", "two" or "free". Defaults to "one".
     - `!lyrics` Lists lyrics of a specified track. Also functions similar like previous command to list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
-    - `!phase` Lists info about the Moon phases.
+    - `!phase` Lists info about the Moon phases. You may also specify the timezone after the command.
     - `!moon` Sends an image of the Moon as it is right now.
     - `!hug` Hug the user. Mentioning someone will hug them instead. You can mention multiple people.
     - `!kiss` Kiss the user. Mentioning someone will kiss them instead. You can mention multiple people.

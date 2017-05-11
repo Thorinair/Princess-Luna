@@ -1,5 +1,5 @@
 // Version
-const version = "v1.10.0";
+const version = "v1.11.0";
 
 // Modules
 const util           = require("util")
@@ -8,6 +8,7 @@ const request        = require("request");
 const readline       = require("readline");
 const Discord        = require("discord.io");
 const CronJob        = require("cron").CronJob;
+const moment         = require('moment-timezone');
 const XMLHttpRequest = require("xhr2");
 const jsmegahal      = require("jsmegahal");
 
@@ -27,22 +28,34 @@ commands.gotn = function(data) {
 	var now = new Date();
 	var found = false;
 
-	gotn.dates.forEach(function(d) {
-		if (!found) {
-			var partsDate = d.split(config.separators.date);
-			var partsTime = gotn.time.split(config.separators.time);
+	var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (timezone == "" || timezone == config.options.commandsymbol + data.command)
+		timezone = "UTC";
 
-			var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
-			if (date > now) {
-				send(data.channelID, util.format(
-					strings.commands.gotn.message, 
-					mention(data.userID), 
-					getTimeLeft(now, date)
-				), true);
-				found = true;
+	if (moment.tz.zone(timezone)) {
+		gotn.dates.forEach(function(d) {
+			if (!found) {
+				var partsDate = d.split(config.separators.date);
+				var partsTime = gotn.time.split(config.separators.time);
+
+				var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
+				if (date > now) {
+					send(data.channelID, util.format(
+						strings.commands.gotn.message, 
+						mention(data.userID), 
+						getTimeLeft(now, date, timezone)
+					), true);
+					found = true;
+				}
 			}
-		}
-	});	
+		});	
+	}
+	else {
+		send(data.channelID, util.format(
+			strings.commands.gotn.error, 
+			mention(data.userID)
+		), true);
+	}
 };
 
 // Command: !mlp
@@ -50,24 +63,36 @@ commands.mlp = function(data) {
 	var now = new Date();
 	var found = false;
 
-	mlp.episodes.forEach(function(e) {
-		if (!found) {
-			var partsDate = e.date.split(config.separators.date);
-			var partsTime = e.time.split(config.separators.time);
+	var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (timezone == "" || timezone == config.options.commandsymbol + data.command)
+		timezone = "UTC";
 
-			var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
-			if (date > now) {
-				send(data.channelID, util.format(
-					strings.commands.mlp.message, 
-					mention(data.userID),
-					e.name,
-					getTimeLeft(now, date),
-					mlp.channel
-				), true);
-				found = true;
+	if (moment.tz.zone(timezone)) {
+		mlp.episodes.forEach(function(e) {
+			if (!found) {
+				var partsDate = e.date.split(config.separators.date);
+				var partsTime = e.time.split(config.separators.time);
+
+				var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
+				if (date > now) {
+					send(data.channelID, util.format(
+						strings.commands.mlp.message, 
+						mention(data.userID),
+						e.name,
+						getTimeLeft(now, date, timezone),
+						mlp.channel
+					), true);
+					found = true;
+				}
 			}
-		}
-	});	
+		});	
+	}
+	else {
+		send(data.channelID, util.format(
+			strings.commands.mlp.error, 
+			mention(data.userID)
+		), true);
+	}
 };
 
 // Command: !np
@@ -154,63 +179,78 @@ commands.phase = function(data) {
 	var message;
 	var phaseNext;
 
-	var found = false;
-	phases.forEach(function(p) {
-		if (!found) {
+	var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (timezone == "" || timezone == config.options.commandsymbol + data.command)
+		timezone = "UTC";
 
-			var datePhase = new Date(p.date + " " + p.time);
-			if (datePhase > dateNow) {
+	if (moment.tz.zone(timezone)) {
 
-				config.phases.forEach(function(n, i) {
-					if (n.name == p.phase)
-						phaseNext = config.phases[i].name;
+		var found = false;
+		phases.forEach(function(p) {
+			if (!found) {
+
+				var datePhase = new Date(p.date + " " + p.time);
+				if (datePhase > dateNow) {
+
+					config.phases.forEach(function(n, i) {
+						if (n.name == p.phase)
+							phaseNext = config.phases[i].name;
+					});
+
+					message = util.format(
+						strings.commands.phase.messageA, 
+						mention(data.userID), 
+						getPhaseString(p.phase, -1), 
+						getPhaseString(p.phase, 0),
+						getTimeLeft(dateNow, datePhase, timezone)
+					);
+
+			    	found = true;
+				}
+			}
+		});
+
+		if (found) {
+
+			if (phaseNext != config.options.fullmoon) {
+				found = false;
+				phases.forEach(function(p) {
+					if (!found) {
+
+						var datePhase = new Date(p.date + " " + p.time);
+						if (datePhase > dateNow && p.phase == config.options.fullmoon) {
+
+							message += util.format(
+								" " + strings.commands.phase.messageB,
+								getPhaseString(config.options.fullmoon, 0),
+								getTimeLeft(dateNow, datePhase, timezone)
+							);
+					    	
+					    	found = true;
+						}
+					}
 				});
-
-				message = util.format(
-					strings.commands.phase.messageA, 
-					mention(data.userID), 
-					getPhaseString(p.phase, -1), 
-					getPhaseString(p.phase, 0),
-					getTimeLeft(dateNow, datePhase)
-				);
-
-		    	found = true;
 			}
 		}
-	});
 
-	if (found) {
-
-		if (phaseNext != config.options.fullmoon) {
-			found = false;
-			phases.forEach(function(p) {
-				if (!found) {
-
-					var datePhase = new Date(p.date + " " + p.time);
-					if (datePhase > dateNow && p.phase == config.options.fullmoon) {
-
-						message += util.format(
-							" " + strings.commands.phase.messageB,
-							getPhaseString(config.options.fullmoon, 0),
-							getTimeLeft(dateNow, datePhase)
-						);
-				    	
-				    	found = true;
-					}
-				}
-			});
+		if (!found) {
+			send(data.channelID, util.format(
+				strings.commands.phase.errorA,
+				mention(data.userID)
+			), true);
 		}
-	}
+		else {
+			send(data.channelID, message, true);
+		}
 
-	if (!found) {
+	}
+	else {
 		send(data.channelID, util.format(
-			strings.commands.phase.error,
+			strings.commands.phase.errorB, 
 			mention(data.userID)
 		), true);
 	}
-	else {
-		send(data.channelID, message, true);
-	}
+
 };
 
 // Command: !moon
@@ -406,18 +446,6 @@ function mention(id) {
 }
 
 /*
- * Expands a given number to 2 digits.
- * @param  num  Number to expand.
- * @return      String of the expanded number.
- */
-function expand(num) {
-	if (num < 10)
-		return "0" + num;
-	else
-		return "" + num;
-}
-
-/*
  * Sends a large message to some chat using multiple messages. Used for lyrics.
  * @param  data     Data of the message.
  * @param  list     List to be sent.
@@ -591,11 +619,12 @@ function getTimeString(date) {
 
 /*
  * Parses two given dates to return the time left and final time.
- * @param  start  Starting date.
- * @param  stop   Final date.
- * @return        String of time left and final time.
+ * @param  start    Starting date.
+ * @param  stop     Final date.
+ * @param  timezone The timezone to calculate for.
+ * @return          String of time left and final time.
  */
-function getTimeLeft(start, stop) {
+function getTimeLeft(start, stop, timezone) {
 	var diff = (stop - start) / 60000;
 	var time = {};
 
@@ -604,12 +633,13 @@ function getTimeLeft(start, stop) {
 	time.hours = Math.floor(diff % 24);
 	time.days = Math.floor(diff / 24);
 
+	var momentTime = moment.tz(stop, timezone);
+
 	return util.format(
 		strings.misc.left, 
-		getTimeString(time), 
-		stop.toDateString(), 
-		expand(stop.getHours()), 
-		expand(stop.getMinutes())
+		getTimeString(time),  
+		momentTime.format("ddd MMM DD, YYYY"),
+		momentTime.format("HH:mm (z)")
 	);
 }
 
@@ -922,6 +952,7 @@ function loadPhases() {
 
 			loadBrain();
 			loadLyrics();
+			loadTimezones();
 			loadBot();
 	    }
 	}
@@ -996,6 +1027,18 @@ function loadLyrics() {
 	    fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
 		console.log(strings.debug.lyrics.new);
 	}
+}
+
+/*
+ * Loads the timezone data.
+ */
+function loadTimezones() {
+	console.log(strings.debug.timezones.load);
+
+	var timezoneData = require("./node_modules/moment-timezone/data/packed/latest.json");
+	moment.tz.load(timezoneData);
+
+	console.log(strings.debug.timezones.done);
 }
 
 /*

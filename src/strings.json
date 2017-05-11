@@ -1,10 +1,12 @@
 {
 	"commands": {
 		"gotn": {
-			"message":  "%s, next episode of Glory of The Night airs in %s."
+			"message":  "%s, next episode of Glory of The Night airs in %s.",
+			"error":    "%s, I don't know of that timezone."
 		},
 		"mlp": {
-			"message":  "%s, next episode of My Little Pony: Friendship is Magic, **%s**, airs in %s on the **%s** channel."
+			"message":  "%s, next episode of My Little Pony: Friendship is Magic, **%s**, airs in %s on the **%s** channel.",
+			"error":    "%s, I don't know of that timezone."
 		},
 		"np": {
 			"message":  "%s, the track currently playing on PonyvilleFM %s is:\n*%s*",
@@ -21,7 +23,8 @@
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
 			"messageB": "The next %s is in %s.",
-			"error":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment..."
+			"errorA":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment...",
+			"errorB":    "%s, I don't know of that timezone."
 		},
 		"moon": {
 			"messageA": "%s, give me a moment...",
@@ -87,7 +90,7 @@
 	"misc": {
 		"welcome": "**My children, welcome %s to our beautiful night!**",
 		"load":    "Hey Thori, I'm back! My current version is %s.",
-		"left":    "%s on %s at %s:%s (UTC)"
+		"left":    "%s on %s at %s"
 	},
 	"debug": {
 		"message":      "> I'm sending the following message to #%s: \"%s\"",
@@ -127,6 +130,10 @@
 			"load":    "I'm loading all of the upcoming show dates...",
 			"item":    "- Loading air date: %s",
 			"done":    "I've finished loading the announcement dates!"
+		},
+		"timezones": {
+			"load":    "I'm loading timezone data...",
+			"done":    "I've finished loading the timezones!"
 		}
 	}
 }
