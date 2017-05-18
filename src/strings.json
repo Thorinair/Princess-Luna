@@ -71,8 +71,7 @@
 			"messageA": "%s, here are some of the commands you can use:",
 			"messageB": "\n`%s%s` %s",
 			"messageC": "\nYou can also talk with me by mentioning me in the chat."
-		},
-		"error": "I'm sorry %s, but I'm afraid I can't do that."
+		}
 	},
 	"announcements": {
 		"gotn": {

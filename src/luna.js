@@ -1,5 +1,5 @@
 // Version
-const version = "v1.11.0";
+const version = "v1.11.1";
 
 // Modules
 const util           = require("util")
@@ -1126,12 +1126,6 @@ function loadBot() {
 			    	}
 		    	}
 		    });
-
-		    if (nocommand)
-			    send(channelID, util.format(
-			    	strings.commands.error,
-			    	mention(userID)
-			    ), true);
 		}
 		else {
 		    // When the bot is mentioned.
