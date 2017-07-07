@@ -33,6 +33,20 @@
 		"markov":  2,
 		"timeout": 60
 	},
+	"backup": {
+		"output": {
+			"path": "/var/www/node/backup.zip",
+			"file": "luna_backup_%s.zip"
+		},
+		"input": {
+			"path": "/var/www/node/",
+			"entries": [
+				"config",
+				"data"
+			]
+		},
+		"compression": 9
+	},
 	"commands": [
 		{
 			"command": "gotn",
@@ -101,6 +115,11 @@
 		},
 		{
 			"command": "reboot",
+			"help":    "",
+			"private": true
+		},
+		{
+			"command": "backup",
 			"help":    "",
 			"private": true
 		},

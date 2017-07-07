@@ -1,5 +1,5 @@
 // Version
-const version = "v1.12.1";
+const version = "v1.13.0";
 
 // Modules
 const util           = require("util")
@@ -10,6 +10,7 @@ const Discord        = require("discord.io");
 const CronJob        = require("cron").CronJob;
 const moment         = require('moment-timezone');
 const XMLHttpRequest = require("xhr2");
+const archiver       = require("archiver");
 const jsmegahal      = require("jsmegahal");
 
 // Load file data
@@ -401,6 +402,59 @@ commands.reboot = function(data) {
 	}, config.options.reboottime * 1000);
 };
 
+// Command: !backup
+commands.backup = function(data) {
+	console.log(strings.debug.backup.start);
+	send(channelNameToID(config.options.channels.private), strings.commands.backup.messageA, false);
+
+	var output = fs.createWriteStream(config.backup.output.path);
+	var archive = archiver("zip", {
+		"zlib": { "level": config.backup.compression }
+	});
+
+	output.on('close', function() {
+		console.log(util.format(
+			strings.debug.backup.done,
+			archive.pointer()
+		));
+
+		embed(channelNameToID(config.options.channels.private), strings.commands.backup.messageB, config.backup.output.path, util.format(
+			config.backup.output.file,
+			moment.tz(new Date(), "UTC").format("YYYY-MM-DD_HH-MM")
+		), false, true);
+	});
+
+	archive.on('warning', function(err) {
+		console.log(util.format(
+			strings.debug.backup.error,
+			"Warning: " + err
+		));
+		send(channelNameToID(config.options.channels.private), util.format(
+			strings.commands.backup.error,
+			"Warning: " + err			
+		), false);
+	});
+
+	archive.on('error', function(err) {
+		console.log(util.format(
+			strings.debug.backup.error,
+			"Error: " + err
+		));
+		send(channelNameToID(config.options.channels.private), util.format(
+			strings.commands.backup.error,
+			"Error: " + err			
+		), false);
+	});
+
+	archive.pipe(output);
+
+	config.backup.input.entries.forEach(function(e) {
+		archive.directory(config.backup.input.path + e + "/", e);
+	});
+
+	archive.finalize();
+};
+
 // Command: !help
 commands.help = function(data) {
 	var reply = "";
@@ -669,9 +723,9 @@ function getPhaseString(name, offset) {
  * Sends a message to a channel on Discord.
  * @param  id       ID of the channel to send to.
  * @param  message  String message to send.
- * @param  type  	Whether the typing delay should be added.
+ * @param  typing   Whether the typing delay should be added.
  */
-function send(id, message, type) {
+function send(id, message, typing) {
 	var channel = channelIDToName(id);
 
 	var msg = {
@@ -679,7 +733,7 @@ function send(id, message, type) {
 		"message": message
     };
 
-    if (type) {
+    if (typing) {
     	bot.simulateTyping(id);
     	setTimeout(function() {
 			console.log(util.format(
@@ -706,10 +760,10 @@ function send(id, message, type) {
  * @param  message   String message to send.
  * @param  file      Path to the image file.
  * @param  filename  Name of the image as seeon on Discord.
- * @param  type  	 Whether the typing delay should be added.
+ * @param  typing  	 Whether the typing delay should be added.
  * @param  del  	 Whether the file will be deleted after embedding.
  */
-function embed(id, message, file, filename, type, del) {
+function embed(id, message, file, filename, typing, del) {
 	var channel = channelIDToName(id);
 
 	var msg = {
@@ -719,7 +773,7 @@ function embed(id, message, file, filename, type, del) {
 		"message": message
     };
 
-    if (type) {
+    if (typing) {
     	setTimeout(function() {
 			console.log(util.format(
 				strings.debug.embed,
@@ -730,8 +784,8 @@ function embed(id, message, file, filename, type, del) {
 			));
 			bot.uploadFile(msg);
 
-		    if (del) {
-				fs.unlinkSync(config.options.moonimg);
+		    if (del && fs.existsSync(file)) {
+				fs.unlinkSync(file);
 		    }
     	}, config.options.typetime * 1000);	
     }
@@ -744,9 +798,9 @@ function embed(id, message, file, filename, type, del) {
 			msg.file
 		));
 		bot.uploadFile(msg);
-		
-	    if (del) {
-			fs.unlinkSync(config.options.moonimg);
+
+		if (del && fs.existsSync(file)) {
+			fs.unlinkSync(file);
 	    }	
     }
 }

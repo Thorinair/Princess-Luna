@@ -67,6 +67,11 @@
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
 		},
+		"backup": {
+			"messageA":  "Thori, I've started a backup of my files. Give me a moment...",
+			"messageB":  "Here, I am sending you the newest backup of all of my files.",
+			"error":     "Looks like something has gone wrong, but I am not sure what... Here is more info: %s"
+		},
 		"help": {
 			"messageA": "%s, here are some of the commands you can use:",
 			"messageB": "\n`%s%s` %s",
@@ -117,6 +122,11 @@
 			"old":     "A lyrics file already seems to exit. Loading it now...",
 			"new":     "I don't seem to have a lyrics file. I have created a new one.",
 			"done":    "I've finished loading my lyrics file."
+		},
+		"backup": {
+			"start":   "Started a backup...",
+			"done":    "I've finished backing up my data. Total size of %s bytes. Sending it now.",
+			"error":   "Something has gone wrong. Here is more info: %s"
 		},
 		"phases": {
 			"load":    "I'm loading all of the upcoming phase dates...",
