@@ -1,5 +1,5 @@
 // Version
-const version = "v1.13.0";
+const version = "v1.14.0";
 
 // Modules
 const util           = require("util")
@@ -291,6 +291,48 @@ commands.boop = function(data) {
 	doMultiCommand(data);
 };
 
+// Command: !stats
+commands.stats = function(data) {
+	var dateNow = new Date();
+
+	var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (timezone == "" || timezone == config.options.commandsymbol + data.command)
+		timezone = "UTC";
+
+	if (moment.tz.zone(timezone)) {
+
+		var diff = (dateNow - startTime) / 60000;
+		var time = {};
+
+		time.minutes = Math.floor(diff % 60);
+		diff = Math.floor(diff / 60);
+		time.hours = Math.floor(diff % 24);
+		time.days = Math.floor(diff / 24);
+
+		var momentTime = moment.tz(startTime, timezone);
+
+		send(data.channelID, util.format(
+			strings.commands.stats.message,
+			mention(data.userID),
+			momentTime.format("ddd MMM DD, YYYY"),
+			momentTime.format("HH:mm (z)"),
+			getTimeString(time),
+			channelIDToBrain(data.channelID),
+			messages[channelIDToBrain(data.channelID)].length
+		), true);
+
+	}
+	else {
+		send(data.channelID, util.format(
+			strings.commands.stats.error, 
+			mention(data.userID)
+		), true);
+	}
+
+	getTimeString(time)
+
+};
+
 // Command: !learn
 commands.learn = function(data) {
 	var lines = data.message.split("\n");
@@ -420,7 +462,7 @@ commands.backup = function(data) {
 
 		embed(channelNameToID(config.options.channels.private), strings.commands.backup.messageB, config.backup.output.path, util.format(
 			config.backup.output.file,
-			moment.tz(new Date(), "UTC").format("YYYY-MM-DD_HH-MM")
+			moment.tz(new Date(), "UTC").format("YYYY-MM-DD_HH-mm")
 		), false, true);
 	});
 
@@ -485,6 +527,7 @@ var toggle_np = false;
 var np        = {};
 var brains    = {};
 var messages  = {};
+var startTime;
 
 // Persistant Objects
 var bot;
@@ -1248,6 +1291,11 @@ function loopBrainSave() {
 }
 
 // Start the bot.
+startTime = new Date();
 console.log(strings.debug.started);
+console.log(util.format(
+	strings.debug.startedtime,
+	moment.tz(startTime, "UTC").format("YYYY-MM-DD, HH:mm")
+));
 loadAnnouncements();
 loadPhases();

@@ -45,6 +45,10 @@
 			"multiple": "*Gives %s boops on their snouts!*",
 			"self":     "*Boops her own snout and makes a confused face!*"
 		},
+		"stats": {
+			"message":   "%s, last time I have been rebooted was %s at %s, which was %s ago. The brain I am using for this chat is called *%s*, and has %s lines of data saved from messages.",
+			"error":     "%s, I don't know of that timezone."
+		},
 		"learn": {
 			"message":  "Thori, I've learned the text you gave me.",
 			"errorA":    "Thori, you need to specify the brain which I should learn with after the command.",
@@ -101,6 +105,7 @@
 		"embed":        "> I'm sending the following message to #%s: \"%s\" with image \"%s\" and path \"%s\"",
 		"started":      "<STARTED>",
 		"stopped":      "<STOPPED>",
+		"startedtime":  "Started at %s.",
 		"disconnected": "I seem to have disconnected from Discord... Reconnecting.",
 		"chatting":     "< I've received the following message from \"%s\": \"%s\", replying...",
 		"welcome":      "New user, \"%s\" has joined our server! I'm promoting them to Children of The Night!",

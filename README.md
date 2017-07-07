@@ -17,8 +17,9 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!hug` Hug the user. Mentioning someone will hug them instead. You can mention multiple people.
     - `!kiss` Kiss the user. Mentioning someone will kiss them instead. You can mention multiple people.
     - `!boop` Boop the user. Mentioning someone will boop them instead. You can mention multiple people.
+    - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!help` Lists all available commands.
-* Internal commands for the admin:
+* Private commands for the admin:
     - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines.
     - `!togglenp` Manually toggles the automatic listing of now playing info.
     - `!addlyrics` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
