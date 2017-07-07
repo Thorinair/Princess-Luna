@@ -1,5 +1,5 @@
 // Version
-const version = "v1.12.0";
+const version = "v1.12.1";
 
 // Modules
 const util           = require("util")
@@ -271,7 +271,7 @@ commands.moon = function(data) {
 	download(config.options.moonurl, config.options.moonimg, function() {
 		console.log(strings.debug.commands.moon.stop);
 
-		embed(data.channelID, strings.commands.moon.messageB, config.options.moonimg, "Moon " + (new Date()) + ".png", true);
+		embed(data.channelID, strings.commands.moon.messageB, config.options.moonimg, "Moon " + (new Date()) + ".png", true, true);
 	});
 };
 
@@ -707,8 +707,9 @@ function send(id, message, type) {
  * @param  file      Path to the image file.
  * @param  filename  Name of the image as seeon on Discord.
  * @param  type  	 Whether the typing delay should be added.
+ * @param  del  	 Whether the file will be deleted after embedding.
  */
-function embed(id, message, file, filename, type) {
+function embed(id, message, file, filename, type, del) {
 	var channel = channelIDToName(id);
 
 	var msg = {
@@ -728,6 +729,10 @@ function embed(id, message, file, filename, type) {
 				msg.file
 			));
 			bot.uploadFile(msg);
+
+		    if (del) {
+				fs.unlinkSync(config.options.moonimg);
+		    }
     	}, config.options.typetime * 1000);	
     }
     else {
@@ -738,7 +743,11 @@ function embed(id, message, file, filename, type) {
 			msg.filename,
 			msg.file
 		));
-		bot.uploadFile(msg);	
+		bot.uploadFile(msg);
+		
+	    if (del) {
+			fs.unlinkSync(config.options.moonimg);
+	    }	
     }
 }
 
