@@ -1,5 +1,5 @@
 // Version
-const version = "v1.11.1";
+const version = "v1.12.0";
 
 // Modules
 const util           = require("util")
@@ -13,12 +13,12 @@ const XMLHttpRequest = require("xhr2");
 const jsmegahal      = require("jsmegahal");
 
 // Load file data
-const token    = require("./token.json");
-const config   = require("./config.json");
-const strings  = require("./strings.json");
-const gotn     = require("./gotn.json");
-const mlp      = require("./mlp.json");
-const channels = require("./channels.json");
+const token    = require("./config/token.json");
+const config   = require("./config/config.json");
+const strings  = require("./config/strings.json");
+const gotn     = require("./config/gotn.json");
+const mlp      = require("./config/mlp.json");
+const channels = require("./config/channels.json");
 
 // Commands
 var commands = {};

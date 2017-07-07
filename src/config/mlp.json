@@ -1,0 +1,25 @@
+{
+	"channel": "Discovery Family",
+	"episodes": [
+		{
+			"name": "S07E10 - A Royal Problem",
+			"date": "2017-06-10",
+			"time": "15:30"
+		},
+		{
+			"name": "S07E11 - Not Asking For Trouble",
+			"date": "2017-06-17",
+			"time": "15:30"
+		},
+		{
+			"name": "S07E12 - Discordant Harmony",
+			"date": "2017-06-24",
+			"time": "15:30"
+		},
+		{
+			"name": "S07E13 - The Perfect Pear",
+			"date": "2017-07-01",
+			"time": "15:30"
+		}
+	]
+}

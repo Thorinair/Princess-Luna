@@ -1,2 +1,2 @@
-src/token.json
-src/channels.json
+src/config/token.json
+src/config/channels.json
