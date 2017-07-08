@@ -4,6 +4,7 @@
 		"mention":       "<@!%s>",
 		"roleid":        "277564526940127243",
 		"serverid":      "277563243050827776",
+		"varipassurl":   "https://api.varipass.org/",
 		"phaseurl":      "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
 		"moonurl":       "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
 		"moonimg":       "/var/www/node/data/moon.png",
@@ -91,6 +92,11 @@
 		{
 			"command": "boop",
 			"help":    "Ask me to boop your snout. If you mention somepony with it, I will boop them instead. You can mention multiple ponies.",
+			"private": false
+		},
+		{
+			"command": "room",
+			"help":    "Ask me about the physical status of Thorinair's real life room. Powered using the VariPass website.",
 			"private": false
 		},
 		{

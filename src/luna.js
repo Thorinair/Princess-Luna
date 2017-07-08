@@ -1,5 +1,5 @@
 // Version
-const version = "v1.14.0";
+const version = "v1.15.0";
 
 // Modules
 const util           = require("util")
@@ -20,6 +20,7 @@ const strings  = require("./config/strings.json");
 const gotn     = require("./config/gotn.json");
 const mlp      = require("./config/mlp.json");
 const channels = require("./config/channels.json");
+const varipass = require("./config/varipass.json");
 
 // Commands
 var commands = {};
@@ -291,6 +292,64 @@ commands.boop = function(data) {
 	doMultiCommand(data);
 };
 
+// Command: !room
+commands.room = function(data) {
+
+	var payload = {
+			"key": varipass.key,
+			"action": "all"
+		};
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", config.options.varipassurl, true);
+	xhr.setRequestHeader("Content-type", "application/json");
+
+	xhr.onreadystatechange = function () { 
+	    if (xhr.readyState == 4 && xhr.status == 200) {
+	        var vpData = JSON.parse(xhr.responseText);
+			console.log(strings.debug.varipass.done);
+
+			var diff = (vpData.current - vpData.list[0].history[0].time);
+			var time = {};
+
+			time.seconds = Math.floor(diff % 60);
+			diff = Math.floor(diff / 60);
+			time.minutes = Math.floor(diff % 60);
+			diff = Math.floor(diff / 60);
+			time.hours = Math.floor(diff % 24);
+			time.days = Math.floor(diff / 24);
+
+			send(data.channelID, util.format(
+				strings.commands.room.message, 
+				mention(data.userID),
+				getTimeString(time),
+				time.seconds,
+				findVariable(vpData, varipass.ids.temperature).history[0].value,
+				findVariable(vpData, varipass.ids.humidity).history[0].value,
+				findVariable(vpData, varipass.ids.pressure).history[0].value,
+				findVariable(vpData, varipass.ids.magnitude).history[0].value,
+				findVariable(vpData, varipass.ids.inclination).history[0].value,
+				findVariable(vpData, varipass.ids.counts).history[0].value,
+				findVariable(vpData, varipass.ids.dose).history[0].value
+			), true);
+	    }
+	}
+	xhr.onerror = function(err) {
+	    console.log(util.format(
+	    	strings.debug.varipass.error,
+	    	err.target.status
+	    ));
+	    xhr.abort();
+	}
+	xhr.ontimeout = function() {
+	    console.log(strings.debug.varipass.timeout);
+	    xhr.abort();
+	}
+
+	console.log(strings.debug.varipass.load);
+	xhr.send(JSON.stringify(payload));
+};
+
 // Command: !stats
 commands.stats = function(data) {
 	var dateNow = new Date();
@@ -301,9 +360,11 @@ commands.stats = function(data) {
 
 	if (moment.tz.zone(timezone)) {
 
-		var diff = (dateNow - startTime) / 60000;
+		var diff = (dateNow - startTime) / 1000;
 		var time = {};
 
+		time.seconds = Math.floor(diff % 60);
+		diff = Math.floor(diff / 60);
 		time.minutes = Math.floor(diff % 60);
 		diff = Math.floor(diff / 60);
 		time.hours = Math.floor(diff % 24);
@@ -311,14 +372,23 @@ commands.stats = function(data) {
 
 		var momentTime = moment.tz(startTime, timezone);
 
+		var canLearn;
+		if (processWhitelist(data.channelID))
+			canLearn = strings.commands.stats.learnyes;
+		else
+			canLearn = strings.commands.stats.learnno;
+
 		send(data.channelID, util.format(
 			strings.commands.stats.message,
 			mention(data.userID),
+			version,
 			momentTime.format("ddd MMM DD, YYYY"),
 			momentTime.format("HH:mm (z)"),
 			getTimeString(time),
+			time.seconds,
 			channelIDToBrain(data.channelID),
-			messages[channelIDToBrain(data.channelID)].length
+			messages[channelIDToBrain(data.channelID)].length,
+			canLearn
 		), true);
 
 	}
@@ -328,9 +398,6 @@ commands.stats = function(data) {
 			mention(data.userID)
 		), true);
 	}
-
-	getTimeString(time)
-
 };
 
 // Command: !learn
@@ -670,6 +737,24 @@ function channelIDToBrain(id) {
 		brain = channels.default.brain;
 
 	return brain;
+}
+
+/*
+ * Parses VariPass data to return a certain variable.
+ * @param  data  VariPass data to search in.
+ * @param  id    The ID of the variable to look for.
+ * @return       The VariPass variable with all the data.
+ */
+function findVariable(data, id) {
+	var found    = false;
+	var variable = null;
+
+	data.list.forEach(function(v) {
+		if (v.id == id && !found)
+			variable = v;
+	});
+
+	return variable;
 }
 
 /*

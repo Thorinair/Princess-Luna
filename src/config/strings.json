@@ -46,14 +46,20 @@
 			"self":     "*Boops her own snout and makes a confused face!*"
 		},
 		"stats": {
-			"message":   "%s, last time I have been rebooted was %s at %s, which was %s ago. The brain I am using for this chat is called *%s*, and has %s lines of data saved from messages.",
-			"error":     "%s, I don't know of that timezone."
+			"message":  "%s, my current version is %s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago. The brain I am using for this chatroom is called *%s*, and has %s lines of data saved from messages. %s",
+			"learnyes": "I am able to normally learn everything from this specific chatroom.",
+			"learnno":  "I am unable to learn anything from this specific chatroom.",
+			"error":    "%s, I don't know of that timezone."
+		},
+		"room": {
+			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
+			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
 		},
 		"learn": {
 			"message":  "Thori, I've learned the text you gave me.",
-			"errorA":    "Thori, you need to specify the brain which I should learn with after the command.",
-			"errorB":    "Thori, I don't have a brain with that name.",
-			"errorC":    "Thori, you need to specify the text to learn as well."
+			"errorA":   "Thori, you need to specify the brain which I should learn with after the command.",
+			"errorB":   "Thori, I don't have a brain with that name.",
+			"errorC":   "Thori, you need to specify the text to learn as well."
 		},
 		"togglenp": {
 			"message":  "Thori, I've changed the automatic Now Playing listing to **%s**."
@@ -148,6 +154,12 @@
 		"timezones": {
 			"load":    "I'm loading timezone data...",
 			"done":    "I've finished loading the timezones!"
+		},
+		"varipass": {
+			"load":    "I'm loading data from VariPass...",
+			"done":    "I've finished loading VariPass data!",
+			"error":   "I've encountered some problems loading the data. Here is more info: \"%s\"",
+			"timeout": "My attempt to load the data took too long."
 		}
 	}
 }
