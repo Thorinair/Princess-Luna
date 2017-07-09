@@ -21,7 +21,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!help` Lists all available commands.
 * Private commands for the admin:
-    - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines.
+    - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Use the following regex to remove usernames and timestamps: `([)([0-9]+:[0-9]+ [A-Z]+)(]) .*: `
     - `!togglenp` Manually toggles the automatic listing of now playing info.
     - `!addlyrics` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
     - `!dellyrics` Removes lyrics from the database. Specify a track name after the command.
