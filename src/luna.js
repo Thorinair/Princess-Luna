@@ -1,5 +1,5 @@
 // Version
-const version = "v1.15.0";
+const version = "v1.15.1";
 
 // Modules
 const util           = require("util")
@@ -591,6 +591,7 @@ var jobs      = [];
 var phases    = [];
 var started   = false;
 var toggle_np = false;
+var apifail   = false;
 var np        = {};
 var brains    = {};
 var messages  = {};
@@ -1152,17 +1153,26 @@ function loadPhases() {
 	    	strings.debug.phases.error,
 	    	err.target.status
 	    ));
-	    setTimeout(function() {
-	    	xhr.abort();
-	    	loadPhases();
-	    }, 1000);
+	    xhr.abort();
+	    apifail = true;
+
+		loadBrain();
+		loadLyrics();
+		loadTimezones();
+		loadBot();
 	}
 	xhr.ontimeout = function() {
-	    console.log(strings.debug.phases.timeout);
-	    setTimeout(function() {
-	    	xhr.abort();
-	    	loadPhases();
-	    }, 1000);
+	    console.log(util.format(
+	    	strings.debug.phases.timeout,
+	    	err.target.status
+	    ));
+	    xhr.abort();
+	    apifail = true;
+
+		loadBrain();
+		loadLyrics();
+		loadTimezones();
+		loadBot();
 	}
 
 	xhr.send();
@@ -1254,10 +1264,16 @@ function loadBot() {
 	    ));
 	    if (!started) {
 	    	started = true;
-	    	send(channelNameToID(config.options.channels.private), util.format(
-	    		strings.misc.load,
-	    		version
-	    	), false);
+	    	if (apifail)
+		    	send(channelNameToID(config.options.channels.private), util.format(
+		    		strings.misc.apifail,
+		    		version
+		    	), false);
+	    	else	
+		    	send(channelNameToID(config.options.channels.private), util.format(
+		    		strings.misc.load,
+		    		version
+		    	), false);
 
 	    	loopNowPlaying();
 	    	loopBrainSave();
