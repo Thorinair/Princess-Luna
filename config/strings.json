@@ -46,7 +46,7 @@
 			"self":     "*Boops her own snout and makes a confused face!*"
 		},
 		"stats": {
-			"message":  "%s, my current version is %s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago. The brain I am using for this chatroom is called *%s*, and has %s lines of data saved from messages. %s",
+			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago. The brain I am using for this chatroom is called *%s*, and has %s lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",
 			"learnno":  "I am unable to learn anything from this specific chatroom.",
 			"error":    "%s, I don't know of that timezone."
@@ -103,8 +103,8 @@
 	},
 	"misc": {
 		"welcome": "**My children, welcome %s to our beautiful night!**",
-		"load":    "Hey Thori, I'm back! My current version is %s.",
-		"apifail": "Hey Thori, I'm back! My current version is %s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again.",
+		"load":    "Hey Thori, I'm back! My current version is v%s.",
+		"apifail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again.",
 		"left":    "%s on %s at %s"
 	},
 	"debug": {

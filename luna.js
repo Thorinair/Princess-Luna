@@ -6,9 +6,11 @@ const util           = require("util")
 const fs             = require("fs");
 const request        = require("request");
 const readline       = require("readline");
+
+// 3rd Party Modules
 const Discord        = require("discord.io");
 const CronJob        = require("cron").CronJob;
-const moment         = require('moment-timezone');
+const moment         = require("moment-timezone");
 const XMLHttpRequest = require("xhr2");
 const archiver       = require("archiver");
 const jsmegahal      = require("jsmegahal");
@@ -21,6 +23,7 @@ const gotn     = require("./config/gotn.json");
 const mlp      = require("./config/mlp.json");
 const channels = require("./config/channels.json");
 const varipass = require("./config/varipass.json");
+const package  = require("./package.json");
 
 // Commands
 var commands = {};
@@ -381,7 +384,7 @@ commands.stats = function(data) {
 		send(data.channelID, util.format(
 			strings.commands.stats.message,
 			mention(data.userID),
-			version,
+			package.version,
 			momentTime.format("ddd MMM DD, YYYY"),
 			momentTime.format("HH:mm (z)"),
 			getTimeString(time),
@@ -1267,12 +1270,12 @@ function loadBot() {
 	    	if (apifail)
 		    	send(channelNameToID(config.options.channels.private), util.format(
 		    		strings.misc.apifail,
-		    		version
+		    		package.version
 		    	), false);
 	    	else	
 		    	send(channelNameToID(config.options.channels.private), util.format(
 		    		strings.misc.load,
-		    		version
+		    		package.version
 		    	), false);
 
 	    	loopNowPlaying();
