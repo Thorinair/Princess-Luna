@@ -1,6 +1,3 @@
-// Version
-const version = "v1.15.1";
-
 // Modules
 const util           = require("util")
 const fs             = require("fs");
