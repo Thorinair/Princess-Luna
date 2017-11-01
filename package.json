@@ -25,7 +25,7 @@
     "cron": "^1.2.1",
     "moment-timezone": "^0.5.13",
     "xhr2": "^0.1.4",
-    "archiver": "2.0.0",
+    "archiver": "^2.0.0",
     "jsmegahal": "github:seiyria/jsmegahal"
   }
 }
