@@ -137,7 +137,7 @@ commands.lyrics = function(data) {
 		sendLargeMessage(data, Object.keys(lyrics).sort(), util.format(
 			strings.commands.lyrics.list,
 			mention(data.userID)
-		));
+		), false);
 
 	}
 	else if (lyrics[param] != undefined) {
@@ -145,7 +145,7 @@ commands.lyrics = function(data) {
 		sendLargeMessage(data, lyrics[param].split("\n"), util.format(
 			strings.commands.lyrics.message,
 			mention(data.userID)
-		));
+		), true);
 
 	}
 	else if (np[param] != undefined) {
@@ -156,7 +156,7 @@ commands.lyrics = function(data) {
 				strings.commands.lyrics.radio,
 				mention(data.userID),
 				param
-			));
+			), true);
 
 		}
 		else {
@@ -616,13 +616,20 @@ function mention(id) {
  * @param  list     List to be sent.
  * @param  message  Initial message string.
  */
-function sendLargeMessage(data, list, message) {
+function sendLargeMessage(data, list, message, format) {
 
 	var length = message.length;
 	var multi = [];
 
 	list.forEach(function(l, i) {
-		var line = l + "\n";
+		var line = l;
+		if (format && line.length > 0) {
+			while (line[line.length - 1] == " ")
+				line = line.slice(0, -1);
+			line = config.options.lyricformat + line + config.options.lyricformat;
+		}
+		line += "\n";
+
 		if (length + line.length >= config.options.maxlength) {
 			multi.push(message);
 			length = line.length;

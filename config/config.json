@@ -12,6 +12,7 @@
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
 		"defstation":    "one",
+		"lyricformat":   "*",
 		"maxlength":     2000,
 		"typetime":      2,
 		"reboottime":    2,
