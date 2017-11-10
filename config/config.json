@@ -8,7 +8,9 @@
 		"phaseurl":      "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
 		"moonurl":       "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
 		"moonimg":       "/var/www/node/data/moon.png",
+		"artimg":        "/var/www/node/data/art.png",
 		"lyricspath":    "/var/www/node/data/lyrics.json",
+		"artworkpath":   "/var/www/node/data/artwork.json",
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
 		"defstation":    "one",
@@ -71,6 +73,11 @@
 			"private": false
 		},
 		{
+			"command": "artwork",
+			"help":    "Ask me to show the artwork for a specific track. You can also use it like the previous command to get artwork for music on PonyvilleFM. Use the \"list\" parameter to see all the tracks I have an artwork for.",
+			"private": false
+		},
+		{
 			"command": "phase",
 			"help":    "Ask me about the status of the Moon's phase. You may also specify the timezone after the command.",
 			"private": false
@@ -111,17 +118,32 @@
 			"private": true
 		},
 		{
-			"command": "togglenp",
+			"command": "nptoggle",
 			"help":    "",
 			"private": true
 		},
 		{
-			"command": "addlyrics",
+			"command": "npoverride",
 			"help":    "",
 			"private": true
 		},
 		{
-			"command": "dellyrics",
+			"command": "lyricsadd",
+			"help":    "",
+			"private": true
+		},
+		{
+			"command": "lyricsdel",
+			"help":    "",
+			"private": true
+		},
+		{
+			"command": "artworkadd",
+			"help":    "",
+			"private": true
+		},
+		{
+			"command": "artworkdel",
 			"help":    "",
 			"private": true
 		},

@@ -20,6 +20,14 @@
 			"errorA":   "%s, I don't know the lyrics of that track.",
 			"errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM %s."
 		},
+		"artwork": {
+			"load":     "%s, give me a moment...",
+			"message":  "Here is the artwork for that track:",
+			"radio":    "Here is the artwork for the track currently playing on PonyvilleFM %s:",
+			"list":     "%s, here are all the tracks I have an artwork for:\n\n",
+			"errorA":   "%s, I don't have an artwork for that track.",
+			"errorB":   "%s, I don't have an artwork for the track currently playing on PonyvilleFM %s."
+		},
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
 			"messageB": "The next %s is in %s.",
@@ -61,16 +69,31 @@
 			"errorB":   "Thori, I don't have a brain with that name.",
 			"errorC":   "Thori, you need to specify the text to learn as well."
 		},
-		"togglenp": {
+		"nptoggle": {
 			"message":  "Thori, I've changed the automatic Now Playing listing to **%s**."
 		},
-		"addlyrics": {
+		"npoverride": {
+			"message":  "Thori, I'm overriding the Now Playing info with the new track!\nIt is now: **%s**",
+			"error":    "Thori, you need to specify the track name."
+		},
+		"lyricsadd": {
 			"message":  "Thori, I've added lyrics for the track \"%s\".",
 			"errorA":   "Thori, you need to specify the track name.",
 			"errorB":   "Thori, you need to specify the lyrics as well."
 		},
-		"dellyrics": {
+		"lyricsdel": {
 			"message":  "Thori, I've removed lyrics for the track \"%s\".",
+			"errorA":   "Thori, you need to specify the track name.",
+			"errorB":   "Thori, I don't know of any track with that name."
+		},
+		"artworkadd": {
+			"messageA":  "Thori, I've added artwork for the track \"%s\".",
+			"messageB":  "Thori, I've replaced artwork for the track \"%s\".",
+			"errorA":   "Thori, you need to specify the track name.",
+			"errorB":   "Thori, you need to specify the artwork URL as well."
+		},
+		"artworkdel": {
+			"message":  "Thori, I've removed artwork for the track \"%s\".",
 			"errorA":   "Thori, you need to specify the track name.",
 			"errorB":   "Thori, I don't know of any track with that name."
 		},
@@ -118,11 +141,9 @@
 		"welcome":      "New user, \"%s\" has joined our server! I'm promoting them to Children of The Night!",
 		"welcomefail":  "Something bad has happened during the promotion. Here is more info: %s",
 		"join":         "I've successfully joined Discord. My name is \"%s\" with ID #%s.",
-		"commands": {
-			"moon": {
-				"start": "I'm downloading the current Moon image...",
-				"stop":  "Finished downloading!"
-			}
+		"download": {
+			"start": "I'm downloading a file...",
+			"stop":  "Finished downloading!"
 		},
 		"brain": {
 			"old":     "A brain \"%s\" already seems to exit. Loading it now...",
@@ -134,6 +155,11 @@
 			"old":     "A lyrics file already seems to exit. Loading it now...",
 			"new":     "I don't seem to have a lyrics file. I have created a new one.",
 			"done":    "I've finished loading my lyrics file."
+		},
+		"artwork": {
+			"old":     "An artwork file already seems to exit. Loading it now...",
+			"new":     "I don't seem to have an artwork file. I have created a new one.",
+			"done":    "I've finished loading my artwork file."
 		},
 		"backup": {
 			"start":   "Started a backup...",

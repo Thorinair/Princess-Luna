@@ -12,6 +12,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!mlp` Lists the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.
     - `!np` Lists the currently playing track on a PonyvilleFM station. Use "one", "two" or "free". Defaults to "one".
     - `!lyrics` Lists lyrics of a specified track. Also functions similar like previous command to list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
+    - `!artwork` Shows artwork for a specified track. Also functions similar like previous command to show artwork for tracks on PonyvilleFM. Use "list" parameter to list all known artworks.
     - `!phase` Lists info about the Moon phases. You may also specify the timezone after the command.
     - `!moon` Sends an image of the Moon as it is right now.
     - `!hug` Hug the user. Mentioning someone will hug them instead. You can mention multiple people.
@@ -22,8 +23,11 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!help` Lists all available commands.
 * Private commands for the admin:
     - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Use the following regex to remove usernames and timestamps: `([)([0-9]+:[0-9]+ [A-Z]+)(]) .*: `
-    - `!togglenp` Manually toggles the automatic listing of now playing info.
-    - `!addlyrics` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
-    - `!dellyrics` Removes lyrics from the database. Specify a track name after the command.
+    - `!nptoggle` Manually toggles the automatic listing of Now Playing info.
+    - `!npoverride` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
+    - `!lyricsadd` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
+    - `!lyricsdel` Removes lyrics from the database. Specify a track name after the command.
+    - `!artworkadd` Adds an artwork to the database. Specify a track name after the command, and the artwork URL in the line below.
+    - `!artworkdel` Removes an artwork from the database. Specify a track name after the command.
     - `!reboot` Reboots the bot.
     - `!backup` Created a backup of the data and config directories and sends it as a file through Discord.
