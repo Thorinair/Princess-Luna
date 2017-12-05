@@ -19,6 +19,7 @@
 		"typetime":      2,
 		"reboottime":    2,
 		"starttime":     60,
+		"reconnecttime": 10,
 		"channels": {
 			"announcements": "announcements",
 			"welcome":       "general",

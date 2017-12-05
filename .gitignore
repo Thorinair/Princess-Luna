@@ -1,3 +1,3 @@
-src/config/token.json
-src/config/channels.json
-src/config/varipass.json
+config/token.json
+config/channels.json
+config/varipass.json

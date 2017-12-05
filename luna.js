@@ -1517,7 +1517,10 @@ function loadBot() {
 
 	bot.on("disconnect", function(erMsg, code) {
 	    console.error(strings.debug.disconnected);
-	    bot.connect();
+	    // Wait for reconnect to prevent spamming.
+	    setTimeout(function() {
+			bot.connect();
+    	}, config.options.reconnecttime * 1000);	    
 	});
 }
 
