@@ -65,7 +65,7 @@
 		},
 		{
 			"command": "np",
-			"help":    "Ask me which track is currently playing on a specified PonyvilleFM station. No station name will default to \"one\". You can use \"one\", \"two\" or \"free\".",
+			"help":    "Ask me which track is currently playing on PonyvilleFM.",
 			"private": false
 		},
 		{

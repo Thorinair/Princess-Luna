@@ -9,24 +9,23 @@
 			"error":    "%s, I don't know of that timezone."
 		},
 		"np": {
-			"message":  "%s, the track currently playing on PonyvilleFM %s is:\n*%s*",
-			"error":    "%s, for some reason, I am unable to tell you which track is currently playing on PonyvilleFM %s.",
-			"missing":  "%s, I don't know of that station."
+			"message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
+			"error":    "%s, I am unable to tell you which track is currently playing on PonyvilleFM."
 		},
 		"lyrics": {
 			"message":  "%s, here are the lyrics of that track:\n\n",
-			"radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM %s:\n\n",
+			"radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM:\n\n",
 			"list":     "%s, here are all the tracks I know the lyrics of:\n\n",
 			"errorA":   "%s, I don't know the lyrics of that track.",
-			"errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM %s."
+			"errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM."
 		},
 		"artwork": {
 			"load":     "%s, give me a moment...",
 			"message":  "Here is the artwork for that track:",
-			"radio":    "Here is the artwork for the track currently playing on PonyvilleFM %s:",
+			"radio":    "Here is the artwork for the track currently playing on PonyvilleFM:",
 			"list":     "%s, here are all the tracks I have an artwork for:\n\n",
 			"errorA":   "%s, I don't have an artwork for that track.",
-			"errorB":   "%s, I don't have an artwork for the track currently playing on PonyvilleFM %s."
+			"errorB":   "%s, I don't have an artwork for the track currently playing on PonyvilleFM."
 		},
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",

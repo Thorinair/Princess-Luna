@@ -99,40 +99,42 @@ commands.mlp = function(data) {
 
 // Command: !np
 commands.np = function(data) {
-	var station = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-	if (station == "" || station == config.options.commandsymbol + data.command)
-		station = config.options.defstation;
-
-	if (np[station] != undefined) {
-		if (np[station].artist != undefined && np[station].title != undefined)
-			send(data.channelID, util.format(
-				strings.commands.np.message, 
-				mention(data.userID),
-				station,
-				np[station].nowplaying
-			), true);
-		else
-			send(data.channelID, util.format(
-				strings.commands.np.error, 
-				mention(data.userID),
-				station
-			), true);
-	}
-	else {
+	if (np[config.options.defstation].artist != undefined && np[config.options.defstation].title != undefined)
 		send(data.channelID, util.format(
-			strings.commands.np.missing, 
+			strings.commands.np.message, 
+			mention(data.userID),
+			np[config.options.defstation].nowplaying
+		), true);
+	else
+		send(data.channelID, util.format(
+			strings.commands.np.error, 
 			mention(data.userID)
 		), true);
-	}
 };
 
 // Command: !lyrics
 commands.lyrics = function(data) {
 	var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-	if (param == "" || param == config.options.commandsymbol + data.command)
-		param = config.options.defstation;
 
-	if (param == "list") {
+	if (param == "" || param == config.options.commandsymbol + data.command) {
+		if (lyrics[np[config.options.defstation].nowplaying] != undefined) {
+
+			sendLargeMessage(data, lyrics[np[config.options.defstation].nowplaying].split("\n"), util.format(
+				strings.commands.lyrics.radio,
+				mention(data.userID)
+			), true);
+
+		}
+		else {
+
+			send(data.channelID, util.format(
+				strings.commands.lyrics.errorB,
+				mention(data.userID)
+			), true);
+
+		}
+	}
+	else if (param == "list") {
 
 		sendLargeMessage(data, Object.keys(lyrics).sort(), util.format(
 			strings.commands.lyrics.list,
@@ -148,24 +150,6 @@ commands.lyrics = function(data) {
 		), true);
 
 	}
-	else if (np[param] != undefined) {
-		if (lyrics[np[param].nowplaying] != undefined) {
-
-			sendLargeMessage(data, lyrics[np[param].nowplaying].split("\n"), util.format(
-				strings.commands.lyrics.radio,
-				mention(data.userID),
-				param
-			), true);
-
-		}
-		else {
-			send(data.channelID, util.format(
-				strings.commands.lyrics.errorB,
-				mention(data.userID),
-				param
-			), true);
-		}
-	}
 	else {
 		send(data.channelID, util.format(
 			strings.commands.lyrics.errorA,
@@ -177,10 +161,31 @@ commands.lyrics = function(data) {
 // Command: !artwork
 commands.artwork = function(data) {
 	var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-	if (param == "" || param == config.options.commandsymbol + data.command)
-		param = config.options.defstation;
 
-	if (param == "list") {
+	if (param == "" || param == config.options.commandsymbol + data.command) {
+		if (artwork[np[config.options.defstation].nowplaying] != undefined) {
+
+			send(data.channelID, util.format(
+				strings.commands.artwork.load,
+				mention(data.userID)
+			), true);
+
+			download(artwork[np[config.options.defstation].nowplaying], config.options.artimg, function() {
+				console.log(strings.debug.download.stop);
+				embed(data.channelID, strings.commands.artwork.radio, config.options.artimg, np[config.options.defstation].nowplaying + ".png", true, true);
+			});
+
+		}
+		else {
+
+			send(data.channelID, util.format(
+				strings.commands.artwork.errorB,
+				mention(data.userID)
+			), true);
+
+		}
+	}
+	else if (param == "list") {
 
 		sendLargeMessage(data, Object.keys(artwork).sort(), util.format(
 			strings.commands.artwork.list,
@@ -189,6 +194,7 @@ commands.artwork = function(data) {
 
 	}
 	else if (artwork[param] != undefined) {
+
 		send(data.channelID, util.format(
 			strings.commands.artwork.load,
 			mention(data.userID)
@@ -199,29 +205,6 @@ commands.artwork = function(data) {
 			embed(data.channelID, strings.commands.artwork.message, config.options.artimg, param + ".png", true, true);
 		});
 
-	}
-	else if (np[param] != undefined) {
-		if (artwork[np[param].nowplaying] != undefined) {
-			send(data.channelID, util.format(
-				strings.commands.artwork.load,
-				mention(data.userID)
-			), true);
-
-			download(artwork[np[param].nowplaying], config.options.artimg, function() {
-				console.log(strings.debug.download.stop);
-				embed(data.channelID, util.format(
-					strings.commands.artwork.radio,
-					param
-				), config.options.artimg, np[param].nowplaying + ".png", true, true);
-			});
-		}
-		else {
-			send(data.channelID, util.format(
-				strings.commands.artwork.errorB,
-				mention(data.userID),
-				param
-			), true);
-		}
 	}
 	else {
 		send(data.channelID, util.format(
