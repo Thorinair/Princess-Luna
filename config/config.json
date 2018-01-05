@@ -29,7 +29,7 @@
 		}
 	},
 	"nowplaying": {
-		"url":     "https://ponyvillefm.com/data/nowplaying",
+		"url":     "http://dj.bronyradio.com:8000/status-json.xsl?mount=/pvfm1.ogg",
 		"timeout": 5
 	},
 	"brain": {
