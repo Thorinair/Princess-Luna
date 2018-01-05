@@ -1468,7 +1468,7 @@ function loadBot() {
 		    config.commands.forEach(function(c) {
 		    	if (command == config.options.commandsymbol + c.command && nocommand) {
 		    		if (c.private) {
-		    			if (userID == channelNameToID(config.options.channels.private)) {
+		    			if (userID == config.options.adminid) {
 				    		commands[c.command](packed);
 				    		nocommand = false;
 		    			}

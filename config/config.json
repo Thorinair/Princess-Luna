@@ -4,6 +4,7 @@
 		"mention":       "<@!%s>",
 		"roleid":        "277564526940127243",
 		"serverid":      "277563243050827776",
+		"adminid":       "81244981343297536",
 		"varipassurl":   "https://api.varipass.org/",
 		"phaseurl":      "http://api.usno.navy.mil/moon/phase?date=1/1/2017&nump=50",
 		"moonurl":       "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
@@ -25,7 +26,7 @@
 			"welcome":       "general",
 			"phases":        "general",
 			"nowplaying":    "gotn",
-			"private":       "thorinair"
+			"private":       "debug"
 		}
 	},
 	"nowplaying": {
