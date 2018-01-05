@@ -62,6 +62,10 @@
 			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
 			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
 		},
+		"send": {
+			"message":  "Thori, I'm sending the message now...",
+			"error":    "Thori, you need to specify the text for me to send."
+		},
 		"learn": {
 			"message":  "Thori, I've learned the text you gave me.",
 			"errorA":   "Thori, you need to specify the brain which I should learn with after the command.",

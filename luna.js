@@ -430,6 +430,15 @@ commands.stats = function(data) {
 	}
 };
 
+// Command: !send
+commands.send = function(data) {
+	var text = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (text == "" || text == config.options.commandsymbol + data.command)
+		send(channelNameToID(config.options.channels.private), strings.commands.send.error, false);
+	else
+		send(channelNameToID(config.options.channels.send), text, false);
+};
+
 // Command: !learn
 commands.learn = function(data) {
 	var lines = data.message.split("\n");

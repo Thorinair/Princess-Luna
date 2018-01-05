@@ -26,6 +26,7 @@
 			"welcome":       "general",
 			"phases":        "general",
 			"nowplaying":    "gotn",
+			"send":          "gotn",
 			"private":       "debug"
 		}
 	},
@@ -113,6 +114,11 @@
 			"command": "stats",
 			"help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
 			"private": false
+		},
+		{
+			"command": "send",
+			"help":    "",
+			"private": true
 		},
 		{
 			"command": "learn",
