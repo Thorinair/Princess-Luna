@@ -99,11 +99,11 @@ commands.mlp = function(data) {
 
 // Command: !np
 commands.np = function(data) {
-	if (np.title != undefined)
+	if (np.nowplaying != undefined)
 		send(data.channelID, util.format(
 			strings.commands.np.message, 
 			mention(data.userID),
-			np.title
+			np.nowplaying
 		), true);
 	else
 		send(data.channelID, util.format(
@@ -117,9 +117,9 @@ commands.lyrics = function(data) {
 	var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 
 	if (param == "" || param == config.options.commandsymbol + data.command) {
-		if (lyrics[np.title] != undefined) {
+		if (lyrics[np.nowplaying] != undefined) {
 
-			sendLargeMessage(data, lyrics[np.title].split("\n"), util.format(
+			sendLargeMessage(data, lyrics[np.nowplaying].split("\n"), util.format(
 				strings.commands.lyrics.radio,
 				mention(data.userID)
 			), true);
@@ -163,16 +163,16 @@ commands.artwork = function(data) {
 	var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 
 	if (param == "" || param == config.options.commandsymbol + data.command) {
-		if (artwork[np.title] != undefined) {
+		if (artwork[np.nowplaying] != undefined) {
 
 			send(data.channelID, util.format(
 				strings.commands.artwork.load,
 				mention(data.userID)
 			), true);
 
-			download(artwork[np.title], config.options.artimg, function() {
+			download(artwork[np.nowplaying], config.options.artimg, function() {
 				console.log(strings.debug.download.stop);
-				embed(data.channelID, strings.commands.artwork.radio, config.options.artimg, np.title + ".png", true, true);
+				embed(data.channelID, strings.commands.artwork.radio, config.options.artimg, np.nowplaying + ".png", true, true);
 			});
 
 		}
@@ -493,12 +493,12 @@ commands.npoverride = function(data) {
 			track
 		), false);
 
-		np.title = track;
+		np.nowplaying = track;
 
 		if (toggle_np)
 			send(channelNameToID(config.options.channels.nowplaying), util.format(
 				strings.announcements.nowplaying,
-				np.title
+				np.nowplaying
 			), true);
 	}
 };
@@ -1531,14 +1531,25 @@ function loopNowPlaying() {
 	        	response.icestats != undefined && 
 	        	response.icestats.source != undefined
 	        	) {
-		        if (npradio == undefined || npradio.title != response.icestats.source.title) {
+		        if (npradio == undefined || npradio.title != response.icestats.source.title || npradio.artist != response.icestats.source.artist) {
+
 		        	npradio = JSON.parse(xhr.responseText).icestats.source;
+		        	if (npradio.artist != undefined)
+		        		npradio.nowplaying = npradio.artist + config.separators.track + npradio.title;
+		        	else
+		        		npradio.nowplaying = npradio.title;
+
+
 		        	np = JSON.parse(xhr.responseText).icestats.source;
+		        	if (np.artist != undefined)
+		        		np.nowplaying = np.artist + config.separators.track + np.title;
+		        	else
+		        		np.nowplaying = np.title;
 
 		        	if (toggle_np)
 		    			send(channelNameToID(config.options.channels.nowplaying), util.format(
 		    				strings.announcements.nowplaying,
-		    				np.title
+		    				np.nowplaying
 		    			), true);
 		        }
 		    }
