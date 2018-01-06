@@ -435,8 +435,10 @@ commands.send = function(data) {
 	var text = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (text == "" || text == config.options.commandsymbol + data.command)
 		send(channelNameToID(config.options.channels.private), strings.commands.send.error, false);
-	else
-		send(channelNameToID(config.options.channels.send), text, false);
+	else {
+		send(channelNameToID(config.options.channels.private), strings.commands.send.message, false);
+		send(channelNameToID(config.options.channels.send), text, true);
+	}
 };
 
 // Command: !learn
