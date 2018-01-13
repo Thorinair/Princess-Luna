@@ -1546,7 +1546,12 @@ function loopNowPlaying() {
 
 	xhr.onreadystatechange = function () { 
 	    if (xhr.readyState == 4 && xhr.status == 200) {
-	        var response = JSON.parse(xhr.responseText);
+	    	var response
+	    	try {
+				response = JSON.parse(xhr.responseText);
+			}
+			catch(error) {
+			}
 	        if (
 	        	response != undefined && 
 	        	response.icestats != undefined && 

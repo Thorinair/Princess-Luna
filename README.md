@@ -32,3 +32,6 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!artworkdel` Removes an artwork from the database. Specify a track name after the command.
     - `!reboot` Reboots the bot.
     - `!backup` Created a backup of the data and config directories and sends it as a file through Discord.
+
+## Privacy & Data Collection
+This bot stores message history in plain text files and uses them as training data upon startup. The messages are stored indefinitely, or until they are manually deleted. Plain text storage allows for later editing in case the data needs to be modified. The messages are stored only in the channels where learning has been enabled. Please use the !stats command to verify whether any data collection will take place in the specific channel.
