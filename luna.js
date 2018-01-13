@@ -431,13 +431,28 @@ commands.stats = function(data) {
 };
 
 // Command: !send
-commands.send = function(data) {
-	var text = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-	if (text == "" || text == config.options.commandsymbol + data.command)
-		send(channelNameToID(config.options.channels.private), strings.commands.send.error, false);
+commands.send = function(data) {	
+	var lines = data.message.split("\n");
+
+	var channel = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
+	if (channel == "" || channel == config.options.commandsymbol + data.command) {
+		send(channelNameToID(config.options.channels.private), strings.commands.send.errorA, false);
+	}
 	else {
-		send(channelNameToID(config.options.channels.private), strings.commands.send.message, false);
-		send(channelNameToID(config.options.channels.send), text, true);
+		var text = "";
+		lines.forEach(function(l, i) {
+			if (i != 0) {
+				text += l + "\n";
+			}
+		});
+
+		if (text != "") {
+			send(channelNameToID(config.options.channels.private), strings.commands.send.message, false);
+			send(channelNameToID(channel), text, true);
+		}
+		else {
+			send(channelNameToID(config.options.channels.private), strings.commands.send.errorB, false);
+		}
 	}
 };
 
@@ -497,11 +512,14 @@ commands.npoverride = function(data) {
 
 		np.nowplaying = track;
 
-		if (toggle_np)
-			send(channelNameToID(config.options.channels.nowplaying), util.format(
-				strings.announcements.nowplaying,
-				np.nowplaying
-			), true);
+		if (toggle_np) {
+			config.options.channels.nowplaying.forEach(function(c, i) {
+				send(channelNameToID(c), util.format(
+					strings.announcements.nowplaying,
+					np.nowplaying
+				), true);
+			});
+		}			
 	}
 };
 

@@ -22,12 +22,14 @@
 		"starttime":     60,
 		"reconnecttime": 10,
 		"channels": {
+			"private":       "debug",
 			"announcements": "announcements",
 			"welcome":       "general",
 			"phases":        "general",
-			"nowplaying":    "gotn",
-			"send":          "gotn",
-			"private":       "debug"
+			"nowplaying":    [
+				"gotn",
+				"pvfm_ponyvillefm"
+			]
 		}
 	},
 	"nowplaying": {

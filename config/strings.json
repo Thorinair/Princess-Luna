@@ -64,7 +64,8 @@
 		},
 		"send": {
 			"message":  "Thori, I'm sending the message now...",
-			"error":    "Thori, you need to specify the text for me to send."
+			"errorA":   "Thori, you need to specify the channel for me to send to.",
+			"errorB":   "Thori, you need to specify the text for me to send."
 		},
 		"learn": {
 			"message":  "Thori, I've learned the text you gave me.",
