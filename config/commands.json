@@ -61,6 +61,11 @@
 			"private": false
 		},
 		{
+			"command": "about",
+			"help":    "Ask me to introduce myself and tell you where you can find my source code.",
+			"private": false
+		},
+		{
 			"command": "send",
 			"help":    "",
 			"private": true

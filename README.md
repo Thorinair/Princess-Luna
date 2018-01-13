@@ -20,6 +20,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!boop` Boop the user. Mentioning someone will boop them instead. You can mention multiple people.
     - `!room` Lists the physical status of Thorinair's real life room. Powered using the [VariPass](https://varipass.org) website.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
+    - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.
 * Private commands for the admin:
     - `!send` Sends a message to a channel. Specify the channel name after the command, and message in the lines below.

@@ -52,15 +52,18 @@
 			"multiple": "*Gives %s boops on their snouts!*",
 			"self":     "*Boops her own snout and makes a confused face!*"
 		},
+		"room": {
+			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
+			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
+		},
 		"stats": {
 			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago. The brain I am using for this chatroom is called *%s*, and has %s lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",
 			"learnno":  "I am unable to learn anything from this specific chatroom.",
 			"error":    "%s, I don't know of that timezone."
 		},
-		"room": {
-			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
-			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
+		"about": {
+			"message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Hope you have a lovely night!"
 		},
 		"send": {
 			"message":  "Thori, I'm sending the message now...",

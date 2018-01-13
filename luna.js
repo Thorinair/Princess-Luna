@@ -431,6 +431,15 @@ comm.stats = function(data) {
 	}
 };
 
+// Command: !about
+comm.about = function(data) {
+	send(data.channelID, util.format(
+		strings.commands.about.message, 
+		mention(data.userID),
+		package.homepage
+	), true);
+};
+
 // Command: !send
 comm.send = function(data) {	
 	var lines = data.message.split("\n");
