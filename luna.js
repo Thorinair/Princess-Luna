@@ -15,6 +15,7 @@ const jsmegahal      = require("jsmegahal");
 // Load file data
 const token    = require("./config/token.json");
 const config   = require("./config/config.json");
+const commands = require("./config/commands.json");
 const strings  = require("./config/strings.json");
 const gotn     = require("./config/gotn.json");
 const mlp      = require("./config/mlp.json");
@@ -23,10 +24,10 @@ const varipass = require("./config/varipass.json");
 const package  = require("./package.json");
 
 // Commands
-var commands = {};
+var comm = {};
 
 // Command: !gotn
-commands.gotn = function(data) {
+comm.gotn = function(data) {
 	var now = new Date();
 	var found = false;
 
@@ -61,7 +62,7 @@ commands.gotn = function(data) {
 };
 
 // Command: !mlp
-commands.mlp = function(data) {
+comm.mlp = function(data) {
 	var now = new Date();
 	var found = false;
 
@@ -98,7 +99,7 @@ commands.mlp = function(data) {
 };
 
 // Command: !np
-commands.np = function(data) {
+comm.np = function(data) {
 	if (np.nowplaying != undefined)
 		send(data.channelID, util.format(
 			strings.commands.np.message, 
@@ -113,7 +114,7 @@ commands.np = function(data) {
 };
 
 // Command: !lyrics
-commands.lyrics = function(data) {
+comm.lyrics = function(data) {
 	var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 
 	if (param == "" || param == config.options.commandsymbol + data.command) {
@@ -159,7 +160,7 @@ commands.lyrics = function(data) {
 };
 
 // Command: !artwork
-commands.artwork = function(data) {
+comm.artwork = function(data) {
 	var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 
 	if (param == "" || param == config.options.commandsymbol + data.command) {
@@ -215,7 +216,7 @@ commands.artwork = function(data) {
 };
 
 // Command: !phase
-commands.phase = function(data) {
+comm.phase = function(data) {
 	var dateNow = new Date();
 	var message;
 	var phaseNext;
@@ -295,7 +296,7 @@ commands.phase = function(data) {
 };
 
 // Command: !moon
-commands.moon = function(data) {
+comm.moon = function(data) {
 	send(data.channelID, util.format(
 		strings.commands.moon.messageA,
 		mention(data.userID)
@@ -308,22 +309,22 @@ commands.moon = function(data) {
 };
 
 // Command: !hug
-commands.hug = function(data) {
+comm.hug = function(data) {
 	doMultiCommand(data);
 };
 
 // Command: !kiss
-commands.kiss = function(data) {
+comm.kiss = function(data) {
 	doMultiCommand(data);
 };
 
 // Command: !boop
-commands.boop = function(data) {
+comm.boop = function(data) {
 	doMultiCommand(data);
 };
 
 // Command: !room
-commands.room = function(data) {
+comm.room = function(data) {
 
 	var payload = {
 			"key": varipass.key,
@@ -381,7 +382,7 @@ commands.room = function(data) {
 };
 
 // Command: !stats
-commands.stats = function(data) {
+comm.stats = function(data) {
 	var dateNow = new Date();
 
 	var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
@@ -431,7 +432,7 @@ commands.stats = function(data) {
 };
 
 // Command: !send
-commands.send = function(data) {	
+comm.send = function(data) {	
 	var lines = data.message.split("\n");
 
 	var channel = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
@@ -457,7 +458,7 @@ commands.send = function(data) {
 };
 
 // Command: !learn
-commands.learn = function(data) {
+comm.learn = function(data) {
 	var lines = data.message.split("\n");
 
 
@@ -490,7 +491,7 @@ commands.learn = function(data) {
 };
 
 // Command: !nptoggle
-commands.nptoggle = function(data) {
+comm.nptoggle = function(data) {
 	toggle_np = !toggle_np;
 	send(channelNameToID(config.options.channels.private), util.format(
 		strings.commands.nptoggle.message, 
@@ -499,7 +500,7 @@ commands.nptoggle = function(data) {
 };
 
 // Command: !npoverride
-commands.npoverride = function(data) {
+comm.npoverride = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
 		send(channelNameToID(config.options.channels.private), strings.commands.npoverride.error, false);
@@ -524,7 +525,7 @@ commands.npoverride = function(data) {
 };
 
 // Command: !lyricsadd
-commands.lyricsadd = function(data) {
+comm.lyricsadd = function(data) {
 	var lines = data.message.split("\n");
 
 	var track = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
@@ -560,7 +561,7 @@ commands.lyricsadd = function(data) {
 };
 
 // Command: !lyricsdel
-commands.lyricsdel = function(data) {
+comm.lyricsdel = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
 		send(channelNameToID(config.options.channels.private), strings.commands.lyricsdel.errorA, false);
@@ -583,7 +584,7 @@ commands.lyricsdel = function(data) {
 };
 
 // Command: !artworkadd
-commands.artworkadd = function(data) {
+comm.artworkadd = function(data) {
 	var lines = data.message.split("\n");
 
 	var track = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
@@ -618,7 +619,7 @@ commands.artworkadd = function(data) {
 };
 
 // Command: !artworkdel
-commands.artworkdel = function(data) {
+comm.artworkdel = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
 		send(channelNameToID(config.options.channels.private), strings.commands.artworkdel.errorA, false);
@@ -641,7 +642,7 @@ commands.artworkdel = function(data) {
 };
 
 // Command: !reboot
-commands.reboot = function(data) {
+comm.reboot = function(data) {
 	send(channelNameToID(config.options.channels.private), strings.commands.reboot.message, false);
 	saveAllBrains();
 	setTimeout(function() {
@@ -651,7 +652,7 @@ commands.reboot = function(data) {
 };
 
 // Command: !backup
-commands.backup = function(data) {
+comm.backup = function(data) {
 	console.log(strings.debug.backup.start);
 	send(channelNameToID(config.options.channels.private), strings.commands.backup.messageA, false);
 
@@ -704,14 +705,14 @@ commands.backup = function(data) {
 };
 
 // Command: !help
-commands.help = function(data) {
+comm.help = function(data) {
 	var reply = "";
 
 	reply += util.format(
 		strings.commands.help.messageA, 
 		mention(data.userID)
 	);
-	config.commands.forEach(function(c) {
+	commands.list.forEach(function(c) {
 		if (!c.private)
 			reply += util.format(
 				strings.commands.help.messageB, 
@@ -1494,16 +1495,16 @@ function loadBot() {
 		    packed.data      = data;
 		    packed.command   = command.replace(config.options.commandsymbol, "");
 
-		    config.commands.forEach(function(c) {
+		    commands.list.forEach(function(c) {
 		    	if (command == config.options.commandsymbol + c.command && nocommand) {
 		    		if (c.private) {
 		    			if (userID == config.options.adminid) {
-				    		commands[c.command](packed);
+				    		comm[c.command](packed);
 				    		nocommand = false;
 		    			}
 		    		}
 		    		else {
-			    		commands[c.command](packed);
+			    		comm[c.command](packed);
 			    		nocommand = false;
 			    	}
 		    	}
