@@ -1573,10 +1573,12 @@ function loopNowPlaying() {
 		        		np.nowplaying = np.title;
 
 		        	if (toggle_np)
-		    			send(channelNameToID(config.options.channels.nowplaying), util.format(
-		    				strings.announcements.nowplaying,
-		    				np.nowplaying
-		    			), true);
+		        		config.options.channels.nowplaying.forEach(function(c, i) {
+			    			send(channelNameToID(c), util.format(
+			    				strings.announcements.nowplaying,
+			    				np.nowplaying
+			    			), true);
+		        		});
 		        }
 		    }
 	    }
