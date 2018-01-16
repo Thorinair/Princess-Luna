@@ -98,6 +98,12 @@
 			"multi":   true,
 			"private": false
 		},
+		{
+			"command": "snack",
+			"help":    "",
+			"multi":   true,
+			"private": false
+		},
 
 
 		{

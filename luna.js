@@ -494,6 +494,11 @@ comm.snuggle = function(data) {
 	doMultiCommand(data);
 };
 
+// Command: !snack
+comm.snack = function(data) {
+	doMultiCommand(data);
+};
+
 
 
 // Command: !send

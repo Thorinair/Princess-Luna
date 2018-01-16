@@ -84,6 +84,11 @@
 			"multiple": "*Lovingly snuggles %s!*",
 			"self":     "*Wraps hooves around herself and lonely snuggles herself.*"
 		},
+		"snack": {
+			"single":   "*Throws a snack at %s and flies away!*",
+			"multiple": "*Showers %s with snacks before flying away!*",
+			"self":     "*Throws a snack at herself and looks at you in confusion.*"
+		},
 
 
 		"send": {
