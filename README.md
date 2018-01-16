@@ -15,13 +15,11 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!artwork` Shows artwork for a specified track. Also functions similar like previous command to show artwork for tracks on PonyvilleFM. Use "list" parameter to list all known artworks.
     - `!phase` Lists info about the Moon phases. You may also specify the timezone after the command.
     - `!moon` Sends an image of the Moon as it is right now.
-    - `!hug` Hug the user. Mentioning someone will hug them instead. You can mention multiple people.
-    - `!kiss` Kiss the user. Mentioning someone will kiss them instead. You can mention multiple people.
-    - `!boop` Boop the user. Mentioning someone will boop them instead. You can mention multiple people.
     - `!room` Lists the physical status of Thorinair's real life room. Powered using the [VariPass](https://varipass.org) website.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.
+    - The bot can interract with people. Mention someone or multiple people after the command to interract with them. Supported commands: `!hug`, `!kiss`, `!boop`.
 * Private commands for the admin:
     - `!send` Sends a message to a channel. Specify the channel name after the command, and message in the lines below.
     - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Use the following regex to remove usernames and timestamps: `([)([0-9]+:[0-9]+ [A-Z]+)(]) .*: `

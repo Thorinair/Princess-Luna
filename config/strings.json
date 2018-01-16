@@ -37,21 +37,6 @@
 			"messageA": "%s, give me a moment...",
 			"messageB": "Here is how the Moon looks like right now."
 		},
-		"hug": {
-			"single":   "*Gives %s a big warm hug!*",
-			"multiple": "*Gives %s big warm hugs!*",
-			"self":     "*Awkwardly gives herself a big warm hug!*"
-		},
-		"kiss": {
-			"single":   "*Gives %s a kiss on the cheek!*",
-			"multiple": "*Gives %s kisses on their cheeks!*",
-			"self":     "*Opens two magical portals and uses them to give herself a kiss on the cheek!*"
-		},
-		"boop": {
-			"single":   "*Gives %s a boop on the snout!*",
-			"multiple": "*Gives %s boops on their snouts!*",
-			"self":     "*Boops her own snout and makes a confused face!*"
-		},
 		"room": {
 			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
 			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
@@ -65,6 +50,42 @@
 		"about": {
 			"message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Hope you have a lovely night!"
 		},
+		"help": {
+			"messageA": "%s, here are some of the commands you can use:",
+			"messageB": "\n• `%s%s` %s",
+			"messageC": "`%s%s`",
+			"messageD": "\n• I can also interract with others. Use any of the following commands and mention somepony or multiple of them afterwards: %s.",
+			"messageE": "\n• You can also talk with me by mentioning me in the chat."
+		},
+
+
+		"hug": {
+			"single":   "*Gives %s a big warm hug!*",
+			"multiple": "*Gives %s big warm hugs!*",
+			"self":     "*Awkwardly gives herself a hug.*"
+		},
+		"kiss": {
+			"single":   "*Gives %s a kiss on the cheek!*",
+			"multiple": "*Gives %s kisses on their cheeks!*",
+			"self":     "*Opens two magical portals and uses them to give herself a kiss on the cheek.*"
+		},
+		"boop": {
+			"single":   "*Gives %s a boop on the snout!*",
+			"multiple": "*Gives %s boops on their snouts!*",
+			"self":     "*Boops her own snout and makes a confused face.*"
+		},
+		"glomp": {
+			"single":   "*Jumps at %s and glomps them!*",
+			"multiple": "*Jumps at the pony pile made out of %s and glomps all of them!*",
+			"self":     "*Jumps upwards in the air, falls down and awkwardly glomps herself.*"
+		},
+		"snuggle": {
+			"single":   "*Lovingly snuggles %s!*",
+			"multiple": "*Lovingly snuggles %s!*",
+			"self":     "*Wraps hooves around herself and lonely snuggles herself.*"
+		},
+
+
 		"send": {
 			"message":  "Thori, I'm sending the message now...",
 			"errorA":   "Thori, you need to specify the channel for me to send to.",
@@ -111,11 +132,6 @@
 			"messageA":  "Thori, I've started a backup of my files. Give me a moment...",
 			"messageB":  "Here, I am sending you the newest backup of all of my files.",
 			"error":     "Looks like something has gone wrong, but I am not sure what... Here is more info: %s"
-		},
-		"help": {
-			"messageA": "%s, here are some of the commands you can use:",
-			"messageB": "\n`%s%s` %s",
-			"messageC": "\nYou can also talk with me by mentioning me in the chat."
 		}
 	},
 	"announcements": {

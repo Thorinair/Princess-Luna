@@ -308,21 +308,6 @@ comm.moon = function(data) {
 	});
 };
 
-// Command: !hug
-comm.hug = function(data) {
-	doMultiCommand(data);
-};
-
-// Command: !kiss
-comm.kiss = function(data) {
-	doMultiCommand(data);
-};
-
-// Command: !boop
-comm.boop = function(data) {
-	doMultiCommand(data);
-};
-
 // Command: !room
 comm.room = function(data) {
 
@@ -439,6 +424,77 @@ comm.about = function(data) {
 		package.homepage
 	), true);
 };
+
+// Command: !help
+comm.help = function(data) {
+	var reply = "";
+
+	reply += util.format(
+		strings.commands.help.messageA, 
+		mention(data.userID)
+	);
+
+	commands.list.forEach(function(c) {
+		if (!c.private && !c.multi)
+			reply += util.format(
+				strings.commands.help.messageB, 
+				config.options.commandsymbol,
+				c.command,
+				c.help
+			);
+	});
+
+	var multiCommands = ""
+	commands.list.forEach(function(c) {
+		if (!c.private && c.multi) {
+			if (multiCommands != "")
+				multiCommands += ", ";
+			multiCommands += util.format(
+				strings.commands.help.messageC, 
+				config.options.commandsymbol,
+				c.command
+			);
+		}
+	});
+
+	reply += util.format(
+		strings.commands.help.messageD,
+		multiCommands
+	);
+
+	reply += strings.commands.help.messageE;
+
+	send(data.channelID, reply, true);
+};
+
+
+
+// Command: !hug
+comm.hug = function(data) {
+	doMultiCommand(data);
+};
+
+// Command: !kiss
+comm.kiss = function(data) {
+	doMultiCommand(data);
+};
+
+// Command: !boop
+comm.boop = function(data) {
+	doMultiCommand(data);
+};
+
+// Command: !glomp
+comm.glomp = function(data) {
+	doMultiCommand(data);
+};
+
+// Command: !snuggle
+comm.snuggle = function(data) {
+	doMultiCommand(data);
+};
+
+
 
 // Command: !send
 comm.send = function(data) {	
@@ -711,28 +767,6 @@ comm.backup = function(data) {
 	});
 
 	archive.finalize();
-};
-
-// Command: !help
-comm.help = function(data) {
-	var reply = "";
-
-	reply += util.format(
-		strings.commands.help.messageA, 
-		mention(data.userID)
-	);
-	commands.list.forEach(function(c) {
-		if (!c.private)
-			reply += util.format(
-				strings.commands.help.messageB, 
-				config.options.commandsymbol,
-				c.command,
-				c.help
-			);
-	});
-	reply += strings.commands.help.messageC;
-
-	send(data.channelID, reply, true);
 };
 
 // Status Variables

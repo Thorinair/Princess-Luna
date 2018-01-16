@@ -3,122 +3,162 @@
 		{
 			"command": "gotn",
 			"help":    "Ask me about the time left until the next Glory of The Night episode. You may also specify the timezone after the command.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "mlp",
 			"help":    "Ask me about the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "np",
 			"help":    "Ask me which track is currently playing on PonyvilleFM.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "lyrics",
 			"help":    "Ask me about lyrics for a specific track. You can also use it like the previous command to get lyrics for music on PonyvilleFM. Use the \"list\" parameter to see all the tracks I know.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "artwork",
 			"help":    "Ask me to show the artwork for a specific track. You can also use it like the previous command to get artwork for music on PonyvilleFM. Use the \"list\" parameter to see all the tracks I have an artwork for.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "phase",
 			"help":    "Ask me about the status of the Moon's phase. You may also specify the timezone after the command.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "moon",
 			"help":    "Ask me to show how the Moon looks like right now.",
-			"private": false
-		},
-		{
-			"command": "hug",
-			"help":    "Ask me to hug you. If you mention somepony with it, I will hug them instead. You can mention multiple ponies.",
-			"private": false
-		},
-		{
-			"command": "kiss",
-			"help":    "Ask me to give you a kiss. If you mention somepony with it, I will kiss them instead. You can mention multiple ponies.",
-			"private": false
-		},
-		{
-			"command": "boop",
-			"help":    "Ask me to boop your snout. If you mention somepony with it, I will boop them instead. You can mention multiple ponies.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "room",
 			"help":    "Ask me about the physical status of Thorinair's real life room. Powered using the VariPass website.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "stats",
 			"help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
+			"multi":   false,
 			"private": false
 		},
 		{
 			"command": "about",
 			"help":    "Ask me to introduce myself and tell you where you can find my source code.",
+			"multi":   false,
 			"private": false
 		},
 		{
+			"command": "help",
+			"help":    "Ask me to repeat this messsage.",
+			"multi":   false,
+			"private": false
+		},
+
+
+		{
+			"command": "hug",
+			"help":    "",
+			"multi":   true,
+			"private": false
+		},
+		{
+			"command": "kiss",
+			"help":    "",
+			"multi":   true,
+			"private": false
+		},
+		{
+			"command": "boop",
+			"help":    "",
+			"multi":   true,
+			"private": false
+		},
+		{
+			"command": "glomp",
+			"help":    "",
+			"multi":   true,
+			"private": false
+		},
+		{
+			"command": "snuggle",
+			"help":    "",
+			"multi":   true,
+			"private": false
+		},
+
+
+		{
 			"command": "send",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "learn",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "nptoggle",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "npoverride",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "lyricsadd",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "lyricsdel",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "artworkadd",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "artworkdel",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "reboot",
 			"help":    "",
+			"multi":   false,
 			"private": true
 		},
 		{
 			"command": "backup",
 			"help":    "",
+			"multi":   false,
 			"private": true
-		},
-		{
-			"command": "help",
-			"help":    "Ask me to repeat this messsage.",
-			"private": false
 		}
 	]
 }
