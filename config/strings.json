@@ -89,6 +89,11 @@
 			"multiple": "*Showers %s with snacks before flying away!*",
 			"self":     "*Throws a snack at herself and looks at you in confusion.*"
 		},
+		"plushie": {
+			"single":   "*Casts a spell at %s, turning them into a plushie!*",
+			"multiple": "*Casts spells at %s, turning everypony into plushies!*",
+			"self":     "*Casts a spell at herself, turning herself into a plushie before remaining motionless.*"
+		},
 
 
 		"send": {

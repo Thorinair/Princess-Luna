@@ -499,6 +499,11 @@ comm.snack = function(data) {
 	doMultiCommand(data);
 };
 
+// Command: !plushie
+comm.plushie = function(data) {
+	doMultiCommand(data);
+};
+
 
 
 // Command: !send
