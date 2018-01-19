@@ -30,8 +30,8 @@
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
 			"messageB": "The next %s is in %s.",
-			"errorA":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment...",
-			"errorB":    "%s, I don't know of that timezone."
+			"errorA":   "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment...",
+			"errorB":   "%s, I don't know of that timezone."
 		},
 		"moon": {
 			"messageA": "%s, give me a moment...",
@@ -135,6 +135,11 @@
 			"errorA":   "Thori, you need to specify the track name.",
 			"errorB":   "Thori, I don't know of any track with that name."
 		},
+		"h": {
+			"messageA": "Thori, here are all the channels where I am tracking an h chain, along with the last seen h:",
+			"messageB": "\n• #%s - %s - **%s**",
+			"errorA":   "Thori, I am not yet tracking any h chain."
+		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
 		},
@@ -161,7 +166,8 @@
 		"welcome": "**My children, welcome %s to our beautiful night!**",
 		"load":    "Hey Thori, I'm back! My current version is v%s.",
 		"apifail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again.",
-		"left":    "%s on %s at %s"
+		"left":    "%s on %s at %s",
+		"h":       "h"
 	},
 	"debug": {
 		"message":      "> I'm sending the following message to #%s: \"%s\"",

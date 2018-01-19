@@ -161,6 +161,12 @@
 			"private": true
 		},
 		{
+			"command": "h",
+			"help":    "",
+			"multi":   false,
+			"private": true
+		},
+		{
 			"command": "reboot",
 			"help":    "",
 			"multi":   false,

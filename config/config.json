@@ -21,6 +21,8 @@
 		"reboottime":    2,
 		"starttime":     60,
 		"reconnecttime": 10,
+		"htimeout":      7200,
+		"hmessage":      60,
 		"channels": {
 			"private":       "debug",
 			"announcements": "announcements",

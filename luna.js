@@ -716,6 +716,29 @@ comm.artworkdel = function(data) {
 	}
 };
 
+// Command: !h
+comm.h = function(data) {
+	if (Object.keys(hTrack).length == 0)
+		send(channelNameToID(config.options.channels.private), strings.commands.h.errorA, false);
+	else {
+		var message = strings.commands.h.messageA;
+		Object.keys(hTrack).forEach(function(h, i) {
+			var status = "Cooldown";
+
+			if (moment() - hTrack[h] >= config.options.htimeout * 1000)
+				status = "Expired";
+
+			message += util.format(
+				strings.commands.h.messageB, 
+				channelIDToName(h),
+				moment.tz(new Date(hTrack[h]), "UTC").format("YYYY-MM-DD, HH:mm:ss"),
+				status
+			);
+		});
+		send(channelNameToID(config.options.channels.private), message, false);
+	}
+};
+
 // Command: !reboot
 comm.reboot = function(data) {
 	send(channelNameToID(config.options.channels.private), strings.commands.reboot.message, false);
@@ -789,6 +812,7 @@ var npradio   = {};
 var np        = {};
 var brains    = {};
 var messages  = {};
+var hTrack    = {};
 var startTime;
 
 // Persistant Objects
@@ -1057,6 +1081,28 @@ function getPhaseString(name, offset) {
 		id += config.phases.length;
 
 	return config.phases[id].name + " " + config.phases[id].icon;
+}
+
+/*
+ * h
+ * @param  channelID h
+ */
+function h(channelID) {
+	if (hTrack[channelID] == undefined)	{		
+		hTrack[channelID] = moment();
+		setTimeout(function() {
+			send(channelID, strings.misc.h, true);
+    	}, config.options.hmessage * 1000);
+	}
+	else if (moment() - hTrack[channelID] >= config.options.htimeout * 1000) {
+		hTrack[channelID] = moment();
+		setTimeout(function() {
+			send(channelID, strings.misc.h, true);
+    	}, config.options.hmessage * 1000);
+	}
+	else {
+		hTrack[channelID] = moment();
+	}
 }
 
 /*
@@ -1564,6 +1610,8 @@ function loadBot() {
 		    });
 		}
 		else {
+			if (message[0] == "h")
+				h(channelID);
 		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
 				console.log(util.format(
