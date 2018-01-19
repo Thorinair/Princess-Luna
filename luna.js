@@ -1610,7 +1610,7 @@ function loadBot() {
 		    });
 		}
 		else {
-			if (message[0] == "h")
+			if (message == "h")
 				h(channelID);
 		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
