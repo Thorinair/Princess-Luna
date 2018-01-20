@@ -383,7 +383,7 @@ comm.printer = function(data) {
 		xhr.onreadystatechange = function () { 
 		    if (xhr.readyState == 4 && xhr.status == 200) {
 		        var response = JSON.parse(xhr.responseText);
-		        if (response.progress.completion != null) {
+		        if (response.progress.completion != null && response.state == "Printing") {
 
 		        	var left = response.progress.printTimeLeft;
 					var time = {};
