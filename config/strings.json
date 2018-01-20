@@ -51,6 +51,7 @@
 			"message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Hope you have a lovely night!"
 		},
 		"help": {
+			"message":  "%s, check your direct messages, I've sent you the information there!",
 			"messageA": "%s, here are some of the commands you can use:",
 			"messageB": "\n• `%s%s` %s",
 			"messageC": "`%s%s`",

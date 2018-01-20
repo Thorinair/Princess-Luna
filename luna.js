@@ -464,7 +464,12 @@ comm.help = function(data) {
 
 	reply += strings.commands.help.messageE;
 
-	send(data.channelID, reply, true);
+	send(data.userID, reply, true);
+
+	send(data.channelID, util.format(
+		strings.commands.help.message, 
+		mention(data.userID)
+	), true);
 };
 
 
