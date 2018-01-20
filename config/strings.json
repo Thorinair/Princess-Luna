@@ -41,6 +41,12 @@
 			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
 			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
 		},
+		"printer": {
+			"messageA": "%s, give me a moment...",
+			"messageB": "Nightmare Rarity is currently not printing anything. You can view the printing area on the webcam image below.",
+			"messageC": "Nightmare Rarity is currently printing a file called `%s`, and the print is %s% done. It is estimated that the printing time will take around %s more. You can view the printing area on the webcam image below.",
+			"error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
+		},
 		"stats": {
 			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago. The brain I am using for this chatroom is called *%s*, and has %s lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",

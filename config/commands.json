@@ -49,6 +49,12 @@
 			"private": false
 		},
 		{
+			"command": "printer",
+			"help":    "Ask me about the status of Thorinair's Nightmare Rarity 3D printer. I will also send a photo of the printer's webcam.",
+			"multi":   false,
+			"private": false
+		},
+		{
 			"command": "stats",
 			"help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
 			"multi":   false,

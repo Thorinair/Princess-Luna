@@ -21,6 +21,7 @@ const gotn     = require("./config/gotn.json");
 const mlp      = require("./config/mlp.json");
 const channels = require("./config/channels.json");
 const varipass = require("./config/varipass.json");
+const printer  = require("./config/printer.json");
 const package  = require("./package.json");
 
 // Commands
@@ -364,6 +365,61 @@ comm.room = function(data) {
 
 	console.log(strings.debug.varipass.load);
 	xhr.send(JSON.stringify(payload));
+};
+
+// Command: !printer
+comm.printer = function(data) {
+
+	send(data.channelID, util.format(
+		strings.commands.printer.messageA, 
+		mention(data.userID)
+	), true);
+
+	download(printer.webcam, printer.printerimg, function() {
+
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", printer.api, true);
+
+		xhr.onreadystatechange = function () { 
+		    if (xhr.readyState == 4 && xhr.status == 200) {
+		        var response = JSON.parse(xhr.responseText);
+		        if (response.progress.completion != null) {
+
+		        	var left = response.progress.printTimeLeft;
+					var time = {};
+
+					time.seconds = Math.floor(left % 60);
+					left = Math.floor(left / 60);
+					time.minutes = Math.floor(left % 60);
+					left = Math.floor(left / 60);
+					time.hours = Math.floor(left % 24);
+					time.days = Math.floor(left / 24);
+
+
+					embed(data.channelID, util.format(
+						strings.commands.printer.messageC, 
+						response.job.file.name,
+						response.progress.completion.toFixed(1),
+						getTimeString(time)
+					), printer.printerimg, "Nightmare Rarity Webcam.jpg", true, true);
+		        }
+		        else {
+					embed(data.channelID, strings.commands.printer.messageB, printer.printerimg, "Nightmare Rarity Webcam.jpg", true, true);
+		        }
+		    }
+		}
+
+		xhr.onerror = function(err) {
+		    send(data.channelID, strings.commands.printer.error, true);
+		    xhr.abort();
+		}
+		xhr.ontimeout = function() {
+		    send(data.channelID, strings.commands.printer.error, true);
+		    xhr.abort();
+		}
+
+		xhr.send();
+	});
 };
 
 // Command: !stats

@@ -17,6 +17,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!phase` Lists info about the Moon phases. You may also specify the timezone after the command.
     - `!moon` Sends an image of the Moon as it is right now.
     - `!room` Lists the physical status of Thorinair's real life room. Powered using the [VariPass](https://varipass.org) website.
+    - `!printer` Lists the status of Thorinair's Nightmare Rarity 3D printer. Also sends a photo of the printer's webcam.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.
