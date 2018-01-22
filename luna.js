@@ -110,17 +110,41 @@ comm.time = function(data) {
 	var found = false;
 
 	var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-	if (timezone == "" || timezone == config.options.commandsymbol + data.command)
+
+	var useEq = (
+		timezone == "QST" || 
+		timezone == "Equestria" ||
+		timezone == "Equestria/Canterlot" ||
+		timezone == "Equestria/Ponyville" ||
+		timezone == "Equestria/Manehatten" ||
+		timezone == "Equestria/Fillydelphia" ||
+		timezone == "Equestria/Crystal_Empire" ||
+		timezone == "Equestria/Cloudsdale"
+		)
+
+	if (timezone == "" || timezone == config.options.commandsymbol + data.command || useEq)
 		timezone = "UTC";
 
 	if (moment.tz.zone(timezone)) {
-		var momentTime = moment.tz(now, timezone);
-		send(data.channelID, util.format(
-			strings.commands.time.message, 
-			mention(data.userID),
-			momentTime.format("ddd MMM DD, YYYY"),
-			momentTime.format("HH:mm:ss (z)")
-		), true);
+
+		if (useEq) {
+			var momentTime = moment.tz(now / 8544 + 93*365*24*60*60*1000, timezone);
+			send(data.channelID, util.format(
+				strings.commands.time.message, 
+				mention(data.userID),
+				momentTime.format("ddd MMM DD, YYYY"),
+				momentTime.format("HH:mm:ss") + " (QST)"
+			), true);
+		}
+		else {
+			var momentTime = moment.tz(now, timezone);
+			send(data.channelID, util.format(
+				strings.commands.time.message, 
+				mention(data.userID),
+				momentTime.format("ddd MMM DD, YYYY"),
+				momentTime.format("HH:mm:ss (z)")
+			), true);
+		}
 	}
 	else {
 		send(data.channelID, util.format(
