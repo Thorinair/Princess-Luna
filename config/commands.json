@@ -11,6 +11,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "time",
+			"help":    "Ask me what the current date and time is. You may also specify the timezone after the command.",
+			"type":    "public"
+		},
+		{
 			"command": "np",
 			"help":    "Ask me which track is currently playing on PonyvilleFM.",
 			"type":    "public"

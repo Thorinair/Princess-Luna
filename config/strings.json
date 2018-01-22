@@ -6,6 +6,11 @@
 		},
 		"mlp": {
 			"message":  "%s, next episode of My Little Pony: Friendship is Magic, **%s**, airs in %s on the **%s** channel.",
+			"errorA":   "%s, I don't know when the next episode of My Little Pony: Friendship is Magic airs.",
+			"errorB":   "%s, I don't know of that timezone."
+		},
+		"time": {
+			"message":  "%s, current date and time is **%s** at **%s**.",
 			"error":    "%s, I don't know of that timezone."
 		},
 		"np": {

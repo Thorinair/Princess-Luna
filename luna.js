@@ -90,10 +90,41 @@ comm.mlp = function(data) {
 				}
 			}
 		});	
+		if (!found)
+			send(data.channelID, util.format(
+				strings.commands.mlp.errorA, 
+				mention(data.userID)
+			), true);			
 	}
 	else {
 		send(data.channelID, util.format(
-			strings.commands.mlp.error, 
+			strings.commands.mlp.errorB, 
+			mention(data.userID)
+		), true);
+	}
+};
+
+// Command: !time
+comm.time = function(data) {
+	var now = new Date();
+	var found = false;
+
+	var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (timezone == "" || timezone == config.options.commandsymbol + data.command)
+		timezone = "UTC";
+
+	if (moment.tz.zone(timezone)) {
+		var momentTime = moment.tz(now, timezone);
+		send(data.channelID, util.format(
+			strings.commands.time.message, 
+			mention(data.userID),
+			momentTime.format("ddd MMM DD, YYYY"),
+			momentTime.format("HH:mm:ss (z)")
+		), true);
+	}
+	else {
+		send(data.channelID, util.format(
+			strings.commands.time.error, 
 			mention(data.userID)
 		), true);
 	}
