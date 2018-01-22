@@ -12,6 +12,7 @@
 		"artimg":        "/var/www/node/data/art.png",
 		"lyricspath":    "/var/www/node/data/lyrics.json",
 		"artworkpath":   "/var/www/node/data/artwork.json",
+		"nptogglespath": "/var/www/node/data/nptoggles.json",
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
 		"defstation":    "one",
@@ -32,7 +33,13 @@
 				"gotn",
 				"pvfm_ponyvillefm"
 			]
-		}
+		},
+		"djroles": [
+			277564447336431618,
+			93256586314674176,
+			191158755361161216,
+			188397984550092801
+		]
 	},
 	"nowplaying": {
 		"url":     "http://dj.bronyradio.com:8000/status-json.xsl?mount=/pvfm1.ogg",

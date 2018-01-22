@@ -491,7 +491,7 @@ comm.help = function(data) {
 	);
 
 	commands.list.forEach(function(c) {
-		if (c.type == "public")
+		if (c.type == "public" || c.type == "dj")
 			reply += util.format(
 				strings.commands.help.messageB, 
 				config.options.commandsymbol,
@@ -522,10 +522,11 @@ comm.help = function(data) {
 
 	send(data.userID, reply, true);
 
-	send(data.channelID, util.format(
-		strings.commands.help.message, 
-		mention(data.userID)
-	), true);
+	if (bot.channels[data.channelID] != undefined)	
+		send(data.channelID, util.format(
+			strings.commands.help.message, 
+			mention(data.userID)
+		), true);
 };
 
 
@@ -563,6 +564,40 @@ comm.snack = function(data) {
 // Command: !plushie
 comm.plushie = function(data) {
 	doInterraction(data);
+};
+
+
+
+// Command: !nptoggle
+comm.nptoggle = function(data) {
+	if (nptoggles[data.channelID] == undefined) {
+		nptoggles[data.channelID] = true;
+		send(data.channelID, util.format(
+			strings.commands.nptoggle.messageA, 
+			mention(data.userID)
+		), true);
+
+		console.log(util.format(
+			strings.debug.nptoggles.add,
+			channelIDToName(data.channelID),
+			data.channelID
+		));
+	}
+	else {
+		delete nptoggles[data.channelID];
+		send(data.channelID, util.format(
+			strings.commands.nptoggle.messageB, 
+			mention(data.userID)
+		), true);
+
+		console.log(util.format(
+			strings.debug.nptoggles.remove,
+			channelIDToName(data.channelID),
+			data.channelID
+		));
+	}
+
+	fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
 };
 
 
@@ -626,15 +661,6 @@ comm.learn = function(data) {
 	}
 };
 
-// Command: !nptoggle
-comm.nptoggle = function(data) {
-	toggle_np = !toggle_np;
-	send(channelNameToID(config.options.channels.private), util.format(
-		strings.commands.nptoggle.message, 
-		toggle_np
-	), false);
-};
-
 // Command: !npoverride
 comm.npoverride = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
@@ -649,14 +675,46 @@ comm.npoverride = function(data) {
 
 		np.nowplaying = track;
 
-		if (toggle_np) {
-			config.options.channels.nowplaying.forEach(function(c, i) {
-				send(channelNameToID(c), util.format(
-					strings.announcements.nowplaying,
-					np.nowplaying
-				), true);
-			});
-		}			
+		Object.keys(nptoggles).forEach(function(n, i) {
+    		if (nptoggles[n])
+    			send(n, util.format(
+    				strings.announcements.nowplaying,
+    				np.nowplaying
+    			), true);
+    	});		
+	}
+};
+
+// Command: !npstatus
+comm.npstatus = function(data) {
+	if (Object.keys(nptoggles).length == 0)
+		send(channelNameToID(config.options.channels.private), strings.commands.npstatus.error, false);
+	else {
+		var message = strings.commands.npstatus.messageA;
+		Object.keys(nptoggles).forEach(function(n, i) {
+			var type = "Public";
+
+			if (bot.channels[n] == undefined)
+				type = "Private";
+
+			message += util.format(
+				strings.commands.npstatus.messageB, 
+				channelIDToName(n),
+				type
+			);
+		});
+		send(channelNameToID(config.options.channels.private), message, false);
+	}
+};
+
+// Command: !nppurge
+comm.nppurge = function(data) {
+	if (Object.keys(nptoggles).length == 0)
+		send(channelNameToID(config.options.channels.private), strings.commands.nppurge.error, false);
+	else {
+		nptoggles = {};
+		fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
+		send(channelNameToID(config.options.channels.private), strings.commands.nppurge.message, false);
 	}
 };
 
@@ -780,7 +838,7 @@ comm.artworkdel = function(data) {
 // Command: !h
 comm.h = function(data) {
 	if (Object.keys(hTrack).length == 0)
-		send(channelNameToID(config.options.channels.private), strings.commands.h.errorA, false);
+		send(channelNameToID(config.options.channels.private), strings.commands.h.error, false);
 	else {
 		var message = strings.commands.h.messageA;
 		Object.keys(hTrack).forEach(function(h, i) {
@@ -801,7 +859,11 @@ comm.h = function(data) {
 };
 
 // Command: !reboot
-comm.reboot = function(data) {
+comm.reboot = function(data) {	
+    Object.keys(nptoggles).forEach(function(n, i) {
+		if (nptoggles[n])
+			send(n, strings.announcements.npreboot, true);
+	});
 	send(channelNameToID(config.options.channels.private), strings.commands.reboot.message, false);
 	saveAllBrains();
 	setTimeout(function() {
@@ -867,8 +929,8 @@ comm.backup = function(data) {
 var jobs      = [];
 var phases    = [];
 var started   = false;
-var toggle_np = false;
 var apifail   = false;
+var npstarted = false;
 var npradio   = {};
 var np        = {};
 var brains    = {};
@@ -880,6 +942,7 @@ var startTime;
 var bot;
 var lyrics;
 var artwork;
+var nptoggles;
 
 // Callback for downloading of files. 
 var download = function(uri, filename, callback) {
@@ -1389,22 +1452,27 @@ function loadAnnouncements() {
 		var jobNow = new CronJob(new Date(date), function() {
 				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.now, true);
 			    setTimeout(function() {
-			    	toggle_np = true;
-					send(channelNameToID(config.options.channels.private), util.format(
-						strings.commands.nptoggle.message, 
-						toggle_np
-					), false);
+
+					send(channelNameToID(config.options.channels.private), strings.debug.nptoggles.autoon, false);
+			    	config.options.channels.nowplaying.forEach(function(n, i) {
+			    		nptoggles[channelNameToID(n)] = true;
+			    	});
+					fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
+
 			    }, config.options.starttime * 1000);
 			}, function () {}, true);
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
+
 				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.after, true);
-				toggle_np = false;
-				send(channelNameToID(config.options.channels.private), util.format(
-					strings.commands.nptoggle.message, 
-					toggle_np
-				), false);
+				send(channelNameToID(config.options.channels.private), strings.debug.nptoggles.autooff, false);
+		    	config.options.channels.nowplaying.forEach(function(n, i) {
+		    		if (nptoggles[channelNameToID(n)] != undefined)
+		    			delete nptoggles[channelNameToID(n)];
+		    	});
+				fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
+
 			}, function () {}, true);
 
 		jobs.push(jobLong);
@@ -1463,6 +1531,7 @@ function loadPhases() {
 			loadBrain();
 			loadLyrics();
 			loadArtwork();
+			loadNPToggles();
 			loadTimezones();
 			loadBot();
 	    }
@@ -1567,6 +1636,23 @@ function loadArtwork() {
 }
 
 /*
+ * Loads the Now Playing toggle data, or creates new.
+ */
+function loadNPToggles() {
+	nptoggles = {};
+
+	if (fs.existsSync(config.options.nptogglespath)) {
+		console.log(strings.debug.nptoggles.old);
+		nptoggles = JSON.parse(fs.readFileSync(config.options.nptogglespath, "utf8"));
+		console.log(strings.debug.nptoggles.done);
+	}
+	else {
+	    fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
+		console.log(strings.debug.nptoggles.new);
+	}
+}
+
+/*
  * Loads the timezone data.
  */
 function loadTimezones() {
@@ -1610,6 +1696,11 @@ function loadBot() {
 		    		strings.misc.load,
 		    		package.version
 		    	), false);
+
+		    Object.keys(nptoggles).forEach(function(n, i) {
+        		if (nptoggles[n])
+        			send(n, strings.announcements.npback, true);
+        	});
 
 	    	loopNowPlaying();
 	    	loopBrainSave();
@@ -1661,6 +1752,38 @@ function loadBot() {
 		    			if (userID == config.options.adminid) {
 				    		comm[c.command](packed);
 				    		nocommand = false;
+		    			}
+		    		}
+		    		else if (c.type == "dj") {
+		    			var roleFound = false;
+
+		    			if (
+		    				bot.channels[channelID] != undefined &&
+		    				bot.servers[bot.channels[channelID].guild_id] != undefined &&
+		    				bot.servers[bot.channels[channelID].guild_id].members[userID] != undefined
+		    				) {
+
+			    			bot.servers[bot.channels[channelID].guild_id].members[userID].roles.forEach(function (r1, i) {
+								config.options.djroles.forEach(function (r2, j) {
+				    				if (r1 == r2) {
+			    						roleFound = true;
+					    			}
+				    			});
+			    			});
+		    			}
+
+	    				if (!roleFound && bot.channels[channelID] == undefined)	
+	    					roleFound = true;
+
+		    			if (roleFound) {
+							comm[c.command](packed);
+				    		nocommand = false; 			
+		    			}
+		    			else {
+							send(channelID, util.format(
+								strings.misc.noperm,
+								mention(userID)
+							), true);
 		    			}
 		    		}
 		    		else {
@@ -1719,8 +1842,7 @@ function loopNowPlaying() {
 	        	response.icestats != undefined && 
 	        	response.icestats.source != undefined
 	        	) {
-		        if (npradio == undefined || npradio.title != response.icestats.source.title || npradio.artist != response.icestats.source.artist) {
-
+		        if (npradio == undefined || npradio.title != response.icestats.source.title || npradio.artist != response.icestats.source.artist) {        		
 		        	npradio = JSON.parse(xhr.responseText).icestats.source;
 		        	if (npradio.artist != undefined)
 		        		npradio.nowplaying = npradio.artist + config.separators.track + npradio.title;
@@ -1734,13 +1856,16 @@ function loopNowPlaying() {
 		        	else
 		        		np.nowplaying = np.title;
 
-		        	if (toggle_np)
-		        		config.options.channels.nowplaying.forEach(function(c, i) {
-			    			send(channelNameToID(c), util.format(
-			    				strings.announcements.nowplaying,
-			    				np.nowplaying
-			    			), true);
-		        		});
+		        	if (npstarted)
+			        	Object.keys(nptoggles).forEach(function(n, i) {
+			        		if (nptoggles[n])
+			        			send(n, util.format(
+				    				strings.announcements.nowplaying,
+				    				np.nowplaying
+				    			), true);
+			        	});
+			        else
+	        		npstarted = true;
 		        }
 		    }
 	    }

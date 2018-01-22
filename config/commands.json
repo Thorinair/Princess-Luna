@@ -100,6 +100,13 @@
 
 
 		{
+			"command": "nptoggle",
+			"help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel. You can only use this if given permission or in direct messages.",
+			"type":    "dj"
+		},
+
+
+		{
 			"command": "send",
 			"help":    "",
 			"type":    "private"
@@ -110,12 +117,17 @@
 			"type":    "private"
 		},
 		{
-			"command": "nptoggle",
+			"command": "npoverride",
 			"help":    "",
 			"type":    "private"
 		},
 		{
-			"command": "npoverride",
+			"command": "npstatus",
+			"help":    "",
+			"type":    "private"
+		},
+		{
+			"command": "nppurge",
 			"help":    "",
 			"type":    "private"
 		},

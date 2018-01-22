@@ -22,11 +22,14 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.
     - The bot can interract with people. Mention someone or multiple people after the command to interract with them. Supported commands: `!hug`, `!kiss`, `!boop`, `!glomp`, `!snuggle`, `!snack`, `!plushie`.
+* Commands usable by DJs (set roles):
+    - `!nptoggle` Manually toggles the automatic listing of Now Playing info for a specific channel. Only usable if given a role or in private messages.
 * Private commands for the admin:
     - `!send` Sends a message to a channel. Specify the channel name after the command, and message in the lines below.
     - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Use the following regex to remove usernames and timestamps: `([)([0-9]+:[0-9]+ [A-Z]+)(]) .*: `
-    - `!nptoggle` Manually toggles the automatic listing of Now Playing info.
     - `!npoverride` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
+    - `!npstatus` Lists the current status of automatic Now Playing info announcing across channels.
+    - `!nppurges` Disables the automatic Now Playing info announcing for all channels.
     - `!lyricsadd` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
     - `!lyricsdel` Removes lyrics from the database. Specify a track name after the command.
     - `!artworkadd` Adds an artwork to the database. Specify a track name after the command, and the artwork URL in the line below.

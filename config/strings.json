@@ -102,6 +102,10 @@
 			"self":     "*Casts a spell at herself, turning herself into a plushie before remaining motionless.*"
 		},
 
+		"nptoggle": {
+			"messageA":  "%s, I will now be posting new track names as they appear to this chat.",
+			"messageB":  "%s, I will no longer be posting new track names."
+		},
 
 		"send": {
 			"message":  "Thori, I'm sending the message now...",
@@ -114,12 +118,18 @@
 			"errorB":   "Thori, I don't have a brain with that name.",
 			"errorC":   "Thori, you need to specify the text to learn as well."
 		},
-		"nptoggle": {
-			"message":  "Thori, I've changed the automatic Now Playing listing to **%s**."
-		},
 		"npoverride": {
 			"message":  "Thori, I'm overriding the Now Playing info with the new track!\nIt is now: **%s**",
 			"error":    "Thori, you need to specify the track name."
+		},
+		"npstatus": {
+			"messageA": "Thori, here are all the channels where I am currently posting the Now Playing announcements:",
+			"messageB": "\n• #%s - %s",
+			"error":    "Thori, I am currently not posting the Now Playing announcements to any channel."
+		},
+		"nppurge": {
+			"message":  "Thori, I have purged all of the Now Playing announcement channels.",
+			"error":    "Thori, I have no channels to purge."
 		},
 		"lyricsadd": {
 			"message":  "Thori, I've added lyrics for the track \"%s\".",
@@ -145,7 +155,7 @@
 		"h": {
 			"messageA": "Thori, here are all the channels where I am tracking an h chain, along with the last seen h:",
 			"messageB": "\n• #%s - %s - **%s**",
-			"errorA":   "Thori, I am not yet tracking any h chain."
+			"error":    "Thori, I am not yet tracking any h chain."
 		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
@@ -167,12 +177,15 @@
 			"full":   "Everypony @here, the Moon has reached its %s phase! Let the moonlight shine upon you in all its might!",
 			"else":   "The Moon has reached its %s phase..."
 		},
-		"nowplaying": "**Now playing:** %s"
+		"nowplaying": "**Now playing:** %s",
+		"npreboot":    "I need to go for a quick reboot... I'm sorry if I miss any tracks!",
+		"npback":      "Hey, I'm back! Now back to track posting..."
 	},
 	"misc": {
 		"welcome": "**My children, welcome %s to our beautiful night!**",
 		"load":    "Hey Thori, I'm back! My current version is v%s.",
 		"apifail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again.",
+		"noperm":  "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
 		"left":    "%s on %s at %s",
 		"h":       "h"
 	},
@@ -206,6 +219,15 @@
 			"old":     "An artwork file already seems to exit. Loading it now...",
 			"new":     "I don't seem to have an artwork file. I have created a new one.",
 			"done":    "I've finished loading my artwork file."
+		},
+		"nptoggles": {
+			"old":     "A Now Playing toggle file already seems to exit. Loading it now...",
+			"new":     "I don't seem to have a Now Playing toggle file. I have created a new one.",
+			"done":    "I've finished loading my Now Playing toggle file.",
+			"add":     "I am subscribing the channel #%s (%s) to automatic Now Playing announcements.",
+			"remove":  "I am unsubscribing the channel #%s (%s) from automatic Now Playing announcements.",
+			"autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info.",
+			"autooff": "Thori, I am **disabling** the automatic posting of Now Playing info."
 		},
 		"backup": {
 			"start":   "Started a backup...",
