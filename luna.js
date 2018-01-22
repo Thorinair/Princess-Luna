@@ -128,7 +128,7 @@ comm.time = function(data) {
 	if (moment.tz.zone(timezone)) {
 
 		if (useEq) {
-			var momentTime = moment.tz(now / 8544 + 93*365*24*60*60*1000, timezone);
+			var momentTime = moment.tz(now / 8760 + 93*365*24*60*60*1000 + 11*60*60*1000, timezone);
 			send(data.channelID, util.format(
 				strings.commands.time.message, 
 				mention(data.userID),
