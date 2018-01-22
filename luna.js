@@ -491,7 +491,7 @@ comm.help = function(data) {
 	);
 
 	commands.list.forEach(function(c) {
-		if (!c.private && !c.multi)
+		if (c.type == "public")
 			reply += util.format(
 				strings.commands.help.messageB, 
 				config.options.commandsymbol,
@@ -500,12 +500,12 @@ comm.help = function(data) {
 			);
 	});
 
-	var multiCommands = ""
+	var interractionCommands = ""
 	commands.list.forEach(function(c) {
-		if (!c.private && c.multi) {
-			if (multiCommands != "")
-				multiCommands += ", ";
-			multiCommands += util.format(
+		if (c.type == "interraction") {
+			if (interractionCommands != "")
+				interractionCommands += ", ";
+			interractionCommands += util.format(
 				strings.commands.help.messageC, 
 				config.options.commandsymbol,
 				c.command
@@ -515,7 +515,7 @@ comm.help = function(data) {
 
 	reply += util.format(
 		strings.commands.help.messageD,
-		multiCommands
+		interractionCommands
 	);
 
 	reply += strings.commands.help.messageE;
@@ -532,37 +532,37 @@ comm.help = function(data) {
 
 // Command: !hug
 comm.hug = function(data) {
-	doMultiCommand(data);
+	doInterraction(data);
 };
 
 // Command: !kiss
 comm.kiss = function(data) {
-	doMultiCommand(data);
+	doInterraction(data);
 };
 
 // Command: !boop
 comm.boop = function(data) {
-	doMultiCommand(data);
+	doInterraction(data);
 };
 
 // Command: !glomp
 comm.glomp = function(data) {
-	doMultiCommand(data);
+	doInterraction(data);
 };
 
 // Command: !snuggle
 comm.snuggle = function(data) {
-	doMultiCommand(data);
+	doInterraction(data);
 };
 
 // Command: !snack
 comm.snack = function(data) {
-	doMultiCommand(data);
+	doInterraction(data);
 };
 
 // Command: !plushie
 comm.plushie = function(data) {
-	doMultiCommand(data);
+	doInterraction(data);
 };
 
 
@@ -941,10 +941,10 @@ function sendLargeMessage(data, list, message, format) {
 }
 
 /*
- * Executes a command on one person or more people.
+ * Executes an interraction command on one person or more people.
  * @param  data  Data of the message.
  */
-function doMultiCommand(data) {
+function doInterraction(data) {
 	if (data.data.d.mentions[0] != null) {
 		if (isMentioned(bot.id, data.data)) {
 			send(data.channelID, strings.commands[data.command].self, true);
@@ -1657,7 +1657,7 @@ function loadBot() {
 
 		    commands.list.forEach(function(c) {
 		    	if (command == config.options.commandsymbol + c.command && nocommand) {
-		    		if (c.private) {
+		    		if (c.type == "private") {
 		    			if (userID == config.options.adminid) {
 				    		comm[c.command](packed);
 				    		nocommand = false;

@@ -3,186 +3,156 @@
 		{
 			"command": "gotn",
 			"help":    "Ask me about the time left until the next Glory of The Night episode. You may also specify the timezone after the command.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "mlp",
 			"help":    "Ask me about the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "np",
 			"help":    "Ask me which track is currently playing on PonyvilleFM.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "lyrics",
 			"help":    "Ask me about lyrics for a specific track. You can also use it like the previous command to get lyrics for music on PonyvilleFM. Use the \"list\" parameter to see all the tracks I know.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "artwork",
 			"help":    "Ask me to show the artwork for a specific track. You can also use it like the previous command to get artwork for music on PonyvilleFM. Use the \"list\" parameter to see all the tracks I have an artwork for.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "phase",
 			"help":    "Ask me about the status of the Moon's phase. You may also specify the timezone after the command.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "moon",
 			"help":    "Ask me to show how the Moon looks like right now.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "room",
 			"help":    "Ask me about the physical status of Thorinair's real life room. Powered using the VariPass website.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "printer",
 			"help":    "Ask me about the status of Thorinair's Nightmare Rarity 3D printer. I will also send a photo of the printer's webcam.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "stats",
 			"help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "about",
 			"help":    "Ask me to introduce myself and tell you where you can find my source code.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 		{
 			"command": "help",
 			"help":    "Ask me to repeat this messsage.",
-			"multi":   false,
-			"private": false
+			"type":    "public"
 		},
 
 
 		{
 			"command": "hug",
 			"help":    "",
-			"multi":   true,
-			"private": false
+			"type":    "interraction"
 		},
 		{
 			"command": "kiss",
 			"help":    "",
-			"multi":   true,
-			"private": false
+			"type":    "interraction"
 		},
 		{
 			"command": "boop",
 			"help":    "",
-			"multi":   true,
-			"private": false
+			"type":    "interraction"
 		},
 		{
 			"command": "glomp",
 			"help":    "",
-			"multi":   true,
-			"private": false
+			"type":    "interraction"
 		},
 		{
 			"command": "snuggle",
 			"help":    "",
-			"multi":   true,
-			"private": false
+			"type":    "interraction"
 		},
 		{
 			"command": "snack",
 			"help":    "",
-			"multi":   true,
-			"private": false
+			"type":    "interraction"
 		},
 		{
 			"command": "plushie",
 			"help":    "",
-			"multi":   true,
-			"private": false
+			"type":    "interraction"
 		},
 
 
 		{
 			"command": "send",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "learn",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "nptoggle",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "npoverride",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "lyricsadd",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "lyricsdel",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "artworkadd",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "artworkdel",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "h",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "reboot",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		},
 		{
 			"command": "backup",
 			"help":    "",
-			"multi":   false,
-			"private": true
+			"type":    "private"
 		}
 	]
 }
