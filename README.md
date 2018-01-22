@@ -29,7 +29,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Use the following regex to remove usernames and timestamps: `([)([0-9]+:[0-9]+ [A-Z]+)(]) .*: `
     - `!npoverride` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
     - `!npstatus` Lists the current status of automatic Now Playing info announcing across channels.
-    - `!nppurges` Disables the automatic Now Playing info announcing for all channels.
+    - `!nppurge` Disables the automatic Now Playing info announcing for all channels.
     - `!lyricsadd` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
     - `!lyricsdel` Removes lyrics from the database. Specify a track name after the command.
     - `!artworkadd` Adds an artwork to the database. Specify a track name after the command, and the artwork URL in the line below.
