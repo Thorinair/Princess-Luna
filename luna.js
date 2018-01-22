@@ -1817,7 +1817,11 @@ function loadBot() {
 		    		else if (c.type == "dj") {
 		    			var roleFound = false;
 
+		    			if (userID == config.options.adminid)
+			    			roleFound = true;
+
 		    			if (
+		    				!roleFound &&
 		    				bot.channels[channelID] != undefined &&
 		    				bot.servers[bot.channels[channelID].guild_id] != undefined &&
 		    				bot.servers[bot.channels[channelID].guild_id].members[userID] != undefined
