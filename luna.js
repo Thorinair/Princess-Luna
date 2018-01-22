@@ -743,7 +743,12 @@ comm.nppurge = function(data) {
 	if (Object.keys(nptoggles).length == 0)
 		send(channelNameToID(config.options.channels.private), strings.commands.nppurge.error, false);
 	else {
+		Object.keys(nptoggles).forEach(function(n, i) {
+    		if (nptoggles[n])
+    			send(n, strings.commands.nppurge.notify, true);
+    	});    	
 		nptoggles = {};
+
 		fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
 		send(channelNameToID(config.options.channels.private), strings.commands.nppurge.message, false);
 	}

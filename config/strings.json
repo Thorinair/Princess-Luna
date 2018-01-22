@@ -134,6 +134,7 @@
 		},
 		"nppurge": {
 			"message":  "Thori, I have purged all of the Now Playing announcement channels.",
+			"notify":   "Thorinair told me that I should stop automatically telling you the Now Playing info for now, sorry! You can use the command again if you wish to resume.",
 			"error":    "Thori, I have no channels to purge."
 		},
 		"lyricsadd": {
