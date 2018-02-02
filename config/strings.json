@@ -104,7 +104,13 @@
 		"plushie": {
 			"single":   "*Casts a spell at %s, turning them into a plushie!*",
 			"multiple": "*Casts spells at %s, turning everypony into plushies!*",
-			"self":     "*Casts a spell at herself, turning herself into a plushie before remaining motionless.*"
+			"self":     "*Casts a spell at herself, turning herself into a plushie before remaining motionless.*",
+			"error":    "Somepony turned me into a plushie so I can't move or do anything... :(\nPlease turn me back first using the `!unplushie` command... *sigh*"
+		},
+		"unplushie": {
+			"single":   "*Casts a spell at %s, returning them back to normal!*",
+			"multiple": "*Casts spells at %s, returning everypony back to themselves!*",
+			"self":     "*Casts a spell at herself, turning herself back to normal.* Thank you, %s!"
 		},
 
 		"nptoggle": {

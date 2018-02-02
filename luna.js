@@ -116,7 +116,7 @@ comm.time = function(data) {
 		timezone == "Equestria" ||
 		timezone == "Equestria/Canterlot" ||
 		timezone == "Equestria/Ponyville" ||
-		timezone == "Equestria/Manehatten" ||
+		timezone == "Equestria/Manehattan" ||
 		timezone == "Equestria/Fillydelphia" ||
 		timezone == "Equestria/Crystal_Empire" ||
 		timezone == "Equestria/Cloudsdale"
@@ -621,6 +621,11 @@ comm.plushie = function(data) {
 	doInterraction(data);
 };
 
+// Command: !unplushie
+comm.unplushie = function(data) {
+	doInterraction(data);
+};
+
 
 
 // Command: !nptoggle
@@ -991,6 +996,7 @@ var phases    = [];
 var started   = false;
 var apifail   = false;
 var npstarted = false;
+var isplushie = false;
 var npradio   = {};
 var np        = {};
 var brains    = {};
@@ -1068,40 +1074,56 @@ function sendLargeMessage(data, list, message, format) {
  * @param  data  Data of the message.
  */
 function doInterraction(data) {
-	if (data.data.d.mentions[0] != null) {
-		if (isMentioned(bot.id, data.data)) {
-			send(data.channelID, strings.commands[data.command].self, true);
-		}
-		else {
-			if (data.data.d.mentions.length <= 1) {
-				send(data.channelID, util.format(
-					strings.commands[data.command].single, 
-					mention(data.data.d.mentions[0].id)
-				), true);
+	if (!isplushie) {
+		if (data.data.d.mentions[0] != null) {
+			if (isMentioned(bot.id, data.data)) {
+				if (data.command == "plushie")
+					isplushie = true;
+
+				send(data.channelID, strings.commands[data.command].self, true);
 			}
 			else {
-				var mentions = "";
-				var i;
-				for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-					mentions += mention(data.data.d.mentions[i].id);
-					if (i < data.data.d.mentions.length - 2) {
-						mentions += config.separators.list;
-					}
+				if (data.data.d.mentions.length <= 1) {
+					send(data.channelID, util.format(
+						strings.commands[data.command].single, 
+						mention(data.data.d.mentions[0].id)
+					), true);
 				}
-				mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
+				else {
+					var mentions = "";
+					var i;
+					for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+						mentions += mention(data.data.d.mentions[i].id);
+						if (i < data.data.d.mentions.length - 2) {
+							mentions += config.separators.list;
+						}
+					}
+					mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
 
-				send(data.channelID, util.format(
-					strings.commands[data.command].multiple,
-					mentions
-				), true);
+					send(data.channelID, util.format(
+						strings.commands[data.command].multiple,
+						mentions
+					), true);
+				}
 			}
+		}
+		else {
+			send(data.channelID, util.format(
+				strings.commands[data.command].single, 
+				mention(data.userID)
+			), true);
 		}
 	}
 	else {
-		send(data.channelID, util.format(
-			strings.commands[data.command].single, 
-			mention(data.userID)
-		), true);
+		if (data.command == "unplushie" && isMentioned(bot.id, data.data)) {
+			isplushie = false;
+			send(data.channelID, util.format(
+				strings.commands[data.command].self, 
+				mention(data.userID)
+			), true);
+		}
+		else
+			send(data.channelID, strings.commands["plushie"].error, true);
 	}
 }
 
