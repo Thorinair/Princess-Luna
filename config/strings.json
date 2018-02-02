@@ -63,7 +63,7 @@
 		},
 		"help": {
 			"message":  "%s, check your direct messages, I've sent you the information there!",
-			"messageA": "%s, here are some of the commands you can use:",
+			"messageA": "Here are some of the commands you can use:",
 			"messageB": "\n• `%s%s` %s",
 			"messageC": "`%s%s`",
 			"messageD": "\n• I can also interract with others. Use any of the following commands and mention somepony or multiple of them afterwards: %s.",

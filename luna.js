@@ -540,13 +540,10 @@ comm.about = function(data) {
 comm.help = function(data) {
 	var reply = "";
 
-	reply += util.format(
-		strings.commands.help.messageA, 
-		mention(data.userID)
-	);
+	reply += strings.commands.help.messageA;
 
 	commands.list.forEach(function(c) {
-		if (c.type == "public" || c.type == "dj")
+		if (c.type == "public")
 			reply += util.format(
 				strings.commands.help.messageB, 
 				config.options.commandsymbol,
@@ -555,27 +552,44 @@ comm.help = function(data) {
 			);
 	});
 
-	var interractionCommands = ""
-	commands.list.forEach(function(c) {
-		if (c.type == "interraction") {
-			if (interractionCommands != "")
-				interractionCommands += ", ";
-			interractionCommands += util.format(
-				strings.commands.help.messageC, 
-				config.options.commandsymbol,
-				c.command
-			);
-		}
-	});
-
-	reply += util.format(
-		strings.commands.help.messageD,
-		interractionCommands
-	);
-
-	reply += strings.commands.help.messageE;
-
 	send(data.userID, reply, true);
+
+
+	setTimeout(function() {
+		var reply = "";
+
+		commands.list.forEach(function(c) {
+			if (c.type == "dj")
+				reply += util.format(
+					strings.commands.help.messageB, 
+					config.options.commandsymbol,
+					c.command,
+					c.help
+				);
+		});
+
+		var interractionCommands = ""
+		commands.list.forEach(function(c) {
+			if (c.type == "interraction") {
+				if (interractionCommands != "")
+					interractionCommands += ", ";
+				interractionCommands += util.format(
+					strings.commands.help.messageC, 
+					config.options.commandsymbol,
+					c.command
+				);
+			}
+		});
+
+		reply += util.format(
+			strings.commands.help.messageD,
+			interractionCommands
+		);
+
+		reply += strings.commands.help.messageE;
+
+		send(data.userID, reply, true);
+	}, 1000);
 
 	if (bot.channels[data.channelID] != undefined)	
 		send(data.channelID, util.format(
@@ -586,45 +600,7 @@ comm.help = function(data) {
 
 
 
-// Command: !hug
-comm.hug = function(data) {
-	doInterraction(data);
-};
-
-// Command: !kiss
-comm.kiss = function(data) {
-	doInterraction(data);
-};
-
-// Command: !boop
-comm.boop = function(data) {
-	doInterraction(data);
-};
-
-// Command: !glomp
-comm.glomp = function(data) {
-	doInterraction(data);
-};
-
-// Command: !snuggle
-comm.snuggle = function(data) {
-	doInterraction(data);
-};
-
-// Command: !snack
-comm.snack = function(data) {
-	doInterraction(data);
-};
-
-// Command: !plushie
-comm.plushie = function(data) {
-	doInterraction(data);
-};
-
-// Command: !unplushie
-comm.unplushie = function(data) {
-	doInterraction(data);
-};
+// Interraction commands are called dynamically by type.
 
 
 
@@ -1871,6 +1847,9 @@ function loadBot() {
 								mention(userID)
 							), true);
 		    			}
+		    		}
+		    		else if (c.type == "interraction") {
+		    			doInterraction(packed);
 		    		}
 		    		else {
 			    		comm[c.command](packed);
