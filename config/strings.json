@@ -110,7 +110,8 @@
 		"unplushie": {
 			"single":   "*Casts a spell at %s, returning them back to normal!*",
 			"multiple": "*Casts spells at %s, returning everypony back to themselves!*",
-			"self":     "*Casts a spell at herself, turning herself back to normal.* Thank you, %s!"
+			"self":     "*Casts a spell at herself, turning herself back to normal.* Thank you, %s!",
+			"error":    "*Looks at herself and then at you in confusion.* What...? I am not a plushie..."
 		},
 
 		"nptoggle": {

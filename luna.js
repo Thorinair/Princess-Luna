@@ -1053,10 +1053,15 @@ function doInterraction(data) {
 	if (!isplushie) {
 		if (data.data.d.mentions[0] != null) {
 			if (isMentioned(bot.id, data.data)) {
-				if (data.command == "plushie")
-					isplushie = true;
+				if (data.command == "unplushie") {
+					send(data.channelID, strings.commands[data.command].error, true);
+				}
+				else {
+					if (data.command == "plushie")
+						isplushie = true;
 
-				send(data.channelID, strings.commands[data.command].self, true);
+					send(data.channelID, strings.commands[data.command].self, true);
+				}
 			}
 			else {
 				if (data.data.d.mentions.length <= 1) {
