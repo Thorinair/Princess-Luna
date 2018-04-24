@@ -93,6 +93,11 @@
 			"type":    "interraction"
 		},
 		{
+			"command": "wings",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
 			"command": "snack",
 			"help":    "",
 			"type":    "interraction"
