@@ -1609,6 +1609,8 @@ function loadPhases() {
 
 		loadBrain();
 		loadLyrics();
+		loadArtwork();
+		loadNPToggles();
 		loadTimezones();
 		loadBot();
 	}
@@ -1622,6 +1624,8 @@ function loadPhases() {
 
 		loadBrain();
 		loadLyrics();
+		loadArtwork();
+		loadNPToggles();
 		loadTimezones();
 		loadBot();
 	}
