@@ -971,6 +971,7 @@ var jobs      = [];
 var phases    = [];
 var started   = false;
 var apifail   = false;
+var filefail  = false;
 var npstarted = false;
 var isplushie = false;
 var npradio   = {};
@@ -1548,6 +1549,80 @@ function loadAnnouncements() {
 }
 
 /*
+ * Processes the phase data for announcements.
+ */
+function processPhases() {
+	phases.forEach(function(p) {
+		var date = new Date(p.date + " " + p.time);
+		var message;
+		console.log(util.format(
+			strings.debug.phases.item,
+			date,
+			p.phase
+		));
+
+		if (p.phase == config.options.fullmoon) {
+			message = util.format(
+				strings.announcements.phases.full, 
+				getPhaseString(p.phase, 0)
+			);
+		}
+		else {
+			message = util.format(
+				strings.announcements.phases.else, 
+				getPhaseString(p.phase, 0)
+			);
+		}
+
+		var job = new CronJob(date, function() {
+    			send(channelNameToID(config.options.channels.phases), message, true);
+			}, function () {}, true);
+		jobs.push(job);
+	});
+}
+
+/*
+ * Called if phases were successfully loaded.
+ */
+function phaseSuccess() {
+	fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
+	processPhases();
+	console.log(strings.debug.phases.done);
+
+	loadBrain();
+	loadLyrics();
+	loadArtwork();
+	loadNPToggles();
+	loadTimezones();
+	loadBot();
+}
+
+/*
+ * Called if phases were not loaded.
+ */
+function phaseFail() {
+    apifail = true;
+
+	if (fs.existsSync(config.options.phasepath)) {
+		console.log(strings.debug.phases.file);		
+		phases = JSON.parse(fs.readFileSync(config.options.phases, "utf8"));
+		processPhases();
+		console.log(strings.debug.phases.filed);
+	}
+	else {
+    	filefail = true;
+		console.log(strings.debug.phases.no);
+	}
+
+	loadBrain();
+	loadLyrics();
+	loadArtwork();
+	loadNPToggles();
+	loadTimezones();
+	loadBot();
+}
+
+/*
  * Loads all moon phases from web.
  */
 function loadPhases() {
@@ -1561,42 +1636,7 @@ function loadPhases() {
 	        var response = JSON.parse(xhr.responseText);
 	        phases = response.phasedata;
 
-	        phases.forEach(function(p) {
-				var date = new Date(p.date + " " + p.time);
-				var message;
-				console.log(util.format(
-					strings.debug.phases.item,
-					date,
-					p.phase
-				));
-
-				if (p.phase == config.options.fullmoon) {
-					message = util.format(
-						strings.announcements.phases.full, 
-						getPhaseString(p.phase, 0)
-					);
-				}
-				else {
-					message = util.format(
-						strings.announcements.phases.else, 
-						getPhaseString(p.phase, 0)
-					);
-				}
-
-				var job = new CronJob(date, function() {
-		    			send(channelNameToID(config.options.channels.phases), message, true);
-					}, function () {}, true);
-				jobs.push(job);
-			});
-
-			console.log(strings.debug.phases.done);
-
-			loadBrain();
-			loadLyrics();
-			loadArtwork();
-			loadNPToggles();
-			loadTimezones();
-			loadBot();
+	        phaseSuccess();
 	    }
 	}
 	xhr.onerror = function(err) {
@@ -1605,14 +1645,8 @@ function loadPhases() {
 	    	err.target.status
 	    ));
 	    xhr.abort();
-	    apifail = true;
 
-		loadBrain();
-		loadLyrics();
-		loadArtwork();
-		loadNPToggles();
-		loadTimezones();
-		loadBot();
+	    phaseFail();
 	}
 	xhr.ontimeout = function() {
 	    console.log(util.format(
@@ -1620,14 +1654,8 @@ function loadPhases() {
 	    	err.target.status
 	    ));
 	    xhr.abort();
-	    apifail = true;
 
-		loadBrain();
-		loadLyrics();
-		loadArtwork();
-		loadNPToggles();
-		loadTimezones();
-		loadBot();
+	    phaseFail();
 	}
 
 	xhr.send();
@@ -1753,7 +1781,12 @@ function loadBot() {
 	    ));
 	    if (!started) {
 	    	started = true;
-	    	if (apifail)
+	    	if (apifail && filefail)
+		    	send(channelNameToID(config.options.channels.private), util.format(
+		    		strings.misc.filefail,
+		    		package.version
+		    	), false);
+		    else if (apifail)
 		    	send(channelNameToID(config.options.channels.private), util.format(
 		    		strings.misc.apifail,
 		    		package.version

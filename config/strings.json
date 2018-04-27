@@ -202,7 +202,8 @@
 	"misc": {
 		"welcome": "**My children, welcome %s to our beautiful night!**",
 		"load":    "Hey Thori, I'm back! My current version is v%s.",
-		"apifail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again.",
+		"filefail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
+		"apifail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
 		"noperm":  "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
 		"left":    "%s on %s at %s",
 		"h":       "h"
@@ -256,8 +257,11 @@
 			"load":    "I'm loading all of the upcoming phase dates...",
 			"item":    "- Loading phase date: %s - %s",
 			"done":    "I've finished loading the phase dates!",
-			"error":   "I've encountered some problems loading the dates. Here is more info: \"%s\" Proceeding...",
-			"timeout": "My attempt to load the dates took too long. Proceeding..."
+			"error":   "I've encountered some problems loading the dates. Here is more info: \"%s\" ",
+			"timeout": "My attempt to load the dates took too long. Loading from backup file...",
+			"file":    "Loading phase data from backup file...",
+			"filed":   "I've finished loading my phase backup file.",
+			"no":      "There was no phase backup file to load. The command will not function."
 		},
 		"announcements": {
 			"load":    "I'm loading all of the upcoming show dates...",
