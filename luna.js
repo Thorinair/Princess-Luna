@@ -1605,7 +1605,7 @@ function phaseFail() {
 
 	if (fs.existsSync(config.options.phasepath)) {
 		console.log(strings.debug.phases.file);		
-		phases = JSON.parse(fs.readFileSync(config.options.phases, "utf8"));
+		phases = JSON.parse(fs.readFileSync(config.options.phasepath, "utf8"));
 		processPhases();
 		console.log(strings.debug.phases.filed);
 	}
