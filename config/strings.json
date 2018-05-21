@@ -20,7 +20,8 @@
 		"lyrics": {
 			"message":  "%s, here are the lyrics of that track:\n\n",
 			"radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM:\n\n",
-			"list":     "%s, here are all the tracks I know the lyrics of:\n\n",
+			"listA":    "%s, check your direct messages, I am sending you the full list there!",
+			"listB":     "Here are all the tracks I know the lyrics of:\n\n",
 			"errorA":   "%s, I don't know the lyrics of that track.",
 			"errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM."
 		},
@@ -28,7 +29,8 @@
 			"load":     "%s, give me a moment...",
 			"message":  "Here is the artwork for that track:",
 			"radio":    "Here is the artwork for the track currently playing on PonyvilleFM:",
-			"list":     "%s, here are all the tracks I have an artwork for:\n\n",
+			"listA":    "%s, check your direct messages, I am sending you the full list there!",
+			"listB":     "Here are all the tracks I have an artwork for:\n\n",
 			"errorA":   "%s, I don't have an artwork for that track.",
 			"errorB":   "%s, I don't have an artwork for the track currently playing on PonyvilleFM."
 		},

@@ -192,12 +192,16 @@ comm.lyrics = function(data) {
 		}
 	}
 	else if (param == "list") {
+		if (bot.channels[data.channelID] != undefined)	
+			send(data.channelID, util.format(
+				strings.commands.lyrics.listA, 
+				mention(data.userID)
+			), true);
 
+		data.channelID = data.userID;
 		sendLargeMessage(data, Object.keys(lyrics).sort(), util.format(
-			strings.commands.lyrics.list,
-			mention(data.userID)
+			strings.commands.lyrics.listB
 		), false);
-
 	}
 	else if (lyrics[param] != undefined) {
 
@@ -243,12 +247,16 @@ comm.artwork = function(data) {
 		}
 	}
 	else if (param == "list") {
+		if (bot.channels[data.channelID] != undefined)	
+			send(data.channelID, util.format(
+				strings.commands.artwork.listA, 
+				mention(data.userID)
+			), true);
 
+		data.channelID = data.userID;
 		sendLargeMessage(data, Object.keys(artwork).sort(), util.format(
-			strings.commands.artwork.list,
-			mention(data.userID)
+			strings.commands.artwork.listB
 		), false);
-
 	}
 	else if (artwork[param] != undefined) {
 
