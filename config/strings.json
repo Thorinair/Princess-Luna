@@ -177,6 +177,27 @@
 			"messageB": "\n• #%s - %s - **%s**",
 			"error":    "Thori, I am not yet tracking any h chain."
 		},
+		"mood": {
+			"messageA": "Thori, the moods I can currently set the lighting to are:",
+			"messageB": "\n• %s",
+			"messageC": "Thori, I am setting the mood to **%s**!",
+			"error":    "Thori, I don't know of any mood with that name."
+		},
+		"bulb": {
+			"messageA": "Thori, the bulbs I currently have access to are:",
+			"messageB": "\n• %s (#%s)",
+			"messageC": "Thori, I am setting the parameters now!",
+			"errorA":   "Thori, you need to specify the parameters. The parameters should be written as shown below:",
+			"errorB":   "\n```Status (true or false)\nColor (HEX value)\nTransition Time (in seconds)```",
+			"errorC":   "or\n```Status (on or off)\nColor X (0.0-1.0)\nColor Y (0.0-1.0)\nBrightness (0.0-1.0)\nTransition Time (in seconds)```",
+			"errorD":   "Thori, I don't know of any bulb with that name."
+		},
+		"toggle": {
+			"messageA": "Thori, the bulbs I currently have access to are:",
+			"messageB": "\n• %s (#%s)",
+			"messageC": "Thori, I am toggling the bulb now!",
+			"error":    "Thori, I don't know of any bulb with that name."
+		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
 		},
@@ -207,6 +228,7 @@
 		"filefail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
 		"apifail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
 		"noperm":  "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
+		"noadmin": "I am sorry %s, but only Thorinair is allowed to use this command.",
 		"left":    "%s on %s at %s",
 		"h":       "h"
 	},
@@ -279,6 +301,13 @@
 			"done":    "I've finished loading VariPass data!",
 			"error":   "I've encountered some problems loading the data. Here is more info: \"%s\"",
 			"timeout": "My attempt to load the data took too long."
+		},
+		"tradfri": {
+			"connect": "I'm connecting to the Tradfri hub...",
+			"errorA":  "Something went wrong while connecting to the hub, retrying...",
+			"errorB":  "I was unable to set the bulb, trying again...",
+			"done":    "I've finished connecting to the Tradfri hub! Found bulb devices: %s",
+			"bulb":    "  %s\n  #%s\n    Type:   %s\n    Color:  #%s\n    Bright: %s\n    On:     %s"
 		}
 	}
 }

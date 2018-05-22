@@ -172,6 +172,22 @@
 			"type":    "private"
 		},
 		{
+			"command": "mood",
+			"help":    "",
+			"type":    "private"
+		},
+		{
+			"command": "bulb",
+			"help":    "",
+			"type":    "private"
+		},
+		{
+			"command": "toggle",
+			"help":    "",
+			"type":    "private"
+		},
+
+		{
 			"command": "reboot",
 			"help":    "",
 			"type":    "private"

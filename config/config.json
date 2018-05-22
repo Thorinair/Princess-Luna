@@ -14,6 +14,7 @@
 		"lyricspath":    "/var/www/node/data/lyrics.json",
 		"artworkpath":   "/var/www/node/data/artwork.json",
 		"nptogglespath": "/var/www/node/data/nptoggles.json",
+		"coappath":      "/home/luna/libcoap/examples/coap-client",
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
 		"defstation":    "one",

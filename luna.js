@@ -11,6 +11,8 @@ const moment         = require("moment-timezone");
 const XMLHttpRequest = require("xhr2");
 const archiver       = require("archiver");
 const jsmegahal      = require("jsmegahal");
+const tradfrilib     = require('node-tradfri');
+const color          = require('c0lor');
 
 // Load file data
 const token    = require("./config/token.json");
@@ -22,6 +24,8 @@ const mlp      = require("./config/mlp.json");
 const channels = require("./config/channels.json");
 const varipass = require("./config/varipass.json");
 const printer  = require("./config/printer.json");
+const dtls     = require("./config/dtls.json");
+const tradfri  = require("./config/tradfri.json");
 const package  = require("./package.json");
 
 // Commands
@@ -679,7 +683,7 @@ comm.learn = function(data) {
 
 	var brain = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
 	if (brain == "" || brain == config.options.commandsymbol + data.command) {
-		send(channelNameToID(config.options.channels.private), strings.commands.learn.errorA, false);
+		send(data.channelID, strings.commands.learn.errorA, false);
 	}
 	else {
 		if (brains[brain] != null) {
@@ -693,14 +697,14 @@ comm.learn = function(data) {
 			if (text != "") {
 				brains[brain].addMass(text.replace(/<.*>/g, ""));
 		    	messages[brain].push(text);
-				send(channelNameToID(config.options.channels.private), strings.commands.learn.message, false);
+				send(data.channelID, strings.commands.learn.message, false);
 			}
 			else {
-				send(channelNameToID(config.options.channels.private), strings.commands.learn.errorC, false);
+				send(data.channelID, strings.commands.learn.errorC, false);
 			}
 		}
 		else {
-			send(channelNameToID(config.options.channels.private), strings.commands.learn.errorB, false);
+			send(data.channelID, strings.commands.learn.errorB, false);
 		}
 	}
 };
@@ -709,10 +713,10 @@ comm.learn = function(data) {
 comm.npoverride = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
-		send(channelNameToID(config.options.channels.private), strings.commands.npoverride.error, false);
+		send(data.channelID, strings.commands.npoverride.error, false);
 	}
 	else {
-		send(channelNameToID(config.options.channels.private), util.format(
+		send(data.channelID, util.format(
 			strings.commands.npoverride.message, 
 			track
 		), false);
@@ -754,7 +758,7 @@ comm.npstatus = function(data) {
 // Command: !nppurge
 comm.nppurge = function(data) {
 	if (Object.keys(nptoggles).length == 0)
-		send(channelNameToID(config.options.channels.private), strings.commands.nppurge.error, false);
+		send(data.channelID, strings.commands.nppurge.error, false);
 	else {
 		Object.keys(nptoggles).forEach(function(n, i) {
     		if (nptoggles[n])
@@ -763,7 +767,7 @@ comm.nppurge = function(data) {
 		nptoggles = {};
 
 		fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
-		send(channelNameToID(config.options.channels.private), strings.commands.nppurge.message, false);
+		send(data.channelID, strings.commands.nppurge.message, false);
 	}
 };
 
@@ -773,7 +777,7 @@ comm.lyricsadd = function(data) {
 
 	var track = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
-		send(channelNameToID(config.options.channels.private), strings.commands.lyricsadd.errorA, false);
+		send(data.channelID, strings.commands.lyricsadd.errorA, false);
 	}
 	else {
 		var lyriclines = "";
@@ -792,13 +796,13 @@ comm.lyricsadd = function(data) {
 
 			fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
 
-			send(channelNameToID(config.options.channels.private), util.format(
+			send(data.channelID, util.format(
 				strings.commands.lyricsadd.message, 
 				track
 			), false);
 		}
 		else {
-			send(channelNameToID(config.options.channels.private), strings.commands.lyricsadd.errorB, false);
+			send(data.channelID, strings.commands.lyricsadd.errorB, false);
 		}
 	}
 };
@@ -807,7 +811,7 @@ comm.lyricsadd = function(data) {
 comm.lyricsdel = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
-		send(channelNameToID(config.options.channels.private), strings.commands.lyricsdel.errorA, false);
+		send(data.channelID, strings.commands.lyricsdel.errorA, false);
 	}
 	else {
 		if (lyrics[track] != undefined) {
@@ -815,13 +819,13 @@ comm.lyricsdel = function(data) {
 
 			fs.writeFileSync(config.options.lyricspath, JSON.stringify(lyrics), "utf-8");
 
-			send(channelNameToID(config.options.channels.private), util.format(
+			send(data.channelID, util.format(
 				strings.commands.lyricsdel.message, 
 				track
 			), false);
 		}
 		else {
-			send(channelNameToID(config.options.channels.private), strings.commands.lyricsdel.errorB, false);
+			send(data.channelID, strings.commands.lyricsdel.errorB, false);
 		}
 	}
 };
@@ -832,7 +836,7 @@ comm.artworkadd = function(data) {
 
 	var track = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
-		send(channelNameToID(config.options.channels.private), strings.commands.artworkadd.errorA, false);
+		send(data.channelID, strings.commands.artworkadd.errorA, false);
 	}
 	else {
 		if (lines[1] != undefined) {
@@ -841,7 +845,7 @@ comm.artworkadd = function(data) {
 			if (artwork[track] == undefined) {				
 				artwork[track] = url;
 				fs.writeFileSync(config.options.artworkpath, JSON.stringify(artwork), "utf-8");
-				send(channelNameToID(config.options.channels.private), util.format(
+				send(data.channelID, util.format(
 					strings.commands.artworkadd.messageA, 
 					track
 				), false);
@@ -849,14 +853,14 @@ comm.artworkadd = function(data) {
 			else {
 				artwork[track] = url;
 				fs.writeFileSync(config.options.artworkpath, JSON.stringify(artwork), "utf-8");
-				send(channelNameToID(config.options.channels.private), util.format(
+				send(data.channelID, util.format(
 					strings.commands.artworkadd.messageB, 
 					track
 				), false);
 			}			
 		}
 		else {
-			send(channelNameToID(config.options.channels.private), strings.commands.artworkadd.errorB, false);
+			send(data.channelID, strings.commands.artworkadd.errorB, false);
 		}
 	}
 };
@@ -865,7 +869,7 @@ comm.artworkadd = function(data) {
 comm.artworkdel = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (track == "" || track == config.options.commandsymbol + data.command) {
-		send(channelNameToID(config.options.channels.private), strings.commands.artworkdel.errorA, false);
+		send(data.channelID, strings.commands.artworkdel.errorA, false);
 	}
 	else {
 		if (artwork[track] != undefined) {
@@ -873,13 +877,13 @@ comm.artworkdel = function(data) {
 
 			fs.writeFileSync(config.options.artworkpath, JSON.stringify(artwork), "utf-8");
 
-			send(channelNameToID(config.options.channels.private), util.format(
+			send(data.channelID, util.format(
 				strings.commands.artworkdel.message, 
 				track
 			), false);
 		}
 		else {
-			send(channelNameToID(config.options.channels.private), strings.commands.artworkdel.errorB, false);
+			send(data.channelID, strings.commands.artworkdel.errorB, false);
 		}
 	}
 };
@@ -907,13 +911,147 @@ comm.h = function(data) {
 	}
 };
 
+// Command: !mood
+comm.mood = function(data) {
+	var name = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (name == "" || name == config.options.commandsymbol + data.command) {
+		var message = strings.commands.mood.messageA;
+		tradfri.moods.forEach(function(m) {
+			message += util.format(
+				strings.commands.mood.messageB, 
+				m.name
+			);
+		});
+		send(data.channelID, message, false);
+	}
+	else {		
+		var found = false;
+
+		tradfri.moods.forEach(function(m) {		
+			if (m.name == name) {
+				found = true;	
+				send(data.channelID, util.format(
+					strings.commands.mood.messageC, 
+					m.name
+				), false);
+				setMood(m);
+			}
+		});
+
+		if (!found)
+			send(data.channelID, strings.commands.mood.error, false);
+	}
+};
+
+// Command: !bulb
+comm.bulb = function(data) {
+	var lines = data.message.split("\n");
+
+	var name = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
+	if ((name == "" || name == config.options.commandsymbol + data.command) && lines.length <= 1) {
+		var message = strings.commands.bulb.messageA;
+		devices.forEach(function(d) {
+			message += util.format(
+				strings.commands.bulb.messageB, 
+				d.name,
+				d.color
+			);
+		});
+		send(data.channelID, message, false);
+	}
+	else {
+		var found = false;
+		var id;
+		devices.forEach(function(d) {
+			if (d.name == name) {				
+				found = true;
+				id = d.id;
+			}			
+		});
+		if (found) {
+			var bulb = {};
+			if (lines.length == 4) {
+
+				bulb.status         = lines[1];
+				bulb.transitionTime = parseInt(lines[3]);
+
+				var rgb = color.RGB().hex(lines[2]);
+				rgb.r = rgb.R;
+				rgb.g = rgb.G;
+				rgb.b = rgb.B;
+
+				var cie = color.space.rgb['CIE-RGB'];
+				var XYZ = cie.XYZ(rgb);
+
+				var xyY = XYZ.xyY();
+
+				bulb.colorX     = xyY.x;
+				bulb.colorY     = xyY.y;
+				bulb.brightness = xyY.Y;
+
+				setBulb(bulb, id);
+
+				send(data.channelID, strings.commands.bulb.messageC, false);
+			}
+			else if (lines.length == 6) {
+
+				bulb.status         = lines[1];
+				bulb.colorX         = parseFloat(lines[2]);
+				bulb.colorY         = parseFloat(lines[3]);
+				bulb.brightness     = parseFloat(lines[4]);
+				bulb.transitionTime = parseInt(lines[5]);
+
+				setBulb(bulb, id);
+
+				send(data.channelID, strings.commands.bulb.messageC, false);
+			}
+			else {
+				send(data.channelID, strings.commands.bulb.errorA + strings.commands.bulb.errorB + strings.commands.bulb.errorC, false);
+			}
+		}
+		else {
+			send(channelNameToID(config.options.channels.private), strings.commands.bulb.errorD, false);
+		}
+	}
+};
+
+// Command: !toggle
+comm.toggle = function(data) {
+	var name = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (name == "" || name == config.options.commandsymbol + data.command) {
+		var message = strings.commands.toggle.messageA;
+		devices.forEach(function(d) {
+			message += util.format(
+				strings.commands.toggle.messageB, 
+				d.name,
+				d.color
+			);
+		});
+		send(data.channelID, message, false);
+	}
+	else {		
+		var found = false;
+
+		devices.forEach(function(d) {		
+			if (d.name == name) {
+				found = true;	
+				send(data.channelID, strings.commands.toggle.messageC, false);
+				hub.toggleDevice(d.id);
+			}
+		});
+
+		if (!found)
+			send(data.channelID, strings.commands.toggle.error, false);
+	}
+};
+
 // Command: !reboot
 comm.reboot = function(data) {	
     Object.keys(nptoggles).forEach(function(n, i) {
 		if (nptoggles[n])
 			send(n, strings.announcements.npreboot, true);
 	});
-	send(channelNameToID(config.options.channels.private), strings.commands.reboot.message, false);
+	send(data.channelID, strings.commands.reboot.message, false);
 	saveAllBrains();
 	setTimeout(function() {
 		console.log(strings.debug.stopped);
@@ -924,7 +1062,7 @@ comm.reboot = function(data) {
 // Command: !backup
 comm.backup = function(data) {
 	console.log(strings.debug.backup.start);
-	send(channelNameToID(config.options.channels.private), strings.commands.backup.messageA, false);
+	send(data.channelID, strings.commands.backup.messageA, false);
 
 	var output = fs.createWriteStream(config.backup.output.path);
 	var archive = archiver("zip", {
@@ -991,6 +1129,8 @@ var startTime;
 
 // Persistant Objects
 var bot;
+var hub;
+var devices;
 var lyrics;
 var artwork;
 var nptoggles;
@@ -1416,6 +1556,41 @@ function processWhitelist(channelID) {
 	return okay;
 }
 
+function setMood(mood) {
+	mood.devices.forEach(function(d1) {
+		devices.forEach(function(d2) {
+			if (d1.name == d2.name) {
+				setBulb(d1.config, d2.id);
+			}
+		});
+	});
+}
+
+function setBulb(bulb, id) {
+	var newBulb = normalize(bulb);	
+
+	hub.setDeviceState(id, newBulb).then((result) => {
+
+	}).catch((error) => {
+		console.log(strings.debug.tradfri.errorB);
+		setBulb(bulb, id);
+	});
+}
+
+function normalize(bulb) {	
+	var newBulb = Object.assign({}, bulb);
+	if (newBulb.colorX != undefined) {
+		newBulb.colorX = Math.round(newBulb.colorX * 65535);
+	}
+	if (newBulb.colorY != undefined) {
+		newBulb.colorY = Math.round(newBulb.colorY * 65535);
+	}
+	if (newBulb.brightness != undefined) {
+		newBulb.brightness = Math.round(newBulb.brightness * 254);
+	}
+	return newBulb;
+}
+
 /*
  * Opens brain data from a file.
  * @param  name  Name of the brain.
@@ -1607,6 +1782,7 @@ function phaseSuccess() {
 	loadArtwork();
 	loadNPToggles();
 	loadTimezones();
+	loadTradfri();
 	loadBot();
 }
 
@@ -1632,6 +1808,7 @@ function phaseFail() {
 	loadArtwork();
 	loadNPToggles();
 	loadTimezones();
+	loadTradfri();
 	loadBot();
 }
 
@@ -1773,6 +1950,48 @@ function loadTimezones() {
 }
 
 /*
+ * Loads the Tradfri client.
+ */
+function loadTradfri() {
+	console.log(strings.debug.tradfri.connect);
+
+	hub = tradfrilib.create({
+	    "coapClientPath": config.options.coappath,
+	    "identity":       dtls.identity,
+	    "preSharedKey":   dtls.preSharedKey,
+	    "hubIpAddress":   dtls.hubIpAddress
+	});
+
+	hub.getDevices().then((result) => {
+
+		devices = result.filter(function(d) {
+	    	return d.color != undefined;
+		});
+
+		console.log(util.format(
+		    strings.debug.tradfri.done,
+		    devices.length
+		));
+
+		devices.forEach(function(d) {
+			console.log(util.format(
+			    strings.debug.tradfri.bulb,
+			    d.name,
+			    d.id,
+			    d.type,
+			    d.color,
+			    d.brightness,
+			    d.on
+			));
+		});
+
+	}).catch((error) => {
+		console.log(strings.debug.tradfri.errorA);
+		loadTradfri();
+	});
+}
+
+/*
  * Loads the discord bot.
  */
 function loadBot() {
@@ -1816,7 +2035,7 @@ function loadBot() {
         	});
 
 	    	loopNowPlaying();
-	    	loopBrainSave();
+	    	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 	    }
 	});
 
@@ -1865,6 +2084,13 @@ function loadBot() {
 		    			if (userID == config.options.adminid) {
 				    		comm[c.command](packed);
 				    		nocommand = false;
+		    			}
+		    			else {
+		    				send(channelID, util.format(
+								strings.misc.noadmin,
+								mention(userID)
+							), true);
+		    				nocommand = false;
 		    			}
 		    		}
 		    		else if (c.type == "dj") {

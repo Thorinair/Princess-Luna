@@ -1,0 +1,79 @@
+{
+	"moods": [
+
+		{
+			"name": "normal",
+			"devices": [
+				{
+					"name":       "desk",
+					"config": {
+						"state":          "on",
+						"color":          "f5faf6",
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name":       "bed",
+					"config": {
+						"state":          "off",
+						"color":          "f1e0b5",
+						"brightness":     0.8,
+						"transitionTime": 2
+					}
+				}
+			]
+		},
+
+		{
+			"name": "gotn",
+			"devices": [
+				{
+					"name":       "desk",
+					"config": {
+						"state":          "on",
+						"colorX":         0.16,
+						"colorY":         0.02,
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name":       "bed",
+					"config": {
+						"state":          "on",
+						"colorX":         0.15,
+						"colorY":         0.03,
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				}
+			]
+		},
+
+		{
+			"name": "off",
+			"devices": [
+				{
+					"name":       "desk",
+					"config": {
+						"state":          "off",
+						"color":          "f5faf6",
+						"brightness":     100,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name":       "bed",
+					"config": {
+						"state":          "off",
+						"color":          "f1e0b5",
+						"brightness":     80,
+						"transitionTime": 2
+					}
+				}
+			]
+		}
+
+	]	
+}
