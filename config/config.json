@@ -49,10 +49,11 @@
 		"timeout": 5
 	},
 	"brain": {
-		"path":    "/var/www/node/data/brains/brain_",
-		"default": "I am The Night.",
-		"markov":  2,
-		"timeout": 60
+		"path":     "/var/www/node/data/brains/brain_",
+		"default":  "I am The Night.",
+		"markov":   2,
+		"timeout":  60,
+		"maxlines": 16384
 	},
 	"backup": {
 		"output": {

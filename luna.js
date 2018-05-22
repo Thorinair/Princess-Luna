@@ -1614,6 +1614,9 @@ function openBrain(name) {
  * @param  name  Name of the brain.
  */
 function saveBrain(name) {
+	if (messages[name].length > config.brain.maxlines)
+		messages[name].splice(0, messages[name].length - config.brain.maxlines);
+
 	var path = config.brain.path + name;
 
 	var file = fs.createWriteStream(path + ".new");
