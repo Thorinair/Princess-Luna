@@ -1441,7 +1441,7 @@ function openBrain(name) {
 function saveBrain(name) {
 	var path = config.brain.path + name;
 
-	var file = fs.createWriteStream(path + "_");
+	var file = fs.createWriteStream(path + ".new");
 
 	file.on("error", function(err) {
 		console.log(util.format(
@@ -1457,7 +1457,7 @@ function saveBrain(name) {
 	file.end();
 
 	setTimeout(function() {
-		fs.rename(path + "_", path, function(e) {
+		fs.rename(path + ".new", path, function(e) {
 		});
     }, 1000);		
 }
