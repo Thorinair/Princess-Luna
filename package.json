@@ -26,7 +26,7 @@
     "moment-timezone": "^0.5.13",
     "xhr2": "^0.1.4",
     "archiver": "^2.0.0",
-    "node-tradfri": "^0.2.2",
+    "node-tradfri": "github:Thorinair/node-tradfri",
     "jsmegahal": "github:seiyria/jsmegahal"
   }
 }
