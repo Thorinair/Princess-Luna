@@ -5,16 +5,16 @@
 			"name": "normal",
 			"devices": [
 				{
-					"name":       "desk",
+					"name": "desk",
 					"config": {
 						"state":          "on",
-						"color":          "f5faf6",
+						"color":          "dcf0f8",
 						"brightness":     1.0,
 						"transitionTime": 2
 					}
 				},
 				{
-					"name":       "bed",
+					"name": "bed",
 					"config": {
 						"state":          "off",
 						"color":          "f1e0b5",
@@ -29,7 +29,7 @@
 			"name": "gotn",
 			"devices": [
 				{
-					"name":       "desk",
+					"name": "desk",
 					"config": {
 						"state":          "on",
 						"colorX":         0.16,
@@ -39,7 +39,7 @@
 					}
 				},
 				{
-					"name":       "bed",
+					"name": "bed",
 					"config": {
 						"state":          "on",
 						"colorX":         0.15,
@@ -55,20 +55,20 @@
 			"name": "off",
 			"devices": [
 				{
-					"name":       "desk",
+					"name": "desk",
 					"config": {
 						"state":          "off",
-						"color":          "f5faf6",
-						"brightness":     100,
+						"color":          "dcf0f8",
+						"brightness":     1.0,
 						"transitionTime": 2
 					}
 				},
 				{
-					"name":       "bed",
+					"name": "bed",
 					"config": {
 						"state":          "off",
 						"color":          "f1e0b5",
-						"brightness":     80,
+						"brightness":     0.8,
 						"transitionTime": 2
 					}
 				}

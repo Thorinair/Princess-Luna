@@ -949,15 +949,20 @@ comm.bulb = function(data) {
 
 	var name = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
 	if ((name == "" || name == config.options.commandsymbol + data.command) && lines.length <= 1) {
-		var message = strings.commands.bulb.messageA;
-		devices.forEach(function(d) {
-			message += util.format(
-				strings.commands.bulb.messageB, 
-				d.name,
-				d.color
-			);
+		refreshTradfriDevices(function() {
+			var message = strings.commands.bulb.messageA;
+			devices.forEach(function(d) {
+				var color = d.color;
+				if (color == "0")
+					color = "custom";
+				message += util.format(
+					strings.commands.bulb.messageB, 
+					d.name,
+					color
+				);
+			});
+			send(data.channelID, message, false);
 		});
-		send(data.channelID, message, false);
 	}
 	else {
 		var found = false;
@@ -1019,15 +1024,20 @@ comm.bulb = function(data) {
 comm.toggle = function(data) {
 	var name = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (name == "" || name == config.options.commandsymbol + data.command) {
-		var message = strings.commands.toggle.messageA;
-		devices.forEach(function(d) {
-			message += util.format(
-				strings.commands.toggle.messageB, 
-				d.name,
-				d.color
-			);
+		refreshTradfriDevices(function() {
+			var message = strings.commands.toggle.messageA;
+			devices.forEach(function(d) {
+				var color = d.color;
+				if (color == "0")
+					color = "custom";
+				message += util.format(
+					strings.commands.toggle.messageB, 
+					d.name,
+					color
+				);
+			});
+			send(data.channelID, message, false);
 		});
-		send(data.channelID, message, false);
 	}
 	else {		
 		var found = false;
@@ -1956,7 +1966,6 @@ function loadTimezones() {
  * Loads the Tradfri client.
  */
 function loadTradfri() {
-	console.log(strings.debug.tradfri.connect);
 
 	hub = tradfrilib.create({
 	    "coapClientPath": config.options.coappath,
@@ -1965,6 +1974,13 @@ function loadTradfri() {
 	    "hubIpAddress":   dtls.hubIpAddress
 	});
 
+	refreshTradfriDevices(function() {
+	});
+}
+
+function refreshTradfriDevices(callback) {
+	console.log(strings.debug.tradfri.connect);
+	
 	hub.getDevices().then((result) => {
 
 		devices = result.filter(function(d) {
@@ -1988,9 +2004,11 @@ function loadTradfri() {
 			));
 		});
 
+		callback();
+
 	}).catch((error) => {
 		console.log(strings.debug.tradfri.errorA);
-		loadTradfri();
+		refreshTradfriDevices(callback);
 	});
 }
 
