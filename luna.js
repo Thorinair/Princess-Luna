@@ -934,7 +934,7 @@ comm.mood = function(data) {
 					strings.commands.mood.messageC, 
 					m.name
 				), false);
-				setMood(m);
+				setMood(m.name);
 			}
 		});
 
@@ -1566,14 +1566,19 @@ function processWhitelist(channelID) {
 	return okay;
 }
 
-function setMood(mood) {
-	mood.devices.forEach(function(d1) {
-		devices.forEach(function(d2) {
-			if (d1.name == d2.name) {
-				setBulb(d1.config, d2.id);
-			}
-		});
-	});
+function setMood(name) {
+	tradfri.moods.forEach(function(m) {	
+		if (m.name == name) {
+			found = true;	
+			m.devices.forEach(function(d1) {
+				devices.forEach(function(d2) {
+					if (d1.name == d2.name) {
+						setBulb(d1.config, d2.id);
+					}
+				});
+			});
+		}
+	});	
 }
 
 function setBulb(bulb, id) {
@@ -1716,6 +1721,8 @@ function loadAnnouncements() {
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
 				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.now, true);
+				setMood("gotn");
+
 			    setTimeout(function() {
 
 					send(channelNameToID(config.options.channels.private), strings.debug.nptoggles.autoon, false);
@@ -1729,8 +1736,9 @@ function loadAnnouncements() {
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
-
 				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.after, true);
+				setMood("normal");
+
 				send(channelNameToID(config.options.channels.private), strings.debug.nptoggles.autooff, false);
 		    	config.options.channels.nowplaying.forEach(function(n, i) {
 		    		if (nptoggles[channelNameToID(n)] != undefined)
@@ -1980,7 +1988,7 @@ function loadTradfri() {
 
 function refreshTradfriDevices(callback) {
 	console.log(strings.debug.tradfri.connect);
-	
+
 	hub.getDevices().then((result) => {
 
 		devices = result.filter(function(d) {
