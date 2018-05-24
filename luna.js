@@ -1566,6 +1566,15 @@ function processWhitelist(channelID) {
 	return okay;
 }
 
+function processBlacklist(userID) {
+	var okay = true;
+	config.brain.blacklist.forEach(function(u) {
+		if (u == userID)
+			okay = false;
+	});
+	return okay;
+}
+
 function setMood(name) {
 	tradfri.moods.forEach(function(m) {	
 		if (m.name == name) {
@@ -2181,7 +2190,7 @@ function loadBot() {
 		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(message), true);
 		    }
 		    // All other messages.
-		    if (data.d.author.id != bot.id && processWhitelist(channelID)) {
+		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID)) {
 	    		brains[channelIDToBrain(channelID)].addMass(message.replace(/<.*>/g, ""));
 	    		messages[channelIDToBrain(channelID)].push(message);
 		    }
