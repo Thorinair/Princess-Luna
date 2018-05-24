@@ -8,6 +8,9 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Sends info about tracks playing on PonyvilleFM during the show.
 * Features a chatbot which learns from the messages sent in the server.
 * The bot tracks any "h" chains across different channels and replies to them.
+* Can list physical sensor data of Thorinair's real life room.
+* Can send information about Thorinair's Nightmare Rarity 3D printer.
+* Full integration with the Ikea Tradfri RGB smart bulbs.
 * Features a variety of commands:
     - `!gotn` Lists the time left until the next Glory of The Night episode. You may also specify the timezone after the command.
     - `!mlp` Lists the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.
@@ -36,6 +39,9 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!artworkadd` Adds an artwork to the database. Specify a track name after the command, and the artwork URL in the line below.
     - `!artworkdel` Removes an artwork from the database. Specify a track name after the command.
     - `!h` Lists the current status of any h chains.
+    - `!mood` Changes the mood of a larger group of the Ikea Tradfri bulbs to one of the preset configurations available. Use without a mood name to list all available ones.
+    - `!bulb` Changes the parameters of a single Ikea Tradfri bulb. Supports both HEX color codes and xyY color space. Use without parameters to list all available bulbs.
+    - `!toggle` Toggles a single Ikea Tradfri bulb. Use without parameters to list all available bulbs.
     - `!reboot` Reboots the bot.
     - `!backup` Created a backup of the data and config directories and sends it as a file through Discord.
 
