@@ -54,6 +54,10 @@
 			"messageC": "Nightmare Rarity is currently printing a file called `%s`, and the print is %s% done. It is estimated that the printing time will take around %s more. You can view the printing area on the webcam image below.",
 			"error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
 		},
+		"blacklist": {
+			"messageA": "%s, I am sad to hear that you no longer wish me to remember your messages. From this point on, I will not remember anything you say in any channel. If you ever change your mind, just use this command again.",
+			"messageB": "%s, I am happy to hear that I may remember your messages again! From this point on, I will again remember everything you say in any channel where learning is enabled."
+		},
 		"stats": {
 			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago. The brain I am using for this chatroom is called *%s*, and has %s lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",
@@ -271,6 +275,13 @@
 			"remove":  "I am unsubscribing the channel #%s (%s) from automatic Now Playing announcements.",
 			"autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info.",
 			"autooff": "Thori, I am **disabling** the automatic posting of Now Playing info."
+		},
+		"blacklist": {
+			"old":     "A blacklist file already seems to exit. Loading it now...",
+			"new":     "I don't seem to have a blacklist file. I have created a new one.",
+			"done":    "I've finished loading my blacklist file.",
+			"add":     "I am adding the user #%s to the blacklist.",
+			"remove":  "I am removing the user #%s from the blacklist."
 		},
 		"backup": {
 			"start":   "Started a backup...",

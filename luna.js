@@ -489,6 +489,36 @@ comm.printer = function(data) {
 	});
 };
 
+// Command: !blacklist
+comm.blacklist = function(data) {
+	if (blacklist[data.userID] == undefined) {
+		blacklist[data.userID] = true;
+		send(data.channelID, util.format(
+			strings.commands.blacklist.messageA, 
+			mention(data.userID)
+		), true);
+
+		console.log(util.format(
+			strings.debug.blacklist.add,
+			data.userID
+		));
+	}
+	else {
+		delete blacklist[data.userID];
+		send(data.channelID, util.format(
+			strings.commands.blacklist.messageB, 
+			mention(data.userID)
+		), true);
+
+		console.log(util.format(
+			strings.debug.blacklist.remove,
+			data.userID
+		));
+	}
+
+	fs.writeFileSync(config.options.blacklistpath, JSON.stringify(blacklist), "utf-8");
+};
+
 // Command: !stats
 comm.stats = function(data) {
 	var dateNow = new Date();
@@ -630,6 +660,13 @@ comm.nptoggle = function(data) {
 			channelIDToName(data.channelID),
 			data.channelID
 		));
+
+		setTimeout(function() {
+			send(data.channelID, util.format(
+				strings.announcements.nowplaying,
+				np.nowplaying
+			), true);
+	    }, 1000);		
 	}
 	else {
 		delete nptoggles[data.channelID];
@@ -1144,6 +1181,7 @@ var devices;
 var lyrics;
 var artwork;
 var nptoggles;
+var blacklist;
 
 // Callback for downloading of files. 
 var download = function(uri, filename, callback) {
@@ -1568,10 +1606,9 @@ function processWhitelist(channelID) {
 
 function processBlacklist(userID) {
 	var okay = true;
-	config.brain.blacklist.forEach(function(u) {
-		if (u == userID)
-			okay = false;
-	});
+	if (blacklist[userID] != undefined) {
+		okay = false;
+	};
 	return okay;
 }
 
@@ -1811,6 +1848,7 @@ function phaseSuccess() {
 	loadLyrics();
 	loadArtwork();
 	loadNPToggles();
+	loadBlacklist();
 	loadTimezones();
 	loadTradfri();
 	loadBot();
@@ -1837,6 +1875,7 @@ function phaseFail() {
 	loadLyrics();
 	loadArtwork();
 	loadNPToggles();
+	loadBlacklist();
 	loadTimezones();
 	loadTradfri();
 	loadBot();
@@ -1964,6 +2003,23 @@ function loadNPToggles() {
 	else {
 	    fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
 		console.log(strings.debug.nptoggles.new);
+	}
+}
+
+/*
+ * Loads the blacklist toggle data, or creates new.
+ */
+function loadBlacklist() {
+	blacklist = {};
+
+	if (fs.existsSync(config.options.blacklistpath)) {
+		console.log(strings.debug.blacklist.old);
+		blacklist = JSON.parse(fs.readFileSync(config.options.blacklistpath, "utf8"));
+		console.log(strings.debug.blacklist.done);
+	}
+	else {
+	    fs.writeFileSync(config.options.blacklistpath, JSON.stringify(blacklist), "utf-8");
+		console.log(strings.debug.blacklist.new);
 	}
 }
 
