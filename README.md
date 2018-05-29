@@ -44,6 +44,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!bulb` Changes the parameters of a single Ikea Tradfri bulb. Supports both HEX color codes and xyY color space. Use without parameters to list all available bulbs.
     - `!toggle` Toggles a single Ikea Tradfri bulb. Use without parameters to list all available bulbs.
     - `!reboot` Reboots the bot.
+    - `!reload` Reloads the configuration files. Note that only the actual configuration will be reloaded, and reloading may not sometimes be enough to change the behavior.
     - `!backup` Created a backup of the data and config directories and sends it as a file through Discord.
 
 ## Privacy & Data Collection

@@ -198,6 +198,11 @@
 			"type":    "private"
 		},
 		{
+			"command": "reload",
+			"help":    "",
+			"type":    "private"
+		},
+		{
 			"command": "backup",
 			"help":    "",
 			"type":    "private"

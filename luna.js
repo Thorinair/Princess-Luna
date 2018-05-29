@@ -14,19 +14,20 @@ const jsmegahal      = require("jsmegahal");
 const tradfrilib     = require('node-tradfri');
 const color          = require('c0lor');
 
-// Load file data
-const token    = require("./config/token.json");
-const config   = require("./config/config.json");
-const commands = require("./config/commands.json");
-const strings  = require("./config/strings.json");
-const gotn     = require("./config/gotn.json");
-const mlp      = require("./config/mlp.json");
-const channels = require("./config/channels.json");
-const varipass = require("./config/varipass.json");
-const printer  = require("./config/printer.json");
-const dtls     = require("./config/dtls.json");
-const tradfri  = require("./config/tradfri.json");
 const package  = require("./package.json");
+
+// Load file data
+var token    = require("./config/token.json");
+var config   = require("./config/config.json");
+var commands = require("./config/commands.json");
+var strings  = require("./config/strings.json");
+var gotn     = require("./config/gotn.json");
+var mlp      = require("./config/mlp.json");
+var channels = require("./config/channels.json");
+var varipass = require("./config/varipass.json");
+var printer  = require("./config/printer.json");
+var dtls     = require("./config/dtls.json");
+var tradfri  = require("./config/tradfri.json");
 
 // Commands
 var comm = {};
@@ -1012,12 +1013,11 @@ comm.bulb = function(data) {
 		});
 		if (found) {
 			var bulb = {};
-			if (lines.length == 4) {
+			if (lines.length == 3) {
 
-				bulb.status         = lines[1];
-				bulb.transitionTime = parseInt(lines[3]);
+				bulb.transitionTime = parseInt(lines[2]);
 
-				var rgb = color.RGB().hex(lines[2]);
+				var rgb = color.RGB().hex(lines[1]);
 				rgb.r = rgb.R;
 				rgb.g = rgb.G;
 				rgb.b = rgb.B;
@@ -1035,13 +1035,12 @@ comm.bulb = function(data) {
 
 				send(data.channelID, strings.commands.bulb.messageC, false);
 			}
-			else if (lines.length == 6) {
+			else if (lines.length == 5) {
 
-				bulb.status         = lines[1];
-				bulb.colorX         = parseFloat(lines[2]);
-				bulb.colorY         = parseFloat(lines[3]);
-				bulb.brightness     = parseFloat(lines[4]);
-				bulb.transitionTime = parseInt(lines[5]);
+				bulb.colorX         = parseFloat(lines[1]);
+				bulb.colorY         = parseFloat(lines[2]);
+				bulb.brightness     = parseFloat(lines[3]);
+				bulb.transitionTime = parseInt(lines[4]);
 
 				setBulb(bulb, id);
 
@@ -1104,6 +1103,23 @@ comm.reboot = function(data) {
 		console.log(strings.debug.stopped);
 		process.exit();
 	}, config.options.reboottime * 1000);
+};
+
+// Command: !reload
+comm.reload = function(data) {	
+	token    = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
+	config   = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
+	commands = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
+	strings  = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
+	gotn     = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
+	mlp      = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
+	channels = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
+	varipass = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
+	printer  = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
+	dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
+	tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
+
+    send(data.channelID, strings.commands.reload.message, false);
 };
 
 // Command: !backup
@@ -1616,12 +1632,14 @@ function setMood(name) {
 	tradfri.moods.forEach(function(m) {	
 		if (m.name == name) {
 			found = true;	
-			m.devices.forEach(function(d1) {
-				devices.forEach(function(d2) {
-					if (d1.name == d2.name) {
-						setBulb(d1.config, d2.id);
-					}
-				});
+			refreshTradfriDevices(function() {
+				m.devices.forEach(function(d1) {
+					devices.forEach(function(d2) {
+						if (d1.name == d2.name) {
+							setBulb(d1.config, d2.id);
+						}
+					});
+				});	
 			});
 		}
 	});	
@@ -1783,7 +1801,7 @@ function loadAnnouncements() {
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
 				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.after, true);
-				setMood("normal");
+				setMood("norm");
 
 				send(channelNameToID(config.options.channels.private), strings.debug.nptoggles.autooff, false);
 		    	config.options.channels.nowplaying.forEach(function(n, i) {

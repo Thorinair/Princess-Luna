@@ -2,7 +2,7 @@
 	"moods": [
 
 		{
-			"name": "normal",
+			"name": "norm",
 			"devices": [
 				{
 					"name": "desk",
@@ -19,6 +19,24 @@
 						"state":          "off",
 						"color":          "f1e0b5",
 						"brightness":     0.8,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name": "topa",
+					"config": {
+						"state":          "off",
+						"color":          "f5faf6",
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name": "topb",
+					"config": {
+						"state":          "off",
+						"color":          "f5faf6",
+						"brightness":     1.0,
 						"transitionTime": 2
 					}
 				}
@@ -47,6 +65,72 @@
 						"brightness":     1.0,
 						"transitionTime": 2
 					}
+				},
+				{
+					"name": "topa",
+					"config": {
+						"state":          "on",
+						"colorX":         0.15,
+						"colorY":         0.03,
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name": "topb",
+					"config": {
+						"state":          "on",
+						"colorX":         0.16,
+						"colorY":         0.02,
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				}
+			]
+		},
+
+		{
+			"name": "late",
+			"devices": [
+				{
+					"name": "desk",
+					"config": {
+						"state":          "on",
+						"colorX":         0.65,
+						"colorY":         0.325,
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name": "bed",
+					"config": {
+						"state":          "on",
+						"colorX":         0.65,
+						"colorY":         0.325,
+						"brightness":     0.8,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name": "topa",
+					"config": {
+						"state":          "on",
+						"colorX":         0.65,
+						"colorY":         0.325,
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name": "topb",
+					"config": {
+						"state":          "on",
+						"colorX":         0.65,
+						"colorY":         0.325,
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
 				}
 			]
 		},
@@ -69,6 +153,24 @@
 						"state":          "off",
 						"color":          "f1e0b5",
 						"brightness":     0.8,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name": "topa",
+					"config": {
+						"state":          "off",
+						"color":          "f5faf6",
+						"brightness":     1.0,
+						"transitionTime": 2
+					}
+				},
+				{
+					"name": "topb",
+					"config": {
+						"state":          "off",
+						"color":          "f5faf6",
+						"brightness":     1.0,
 						"transitionTime": 2
 					}
 				}

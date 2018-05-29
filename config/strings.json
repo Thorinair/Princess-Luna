@@ -192,8 +192,8 @@
 			"messageB": "\n• %s (#%s)",
 			"messageC": "Thori, I am setting the parameters now!",
 			"errorA":   "Thori, you need to specify the parameters. The parameters should be written as shown below:",
-			"errorB":   "\n```Status (on or off)\nColor (HEX value)\nTransition Time (in seconds)```",
-			"errorC":   "or\n```Status (on or off)\nColor X (0.0-1.0)\nColor Y (0.0-1.0)\nBrightness (0.0-1.0)\nTransition Time (in seconds)```",
+			"errorB":   "\n```Color (HEX value)\nTransition Time (in seconds)```",
+			"errorC":   "or\n```Color X (0.0-1.0)\nColor Y (0.0-1.0)\nBrightness (0.0-1.0)\nTransition Time (in seconds)```",
 			"errorD":   "Thori, I don't know of any bulb with that name."
 		},
 		"toggle": {
@@ -204,6 +204,9 @@
 		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
+		},
+		"reload": {
+			"message":  "Thori, I have reloaded my configuration."
 		},
 		"backup": {
 			"messageA":  "Thori, I've started a backup of my files. Give me a moment...",
