@@ -1218,6 +1218,15 @@ function mention(id) {
 }
 
 /*
+ * Formats a role mention string.
+ * @param  id  ID to mention.
+ * @return     String usable by Discord as a mention.
+ */
+function mentionRole(id) {
+	return util.format(config.options.mentionrole, id);
+}
+
+/*
  * Sends a large message to some chat using multiple messages. Used for lyrics.
  * @param  data     Data of the message.
  * @param  list     List to be sent.
@@ -1768,7 +1777,7 @@ function loadAnnouncements() {
 
 		// Long air-time announcement.
 		var jobLong = new CronJob(new Date(date - long), function() {
-				send(channelNameToID(config.options.channels.announcements), util.format(
+				send(channelNameToID(config.options.channels.announceA), util.format(
 					strings.announcements.gotn.long,
 					getTimeString(dateLong)
 				), true);
@@ -1776,15 +1785,23 @@ function loadAnnouncements() {
 
 		// Short air-time announcement.
 		var jobShort = new CronJob(new Date(date - short), function() {
-				send(channelNameToID(config.options.channels.announcements), util.format(
-					strings.announcements.gotn.short,
+				send(channelNameToID(config.options.channels.announceA), util.format(
+					strings.announcements.gotn.shortA,
+					getTimeString(dateShort)
+				), true);
+				send(channelNameToID(config.options.channels.announceB), util.format(
+					strings.announcements.gotn.shortB,
 					getTimeString(dateShort)
 				), true);
 			}, function () {}, true);
 
 		// Now air-time announcement.
 		var jobNow = new CronJob(new Date(date), function() {
-				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.now, true);
+				send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.nowA, true);
+				send(channelNameToID(config.options.channels.announceB), util.format(
+					strings.announcements.gotn.nowB,
+					mentionRole(config.options.squadid)
+				), true);
 				setMood("gotn");
 
 			    setTimeout(function() {
@@ -1800,7 +1817,8 @@ function loadAnnouncements() {
 
 		// After air-time announcement.
 		var jobAfter = new CronJob(new Date(date - after), function() {
-				send(channelNameToID(config.options.channels.announcements), strings.announcements.gotn.after, true);
+				send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.afterA, true);
+				send(channelNameToID(config.options.channels.announceB), strings.announcements.gotn.afterB, true);
 				setMood("norm");
 
 				send(channelNameToID(config.options.channels.private), strings.debug.nptoggles.autooff, false);

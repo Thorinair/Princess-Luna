@@ -217,9 +217,12 @@
 	"announcements": {
 		"gotn": {
 			"long":   "@everyone, a new episode of Glory of The Night starts in %s! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>",
-			"short":  "Everypony @here, Glory of The Night begins in only %s! Tune in to PonyvilleFM now! I suggest using the Vorbis HQ stream for best sound quality. https://ponyvillefm.com/player",
-			"now":    "**Everypony @here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!**",
-			"after":  "Everypony @here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud."
+			"shortA": "Everypony @here, Glory of The Night begins in only %s! Tune in to PonyvilleFM now! I suggest using the Vorbis HQ stream for best sound quality. https://ponyvillefm.com/player",
+			"shortB": "Thorinair's Glory of The Night begins in only %s! Tune in to PonyvilleFM now so you don't miss out!",
+			"nowA":   "**Everypony @here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!**",
+			"nowB":   "**Thorinair's Glory of The Night has begun! %s, join us in the beautiful night!**",
+			"afterA": "Everypony @here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.",
+			"afterB": "The show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud."
 		},
 		"phases": {
 			"full":   "Everypony @here, the Moon has reached its %s phase! Let the moonlight shine upon you in all its might!",
