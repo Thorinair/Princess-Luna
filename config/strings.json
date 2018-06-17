@@ -198,7 +198,7 @@
 		},
 		"toggle": {
 			"messageA": "Thori, the bulbs I currently have access to are:",
-			"messageB": "\n• %s (#%s)",
+			"messageB": "\n• %s (%s)",
 			"messageC": "Thori, I am toggling the bulb now!",
 			"error":    "Thori, I don't know of any bulb with that name."
 		},

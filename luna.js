@@ -1063,13 +1063,15 @@ comm.toggle = function(data) {
 		refreshTradfriDevices(function() {
 			var message = strings.commands.toggle.messageA;
 			devices.forEach(function(d) {
-				var color = d.color;
-				if (color == "0")
-					color = "custom";
+				var on = d.on;
+				if (on == true)
+					on = "on";
+				else
+					on = "off";
 				message += util.format(
 					strings.commands.toggle.messageB, 
 					d.name,
-					color
+					on
 				);
 			});
 			send(data.channelID, message, false);
