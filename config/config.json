@@ -23,6 +23,7 @@
 		"game":          "with your dreams.",
 		"defstation":    "one",
 		"lyricformat":   "*",
+		"serverport":    80,
 		"maxlength":     2000,
 		"typetime":      2,
 		"reboottime":    2,

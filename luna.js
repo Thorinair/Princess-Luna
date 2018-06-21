@@ -3,6 +3,8 @@ const util           = require("util")
 const fs             = require("fs");
 const request        = require("request");
 const readline       = require("readline");
+const http           = require("http");
+const url            = require('url');
 
 // 3rd Party Modules
 const Discord        = require("discord.io");
@@ -433,6 +435,42 @@ comm.room = function(data) {
 
 	console.log(strings.debug.varipass.load);
 	xhr.send(JSON.stringify(payload));
+};
+
+// Command: !power
+comm.power = function(data) {
+	var dateNow = new Date() / 1000;
+	var diff = dateNow - powerTime;
+	var time = {};
+
+	time.seconds = Math.floor(diff % 60);
+	diff = Math.floor(diff / 60);
+	time.minutes = Math.floor(diff % 60);
+	diff = Math.floor(diff / 60);
+	time.hours = Math.floor(diff % 24);
+	time.days = Math.floor(diff / 24);
+
+	var message = "";
+	if (powerStatus == null)
+		send(data.channelID, util.format(
+			strings.commands.power.error, 
+			mention(data.userID)
+		), true);
+	else if (powerStatus == 0)
+		send(data.channelID, util.format(
+			strings.commands.power.messageA, 
+			mention(data.userID),
+			getTimeString(time),
+			time.seconds
+		), true);
+	else if (powerStatus > 0)
+		send(data.channelID, util.format(
+			strings.commands.power.messageB, 
+			mention(data.userID),
+			getTimeString(time),
+			time.seconds,
+			mention(config.options.adminid)
+		), true);	
 };
 
 // Command: !printer
@@ -1191,6 +1229,8 @@ var brains    = {};
 var messages  = {};
 var hTrack    = {};
 var startTime;
+var powerStatus = null;
+var powerTime;
 
 // Persistant Objects
 var bot;
@@ -1200,6 +1240,7 @@ var lyrics;
 var artwork;
 var nptoggles;
 var blacklist;
+var server;
 
 // Callback for downloading of files. 
 var download = function(uri, filename, callback) {
@@ -1890,6 +1931,7 @@ function phaseSuccess() {
 	loadTimezones();
 	loadTradfri();
 	loadBot();
+	loadServer();
 }
 
 /*
@@ -1917,6 +1959,7 @@ function phaseFail() {
 	loadTimezones();
 	loadTradfri();
 	loadBot();
+	loadServer();
 }
 
 /*
@@ -2123,6 +2166,59 @@ function refreshTradfriDevices(callback) {
 	});
 }
 
+function processPower(power) {
+	if (power == "on") {
+		if (powerStatus != null && powerStatus != 0)			
+			send(channelNameToID(config.options.channels.private), util.format(
+					strings.announcements.power.on,
+					mention(config.options.adminid)
+				), false);
+		powerStatus = 0;
+		powerTime = new Date() / 1000;
+	}
+	else if (power == "off") {
+		if (powerStatus == null || powerStatus == 0) {
+			send(channelNameToID(config.options.channels.private), util.format(
+					strings.announcements.power.off1,
+					mention(config.options.adminid)
+				), false);
+			powerStatus = 1;
+		}
+		else if (powerStatus == 1) {
+			send(channelNameToID(config.options.channels.private), util.format(
+					strings.announcements.power.off2,
+					mention(config.options.adminid)
+				), false);
+			powerStatus = 2;
+		}
+		else if (powerStatus == 2) {
+			send(channelNameToID(config.options.channels.private), util.format(
+					strings.announcements.power.off3,
+					mention(config.options.adminid)
+				), false);
+			powerStatus = 3;
+		}
+		powerTime = new Date() / 1000;
+	}
+}
+
+var processRequest = function(req, res) {
+    if (req.method == "GET") {
+    	var query = url.parse(req.url, true).query;
+
+    	processPower(query.power);
+    }
+
+    //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);
+
+    res.writeHead(200, [
+    	["Content-Type", "text/plain"], 
+    	["Content-Length", 0]
+            ]);
+    res.write("");
+    res.end();
+};
+
 /*
  * Loads the discord bot.
  */
@@ -2300,6 +2396,10 @@ function loadBot() {
 	});
 }
 
+function loadServer() {
+	server = http.createServer(processRequest).listen(config.options.serverport);
+}
+
 /*
  * Loops to continuously retrieve now playing data.
  */
@@ -2360,6 +2460,8 @@ function loopBrainSave() {
 	saveAllBrains();
 	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 }
+
+
 
 // Start the bot.
 startTime = new Date();

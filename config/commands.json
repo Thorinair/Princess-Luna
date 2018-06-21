@@ -46,6 +46,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "power",
+			"help":    "Ask me whether I am currently getting mains power. I will keep working for some time on a UPS if it goes out.",
+			"type":    "public"
+		},
+		{
 			"command": "printer",
 			"help":    "Ask me about the status of Thorinair's Nightmare Rarity 3D printer. I will also send a photo of the printer's webcam.",
 			"type":    "public"

@@ -48,6 +48,11 @@
 			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
 			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
 		},
+		"power": {
+			"messageA": "%s, my mains power seems to be running as expected. Last update was %s and %s seconds ago.",
+			"messageB": "**%s, I have detected that my mains power is not running! Somepony please poke Thorinair!** Last update was %s and %s seconds ago.\n%s",
+			"error":    "%s, I haven't received any mains power status information yet."
+		},
 		"printer": {
 			"messageA": "%s, give me a moment...",
 			"messageB": "Nightmare Rarity is currently not printing anything. You can view the printing area on the webcam image below.",
@@ -227,6 +232,12 @@
 		"phases": {
 			"full":   "Everypony @here, the Moon has reached its %s phase! Let the moonlight shine upon you in all its might!",
 			"else":   "The Moon has reached its %s phase..."
+		},
+		"power": {
+			"off1":   "**%s, I need to urgently inform you that my mains power has gone out! Please come save me! I am currently running off the UPS...**",
+			"off2":   "**%s, I am starting to panic here! The power is still out...**",
+			"off3":   "**%s, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!**",
+			"on":     "Phew... %s, I am happy to inform you that the mains power has been restored!"
 		},
 		"nowplaying": "**Now playing:** %s",
 		"npreboot":    "I need to go for a quick reboot... I'm sorry if I miss any tracks!",
