@@ -12,6 +12,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Can send information about Thorinair's Nightmare Rarity 3D printer.
 * Full integration with the Ikea Tradfri RGB smart bulbs.
 * Supports [motionEye](https://github.com/ccrisan/motioneye) detection notifications via web interface.
+* Can control and emulate human presence via light automatic bulb control.
 * Features a variety of commands:
     - `!gotn` Lists the time left until the next Glory of The Night episode. You may also specify the timezone after the command.
     - `!mlp` Lists the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.
@@ -45,9 +46,11 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!mood` Changes the mood of a larger group of the Ikea Tradfri bulbs to one of the preset configurations available. Use without a mood name to list all available ones.
     - `!bulb` Changes the parameters of a single Ikea Tradfri bulb. Supports both HEX color codes and xyY color space. Use without parameters to list all available bulbs.
     - `!toggle` Toggles a single Ikea Tradfri bulb. Use without parameters to list all available bulbs.
+    - `!schedulestart` Starts an automated schedule for toggling the lightbulbs. Specify number of days after the command.
+    - `!schedulestop` Stops the active automated schedule for toggling the lightbulbs.
     - `!reboot` Reboots the bot.
     - `!reload` Reloads the configuration files. Note that only the actual configuration will be reloaded, and reloading may not sometimes be enough to change the behavior.
-    - `!backup` Created a backup of the data and config directories and sends it as a file through Discord.
+    - `!backup` Creates a backup of the data and config directories and sends it as a file through Discord.
 
 ## Privacy & Data Collection
 This bot stores message history in plain text files and uses them as training data upon startup. The files are not avilable to anyone using the bot other than the admin who has access to the file system the bot is running on. The messages are stored anonymously (no user names are saved) and the messages are kept either indefinitely or until too many messages have accumulated for a certain brain (see the config.json file). Message history can also be manually deleted. Plain text storage allows for later editing in case the data needs to be modified (cleanup and such). The messages are stored only in the channels where learning has been enabled. Please use the `!stats` command to verify whether any data collection will take place in the specific channel. In case a user wants to completely prevent their messages from being gathered anywhere, they can simply use the `!blacklist` command.

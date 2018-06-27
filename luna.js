@@ -30,6 +30,7 @@ var varipass = require("./config/varipass.json");
 var printer  = require("./config/printer.json");
 var dtls     = require("./config/dtls.json");
 var tradfri  = require("./config/tradfri.json");
+var schedule = require("./config/schedule.json");
 
 // Commands
 var comm = {};
@@ -1131,6 +1132,115 @@ comm.toggle = function(data) {
 	}
 };
 
+// Command: !schedulestart
+comm.schedulestart = function(data) {
+	var days = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (days == "" || days == config.options.commandsymbol + data.command) {
+		send(channelNameToID(config.options.channels.private), strings.commands.schedulestart.errorA, false);
+	}
+	else {
+		if (scheduleEntries != undefined && scheduleEntries.length > 0)	{
+			send(channelNameToID(config.options.channels.private), strings.commands.schedulestart.errorB, false);
+		}
+		else {
+			scheduleEntries = [];
+
+	    	var now = new Date();
+			var day = now.getDate();
+			var month = now.getMonth();
+			var year = now.getFullYear();
+
+			for (i = 0; i < parseInt(days); i++) { 
+			    schedule.schedules.forEach(function(s) {
+					var partsTime = s.time.split(config.separators.time);
+			    	var date = new Date(year, month, day + i, partsTime[0], partsTime[1], 0, 0);
+			    	var delta = Math.floor((Math.random() * (2 * 60000 * s.delta) - 60000 * s.delta));
+
+			    	var entry = {};
+			    	date.setTime(date.getTime() + delta); 
+			    	entry.date = date;
+			    	entry.delta = delta;
+			    	entry.name = s.name;
+			    	entry.toggle = s.toggle;
+			    	entry.bulbs = s.bulbs;
+
+			    	scheduleEntries.push(entry);
+			    });
+			}
+
+			var message = strings.commands.schedulestart.messageA;
+			var j = 0;
+			scheduleEntries.forEach(function(e, i) {
+				if (i % schedule.schedules.length == 0) {
+					j++;
+					message += util.format(
+						strings.commands.schedulestart.messageB, 
+						j
+					);
+				}
+
+				var momentTime = moment.tz(e.date, config.options.mytimezone);
+				message += util.format(
+					strings.commands.schedulestart.messageC, 
+					e.name,
+					e.toggle,
+					momentTime.format("ddd MMM DD, YYYY"),
+					momentTime.format("HH:mm (z)")
+				);
+
+				var job = new CronJob(e.date, function() {
+					refreshTradfriDevices(function() {
+						var message = "";
+						e.bulbs.forEach(function(b) {
+							devices.forEach(function(d) {
+								if (b == d.name) {
+									if (e.toggle == "off" && d.on) {
+										hub.toggleDevice(d.id);
+									}
+									else if (e.toggle == "on" && !d.on) {
+										hub.toggleDevice(d.id);
+									}
+								}
+							});	
+							if (message == "")
+								message += b;
+							else
+								message += ", " + b;
+						});						
+						send(channelNameToID(config.options.channels.private), util.format(
+								strings.announcements.schedule, 
+								e.toggle,
+								message
+							), false);
+					});
+				}, function () {}, true);
+				scheduleJobs.push(job);
+			});
+
+			send(channelNameToID(config.options.channels.private), util.format(
+					message,
+					days
+				), false);
+		}
+	}
+};
+
+// Command: !schedulestart
+comm.schedulestop = function(data) {
+	if (scheduleEntries != undefined && scheduleEntries.length > 0)	{
+		scheduleJobs.forEach(function(j) {
+			j.stop();
+		});
+		scheduleJobs    = [];
+		scheduleEntries = [];
+
+		send(channelNameToID(config.options.channels.private), strings.commands.schedulestop.message, false);
+	}
+	else {
+		send(channelNameToID(config.options.channels.private), strings.commands.schedulestop.error, false);
+	}
+};
+
 // Command: !reboot
 comm.reboot = function(data) {	
     Object.keys(nptoggles).forEach(function(n, i) {
@@ -1158,6 +1268,7 @@ comm.reload = function(data) {
 	printer  = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
 	dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
 	tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
+	schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
 
     send(data.channelID, strings.commands.reload.message, false);
 };
@@ -1231,6 +1342,8 @@ var hTrack    = {};
 var startTime;
 var powerStatus = null;
 var powerTime;
+var scheduleEntries = [];
+var scheduleJobs    = [];
 
 // Persistant Objects
 var bot;

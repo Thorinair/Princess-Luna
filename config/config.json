@@ -24,6 +24,7 @@
 		"game":          "with your dreams.",
 		"defstation":    "one",
 		"lyricformat":   "*",
+		"mytimezone":    "Europe/Zagreb",
 		"serverport":    80,
 		"maxlength":     2000,
 		"typetime":      2,

@@ -196,6 +196,16 @@
 			"help":    "",
 			"type":    "private"
 		},
+		{
+			"command": "schedulestart",
+			"help":    "",
+			"type":    "private"
+		},
+		{
+			"command": "schedulestop",
+			"help":    "",
+			"type":    "private"
+		},
 
 		{
 			"command": "reboot",

@@ -207,6 +207,17 @@
 			"messageC": "Thori, I am toggling the bulb now!",
 			"error":    "Thori, I don't know of any bulb with that name."
 		},
+		"schedulestart": {
+			"messageA": "Thori, I have scheduled automatic bulb control for the next %s days. Here are all of the times I have scheduled:",
+			"messageB": "\n\nDay %s:",
+			"messageC": "\n• %s - **%s** - %s at %s",
+			"errorA":   "Thori, you need to specify the number of days after the command.",
+			"errorB":   "Thori, there is already a schedule running. Please stop is first using the `!schedulestop`."
+		},
+		"schedulestop": {
+			"message":  "Thori, am disabling the running scheduled automatic bulb control.",
+			"error":    "Thori, there is no scheduled automatic bulb control running."
+		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
 		},
@@ -240,9 +251,10 @@
 			"on":     "Phew... %s, I am happy to inform you that the mains power has been restored!"
 		},
 		"motion":     "**%s, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
+		"schedule":   "Thori, as scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
 		"nowplaying": "**Now playing:** %s",
-		"npreboot":    "I need to go for a quick reboot... I'm sorry if I miss any tracks!",
-		"npback":      "Hey, I'm back! Now back to track posting..."
+		"npreboot":   "I need to go for a quick reboot... I'm sorry if I miss any tracks!",
+		"npback":     "Hey, I'm back! Now back to track posting..."
 	},
 	"misc": {
 		"welcome": "**My children, welcome %s to our beautiful night!**",
