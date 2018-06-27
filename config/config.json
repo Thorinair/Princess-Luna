@@ -12,6 +12,7 @@
 		"moonurl":       "http://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
 		"configpath":    "/var/www/node/config/",
 		"moonimg":       "/var/www/node/data/moon.png",
+		"motionimg":     "/var/www/node/data/motion.jpg",
 		"artimg":        "/var/www/node/data/art.png",
 		"phasepath":     "/var/www/node/data/phase.json",
 		"lyricspath":    "/var/www/node/data/lyrics.json",

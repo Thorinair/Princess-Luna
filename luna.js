@@ -1245,7 +1245,10 @@ var server;
 // Callback for downloading of files. 
 var download = function(uri, filename, callback) {
 		request.head(uri, function(err, res, body) {
-			console.log(strings.debug.download.start);
+			console.log(util.format(
+					strings.debug.download.start,
+					uri
+				));
 
 			request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
 		});
@@ -2166,8 +2169,8 @@ function refreshTradfriDevices(callback) {
 	});
 }
 
-function processPower(power) {
-	if (power == "on") {
+function processReqPower(query) {
+	if (query.power == "on") {
 		if (powerStatus != null && powerStatus != 0)			
 			send(channelNameToID(config.options.channels.private), util.format(
 					strings.announcements.power.on,
@@ -2176,7 +2179,7 @@ function processPower(power) {
 		powerStatus = 0;
 		powerTime = new Date() / 1000;
 	}
-	else if (power == "off") {
+	else if (query.power == "off") {
 		if (powerStatus == null || powerStatus == 0) {
 			send(channelNameToID(config.options.channels.private), util.format(
 					strings.announcements.power.off1,
@@ -2202,11 +2205,25 @@ function processPower(power) {
 	}
 }
 
+function processReqMotion(query) {
+	if (query.motion == "true") {
+		send(channelNameToID(config.options.channels.private), util.format(
+				strings.announcements.motion,
+				mention(config.options.adminid),
+				query.camera
+			), false);
+		download(query.snapshot, config.options.motionimg, function() {
+				console.log(strings.debug.download.stop);
+				embed(channelNameToID(config.options.channels.private), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, true);
+			});
+	}
+}
+
 var processRequest = function(req, res) {
     if (req.method == "GET") {
     	var query = url.parse(req.url, true).query;
-
-    	processPower(query.power);
+    	processReqPower(query);
+    	processReqMotion(query);
     }
 
     //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);

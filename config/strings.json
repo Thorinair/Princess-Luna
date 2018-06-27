@@ -239,6 +239,7 @@
 			"off3":   "**%s, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!**",
 			"on":     "Phew... %s, I am happy to inform you that the mains power has been restored!"
 		},
+		"motion":     "**%s, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"nowplaying": "**Now playing:** %s",
 		"npreboot":    "I need to go for a quick reboot... I'm sorry if I miss any tracks!",
 		"npback":      "Hey, I'm back! Now back to track posting..."
@@ -265,7 +266,7 @@
 		"welcomefail":  "Something bad has happened during the promotion. Here is more info: %s",
 		"join":         "I've successfully joined Discord. My name is \"%s\" with ID #%s.",
 		"download": {
-			"start": "I'm downloading a file...",
+			"start": "I'm downloading the following file: %s",
 			"stop":  "Finished downloading!"
 		},
 		"brain": {

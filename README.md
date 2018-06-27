@@ -11,6 +11,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Can list physical sensor data of Thorinair's real life room.
 * Can send information about Thorinair's Nightmare Rarity 3D printer.
 * Full integration with the Ikea Tradfri RGB smart bulbs.
+* Supports [motionEye](https://github.com/ccrisan/motioneye) detection notifications via web interface.
 * Features a variety of commands:
     - `!gotn` Lists the time left until the next Glory of The Night episode. You may also specify the timezone after the command.
     - `!mlp` Lists the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.
