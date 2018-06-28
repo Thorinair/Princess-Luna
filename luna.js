@@ -2332,11 +2332,21 @@ function processReqMotion(query) {
 	}
 }
 
+function processReqBoot(query) {
+	if (query.boot != undefined) {
+		send(channelNameToID(config.options.channels.private), util.format(
+				strings.announcements.boot,
+				query.boot
+			), false);
+	}
+}
+
 var processRequest = function(req, res) {
     if (req.method == "GET") {
     	var query = url.parse(req.url, true).query;
     	processReqPower(query);
     	processReqMotion(query);
+    	processReqBoot(query);
     }
 
     //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);
