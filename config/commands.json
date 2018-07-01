@@ -113,6 +113,11 @@
 			"type":    "interraction"
 		},
 		{
+			"command": "floof",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
 			"command": "plushie",
 			"help":    "",
 			"type":    "interraction"
