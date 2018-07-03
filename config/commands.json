@@ -118,6 +118,16 @@
 			"type":    "interraction"
 		},
 		{
+			"command": "nom",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
+			"command": "preen",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
 			"command": "plushie",
 			"help":    "",
 			"type":    "interraction"

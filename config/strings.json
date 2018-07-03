@@ -122,6 +122,16 @@
 			"multiple": "*Rounds up %s before smothering them with her soft floof.*",
 			"self":     "*Pushes her own head into her soft floof awkwardly.*"
 		},
+		"nom": {
+			"single":   "*Noms %s's ear playfully.*",
+			"multiple": "*Noms %s before giggling playfully.*",
+			"self":     "*Looks around and noms her own hoof.*"
+		},
+		"preen": {
+			"single":   "*Gently preens %s's wings fixing up all the feathers.*",
+			"multiple": "*Preens all of %s's wings. Exhausting!*",
+			"self":     "*Checks if there is nopony looking and starts preening her wings.*"
+		},
 		"plushie": {
 			"single":   "*Casts a spell at %s, turning them into a plushie.*",
 			"multiple": "*Casts spells at %s, turning everypony into plushies.*",
