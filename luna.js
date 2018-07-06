@@ -1,7 +1,6 @@
 // Modules
 const util           = require("util")
 const fs             = require("fs");
-const request        = require("request");
 const readline       = require("readline");
 const http           = require("http");
 const url            = require('url');
@@ -11,11 +10,13 @@ const exec           = require('child_process').exec;
 const Discord        = require("discord.io");
 const CronJob        = require("cron").CronJob;
 const moment         = require("moment-timezone");
+const request        = require("request");
 const XMLHttpRequest = require("xhr2");
 const archiver       = require("archiver");
-const jsmegahal      = require("jsmegahal");
 const tradfrilib     = require('node-tradfri');
 const color          = require('c0lor');
+const jsmegahal      = require("jsmegahal");
+const tripwire       = require("tripwire");
 
 const package  = require("./package.json");
 
@@ -1244,12 +1245,16 @@ comm.schedulestop = function(data) {
 
 // Command: !reboot
 comm.reboot = function(data) {	
+	rebooting = true;
+
     Object.keys(nptoggles).forEach(function(n, i) {
 		if (nptoggles[n])
 			send(n, strings.announcements.npreboot, true);
 	});
 	send(data.channelID, strings.commands.reboot.message, false);
+
 	saveAllBrains();
+
 	setTimeout(function() {
 		console.log(strings.debug.stopped);
 		process.exit();
@@ -1336,12 +1341,16 @@ comm.system = function(data) {
 	else {
 		switch (command) {
 			case "reboot":
+				rebooting = true;
+
 			    Object.keys(nptoggles).forEach(function(n, i) {
 					if (nptoggles[n])
 						send(n, strings.announcements.npreboot, true);
 				});
 				send(data.channelID, strings.commands.system.mreboot, false);
+
 				saveAllBrains();
+
 				setTimeout(function() {
 					console.log(strings.debug.stopped);
 
@@ -1374,6 +1383,7 @@ var powerStatus = null;
 var powerTime;
 var scheduleEntries = [];
 var scheduleJobs    = [];
+var rebooting = false;
 
 // Persistant Objects
 var bot;
@@ -2251,6 +2261,30 @@ function loadBlacklist() {
 }
 
 /*
+ * Loads the seizure data, or creates new and then cleans it up.
+ */
+function loadSeizure() {
+	var seizure = {};
+
+	if (fs.existsSync(config.options.seizurepath)) {
+		console.log(strings.debug.seizure.old);
+		seizure = JSON.parse(fs.readFileSync(config.options.seizurepath, "utf8"));
+		console.log(strings.debug.seizure.done);
+	}
+	else {
+	    fs.writeFileSync(config.options.seizure, JSON.stringify(seizure), "utf-8");
+		console.log(strings.debug.seizure.new);
+	}
+
+	if (seizure.channel != undefined) {
+		send(seizure.channel, strings.announcements.seizure.return, false);
+	}
+
+	seizure = {};
+	fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
+}
+
+/*
  * Loads the timezone data.
  */
 function loadTimezones() {
@@ -2389,6 +2423,36 @@ var processRequest = function(req, res) {
     res.end();
 };
 
+function seizureReboot(channelID, userID, message) {
+	rebooting = true;
+
+	Object.keys(nptoggles).forEach(function(n, i) {
+		if (nptoggles[n])
+			send(n, strings.announcements.npreboot, true);
+	});
+	send(channelNameToID(config.options.channels.private), util.format(
+		strings.announcements.seizure.debug,
+		channelIDToName(channelID),
+		message
+	), false);
+	send(channelID, util.format(
+		strings.announcements.seizure.reply,
+		mention(userID)
+	), false);
+
+	var seizure = {};
+	seizure.channel = channelID;
+	seizure.user = userID;
+	fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
+
+	saveAllBrains();
+
+	setTimeout(function() {
+		console.log(strings.debug.stopped);
+		process.exit();
+	}, config.options.reboottime * 1000);
+}
+
 /*
  * Loads the discord bot.
  */
@@ -2431,6 +2495,8 @@ function loadBot() {
         		if (nptoggles[n])
         			send(n, strings.announcements.npback, true);
         	});
+
+        	loadSeizure();
 
 	    	loopNowPlaying();
 	    	setTimeout(loopBrainSave, config.brain.timeout * 1000);
@@ -2547,12 +2613,38 @@ function loadBot() {
 					user,
 					message
 				));
+
+				process.removeAllListeners();
+				process.on('uncaughtException', function (e) {					
+				    seizureReboot(channelID, userID, message);
+				});
+
+				tripwire.resetTripwire(config.seizure.timeout * 1000);
+
+		    	if (config.seizure.debug && message.replace(/<.*> /g, "") == config.seizure.force)
+		    		while (true) {}
+
 		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(message), true);
+
+		    	tripwire.clearTripwire();
 		    }
 		    // All other messages.
 		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID)) {
+
+		    	process.removeAllListeners();
+				process.on('uncaughtException', function (e) {					
+				    seizureReboot(channelID, userID, message);
+				});
+
+				tripwire.resetTripwire(config.seizure.timeout * 1000);
+
+		    	if (config.seizure.debug && message == config.seizure.force)
+		    		while (true) {}
+
 	    		brains[channelIDToBrain(channelID)].addMass(message.replace(/<.*>/g, ""));
 	    		messages[channelIDToBrain(channelID)].push(message);
+
+		    	tripwire.clearTripwire();
 		    }
 		}
 	});
@@ -2627,7 +2719,9 @@ function loopNowPlaying() {
  * Loops to continuously save brain data.
  */
 function loopBrainSave() {
-	saveAllBrains();
+	if (!rebooting)
+		saveAllBrains();
+
 	setTimeout(loopBrainSave, config.brain.timeout * 1000);
 }
 

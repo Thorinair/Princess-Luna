@@ -19,6 +19,7 @@
 		"artworkpath":   "/var/www/node/data/artwork.json",
 		"nptogglespath": "/var/www/node/data/nptoggles.json",
 		"blacklistpath": "/var/www/node/data/blacklist.json",
+		"seizurepath":   "/var/www/node/data/seizure.json",
 		"coappath":      "/home/luna/libcoap/examples/coap-client",
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
@@ -51,6 +52,11 @@
 			"191158755361161216",
 			"188397984550092801"
 		]
+	},
+	"seizure": {
+		"timeout": 10,
+		"debug":   false,
+		"force":   "FORCE_SEIZURE"
 	},
 	"nowplaying": {
 		"url":     "http://dj.bronyradio.com:8000/status-json.xsl?mount=/pvfm1.ogg",

@@ -271,13 +271,18 @@
 			"off3":   "**%s, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!**",
 			"on":     "Phew... %s, I am happy to inform you that the mains power has been restored!"
 		},
+		"seizure": {
+			"debug":  "Thori, my brain has entered a seizure... I am going to reboot myself. The offending message was the following:\n```#%s: %s```",
+			"reply":  "%s, I don't feel so good... I need to lie down for a bit...\n*[Brain seizure detected, performing an emergency reboot!]*",
+			"return": "Okay, I think I feel a little bit better now..."
+		},
 		"motion":     "**%s, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up.",
 		"schedule":   "Thori, as scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
 		"nowplaying": "**Now playing:** %s",
 		"npreboot":   "I need to go for a reboot... I'm sorry if I miss any tracks!",
 		"npback":     "Hey, I'm back! Now back to track posting..."
-	},
+	},	
 	"misc": {
 		"welcome": "**My children, welcome %s to our beautiful night!**",
 		"load":    "Hey Thori, I'm back! My current version is v%s.",
@@ -334,6 +339,11 @@
 			"done":    "I've finished loading my blacklist file.",
 			"add":     "I am adding the user #%s to the blacklist.",
 			"remove":  "I am removing the user #%s from the blacklist."
+		},
+		"seizure": {
+			"old":     "A seizure file already seems to exit. Loading it now...",
+			"new":     "I don't seem to have a seizure file. I have created a new one.",
+			"done":    "I've finished loading my seizure file."
 		},
 		"backup": {
 			"start":   "Started a backup...",
