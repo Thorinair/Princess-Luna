@@ -243,6 +243,12 @@
 			"messageA":  "Thori, I've started a backup of my files. Give me a moment...",
 			"messageB":  "Here, I am sending you the newest backup of all of my files.",
 			"error":     "Looks like something has gone wrong, but I am not sure what... Here is more info: %s"
+		},
+		"system": {
+			"errorA":    "Thori, you need to specify the system command you wish to run.",
+			"errorB":    "Thori, I don't know of such a command.",
+			"errorC":    "Thori, I was unable to perform the system command. Here is more info: %s",
+			"mreboot":   "I'm going to perform a full system reboot. This might take a bit longer. See you in a bit, Thori!"
 		}
 	},
 	"announcements": {
@@ -269,7 +275,7 @@
 		"boot":       "Thori, I have detected that the device **%s** has booted up.",
 		"schedule":   "Thori, as scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
 		"nowplaying": "**Now playing:** %s",
-		"npreboot":   "I need to go for a quick reboot... I'm sorry if I miss any tracks!",
+		"npreboot":   "I need to go for a reboot... I'm sorry if I miss any tracks!",
 		"npback":     "Hey, I'm back! Now back to track posting..."
 	},
 	"misc": {

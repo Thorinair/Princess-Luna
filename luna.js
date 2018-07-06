@@ -5,6 +5,7 @@ const request        = require("request");
 const readline       = require("readline");
 const http           = require("http");
 const url            = require('url');
+const exec           = require('child_process').exec;
 
 // 3rd Party Modules
 const Discord        = require("discord.io");
@@ -1324,6 +1325,35 @@ comm.backup = function(data) {
 	});
 
 	archive.finalize();
+};
+
+// Command: !system
+comm.system = function(data) {
+	var command = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (command == "" || command == config.options.commandsymbol + data.command) {
+		send(data.channelID, strings.commands.system.errorA, false);
+	}
+	else {
+		switch (command) {
+			case "reboot":
+			    Object.keys(nptoggles).forEach(function(n, i) {
+					if (nptoggles[n])
+						send(n, strings.announcements.npreboot, true);
+				});
+				send(data.channelID, strings.commands.system.mreboot, false);
+				saveAllBrains();
+				setTimeout(function() {
+					console.log(strings.debug.stopped);
+
+					exec("sudo /sbin/reboot");
+
+				}, config.options.reboottime * 1000);
+				break;
+			default:
+				send(data.channelID, strings.commands.system.errorB, false);
+				break;
+		}
+	}
 };
 
 // Status Variables

@@ -236,6 +236,11 @@
 			"command": "backup",
 			"help":    "",
 			"type":    "private"
+		},
+		{
+			"command": "system",
+			"help":    "",
+			"type":    "private"
 		}
 	]
 }

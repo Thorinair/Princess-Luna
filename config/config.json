@@ -28,7 +28,7 @@
 		"serverport":    80,
 		"maxlength":     2000,
 		"typetime":      2,
-		"reboottime":    2,
+		"reboottime":    5,
 		"starttime":     60,
 		"reconnecttime": 10,
 		"htimeout":      1800,
