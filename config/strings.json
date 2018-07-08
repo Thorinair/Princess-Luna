@@ -254,7 +254,7 @@
 	"announcements": {
 		"gotn": {
 			"long":   "@everyone, a new episode of Glory of The Night starts in %s! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>",
-			"shortA": "Everypony @here, Glory of The Night begins in only %s! Tune in to PonyvilleFM now! I suggest using the Vorbis HQ stream for best sound quality. https://ponyvillefm.com/player",
+			"shortA": "Everypony @here, Glory of The Night begins in only %s! Tune in to PonyvilleFM now! I suggest using the Vorbis HQ (OGG) stream for best sound quality. https://ponyvillefm.com/player\nAlso, come watch Thorinair's live video stream here: <http://luna.thorinair.net/?action=stream>",
 			"shortB": "Thorinair's Glory of The Night begins in only %s! Tune in to PonyvilleFM now so you don't miss out!",
 			"nowA":   "**Everypony @here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!**",
 			"nowB":   "**Thorinair's Glory of The Night has begun! %s, join us in the beautiful night!**",

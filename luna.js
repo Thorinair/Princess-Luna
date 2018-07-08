@@ -1473,7 +1473,7 @@ function sendLargeMessage(data, list, message, format) {
 function doInterraction(data) {
 	if (!isplushie) {
 		if (data.data.d.mentions[0] != null) {
-			if (isMentioned(bot.id, data.data)) {
+			if (isMentioned(bot.id, data.data) && data.data.d.mentions.length == 1) {
 				if (data.command == "unplushie") {
 					send(data.channelID, strings.commands[data.command].error, true);
 				}
@@ -1485,6 +1485,10 @@ function doInterraction(data) {
 				}
 			}
 			else {
+				for (i = 0; i < data.data.d.mentions.length; i++)
+					if (bot.id == data.data.d.mentions[i].id)
+						data.data.d.mentions.splice(i, 1);
+
 				if (data.data.d.mentions.length <= 1) {
 					send(data.channelID, util.format(
 						strings.commands[data.command].single, 
