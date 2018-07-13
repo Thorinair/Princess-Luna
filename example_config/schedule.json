@@ -1,0 +1,42 @@
+{
+	"schedules": [
+		{
+			"name":   "room1_on",
+			"time":   "10:00",
+			"delta":  "60",
+			"toggle": "on",
+			"bulbs": [
+				"bulbA",
+				"bulbB"
+			]
+		},
+		{
+			"name":   "room1_off",
+			"time":   "15:00",
+			"delta":  "60",
+			"toggle": "off",
+			"bulbs": [
+				"bulbA",
+				"bulbB"
+			]
+		},
+		{
+			"name":   "room2_on",
+			"time":   "12:00",
+			"delta":  "10",
+			"toggle": "on",
+			"bulbs": [
+				"bulbC"
+			]
+		},
+		{
+			"name":   "room2_off",
+			"time":   "13:00",
+			"delta":  "10",
+			"toggle": "off",
+			"bulbs": [
+				"bulbC"
+			]
+		}
+	]
+}

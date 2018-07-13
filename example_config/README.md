@@ -1,0 +1,2 @@
+## Example Configuration
+The files in this folder provide examples of configuration files which are missing from the `config` folder. For security reasons, the actual files which the production version of Princess Luna uses are hidden with the `.gitignore` file. You may use the files in this folder as examples of how the JSON structures should look like. All values provided are made up.

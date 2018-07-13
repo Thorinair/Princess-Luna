@@ -1,0 +1,12 @@
+{
+	"key": "00000000AAAAAAAA",
+	"ids": {
+		"temperature": "0000AAAA",
+		"humidity":    "0000AAAA",
+		"pressure":    "0000AAAA",
+		"magnitude":   "0000AAAA",
+		"inclination": "0000AAAA",
+		"counts":      "0000AAAA",
+		"dose":        "0000AAAA"
+	}
+}
