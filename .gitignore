@@ -4,3 +4,4 @@ config/varipass.json
 config/printer.json
 config/dtls.json
 config/schedule.json
+config/wow.json

@@ -59,6 +59,10 @@
 			"messageC": "Nightmare Rarity is currently printing a file called `%s`, and the print is %s% done. It is estimated that the printing time will take around %s more. You can view the printing area on the webcam image below.",
 			"error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
 		},
+		"token": {
+			"message":  "The current price of the [WoW Token] is %s. Last update was %s ago.",
+			"error":    "I was unable to look up information about the [WoW Token] price..."
+		},
 		"blacklist": {
 			"messageA": "%s, I am sad to hear that you no longer wish me to remember your messages. From this point on, I will not remember anything you say in any channel. If you ever change your mind, just use this command again.",
 			"messageB": "%s, I am happy to hear that I may remember your messages again! From this point on, I will again remember everything you say in any channel where learning is enabled."
@@ -291,6 +295,7 @@
 		"noperm":  "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
 		"noadmin": "I am sorry %s, but only Thorinair is allowed to use this command.",
 		"left":    "%s on %s at %s",
+		"gold":    "%sg %ss %sc",
 		"h":       "h"
 	},
 	"debug": {

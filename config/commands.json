@@ -56,6 +56,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "token",
+			"help":    "Ask me about the current price of the [WoW Token].",
+			"type":    "public"
+		},
+		{
 			"command": "blacklist",
 			"help":    "Prevent me from remembering any of your future messages. You can use the command again to undo this.",
 			"type":    "public"

@@ -62,6 +62,13 @@
 		"url":     "http://dj.bronyradio.com:8000/status-json.xsl?mount=/pvfm1.ogg",
 		"timeout": 5
 	},
+	"wow": {
+		"url": "https://eu.api.battle.net/",
+		"token": {
+			"url":     "data/wow/token/?namespace=dynamic-eu&locale=en_GB&access_token=%s",
+			"timeout": 60
+		}
+	},
 	"brain": {
 		"path":     "/var/www/node/data/brains/brain_",
 		"default":  "I am The Night.",
@@ -122,6 +129,7 @@
 		"time":  ":",
 		"list":  ", ",
 		"lend":  " and ",
-		"track": " - "
+		"track": " - ",
+		"price": ","
 	}
 }

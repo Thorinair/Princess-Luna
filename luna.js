@@ -33,6 +33,7 @@ var printer  = require("./config/printer.json");
 var dtls     = require("./config/dtls.json");
 var tradfri  = require("./config/tradfri.json");
 var schedule = require("./config/schedule.json");
+var wow      = require("./config/wow.json");
 
 // Commands
 var comm = {};
@@ -529,6 +530,59 @@ comm.printer = function(data) {
 
 		xhr.send();
 	});
+};
+
+// Command: !token
+comm.token = function(data) {
+
+	var url = config.wow.url + util.format(
+		config.wow.token.url,
+		wow.access_token
+	);
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", url, true);
+
+	xhr.onreadystatechange = function () { 
+	    if (xhr.readyState == 4 && xhr.status == 200) {
+	        var response = JSON.parse(xhr.responseText);
+
+	        if (response.price != undefined) {
+
+		        var now = new Date();
+
+				var diff = (now - response.last_updated_timestamp) / 1000;
+				var time = {};
+
+				time.seconds = Math.floor(diff % 60);
+				diff = Math.floor(diff / 60);
+				time.minutes = Math.floor(diff % 60);
+				diff = Math.floor(diff / 60);
+				time.hours = Math.floor(diff % 24);
+				time.days = Math.floor(diff / 24);
+
+		        send(data.channelID, util.format(
+					strings.commands.token.message,
+					getWoWPrice(response.price),
+					getTimeString(time)
+				), true);
+	        }
+	        else {
+	        	send(data.channelID, strings.commands.token.error, true);
+	        }
+	    }
+	}
+
+	xhr.onerror = function(err) {
+	    send(data.channelID, strings.commands.token.error, true);
+	    xhr.abort();
+	}
+	xhr.ontimeout = function() {
+	    send(data.channelID, strings.commands.token.error, true);
+	    xhr.abort();
+	}
+
+	xhr.send();
 };
 
 // Command: !blacklist
@@ -1275,6 +1329,7 @@ comm.reload = function(data) {
 	dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
 	tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
 	schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
+	wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
 
     send(data.channelID, strings.commands.reload.message, false);
 };
@@ -1693,6 +1748,26 @@ function getPhaseString(name, offset) {
 		id += config.phases.length;
 
 	return config.phases[id].name + " " + config.phases[id].icon;
+}
+
+function getWoWPrice(price) {
+	var c = Math.floor(price % 100);
+	price = Math.floor(price / 100);
+	var s = Math.floor(price % 100);
+	price = Math.floor(price / 100);
+	var g = "";
+	while (price >= 1000) {
+		g = config.separators.price + Math.floor(price % 1000) + g;
+		price = Math.floor(price / 1000);
+	}
+	g = price + g;
+
+	return util.format(
+		strings.misc.gold,
+		g,
+		s,
+		c
+	);
 }
 
 /*
