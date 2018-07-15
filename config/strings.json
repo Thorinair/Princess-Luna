@@ -111,6 +111,11 @@
 			"multiple": "*Lovingly snuggles %s.*",
 			"self":     "*Wraps hooves around herself and lonely snuggles herself.*"
 		},
+		"nuzzle": {
+			"single":   "*Happily nuzzles %s beneath their chin.*",
+			"multiple": "*Gathers up %s before happily nuzzling all of them.*",
+			"self":     "*Bends her head downwards in confusion and fails to nuzzle herself.*"
+		},
 		"wings": {
 			"single":   "*Wraps wings around %s and keeps them warm.*",
 			"multiple": "*Wraps wings around %s, keeping all of them warm.*",

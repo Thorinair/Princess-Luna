@@ -108,6 +108,11 @@
 			"type":    "interraction"
 		},
 		{
+			"command": "nuzzle",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
 			"command": "wings",
 			"help":    "",
 			"type":    "interraction"
