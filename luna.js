@@ -789,7 +789,7 @@ comm.send = function(data) {
 
 	var channel = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
 	if (channel == "" || channel == config.options.commandsymbol + data.command) {
-		send(channelNameToID(config.options.channels.private), strings.commands.send.errorA, false);
+		send(channelNameToID(config.options.channels.debug), strings.commands.send.errorA, false);
 	}
 	else {
 		var text = "";
@@ -800,11 +800,11 @@ comm.send = function(data) {
 		});
 
 		if (text != "") {
-			send(channelNameToID(config.options.channels.private), strings.commands.send.message, false);
+			send(channelNameToID(config.options.channels.debug), strings.commands.send.message, false);
 			send(channelNameToID(channel), text, true);
 		}
 		else {
-			send(channelNameToID(config.options.channels.private), strings.commands.send.errorB, false);
+			send(channelNameToID(config.options.channels.debug), strings.commands.send.errorB, false);
 		}
 	}
 };
@@ -869,7 +869,7 @@ comm.npoverride = function(data) {
 // Command: !npstatus
 comm.npstatus = function(data) {
 	if (Object.keys(nptoggles).length == 0)
-		send(channelNameToID(config.options.channels.private), strings.commands.npstatus.error, false);
+		send(channelNameToID(config.options.channels.debug), strings.commands.npstatus.error, false);
 	else {
 		var message = strings.commands.npstatus.messageA;
 		Object.keys(nptoggles).forEach(function(n, i) {
@@ -884,7 +884,7 @@ comm.npstatus = function(data) {
 				type
 			);
 		});
-		send(channelNameToID(config.options.channels.private), message, false);
+		send(channelNameToID(config.options.channels.debug), message, false);
 	}
 };
 
@@ -1024,7 +1024,7 @@ comm.artworkdel = function(data) {
 // Command: !h
 comm.h = function(data) {
 	if (Object.keys(hTrack).length == 0)
-		send(channelNameToID(config.options.channels.private), strings.commands.h.error, false);
+		send(channelNameToID(config.options.channels.debug), strings.commands.h.error, false);
 	else {
 		var message = strings.commands.h.messageA;
 		Object.keys(hTrack).forEach(function(h, i) {
@@ -1040,7 +1040,7 @@ comm.h = function(data) {
 				status
 			);
 		});
-		send(channelNameToID(config.options.channels.private), message, false);
+		send(channelNameToID(config.options.channels.debug), message, false);
 	}
 };
 
@@ -1146,7 +1146,7 @@ comm.bulb = function(data) {
 			}
 		}
 		else {
-			send(channelNameToID(config.options.channels.private), strings.commands.bulb.errorD, false);
+			send(data.channelID, strings.commands.bulb.errorD, false);
 		}
 	}
 };
@@ -1192,11 +1192,11 @@ comm.toggle = function(data) {
 comm.schedulestart = function(data) {
 	var days = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 	if (days == "" || days == config.options.commandsymbol + data.command) {
-		send(channelNameToID(config.options.channels.private), strings.commands.schedulestart.errorA, false);
+		send(channelNameToID(config.options.channels.home), strings.commands.schedulestart.errorA, false);
 	}
 	else {
 		if (scheduleEntries != undefined && scheduleEntries.length > 0)	{
-			send(channelNameToID(config.options.channels.private), strings.commands.schedulestart.errorB, false);
+			send(channelNameToID(config.options.channels.home), strings.commands.schedulestart.errorB, false);
 		}
 		else {
 			scheduleEntries = [];
@@ -1263,7 +1263,7 @@ comm.schedulestart = function(data) {
 							else
 								message += ", " + b;
 						});						
-						send(channelNameToID(config.options.channels.private), util.format(
+						send(channelNameToID(config.options.channels.home), util.format(
 								strings.announcements.schedule, 
 								e.toggle,
 								message
@@ -1273,7 +1273,7 @@ comm.schedulestart = function(data) {
 				scheduleJobs.push(job);
 			});
 
-			send(channelNameToID(config.options.channels.private), util.format(
+			send(channelNameToID(config.options.channels.home), util.format(
 					message,
 					days
 				), false);
@@ -1290,10 +1290,10 @@ comm.schedulestop = function(data) {
 		scheduleJobs    = [];
 		scheduleEntries = [];
 
-		send(channelNameToID(config.options.channels.private), strings.commands.schedulestop.message, false);
+		send(channelNameToID(config.options.channels.home), strings.commands.schedulestop.message, false);
 	}
 	else {
-		send(channelNameToID(config.options.channels.private), strings.commands.schedulestop.error, false);
+		send(channelNameToID(config.options.channels.home), strings.commands.schedulestop.error, false);
 	}
 };
 
@@ -1350,7 +1350,7 @@ comm.backup = function(data) {
 			archive.pointer()
 		));
 
-		embed(channelNameToID(config.options.channels.private), strings.commands.backup.messageB, config.backup.output.path, util.format(
+		embed(channelNameToID(config.options.channels.debug), strings.commands.backup.messageB, config.backup.output.path, util.format(
 			config.backup.output.file,
 			moment.tz(new Date(), "UTC").format("YYYY-MM-DD_HH-mm")
 		), false, true);
@@ -1361,7 +1361,7 @@ comm.backup = function(data) {
 			strings.debug.backup.error,
 			"Warning: " + err
 		));
-		send(channelNameToID(config.options.channels.private), util.format(
+		send(channelNameToID(config.options.channels.debug), util.format(
 			strings.commands.backup.error,
 			"Warning: " + err			
 		), false);
@@ -1372,7 +1372,7 @@ comm.backup = function(data) {
 			strings.debug.backup.error,
 			"Error: " + err
 		));
-		send(channelNameToID(config.options.channels.private), util.format(
+		send(channelNameToID(config.options.channels.debug), util.format(
 			strings.commands.backup.error,
 			"Error: " + err			
 		), false);
@@ -2084,7 +2084,7 @@ function loadAnnouncements() {
 
 			    setTimeout(function() {
 
-					send(channelNameToID(config.options.channels.private), strings.debug.nptoggles.autoon, false);
+					send(channelNameToID(config.options.channels.debug), strings.debug.nptoggles.autoon, false);
 			    	config.options.channels.nowplaying.forEach(function(n, i) {
 			    		nptoggles[channelNameToID(n)] = true;
 			    	});
@@ -2099,7 +2099,7 @@ function loadAnnouncements() {
 				send(channelNameToID(config.options.channels.announceB), strings.announcements.gotn.afterB, true);
 				setMood("norm");
 
-				send(channelNameToID(config.options.channels.private), strings.debug.nptoggles.autooff, false);
+				send(channelNameToID(config.options.channels.debug), strings.debug.nptoggles.autooff, false);
 		    	config.options.channels.nowplaying.forEach(function(n, i) {
 		    		if (nptoggles[channelNameToID(n)] != undefined)
 		    			delete nptoggles[channelNameToID(n)];
@@ -2428,33 +2428,21 @@ function refreshTradfriDevices(callback) {
 function processReqPower(query) {
 	if (query.power == "on") {
 		if (powerStatus != null && powerStatus != 0)			
-			send(channelNameToID(config.options.channels.private), util.format(
-					strings.announcements.power.on,
-					mention(config.options.adminid)
-				), false);
+			send(channelNameToID(config.options.channels.home), strings.announcements.power.on, false);
 		powerStatus = 0;
 		powerTime = new Date() / 1000;
 	}
 	else if (query.power == "off") {
 		if (powerStatus == null || powerStatus == 0) {
-			send(channelNameToID(config.options.channels.private), util.format(
-					strings.announcements.power.off1,
-					mention(config.options.adminid)
-				), false);
+			send(channelNameToID(config.options.channels.home), strings.announcements.power.off1, false);
 			powerStatus = 1;
 		}
 		else if (powerStatus == 1) {
-			send(channelNameToID(config.options.channels.private), util.format(
-					strings.announcements.power.off2,
-					mention(config.options.adminid)
-				), false);
+			send(channelNameToID(config.options.channels.home), strings.announcements.power.off2, false);
 			powerStatus = 2;
 		}
 		else if (powerStatus == 2) {
-			send(channelNameToID(config.options.channels.private), util.format(
-					strings.announcements.power.off3,
-					mention(config.options.adminid)
-				), false);
+			send(channelNameToID(config.options.channels.home), strings.announcements.power.off3, false);
 			powerStatus = 3;
 		}
 		powerTime = new Date() / 1000;
@@ -2463,21 +2451,20 @@ function processReqPower(query) {
 
 function processReqMotion(query) {
 	if (query.motion == "true") {
-		send(channelNameToID(config.options.channels.private), util.format(
+		send(channelNameToID(config.options.channels.home), util.format(
 				strings.announcements.motion,
-				mention(config.options.adminid),
 				query.camera
 			), false);
 		download(query.snapshot, config.options.motionimg, function() {
 				console.log(strings.debug.download.stop);
-				embed(channelNameToID(config.options.channels.private), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, true);
+				embed(channelNameToID(config.options.channels.home), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, true);
 			});
 	}
 }
 
 function processReqBoot(query) {
 	if (query.boot != undefined) {
-		send(channelNameToID(config.options.channels.private), util.format(
+		send(channelNameToID(config.options.channels.debug), util.format(
 				strings.announcements.boot,
 				query.boot
 			), false);
@@ -2509,7 +2496,7 @@ function seizureReboot(channelID, userID, message) {
 		if (nptoggles[n])
 			send(n, strings.announcements.npreboot, true);
 	});
-	send(channelNameToID(config.options.channels.private), util.format(
+	send(channelNameToID(config.options.channels.debug), util.format(
 		strings.announcements.seizure.debug,
 		channelIDToName(channelID),
 		message
@@ -2555,17 +2542,17 @@ function loadBot() {
 	    if (!started) {
 	    	started = true;
 	    	if (apifail && filefail)
-		    	send(channelNameToID(config.options.channels.private), util.format(
+		    	send(channelNameToID(config.options.channels.debug), util.format(
 		    		strings.misc.filefail,
 		    		package.version
 		    	), false);
 		    else if (apifail)
-		    	send(channelNameToID(config.options.channels.private), util.format(
+		    	send(channelNameToID(config.options.channels.debug), util.format(
 		    		strings.misc.apifail,
 		    		package.version
 		    	), false);
 	    	else	
-		    	send(channelNameToID(config.options.channels.private), util.format(
+		    	send(channelNameToID(config.options.channels.debug), util.format(
 		    		strings.misc.load,
 		    		package.version
 		    	), false);

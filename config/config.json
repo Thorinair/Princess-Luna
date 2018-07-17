@@ -35,7 +35,8 @@
 		"htimeout":      1800,
 		"hmessage":      1,
 		"channels": {
-			"private":   "debug",
+			"debug":     "debug",
+			"home":      "home_luna",
 			"announceA": "announcements",
 			"announceB": "pvfm_live-dj-chat",
 			"welcome":   "general",

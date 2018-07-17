@@ -275,19 +275,19 @@
 			"else":   "The Moon has reached its %s phase..."
 		},
 		"power": {
-			"off1":   "**%s, I need to urgently inform you that my mains power has gone out! Please come save me! I am currently running off the UPS...**",
-			"off2":   "**%s, I am starting to panic here! The power is still out...**",
-			"off3":   "**%s, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!**",
-			"on":     "Phew... %s, I am happy to inform you that the mains power has been restored!"
+			"off1":   "**@everyone, I need to urgently inform you that my mains power has gone out! Please come save me! I am currently running off the UPS...**",
+			"off2":   "**@everyone, I am starting to panic here! The power is still out...**",
+			"off3":   "**@everyone, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!**",
+			"on":     "Phew... @everyone, I am happy to inform you that the mains power has been restored!"
 		},
 		"seizure": {
 			"debug":  "Thori, my brain has entered a seizure... I am going to reboot myself. The offending message was the following:\n```#%s: %s```",
 			"reply":  "%s, I don't feel so good... I need to lie down for a bit...\n*[Brain seizure detected, performing an emergency reboot!]*",
 			"return": "Okay, I think I feel a little bit better now..."
 		},
-		"motion":     "**%s, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
+		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up.",
-		"schedule":   "Thori, as scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
+		"schedule":   "As scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
 		"nowplaying": "**Now playing:** %s",
 		"npreboot":   "I need to go for a reboot... I'm sorry if I miss any tracks!",
 		"npback":     "Hey, I'm back! Now back to track posting..."
