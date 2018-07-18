@@ -1044,6 +1044,37 @@ comm.h = function(data) {
 	}
 };
 
+// Command: !ignore
+comm.ignore = function(data) {
+	var user = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (user == "" || user == config.options.commandsymbol + data.command) {
+		send(data.channelID, strings.commands.ignore.error, true);
+	}
+	else {
+		if (ignore[user] == undefined) {
+			ignore[user] = true;
+			send(data.channelID, strings.commands.ignore.messageA, true);
+
+			console.log(util.format(
+				strings.debug.ignore.add,
+				user
+			));
+		}
+		else {
+			delete ignore[user];
+			send(data.channelID, strings.commands.ignore.messageB, true);
+
+			console.log(util.format(
+				strings.debug.ignore.remove,
+				user
+			));
+		}
+
+		fs.writeFileSync(config.options.ignorepath, JSON.stringify(ignore), "utf-8");
+		
+	}
+};
+
 // Command: !mood
 comm.mood = function(data) {
 	var name = data.message.replace(config.options.commandsymbol + data.command + " ", "");
@@ -1448,6 +1479,7 @@ var lyrics;
 var artwork;
 var nptoggles;
 var blacklist;
+var ignore;
 var server;
 
 // Callback for downloading of files. 
@@ -1915,6 +1947,14 @@ function processBlacklist(userID) {
 	return okay;
 }
 
+function processIgnore(userID) {
+	var okay = true;
+	if (ignore[userID] != undefined) {
+		okay = false;
+	};
+	return okay;
+}
+
 function setMood(name) {
 	tradfri.moods.forEach(function(m) {	
 		if (m.name == name) {
@@ -2163,6 +2203,7 @@ function phaseSuccess() {
 	loadArtwork();
 	loadNPToggles();
 	loadBlacklist();
+	loadIgnore();
 	loadTimezones();
 	loadTradfri();
 	loadBot();
@@ -2191,6 +2232,7 @@ function phaseFail() {
 	loadArtwork();
 	loadNPToggles();
 	loadBlacklist();
+	loadIgnore();
 	loadTimezones();
 	loadTradfri();
 	loadBot();
@@ -2336,6 +2378,23 @@ function loadBlacklist() {
 	else {
 	    fs.writeFileSync(config.options.blacklistpath, JSON.stringify(blacklist), "utf-8");
 		console.log(strings.debug.blacklist.new);
+	}
+}
+
+/*
+ * Loads the ignore toggle data, or creates new.
+ */
+function loadIgnore() {
+	ignore = {};
+
+	if (fs.existsSync(config.options.ignorepath)) {
+		console.log(strings.debug.ignore.old);
+		ignore = JSON.parse(fs.readFileSync(config.options.ignorepath, "utf8"));
+		console.log(strings.debug.ignore.done);
+	}
+	else {
+	    fs.writeFileSync(config.options.ignorepath, JSON.stringify(ignore), "utf-8");
+		console.log(strings.debug.ignore.new);
 	}
 }
 
@@ -2695,7 +2754,7 @@ function loadBot() {
 		    	tripwire.clearTripwire();
 		    }
 		    // All other messages.
-		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID)) {
+		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID)) {
 
 		    	process.removeAllListeners();
 				process.on('uncaughtException', function (e) {					

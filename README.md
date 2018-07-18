@@ -46,6 +46,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!artworkadd` Adds an artwork to the database. Specify a track name after the command, and the artwork URL in the line below.
     - `!artworkdel` Removes an artwork from the database. Specify a track name after the command.
     - `!h` Lists the current status of any h chains.
+    - `!ignore` Forcefully adds a user ID to a learning ignore list.
     - `!mood` Changes the mood of a larger group of the Ikea Tradfri bulbs to one of the preset configurations available. Use without a mood name to list all available ones.
     - `!bulb` Changes the parameters of a single Ikea Tradfri bulb. Supports both HEX color codes and xyY color space. Use without parameters to list all available bulbs.
     - `!toggle` Toggles a single Ikea Tradfri bulb. Use without parameters to list all available bulbs.

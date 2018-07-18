@@ -207,6 +207,11 @@
 			"type":    "private"
 		},
 		{
+			"command": "ignore",
+			"help":    "",
+			"type":    "private"
+		},
+		{
 			"command": "mood",
 			"help":    "",
 			"type":    "private"

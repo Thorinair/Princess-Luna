@@ -19,6 +19,7 @@
 		"artworkpath":   "/var/www/node/data/artwork.json",
 		"nptogglespath": "/var/www/node/data/nptoggles.json",
 		"blacklistpath": "/var/www/node/data/blacklist.json",
+		"ignorepath":    "/var/www/node/data/ignore.json",
 		"seizurepath":   "/var/www/node/data/seizure.json",
 		"coappath":      "/home/luna/libcoap/examples/coap-client",
 		"fullmoon":      "Full Moon",

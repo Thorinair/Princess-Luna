@@ -210,6 +210,11 @@
 			"messageB": "\n• #%s - %s - **%s**",
 			"error":    "Thori, I am not yet tracking any h chain."
 		},
+		"ignore": {
+			"error":    "Thori, you need to specify the user ID after the command.",
+			"messageA": "Thori, I am adding this user to the ignore list. I will no longer learn anything they say.",
+			"messageB": "Thori, I am removing this user from the ignore list. I will once again be able to learn from them."
+		},
 		"mood": {
 			"messageA": "Thori, the moods I can currently set the lighting to are:",
 			"messageB": "\n• %s",
@@ -349,6 +354,13 @@
 			"done":    "I've finished loading my blacklist file.",
 			"add":     "I am adding the user #%s to the blacklist.",
 			"remove":  "I am removing the user #%s from the blacklist."
+		},
+		"ignore": {
+			"old":     "An ignore file already seems to exit. Loading it now...",
+			"new":     "I don't seem to have an ignore file. I have created a new one.",
+			"done":    "I've finished loading my ignore file.",
+			"add":     "I am adding the user #%s to the ignore.",
+			"remove":  "I am removing the user #%s from the ignore."
 		},
 		"seizure": {
 			"old":     "A seizure file already seems to exit. Loading it now...",
