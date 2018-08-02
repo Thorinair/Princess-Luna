@@ -86,6 +86,7 @@
 		},
 
 
+
 		"hug": {
 			"single":   "*Gives %s a big warm hug.*",
 			"multiple": "*Gives %s big warm hugs.*",
@@ -141,6 +142,11 @@
 			"multiple": "*Preens all of %s's wings. Exhausting!*",
 			"self":     "*Checks if there is nopony looking and starts preening her wings.*"
 		},
+		"blep": {
+			"single":   "*Bleps at %s and makes a goofy giggle.*",
+			"multiple": "*Looks at %s before her and then bleps at all of them.*",
+			"self":     "*Randomly bleps for no reason at all.*"
+		},
 		"plushie": {
 			"single":   "*Casts a spell at %s, turning them into a plushie.*",
 			"multiple": "*Casts spells at %s, turning everypony into plushies.*",
@@ -153,6 +159,8 @@
 			"self":     "*Casts a spell at herself, turning herself back to normal.* Thank you, %s!",
 			"error":    "*Looks at herself and then at you in confusion.* What...? I am not a plushie..."
 		},
+
+
 
 		"nptoggle": {
 			"messageA":  "%s, I will now be posting new track names as they appear to this chat.",
