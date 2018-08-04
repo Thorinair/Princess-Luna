@@ -295,7 +295,7 @@
 		},
 		"seizure": {
 			"debug":  "Thori, my brain has entered a seizure... I am going to reboot myself. The offending message was the following:\n```#%s: %s```",
-			"reply":  "%s, I don't feel so good... I need to lie down for a bit...\n*[Brain seizure detected, performing an emergency reboot!]*",
+			"reply":  "%s, I don't feel so good... I don't know what's happening... I don't wanna go...\n*[Brain seizure detected, performing an emergency reboot!]*",
 			"return": "Okay, I think I feel a little bit better now..."
 		},
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
