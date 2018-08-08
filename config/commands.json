@@ -241,6 +241,11 @@
 			"help":    "",
 			"type":    "private"
 		},
+		{
+			"command": "leave",
+			"help":    "",
+			"type":    "private"
+		},
 
 		{
 			"command": "reboot",

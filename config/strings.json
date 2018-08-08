@@ -68,7 +68,7 @@
 			"messageB": "%s, I am happy to hear that I may remember your messages again! From this point on, I will again remember everything you say in any channel where learning is enabled."
 		},
 		"stats": {
-			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago. The brain I am using for this chatroom is called *%s*, and has %s lines of data saved from messages. %s",
+			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",
 			"learnno":  "I am unable to learn anything from this specific chatroom.",
 			"error":    "%s, I don't know of that timezone."
@@ -118,7 +118,7 @@
 			"self":     "*Bends her head downwards in confusion and fails to nuzzle herself.*"
 		},
 		"wings": {
-			"single":   "*Wraps wings around %s and keeps them warm.*",
+			"single":   "*Wraps wings around %s in a warm embrace.*",
 			"multiple": "*Wraps wings around %s, keeping all of them warm.*",
 			"self":     "*Wraps wings around herself in a tight fluffy ball.*"
 		},
@@ -254,6 +254,12 @@
 		"schedulestop": {
 			"message":  "Thori, am disabling the running scheduled automatic bulb control.",
 			"error":    "Thori, there is no scheduled automatic bulb control running."
+		},
+		"leave": {
+			"messageA": "Thori, here is a list of all the servers which I am a member of. Use the ID when leaving:",
+			"messageB": "\n• %s - `%s`",
+			"messageC": "Thori, I have left the server *%s*!",
+			"error":    "Thori, I am not a part of any server with that ID."
 		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"

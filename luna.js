@@ -651,6 +651,7 @@ comm.stats = function(data) {
 			momentTime.format("HH:mm (z)"),
 			getTimeString(time),
 			time.seconds,
+			channelIDToName(data.channelID),
 			channelIDToBrain(data.channelID),
 			messages[channelIDToBrain(data.channelID)].length,
 			canLearn
@@ -1325,6 +1326,35 @@ comm.schedulestop = function(data) {
 	}
 	else {
 		send(channelNameToID(config.options.channels.home), strings.commands.schedulestop.error, false);
+	}
+};
+
+// Command: !leave
+comm.leave = function(data) {
+	var server = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (server == "" || server == config.options.commandsymbol + data.command) {
+		var message = strings.commands.leave.messageA;
+		Object.keys(bot.servers).forEach(function(s, i) {
+			message += util.format(
+				strings.commands.leave.messageB,
+				bot.servers[s].name,
+				s
+			);
+		});
+		send(channelNameToID(config.options.channels.debug), message, false);
+	}
+	else {
+		if (bot.servers[server] != undefined) {
+			var left = bot.servers[server].name;
+			bot.leaveServer(server);
+			send(channelNameToID(config.options.channels.debug), util.format(
+				strings.commands.leave.messageC,
+				left,
+			), false);
+		}
+		else {
+			send(channelNameToID(config.options.channels.debug), strings.commands.leave.error, false);
+		}
 	}
 };
 

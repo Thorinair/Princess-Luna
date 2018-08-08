@@ -52,6 +52,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!toggle` Toggles a single Ikea Tradfri bulb. Use without parameters to list all available bulbs.
     - `!schedulestart` Starts an automated schedule for toggling the lightbulbs. Specify number of days after the command.
     - `!schedulestop` Stops the active automated schedule for toggling the lightbulbs.
+    - `!leave` Leave a specified server that the bot has previously joined. Call the command without a server ID to list all servers the bot may leave.
     - `!reboot` Reboots the bot by exiting the process, letting the service restart it automatically.
     - `!reload` Reloads the configuration files. Note that only the actual configuration will be reloaded, and reloading may not sometimes be enough to change the behavior.
     - `!backup` Creates a backup of the data and config directories and sends it as a file through Discord.
