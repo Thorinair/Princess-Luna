@@ -8,7 +8,7 @@
 					"name": "desk",
 					"config": {
 						"state":          "on",
-						"color":          "dcf0f8",
+						"color":          "f5faf6",
 						"brightness":     1.0,
 						"transitionTime": 2
 					}

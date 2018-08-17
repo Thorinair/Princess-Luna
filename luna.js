@@ -67,7 +67,7 @@ comm.gotn = function(data) {
 	}
 	else {
 		send(data.channelID, util.format(
-			strings.commands.gotn.error, 
+			strings.misc.timezone,
 			mention(data.userID)
 		), true);
 	}
@@ -103,13 +103,13 @@ comm.mlp = function(data) {
 		});	
 		if (!found)
 			send(data.channelID, util.format(
-				strings.commands.mlp.errorA, 
+				strings.commands.mlp.error, 
 				mention(data.userID)
 			), true);			
 	}
 	else {
 		send(data.channelID, util.format(
-			strings.commands.mlp.errorB, 
+			strings.misc.timezone,
 			mention(data.userID)
 		), true);
 	}
@@ -159,7 +159,7 @@ comm.time = function(data) {
 	}
 	else {
 		send(data.channelID, util.format(
-			strings.commands.time.error, 
+			strings.misc.timezone, 
 			mention(data.userID)
 		), true);
 	}
@@ -352,7 +352,7 @@ comm.phase = function(data) {
 
 		if (!found) {
 			send(data.channelID, util.format(
-				strings.commands.phase.errorA,
+				strings.commands.phase.error,
 				mention(data.userID)
 			), true);
 		}
@@ -363,7 +363,7 @@ comm.phase = function(data) {
 	}
 	else {
 		send(data.channelID, util.format(
-			strings.commands.phase.errorB, 
+			strings.misc.timezone,
 			mention(data.userID)
 		), true);
 	}
@@ -660,7 +660,7 @@ comm.stats = function(data) {
 	}
 	else {
 		send(data.channelID, util.format(
-			strings.commands.stats.error, 
+			strings.misc.timezone, 
 			mention(data.userID)
 		), true);
 	}

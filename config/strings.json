@@ -1,17 +1,14 @@
 {
 	"commands": {
 		"gotn": {
-			"message":  "%s, next episode of Glory of The Night airs in %s.",
-			"error":    "%s, I don't know of that timezone."
+			"message":  "%s, next episode of Glory of The Night airs in %s."
 		},
 		"mlp": {
 			"message":  "%s, next episode of My Little Pony: Friendship is Magic, **%s**, airs in %s on the **%s** channel.",
-			"errorA":   "%s, I don't know when the next episode of My Little Pony: Friendship is Magic airs.",
-			"errorB":   "%s, I don't know of that timezone."
+			"error":    "%s, I don't know when the next episode of My Little Pony: Friendship is Magic airs."
 		},
 		"time": {
-			"message":  "%s, current date and time is **%s** at **%s**.",
-			"error":    "%s, I don't know of that timezone."
+			"message":  "%s, current date and time is **%s** at **%s**."
 		},
 		"np": {
 			"message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
@@ -37,8 +34,7 @@
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
 			"messageB": "The next %s is in %s.",
-			"errorA":   "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment...",
-			"errorB":   "%s, I don't know of that timezone."
+			"error":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment..."
 		},
 		"moon": {
 			"messageA": "%s, give me a moment...",
@@ -70,8 +66,7 @@
 		"stats": {
 			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",
-			"learnno":  "I am unable to learn anything from this specific chatroom.",
-			"error":    "%s, I don't know of that timezone."
+			"learnno":  "I am unable to learn anything from this specific chatroom."
 		},
 		"about": {
 			"message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Hope you have a lovely night!"
@@ -312,15 +307,16 @@
 		"npback":     "Hey, I'm back! Now back to track posting..."
 	},	
 	"misc": {
-		"welcome": "**My children, welcome %s to our beautiful night!**",
-		"load":    "Hey Thori, I'm back! My current version is v%s.",
+		"welcome":  "**My children, welcome %s to our beautiful night!**",
+		"load":     "Hey Thori, I'm back! My current version is v%s.",
 		"filefail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
-		"apifail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
-		"noperm":  "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
-		"noadmin": "I am sorry %s, but only Thorinair is allowed to use this command.",
-		"left":    "%s on %s at %s",
-		"gold":    "%sg %ss %sc",
-		"h":       "h"
+		"apifail":  "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
+		"timezone": "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
+		"noperm":   "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
+		"noadmin":  "I am sorry %s, but only Thorinair is allowed to use this command.",
+		"left":     "%s on %s at %s",
+		"gold":     "%sg %ss %sc",
+		"h":        "h"
 	},
 	"debug": {
 		"message":      "> I'm sending the following message to #%s: \"%s\"",
