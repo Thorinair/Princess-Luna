@@ -843,6 +843,135 @@ comm.learn = function(data) {
 	}
 };
 
+// Command: !purge
+comm.purge = function(data) {
+	if (purgeReady) {
+		if (data.message == config.options.commandsymbol + data.command + " yes") {
+
+			var found = false;
+			var indexStart = -1;
+			messages[purgeBrain].forEach(function(l, i) {
+				if (l == purgeStart) {
+					found = true;
+					indexStart = i;
+				}
+			});
+
+			if (found) {
+
+				found = false;
+				var indexEnd = -1;
+				messages[purgeBrain].forEach(function(l, i) {
+					if (l == purgeEnd) {
+						found = true;
+						indexEnd = i;
+					}
+				});	
+
+				if (found) {
+					messages[purgeBrain].splice(indexStart, indexEnd - indexStart + 1);
+
+					send(data.channelID, util.format(
+						strings.commands.purge.messageB, 
+						messages[purgeBrain].length
+					), false);
+
+					purgeReady = false;
+					rebooting = true;
+
+				    Object.keys(nptoggles).forEach(function(n, i) {
+						if (nptoggles[n])
+							send(n, strings.announcements.npreboot, true);
+					});
+
+					saveAllBrains();
+
+					setTimeout(function() {
+						console.log(strings.debug.stopped);
+						process.exit();
+					}, config.options.reboottime * 1000);
+				}
+				else {
+					send(data.channelID, strings.commands.purge.errorG, false);
+				}
+			}
+			else {
+				send(data.channelID, strings.commands.purge.errorG, false);
+			}			
+		}
+		else if (data.message == config.options.commandsymbol + data.command + " no") {
+			send(data.channelID, strings.commands.purge.messageC, false);
+			purgeReady = false;
+		}
+		else {
+			send(data.channelID, strings.commands.purge.errorF, false);
+		}
+	}
+	else {
+		var lines = data.message.split("\n");
+
+		var brain = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
+		if (brain == "" || brain == config.options.commandsymbol + data.command) {
+			send(data.channelID, strings.commands.purge.errorA, false);
+		}
+		else {
+			if (brains[brain] != null) {
+				purgeBrain = brain;
+
+				purgeStart = lines[1];
+				purgeEnd = lines[2];
+
+				if (purgeStart != undefined && purgeEnd != undefined) {
+
+					var found = false;
+					var indexStart = -1;
+					messages[brain].forEach(function(l, i) {
+						if (l == purgeStart) {
+							found = true;
+							indexStart = i;
+						}
+					});
+
+					if (found) {
+
+						found = false;
+						var indexEnd = -1;
+						messages[brain].forEach(function(l, i) {
+							if (l == purgeEnd) {
+								found = true;
+								indexEnd = i;
+							}
+						});
+
+						if (found) {
+							send(data.channelID, util.format(
+								strings.commands.purge.messageA, 
+								indexEnd - indexStart + 1,
+								purgeBrain,
+								messages[purgeBrain].length,
+								messages[purgeBrain].length - (indexEnd - indexStart + 1)
+							), false);
+							purgeReady = true;
+						}
+						else {
+							send(data.channelID, strings.commands.purge.errorE, false);
+						}
+					}
+					else {
+						send(data.channelID, strings.commands.purge.errorD, false);
+					}
+				}
+				else {
+					send(data.channelID, strings.commands.purge.errorC, false);
+				}
+			}
+			else {
+				send(data.channelID, strings.commands.purge.errorB, false);
+			}
+		}
+	}
+};
+
 // Command: !npoverride
 comm.npoverride = function(data) {
 	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
@@ -1500,6 +1629,10 @@ var powerTime;
 var scheduleEntries = [];
 var scheduleJobs    = [];
 var rebooting = false;
+var purgeReady = false;
+var purgeBrain = "";
+var purgeStart = "";
+var purgeEnd   = "";
 
 // Persistant Objects
 var bot;

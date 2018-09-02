@@ -172,6 +172,11 @@
 			"type":    "private"
 		},
 		{
+			"command": "purge",
+			"help":    "",
+			"type":    "private"
+		},
+		{
 			"command": "npoverride",
 			"help":    "",
 			"type":    "private"

@@ -173,6 +173,18 @@
 			"errorB":   "Thori, I don't have a brain with that name.",
 			"errorC":   "Thori, you need to specify the text to learn as well."
 		},
+		"purge": {
+			"messageA": "Thori, purging the given data will remove `%s` messages from the brain `%s`. This will drop the brain's line count from `%s` to `%s`. If you wish to proceed, write `!purge yes`, otherwise, `!purge no`",
+		    "messageB": "Thori, I've purged the memory from that brain. The brain now has `%s` lines of data. I will now perform a reboot to refresh my memory. Be right back!",
+		    "messageC": "Thori, I've cancelled the purging procedure.",
+			"errorA":   "Thori, you need to specify the brain which I should purge from after the command.",
+			"errorB":   "Thori, I don't have a brain with that name.",
+			"errorC":   "Thori, you need to specify start and end messages below the command.",
+			"errorD":   "Thori, I don't remember that starting message, please try again.",
+			"errorE":   "Thori, I don't remember that ending message, please try again.",
+			"errorF":   "Thori, a purge is already prepared, please write `!purge yes` or `!purge no`.",
+			"errorG":   "Thori, there was an error while purging the brain."
+		},
 		"npoverride": {
 			"message":  "Thori, I'm overriding the Now Playing info with the new track!\nIt is now: **%s**",
 			"error":    "Thori, you need to specify the track name."
