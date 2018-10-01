@@ -247,12 +247,22 @@
 			"type":    "private"
 		},
 		{
-			"command": "schedulestart",
+			"command": "schedulestop",
 			"help":    "",
 			"type":    "private"
 		},
 		{
 			"command": "schedulestop",
+			"help":    "",
+			"type":    "private"
+		},
+		{
+			"command": "eegstart",
+			"help":    "",
+			"type":    "private"
+		},
+		{
+			"command": "eegstop",
 			"help":    "",
 			"type":    "private"
 		},

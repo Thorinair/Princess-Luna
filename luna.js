@@ -144,7 +144,8 @@ comm.time = function(data) {
 				strings.commands.time.message, 
 				mention(data.userID),
 				momentTime.format("ddd MMM DD, YYYY"),
-				momentTime.format("HH:mm:ss") + " (QST)"
+				momentTime.format("HH:mm:ss") + " (QST)",
+				Math.round(momentTime / 1000)
 			), true);
 		}
 		else {
@@ -153,7 +154,8 @@ comm.time = function(data) {
 				strings.commands.time.message, 
 				mention(data.userID),
 				momentTime.format("ddd MMM DD, YYYY"),
-				momentTime.format("HH:mm:ss (z)")
+				momentTime.format("HH:mm:ss (z)"),
+				Math.round(momentTime / 1000)
 			), true);
 		}
 	}
@@ -1505,6 +1507,41 @@ comm.schedulestop = function(data) {
 	}
 };
 
+// Command: !eegstart
+comm.eegstart = function(data) {
+	if (eegRecording) {
+		send(data.channelID, strings.commands.eegstart.error, true);
+	}
+	else {
+		eegTable = [];
+		eegRecording = true;
+		send(data.channelID, strings.commands.eegstart.message, true);
+	}
+};
+
+// Command: !eegstop
+comm.eegstop = function(data) {
+	if (!eegRecording) {
+		send(data.channelID, strings.commands.eegstop.errorA, true);
+	}
+	else {
+		eegRecording = false;
+		send(data.channelID, strings.commands.eegstop.messageA, true);		
+
+
+		setTimeout(function() {
+			if (fs.existsSync(config.options.eegpath))
+				embed(channelNameToID(config.options.channels.debug), strings.commands.eegstop.messageB, config.options.eegpath, util.format(
+					strings.misc.eegupload,
+					(new Date(eegTable[0].time * 1000)),
+					(new Date(eegTable[eegTable.length - 1].time * 1000))
+				), true, true);
+			else
+				send(channelNameToID(config.options.channels.debug), strings.commands.eegstop.errorB, true);	
+		}, 1000);	
+	}
+};
+
 // Command: !leave
 comm.leave = function(data) {
 	var server = data.message.replace(config.options.commandsymbol + data.command + " ", "");
@@ -1674,6 +1711,8 @@ var startTime;
 var powerStatus = null;
 var powerTime;
 var eegValues;
+var eegTable;
+var eegRecording = false;
 var scheduleEntries = [];
 var scheduleJobs    = [];
 var rebooting = false;
@@ -2206,6 +2245,39 @@ function normalize(bulb) {
 		newBulb.brightness = Math.round(newBulb.brightness * 254);
 	}
 	return newBulb;
+}
+
+function saveEEG() {
+	var file = fs.createWriteStream(config.options.eegpath);
+
+	file.on("error", function(err) {
+		console.log(util.format(
+			strings.debug.eegerror, 
+			err
+		));
+	});
+
+	file.write(strings.misc.eegtitle, "utf-8");
+	eegTable.forEach(function(e) {
+		file.write(util.format(
+			strings.misc.eegvalues,
+			e.time,
+			e.battery,
+			e.signal,
+			e.attention,
+			e.meditation,
+			e.wave0,
+			e.wave1,
+			e.wave2,
+			e.wave3,
+			e.wave4,
+			e.wave5,
+			e.wave6,
+			e.wave7
+		), "utf-8");
+	});
+
+	file.end();
 }
 
 /*
@@ -2757,6 +2829,10 @@ function processReqEEG(query) {
 		eegValues.wave5      = query.eegwave5;
 		eegValues.wave6      = query.eegwave6;
 		eegValues.wave7      = query.eegwave7;
+		if (eegRecording) {
+			eegTable.push(eegValues);
+			saveEEG();
+		}
 	}
 }
 

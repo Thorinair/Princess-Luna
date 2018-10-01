@@ -8,7 +8,7 @@
 			"error":    "%s, I don't know when the next episode of My Little Pony: Friendship is Magic airs."
 		},
 		"time": {
-			"message":  "%s, current date and time is **%s** at **%s**."
+			"message":  "%s, current date and time is **%s** at **%s**. The unix timestamp is: `%s`."
 		},
 		"np": {
 			"message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
@@ -272,6 +272,16 @@
 			"message":  "Thori, am disabling the running scheduled automatic bulb control.",
 			"error":    "Thori, there is no scheduled automatic bulb control running."
 		},
+		"eegstart": {
+			"message":  "Thori, EEG recording of your brain has been started!",
+			"error":    "Thori, there is already an EEG recording in place. Please stop is first using the `!eegstop`."
+		},
+		"eegstop": {
+			"messageA": "Thori, The EEG recording has been stopped.",
+			"messageB": "You may download the EEG recording below.",
+			"errorA":   "Thori, there is no EEG recording in place.",
+			"errorB":   "I haven't recorded any EEG data in this period."
+		},
 		"leave": {
 			"messageA": "Thori, here is a list of all the servers which I am a member of. Use the ID when leaving:",
 			"messageB": "\n• %s - `%s`",
@@ -329,16 +339,19 @@
 		"npback":     "Hey, I'm back! Now back to track posting..."
 	},	
 	"misc": {
-		"welcome":  "**My children, welcome %s to our beautiful night!**",
-		"load":     "Hey Thori, I'm back! My current version is v%s.",
-		"filefail": "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
-		"apifail":  "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
-		"timezone": "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
-		"noperm":   "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
-		"noadmin":  "I am sorry %s, but only Thorinair is allowed to use this command.",
-		"left":     "%s on %s at %s",
-		"gold":     "%sg %ss %sc",
-		"h":        "h"
+		"welcome":   "**My children, welcome %s to our beautiful night!**",
+		"load":      "Hey Thori, I'm back! My current version is v%s.",
+		"filefail":  "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
+		"apifail":   "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
+		"timezone":  "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
+		"noperm":    "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
+		"noadmin":   "I am sorry %s, but only Thorinair is allowed to use this command.",
+		"eegtitle":  "Timestamp,Battery,Signal,Attention,Meditation,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma\n",
+		"eegvalues": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+		"eegupload": "EEG Data - %s - %s.csv",
+		"left":      "%s on %s at %s",
+		"gold":      "%sg %ss %sc",
+		"h":         "h"
 	},
 	"debug": {
 		"message":      "> I'm sending the following message to #%s: \"%s\"",
@@ -351,6 +364,7 @@
 		"welcome":      "New user, \"%s\" has joined our server! I'm promoting them to Children of The Night!",
 		"welcomefail":  "Something bad has happened during the promotion. Here is more info: %s",
 		"join":         "I've successfully joined Discord. My name is \"%s\" with ID #%s.",
+		"eegerror":     "I am having some trouble saving the EEG data. Here is more info: %s",
 		"download": {
 			"start": "I'm downloading the following file: %s",
 			"stop":  "Finished downloading!"
