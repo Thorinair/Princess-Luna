@@ -47,7 +47,12 @@
 		"power": {
 			"messageA": "%s, my mains power seems to be running as expected. Last update was %s and %s seconds ago.",
 			"messageB": "**%s, I have detected that my mains power is not running! Somepony please poke Thorinair!** Last update was %s and %s seconds ago.\n%s",
-			"error":    "%s, I haven't received any mains power status information yet."
+			"error":    "%s, I haven't received any mains power status information yet since last reboot."
+		},
+		"eeg": {
+			"messageA": "%s, below is a readout of Thorinair's brainwave data along with relevant EEG info. Last update was %s and %s seconds ago.\n",
+			"messageB": "```\nBattery:    %s %\nSignal:     %s %\nAttention:  %s %\nMeditation: %s %\nDelta:      %s\nTheta:      %s\nLow Alpha:  %s\nHigh Alpha: %s\nLow Beta:   %s\nHigh Beta:  %s\nLow Gamma:  %s\nHigh Gamma: %s```",
+			"error":    "%s, I haven't received any EEG data yet since last reboot."
 		},
 		"printer": {
 			"messageA": "%s, give me a moment...",
@@ -141,6 +146,11 @@
 			"single":   "*Bleps at %s and makes a goofy giggle.*",
 			"multiple": "*Looks at %s before her and then bleps at all of them.*",
 			"self":     "*Randomly bleps for no reason at all.*"
+		},
+		"pet": {
+			"single":   "*Affectionately brushes up against %s as they pet her head.*",
+			"multiple": "*Rolls over on her back, enjoying the attention as %s pet her tummy.*",
+			"self":     "*Pets her own head with her hoof while staring blankly in the distance.*"
 		},
 		"plushie": {
 			"single":   "*Casts a spell at %s, turning them into a plushie.*",

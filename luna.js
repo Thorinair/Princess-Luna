@@ -477,6 +477,53 @@ comm.power = function(data) {
 		), true);	
 };
 
+// Command: !eeg
+comm.eeg = function(data) {
+	if (eegValues == undefined) {
+		send(data.channelID, util.format(
+			strings.commands.eeg.error, 
+			mention(data.userID)
+		), true);
+	}
+	else {
+		var dateNow = new Date() / 1000;
+		var diff = dateNow - eegValues.time;
+		var time = {};
+
+		time.seconds = Math.floor(diff % 60);
+		diff = Math.floor(diff / 60);
+		time.minutes = Math.floor(diff % 60);
+		diff = Math.floor(diff / 60);
+		time.hours = Math.floor(diff % 24);
+		time.days = Math.floor(diff / 24);
+
+		var message = util.format(
+			strings.commands.eeg.messageA, 
+			mention(data.userID),
+			getTimeString(time),
+			time.seconds
+		);
+
+		message += util.format(
+			strings.commands.eeg.messageB, 
+			eegValues.battery,
+			eegValues.signal,
+			eegValues.attention,
+			eegValues.meditation,
+			eegValues.wave0,
+			eegValues.wave1,
+			eegValues.wave2,
+			eegValues.wave3,
+			eegValues.wave4,
+			eegValues.wave5,
+			eegValues.wave6,
+			eegValues.wave7
+		);
+
+		send(data.channelID, message, true);
+	}
+};
+
 // Command: !printer
 comm.printer = function(data) {
 
@@ -1626,6 +1673,7 @@ var hTrack    = {};
 var startTime;
 var powerStatus = null;
 var powerTime;
+var eegValues;
 var scheduleEntries = [];
 var scheduleJobs    = [];
 var rebooting = false;
@@ -2693,12 +2741,32 @@ function processReqBoot(query) {
 	}
 }
 
+function processReqEEG(query) {
+	if (query.action == "eeg") {
+		eegValues = {};
+		eegValues.time = new Date() / 1000;	
+		eegValues.battery    = query.eegbattery;
+		eegValues.signal     = query.eegsignal;
+		eegValues.attention  = query.eegattention;
+		eegValues.meditation = query.eegmeditation;
+		eegValues.wave0      = query.eegwave0;
+		eegValues.wave1      = query.eegwave1;
+		eegValues.wave2      = query.eegwave2;
+		eegValues.wave3      = query.eegwave3;
+		eegValues.wave4      = query.eegwave4;
+		eegValues.wave5      = query.eegwave5;
+		eegValues.wave6      = query.eegwave6;
+		eegValues.wave7      = query.eegwave7;
+	}
+}
+
 var processRequest = function(req, res) {
     if (req.method == "GET") {
     	var query = url.parse(req.url, true).query;
     	processReqPower(query);
     	processReqMotion(query);
     	processReqBoot(query);
+    	processReqEEG(query);
     }
 
     //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);

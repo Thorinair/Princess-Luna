@@ -26,13 +26,14 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!moon` Sends an image of the Moon as it is right now.
     - `!room` Lists the physical status of Thorinair's real life room. Powered using the [VariPass](https://varipass.org) website.
     - `!power` Lists the status of the mains power. The bot will keep running of a UPS if power goes out.
+    - `!eeg` Writes out the latest brainwave data gathered using Thorinair's hacked MindFlex EEG headset.
     - `!printer` Lists the status of Thorinair's Nightmare Rarity 3D printer. Also sends a photo of the printer's webcam.
     - `!token` Lists the the current price of the \[WoW Token\].
     - `!blacklist` Adds the user to a blacklist so their messages are not saved for training purposes.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.
-    - The bot can interract with people. Mention someone or multiple people after the command to interract with them. Supported commands: `!hug`, `!kiss`, `!boop`, `!glomp`, `!snuggle`, `!nuzzle`, `!wings`, `!snack`, `!floof`, `!nom`, `!preen`, `!blep`, `!plushie`, `!unplushie`.
+    - The bot can interract with people. Mention someone or multiple people after the command to interract with them. Supported commands: `!hug`, `!kiss`, `!boop`, `!glomp`, `!snuggle`, `!nuzzle`, `!wings`, `!snack`, `!floof`, `!nom`, `!preen`, `!blep`, `!pet`, `!plushie`, `!unplushie`.
 * Commands usable by DJs (set roles):
     - `!nptoggle` Manually toggles the automatic listing of Now Playing info for a specific channel. Only usable if given a role or in private messages.
 * Private commands for the admin:

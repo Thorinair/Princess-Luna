@@ -51,6 +51,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "eeg",
+			"help":    "Ask me to write out Thorinair's latest brainwave data. The data may be missing in case I was rebooted since last measurement.",
+			"type":    "public"
+		},
+		{
 			"command": "printer",
 			"help":    "Ask me about the status of Thorinair's Nightmare Rarity 3D printer. I will also send a photo of the printer's webcam.",
 			"type":    "public"
@@ -139,6 +144,11 @@
 		},
 		{
 			"command": "blep",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
+			"command": "pet",
 			"help":    "",
 			"type":    "interraction"
 		},
