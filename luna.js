@@ -1526,19 +1526,35 @@ comm.eegstop = function(data) {
 	}
 	else {
 		eegRecording = false;
-		send(data.channelID, strings.commands.eegstop.messageA, true);		
-
+		send(data.channelID, strings.commands.eegstop.messageA, true);
+		lowpassEEG();	
 
 		setTimeout(function() {
-			if (fs.existsSync(config.options.eegpath))
-				embed(channelNameToID(config.options.channels.debug), strings.commands.eegstop.messageB, config.options.eegpath, util.format(
-					strings.misc.eegupload,
+			if (fs.existsSync(config.eeg.basicpath))
+				embed(channelNameToID(config.options.channels.debug), strings.commands.eegstop.messageB, config.eeg.basicpath, util.format(
+					strings.misc.eeg.basic.upload,
 					(new Date(eegTable[0].time * 1000)),
 					(new Date(eegTable[eegTable.length - 1].time * 1000))
 				), true, true);
 			else
 				send(channelNameToID(config.options.channels.debug), strings.commands.eegstop.errorB, true);	
-		}, 1000);	
+		}, 1000);
+		setTimeout(function() {
+			if (fs.existsSync(config.eeg.wavespath))
+				embed(channelNameToID(config.options.channels.debug), "", config.eeg.wavespath, util.format(
+					strings.misc.eeg.waves.upload,
+					(new Date(eegTable[0].time * 1000)),
+					(new Date(eegTable[eegTable.length - 1].time * 1000))
+				), true, true);
+		}, 2000);
+		setTimeout(function() {
+			if (fs.existsSync(config.eeg.lowpasspath))
+				embed(channelNameToID(config.options.channels.debug), "", config.eeg.lowpasspath, util.format(
+					strings.misc.eeg.lowpass.upload,
+					(new Date(eegTable[0].time * 1000)),
+					(new Date(eegTable[eegTable.length - 1].time * 1000))
+				), true, true);
+		}, 3000);
 	}
 };
 
@@ -1712,6 +1728,7 @@ var powerStatus = null;
 var powerTime;
 var eegValues;
 var eegTable;
+var eegTableLowpass;
 var eegRecording = false;
 var scheduleEntries = [];
 var scheduleJobs    = [];
@@ -2248,24 +2265,45 @@ function normalize(bulb) {
 }
 
 function saveEEG() {
-	var file = fs.createWriteStream(config.options.eegpath);
+	var fileBasic = fs.createWriteStream(config.eeg.basicpath);
 
-	file.on("error", function(err) {
+	fileBasic.on("error", function(err) {
 		console.log(util.format(
 			strings.debug.eegerror, 
 			err
 		));
+		return;
 	});
 
-	file.write(strings.misc.eegtitle, "utf-8");
+	fileBasic.write(strings.misc.eeg.basic.title, "utf-8");
 	eegTable.forEach(function(e) {
-		file.write(util.format(
-			strings.misc.eegvalues,
+		fileBasic.write(util.format(
+			strings.misc.eeg.basic.values,
 			e.time,
 			e.battery,
 			e.signal,
 			e.attention,
-			e.meditation,
+			e.meditation
+		), "utf-8");
+	});
+
+	fileBasic.end();
+
+	var fileWaves = fs.createWriteStream(config.eeg.wavespath);
+
+	fileWaves.on("error", function(err) {
+		console.log(util.format(
+			strings.debug.eegerror, 
+			err
+		));
+		return;
+	});
+
+	fileWaves.write(strings.misc.eeg.waves.title, "utf-8");
+	eegTable.forEach(function(e) {
+		fileWaves.write(util.format(
+			strings.misc.eeg.waves.values,
+			e.time,
 			e.wave0,
 			e.wave1,
 			e.wave2,
@@ -2273,11 +2311,124 @@ function saveEEG() {
 			e.wave4,
 			e.wave5,
 			e.wave6,
-			e.wave7
+			e.wave7,
+			e.avglow,
+			e.avghigh
 		), "utf-8");
 	});
 
-	file.end();
+	fileWaves.end();
+
+	if (eegTableLowpass.length > 0) {
+		var fileLowpass = fs.createWriteStream(config.eeg.lowpasspath);
+
+		fileLowpass.on("error", function(err) {
+			console.log(util.format(
+				strings.debug.eegerror, 
+				err
+			));
+			return;
+		});
+
+		fileLowpass.write(strings.misc.eeg.lowpass.title, "utf-8");
+		eegTableLowpass.forEach(function(e) {
+			fileLowpass.write(util.format(
+				strings.misc.eeg.lowpass.values,
+				e.time,
+				e.wave0,
+				e.wave1,
+				e.wave2,
+				e.wave3,
+				e.wave4,
+				e.wave5,
+				e.wave6,
+				e.wave7,
+				e.avglow,
+				e.avghigh
+			), "utf-8");
+		});
+
+		fileLowpass.end();
+	}
+}
+
+function lowpassEEG() {
+	var j;
+
+	var limit = (config.eeg.lowpass - 1) / 2;
+
+	var average = 0;
+	for(j = -limit; j <= limit; j++)
+		average += parseFloat(limit - Math.abs(j));
+
+	eegTableLowpass = [];
+	eegTable.forEach(function(e, i) {
+		if (i >= limit && i <= eegTable.length - 1 - limit) {
+			var lowpassValues = {};
+			lowpassValues.time = eegTable[i].time;
+
+			lowpassValues.avglow = 0;
+
+			lowpassValues.wave0 = 0;
+			for(j = -limit; j <= limit; j++)
+				lowpassValues.wave0 += parseFloat(eegTable[i + j].wave0 * parseFloat(limit - Math.abs(j)));
+			lowpassValues.wave0 = Math.floor(lowpassValues.wave0 / average);
+			lowpassValues.avglow += parseInt(lowpassValues.wave0);
+
+			lowpassValues.wave1 = 0;
+			for(j = -limit; j <= limit; j++)
+				lowpassValues.wave1 += parseFloat(eegTable[i + j].wave1 * parseFloat(limit - Math.abs(j)));
+			lowpassValues.wave1 = Math.floor(lowpassValues.wave1 / average);
+			lowpassValues.avglow += parseInt(lowpassValues.wave1);
+
+			lowpassValues.wave2 = 0;
+			for(j = -limit; j <= limit; j++)
+				lowpassValues.wave2 += parseFloat(eegTable[i + j].wave2 * parseFloat(limit - Math.abs(j)));
+			lowpassValues.wave2 = Math.floor(lowpassValues.wave2 / average);
+			lowpassValues.avglow += parseInt(lowpassValues.wave2);
+
+			lowpassValues.avglow = Math.floor(lowpassValues.avglow / 3);
+
+
+			lowpassValues.avghigh = 0;
+
+			lowpassValues.wave3 = 0;
+			for(j = -limit; j <= limit; j++)
+				lowpassValues.wave3 += parseFloat(eegTable[i + j].wave3 * parseFloat(limit - Math.abs(j)));
+			lowpassValues.wave3 = Math.floor(lowpassValues.wave3 / average);
+			lowpassValues.avghigh += parseInt(lowpassValues.wave3);
+
+			lowpassValues.wave4 = 0;
+			for(j = -limit; j <= limit; j++)
+				lowpassValues.wave4 += parseFloat(eegTable[i + j].wave4 * parseFloat(limit - Math.abs(j)));
+			lowpassValues.wave4 = Math.floor(lowpassValues.wave4 / average);
+			lowpassValues.avghigh += parseInt(lowpassValues.wave4);
+
+			lowpassValues.wave5 = 0;
+			for(j = -limit; j <= limit; j++)
+				lowpassValues.wave5 += parseFloat(eegTable[i + j].wave5 * parseFloat(limit - Math.abs(j)));
+			lowpassValues.wave5 = Math.floor(lowpassValues.wave5 / average);
+			lowpassValues.avghigh += parseInt(lowpassValues.wave5);
+
+			lowpassValues.wave6 = 0;
+			for(j = -limit; j <= limit; j++)
+				lowpassValues.wave6 += parseFloat(eegTable[i + j].wave6 * parseFloat(limit - Math.abs(j)));
+			lowpassValues.wave6 = Math.floor(lowpassValues.wave6 / average);
+			lowpassValues.avghigh += parseInt(lowpassValues.wave6);
+
+			lowpassValues.wave7 = 0;
+			for(j = -limit; j <= limit; j++)
+				lowpassValues.wave7 += parseFloat(eegTable[i + j].wave7 * parseFloat(limit - Math.abs(j)));
+			lowpassValues.wave7 = Math.floor(lowpassValues.wave7 / average);
+			lowpassValues.avghigh += parseInt(lowpassValues.wave7);
+
+			lowpassValues.avghigh = Math.floor(lowpassValues.avghigh / 5);
+
+			eegTableLowpass.push(lowpassValues);
+		}
+	});
+
+	saveEEG();
 }
 
 /*
@@ -2816,7 +2967,7 @@ function processReqBoot(query) {
 function processReqEEG(query) {
 	if (query.action == "eeg") {
 		eegValues = {};
-		eegValues.time = new Date() / 1000;	
+		eegValues.time = Math.floor((new Date()) / 1000);	
 		eegValues.battery    = query.eegbattery;
 		eegValues.signal     = query.eegsignal;
 		eegValues.attention  = query.eegattention;
@@ -2829,10 +2980,23 @@ function processReqEEG(query) {
 		eegValues.wave5      = query.eegwave5;
 		eegValues.wave6      = query.eegwave6;
 		eegValues.wave7      = query.eegwave7;
-		if (eegRecording) {
+
+		eegValues.avglow = 0;
+		eegValues.avglow += parseInt(eegValues.wave0);
+		eegValues.avglow += parseInt(eegValues.wave1);
+		eegValues.avglow += parseInt(eegValues.wave2);
+		eegValues.avglow = Math.floor(eegValues.avglow / 3);
+
+		eegValues.avghigh = 0;
+		eegValues.avghigh += parseInt(eegValues.wave3);
+		eegValues.avghigh += parseInt(eegValues.wave4);
+		eegValues.avghigh += parseInt(eegValues.wave5);
+		eegValues.avghigh += parseInt(eegValues.wave6);
+		eegValues.avghigh += parseInt(eegValues.wave7);
+		eegValues.avghigh = Math.floor(eegValues.avghigh / 5);
+
+		if (eegRecording)
 			eegTable.push(eegValues);
-			saveEEG();
-		}
 	}
 }
 

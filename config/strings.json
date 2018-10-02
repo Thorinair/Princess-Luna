@@ -277,8 +277,8 @@
 			"error":    "Thori, there is already an EEG recording in place. Please stop is first using the `!eegstop`."
 		},
 		"eegstop": {
-			"messageA": "Thori, The EEG recording has been stopped.",
-			"messageB": "You may download the EEG recording below.",
+			"messageA": "Thori, The EEG recording has been stopped. Processing the data now...",
+			"messageB": "You may download the EEG data in the CSV tables below.",
 			"errorA":   "Thori, there is no EEG recording in place.",
 			"errorB":   "I haven't recorded any EEG data in this period."
 		},
@@ -346,12 +346,26 @@
 		"timezone":  "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
 		"noperm":    "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
 		"noadmin":   "I am sorry %s, but only Thorinair is allowed to use this command.",
-		"eegtitle":  "Timestamp,Battery,Signal,Attention,Meditation,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma\n",
-		"eegvalues": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-		"eegupload": "EEG Data - %s - %s.csv",
 		"left":      "%s on %s at %s",
 		"gold":      "%sg %ss %sc",
-		"h":         "h"
+		"h":         "h",
+		"eeg": {
+			"basic": {
+				"title":  "Timestamp,Battery,Signal,Attention,Meditation\n",
+				"values": "%s,%s,%s,%s,%s\n",
+				"upload": "EEG Basic - %s - %s.csv"
+			},
+			"waves": {
+				"title":  "Timestamp,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Average,Upper Average\n",
+				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+				"upload": "EEG Waves - %s - %s.csv"
+			},
+			"lowpass": {
+				"title":  "Timestamp,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Average,Upper Average\n",
+				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+				"upload": "EEG Lowpass - %s - %s.csv"
+			}
+		}
 	},
 	"debug": {
 		"message":      "> I'm sending the following message to #%s: \"%s\"",

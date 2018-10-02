@@ -21,7 +21,6 @@
 		"blacklistpath": "/var/www/node/data/blacklist.json",
 		"ignorepath":    "/var/www/node/data/ignore.json",
 		"seizurepath":   "/var/www/node/data/seizure.json",
-		"eegpath":       "/var/www/node/data/eeg.csv",
 		"coappath":      "/home/luna/libcoap/examples/coap-client",
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
@@ -55,6 +54,12 @@
 			"191158755361161216",
 			"188397984550092801"
 		]
+	},
+	"eeg": {
+		"basicpath":   "/var/www/node/data/eegbasic.csv",
+		"wavespath":   "/var/www/node/data/eegwaves.csv",
+		"lowpasspath": "/var/www/node/data/eeglowpass.csv",
+		"lowpass":     7
 	},
 	"seizure": {
 		"timeout": 10,
