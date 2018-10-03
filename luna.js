@@ -1555,6 +1555,14 @@ comm.eegstop = function(data) {
 					(new Date(eegTable[eegTable.length - 1].time * 1000))
 				), true, true);
 		}, 3000);
+		setTimeout(function() {
+			if (fs.existsSync(config.eeg.emapath))
+				embed(channelNameToID(config.options.channels.debug), "", config.eeg.emapath, util.format(
+					strings.misc.eeg.ema.upload,
+					(new Date(eegTable[0].time * 1000)),
+					(new Date(eegTable[eegTable.length - 1].time * 1000))
+				), true, true);
+		}, 4000);
 	}
 };
 
@@ -1729,6 +1737,7 @@ var powerTime;
 var eegValues;
 var eegTable;
 var eegTableLowpass;
+var eegTableEMA;
 var eegRecording = false;
 var scheduleEntries = [];
 var scheduleJobs    = [];
@@ -2350,6 +2359,38 @@ function saveEEG() {
 
 		fileLowpass.end();
 	}
+
+	if (eegTableEMA.length > 0) {
+		var fileEMA = fs.createWriteStream(config.eeg.emapath);
+
+		fileEMA.on("error", function(err) {
+			console.log(util.format(
+				strings.debug.eegerror, 
+				err
+			));
+			return;
+		});
+
+		fileEMA.write(strings.misc.eeg.ema.title, "utf-8");
+		eegTableEMA.forEach(function(e) {
+			fileEMA.write(util.format(
+				strings.misc.eeg.ema.values,
+				e.time,
+				e.wave0,
+				e.wave1,
+				e.wave2,
+				e.wave3,
+				e.wave4,
+				e.wave5,
+				e.wave6,
+				e.wave7,
+				e.avglow,
+				e.avghigh
+			), "utf-8");
+		});
+
+		fileEMA.end();
+	}
 }
 
 function lowpassEEG() {
@@ -2427,6 +2468,73 @@ function lowpassEEG() {
 			eegTableLowpass.push(lowpassValues);
 		}
 	});
+
+	emaEEG();
+}
+
+function emaEEG() {
+	if (eegTable.length > 0) {
+		var i;
+		var alpha = parseFloat(1.0 / config.eeg.ema);
+
+		eegTableEMA = [];
+
+		var emaValues = {};
+		emaValues.time = eegTable[0].time;
+
+		emaValues.avglow = 0;
+		emaValues.wave0  = eegTable[0].wave0;
+		emaValues.avglow += parseFloat(emaValues.wave0);
+		emaValues.wave1  = eegTable[0].wave1;
+		emaValues.avglow += parseFloat(emaValues.wave1);
+		emaValues.wave2  = eegTable[0].wave2;
+		emaValues.avglow += parseFloat(emaValues.wave2);
+		emaValues.avglow = emaValues.avglow / 3;
+
+		emaValues.avghigh = 0;
+		emaValues.wave3   = eegTable[0].wave3;
+		emaValues.avghigh += parseFloat(emaValues.wave3);
+		emaValues.wave4   = eegTable[0].wave4;
+		emaValues.avghigh += parseFloat(emaValues.wave4);
+		emaValues.wave5   = eegTable[0].wave5;
+		emaValues.avghigh += parseFloat(emaValues.wave5);
+		emaValues.wave6   = eegTable[0].wave6;
+		emaValues.avghigh += parseFloat(emaValues.wave6);
+		emaValues.wave7   = eegTable[0].wave7;
+		emaValues.avghigh += parseFloat(emaValues.wave7);
+		emaValues.avghigh = emaValues.avghigh / 5;
+
+		eegTableEMA.push(emaValues);
+
+		for (i = 1; i < eegTable.length; i++) {
+			emaValues = {};
+			emaValues.time = eegTable[i].time;
+
+			emaValues.avglow = 0;
+			emaValues.wave0  = alpha * eegTable[i].wave0 + (1.0 - alpha) * eegTableEMA[i - 1].wave0;
+			emaValues.avglow += parseFloat(emaValues.wave0);
+			emaValues.wave1  = alpha * eegTable[i].wave1 + (1.0 - alpha) * eegTableEMA[i - 1].wave1;
+			emaValues.avglow += parseFloat(emaValues.wave1);
+			emaValues.wave2  = alpha * eegTable[i].wave2 + (1.0 - alpha) * eegTableEMA[i - 1].wave2;
+			emaValues.avglow += parseFloat(emaValues.wave2);
+			emaValues.avglow = emaValues.avglow / 3;
+
+			emaValues.avghigh = 0;
+			emaValues.wave3 = alpha * eegTable[i].wave3 + (1.0 - alpha) * eegTableEMA[i - 1].wave3;
+			emaValues.avghigh += parseFloat(emaValues.wave3);
+			emaValues.wave4 = alpha * eegTable[i].wave4 + (1.0 - alpha) * eegTableEMA[i - 1].wave4;
+			emaValues.avghigh += parseFloat(emaValues.wave4);
+			emaValues.wave5 = alpha * eegTable[i].wave5 + (1.0 - alpha) * eegTableEMA[i - 1].wave5;
+			emaValues.avghigh += parseFloat(emaValues.wave5);
+			emaValues.wave6 = alpha * eegTable[i].wave6 + (1.0 - alpha) * eegTableEMA[i - 1].wave6;
+			emaValues.avghigh += parseFloat(emaValues.wave6);
+			emaValues.wave7 = alpha * eegTable[i].wave7 + (1.0 - alpha) * eegTableEMA[i - 1].wave7;
+			emaValues.avghigh += parseFloat(emaValues.wave7);
+			emaValues.avghigh = emaValues.avghigh / 5;
+
+			eegTableEMA.push(emaValues);
+		}
+	}
 
 	saveEEG();
 }

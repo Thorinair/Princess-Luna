@@ -59,7 +59,9 @@
 		"basicpath":   "/var/www/node/data/eegbasic.csv",
 		"wavespath":   "/var/www/node/data/eegwaves.csv",
 		"lowpasspath": "/var/www/node/data/eeglowpass.csv",
-		"lowpass":     7
+		"emapath":     "/var/www/node/data/eegema.csv",
+		"lowpass":     7,
+		"ema":         30
 	},
 	"seizure": {
 		"timeout": 10,
