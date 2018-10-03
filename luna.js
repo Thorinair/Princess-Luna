@@ -512,14 +512,14 @@ comm.eeg = function(data) {
 			eegValues.signal,
 			eegValues.attention,
 			eegValues.meditation,
-			eegValues.wave0,
-			eegValues.wave1,
-			eegValues.wave2,
-			eegValues.wave3,
-			eegValues.wave4,
-			eegValues.wave5,
-			eegValues.wave6,
-			eegValues.wave7
+			eegValues.waves[0],
+			eegValues.waves[1],
+			eegValues.waves[2],
+			eegValues.waves[3],
+			eegValues.waves[4],
+			eegValues.waves[5],
+			eegValues.waves[6],
+			eegValues.waves[7]
 		);
 
 		send(data.channelID, message, true);
@@ -1528,6 +1528,8 @@ comm.eegstop = function(data) {
 		eegRecording = false;
 		send(data.channelID, strings.commands.eegstop.messageA, true);
 		lowpassEEG();	
+		emaEEG();	
+		saveEEG();	
 
 		setTimeout(function() {
 			if (fs.existsSync(config.eeg.basicpath))
@@ -2313,14 +2315,14 @@ function saveEEG() {
 		fileWaves.write(util.format(
 			strings.misc.eeg.waves.values,
 			e.time,
-			e.wave0,
-			e.wave1,
-			e.wave2,
-			e.wave3,
-			e.wave4,
-			e.wave5,
-			e.wave6,
-			e.wave7,
+			e.waves[0],
+			e.waves[1],
+			e.waves[2],
+			e.waves[3],
+			e.waves[4],
+			e.waves[5],
+			e.waves[6],
+			e.waves[7],
 			e.avglow,
 			e.avghigh
 		), "utf-8");
@@ -2344,14 +2346,14 @@ function saveEEG() {
 			fileLowpass.write(util.format(
 				strings.misc.eeg.lowpass.values,
 				e.time,
-				e.wave0,
-				e.wave1,
-				e.wave2,
-				e.wave3,
-				e.wave4,
-				e.wave5,
-				e.wave6,
-				e.wave7,
+				e.waves[0],
+				e.waves[1],
+				e.waves[2],
+				e.waves[3],
+				e.waves[4],
+				e.waves[5],
+				e.waves[6],
+				e.waves[7],
 				e.avglow,
 				e.avghigh
 			), "utf-8");
@@ -2376,14 +2378,14 @@ function saveEEG() {
 			fileEMA.write(util.format(
 				strings.misc.eeg.ema.values,
 				e.time,
-				e.wave0,
-				e.wave1,
-				e.wave2,
-				e.wave3,
-				e.wave4,
-				e.wave5,
-				e.wave6,
-				e.wave7,
+				e.waves[0],
+				e.waves[1],
+				e.waves[2],
+				e.waves[3],
+				e.waves[4],
+				e.waves[5],
+				e.waves[6],
+				e.waves[7],
 				e.avglow,
 				e.avghigh
 			), "utf-8");
@@ -2394,12 +2396,12 @@ function saveEEG() {
 }
 
 function lowpassEEG() {
-	var j;
+	var j, w;
 
 	var limit = (config.eeg.lowpass - 1) / 2;
 
 	var average = 0;
-	for(j = -limit; j <= limit; j++)
+	for (j = -limit; j <= limit; j++)
 		average += parseFloat(limit - Math.abs(j));
 
 	eegTableLowpass = [];
@@ -2408,73 +2410,33 @@ function lowpassEEG() {
 			var lowpassValues = {};
 			lowpassValues.time = eegTable[i].time;
 
+			lowpassValues.waves = [];
+			for (w = 0; w <= 7; w++) {
+				var wave = 0;
+				for(j = -limit; j <= limit; j++)
+					wave += parseFloat(eegTable[i + j].waves[w] * parseFloat(limit - Math.abs(j)));
+				wave = wave / average;	
+				lowpassValues.waves.push(wave);
+			}
+
 			lowpassValues.avglow = 0;
-
-			lowpassValues.wave0 = 0;
-			for(j = -limit; j <= limit; j++)
-				lowpassValues.wave0 += parseFloat(eegTable[i + j].wave0 * parseFloat(limit - Math.abs(j)));
-			lowpassValues.wave0 = Math.floor(lowpassValues.wave0 / average);
-			lowpassValues.avglow += parseInt(lowpassValues.wave0);
-
-			lowpassValues.wave1 = 0;
-			for(j = -limit; j <= limit; j++)
-				lowpassValues.wave1 += parseFloat(eegTable[i + j].wave1 * parseFloat(limit - Math.abs(j)));
-			lowpassValues.wave1 = Math.floor(lowpassValues.wave1 / average);
-			lowpassValues.avglow += parseInt(lowpassValues.wave1);
-
-			lowpassValues.wave2 = 0;
-			for(j = -limit; j <= limit; j++)
-				lowpassValues.wave2 += parseFloat(eegTable[i + j].wave2 * parseFloat(limit - Math.abs(j)));
-			lowpassValues.wave2 = Math.floor(lowpassValues.wave2 / average);
-			lowpassValues.avglow += parseInt(lowpassValues.wave2);
-
-			lowpassValues.avglow = Math.floor(lowpassValues.avglow / 3);
-
+			for (w = 0; w <= 2; w++)
+				lowpassValues.avglow += parseFloat(lowpassValues.waves[w]);
+			lowpassValues.avglow = lowpassValues.avglow / 3;
 
 			lowpassValues.avghigh = 0;
-
-			lowpassValues.wave3 = 0;
-			for(j = -limit; j <= limit; j++)
-				lowpassValues.wave3 += parseFloat(eegTable[i + j].wave3 * parseFloat(limit - Math.abs(j)));
-			lowpassValues.wave3 = Math.floor(lowpassValues.wave3 / average);
-			lowpassValues.avghigh += parseInt(lowpassValues.wave3);
-
-			lowpassValues.wave4 = 0;
-			for(j = -limit; j <= limit; j++)
-				lowpassValues.wave4 += parseFloat(eegTable[i + j].wave4 * parseFloat(limit - Math.abs(j)));
-			lowpassValues.wave4 = Math.floor(lowpassValues.wave4 / average);
-			lowpassValues.avghigh += parseInt(lowpassValues.wave4);
-
-			lowpassValues.wave5 = 0;
-			for(j = -limit; j <= limit; j++)
-				lowpassValues.wave5 += parseFloat(eegTable[i + j].wave5 * parseFloat(limit - Math.abs(j)));
-			lowpassValues.wave5 = Math.floor(lowpassValues.wave5 / average);
-			lowpassValues.avghigh += parseInt(lowpassValues.wave5);
-
-			lowpassValues.wave6 = 0;
-			for(j = -limit; j <= limit; j++)
-				lowpassValues.wave6 += parseFloat(eegTable[i + j].wave6 * parseFloat(limit - Math.abs(j)));
-			lowpassValues.wave6 = Math.floor(lowpassValues.wave6 / average);
-			lowpassValues.avghigh += parseInt(lowpassValues.wave6);
-
-			lowpassValues.wave7 = 0;
-			for(j = -limit; j <= limit; j++)
-				lowpassValues.wave7 += parseFloat(eegTable[i + j].wave7 * parseFloat(limit - Math.abs(j)));
-			lowpassValues.wave7 = Math.floor(lowpassValues.wave7 / average);
-			lowpassValues.avghigh += parseInt(lowpassValues.wave7);
-
-			lowpassValues.avghigh = Math.floor(lowpassValues.avghigh / 5);
+			for (w = 3; w <= 7; w++)
+				lowpassValues.avghigh += parseFloat(lowpassValues.waves[w]);
+			lowpassValues.avghigh = lowpassValues.avghigh / 3;
 
 			eegTableLowpass.push(lowpassValues);
 		}
 	});
-
-	emaEEG();
 }
 
 function emaEEG() {
 	if (eegTable.length > 0) {
-		var i;
+		var i, w;
 		var alpha = parseFloat(1.0 / config.eeg.ema);
 
 		eegTableEMA = [];
@@ -2482,26 +2444,18 @@ function emaEEG() {
 		var emaValues = {};
 		emaValues.time = eegTable[0].time;
 
+		emaValues.waves = [];
+		for (w = 0; w <= 7; w++)
+			emaValues.waves.push(eegTable[0].waves[w]);
+
 		emaValues.avglow = 0;
-		emaValues.wave0  = eegTable[0].wave0;
-		emaValues.avglow += parseFloat(emaValues.wave0);
-		emaValues.wave1  = eegTable[0].wave1;
-		emaValues.avglow += parseFloat(emaValues.wave1);
-		emaValues.wave2  = eegTable[0].wave2;
-		emaValues.avglow += parseFloat(emaValues.wave2);
+		for (w = 0; w <= 2; w++)
+			emaValues.avglow += parseFloat(emaValues.waves[w]);
 		emaValues.avglow = emaValues.avglow / 3;
 
 		emaValues.avghigh = 0;
-		emaValues.wave3   = eegTable[0].wave3;
-		emaValues.avghigh += parseFloat(emaValues.wave3);
-		emaValues.wave4   = eegTable[0].wave4;
-		emaValues.avghigh += parseFloat(emaValues.wave4);
-		emaValues.wave5   = eegTable[0].wave5;
-		emaValues.avghigh += parseFloat(emaValues.wave5);
-		emaValues.wave6   = eegTable[0].wave6;
-		emaValues.avghigh += parseFloat(emaValues.wave6);
-		emaValues.wave7   = eegTable[0].wave7;
-		emaValues.avghigh += parseFloat(emaValues.wave7);
+		for (w = 3; w <= 7; w++)
+			emaValues.avghigh += parseFloat(emaValues.waves[w]);
 		emaValues.avghigh = emaValues.avghigh / 5;
 
 		eegTableEMA.push(emaValues);
@@ -2510,33 +2464,23 @@ function emaEEG() {
 			emaValues = {};
 			emaValues.time = eegTable[i].time;
 
+			emaValues.waves = [];
+			for (w = 0; w <= 7; w++)
+				emaValues.waves.push(alpha * eegTable[i].waves[w] + (1.0 - alpha) * eegTableEMA[i - 1].waves[w]);
+
 			emaValues.avglow = 0;
-			emaValues.wave0  = alpha * eegTable[i].wave0 + (1.0 - alpha) * eegTableEMA[i - 1].wave0;
-			emaValues.avglow += parseFloat(emaValues.wave0);
-			emaValues.wave1  = alpha * eegTable[i].wave1 + (1.0 - alpha) * eegTableEMA[i - 1].wave1;
-			emaValues.avglow += parseFloat(emaValues.wave1);
-			emaValues.wave2  = alpha * eegTable[i].wave2 + (1.0 - alpha) * eegTableEMA[i - 1].wave2;
-			emaValues.avglow += parseFloat(emaValues.wave2);
+			for (w = 0; w <= 2; w++)
+				emaValues.avglow += parseFloat(emaValues.waves[w]);
 			emaValues.avglow = emaValues.avglow / 3;
 
 			emaValues.avghigh = 0;
-			emaValues.wave3 = alpha * eegTable[i].wave3 + (1.0 - alpha) * eegTableEMA[i - 1].wave3;
-			emaValues.avghigh += parseFloat(emaValues.wave3);
-			emaValues.wave4 = alpha * eegTable[i].wave4 + (1.0 - alpha) * eegTableEMA[i - 1].wave4;
-			emaValues.avghigh += parseFloat(emaValues.wave4);
-			emaValues.wave5 = alpha * eegTable[i].wave5 + (1.0 - alpha) * eegTableEMA[i - 1].wave5;
-			emaValues.avghigh += parseFloat(emaValues.wave5);
-			emaValues.wave6 = alpha * eegTable[i].wave6 + (1.0 - alpha) * eegTableEMA[i - 1].wave6;
-			emaValues.avghigh += parseFloat(emaValues.wave6);
-			emaValues.wave7 = alpha * eegTable[i].wave7 + (1.0 - alpha) * eegTableEMA[i - 1].wave7;
-			emaValues.avghigh += parseFloat(emaValues.wave7);
+			for (w = 3; w <= 7; w++)
+				emaValues.avghigh += parseFloat(emaValues.waves[w]);
 			emaValues.avghigh = emaValues.avghigh / 5;
 
 			eegTableEMA.push(emaValues);
 		}
 	}
-
-	saveEEG();
 }
 
 /*
@@ -3074,34 +3018,29 @@ function processReqBoot(query) {
 
 function processReqEEG(query) {
 	if (query.action == "eeg") {
+		var w;
+
 		eegValues = {};
 		eegValues.time = Math.floor((new Date()) / 1000);	
+
 		eegValues.battery    = query.eegbattery;
 		eegValues.signal     = query.eegsignal;
 		eegValues.attention  = query.eegattention;
 		eegValues.meditation = query.eegmeditation;
-		eegValues.wave0      = query.eegwave0;
-		eegValues.wave1      = query.eegwave1;
-		eegValues.wave2      = query.eegwave2;
-		eegValues.wave3      = query.eegwave3;
-		eegValues.wave4      = query.eegwave4;
-		eegValues.wave5      = query.eegwave5;
-		eegValues.wave6      = query.eegwave6;
-		eegValues.wave7      = query.eegwave7;
+
+		eegValues.waves = [];
+		for (w = 0; w <= 7; w++)
+			eegValues.waves.push(query["eegwave" + w]);
 
 		eegValues.avglow = 0;
-		eegValues.avglow += parseInt(eegValues.wave0);
-		eegValues.avglow += parseInt(eegValues.wave1);
-		eegValues.avglow += parseInt(eegValues.wave2);
-		eegValues.avglow = Math.floor(eegValues.avglow / 3);
+		for (w = 0; w <= 2; w++)
+			eegValues.avglow += parseFloat(eegValues.waves[w]);
+		eegValues.avglow = eegValues.avglow / 3;
 
 		eegValues.avghigh = 0;
-		eegValues.avghigh += parseInt(eegValues.wave3);
-		eegValues.avghigh += parseInt(eegValues.wave4);
-		eegValues.avghigh += parseInt(eegValues.wave5);
-		eegValues.avghigh += parseInt(eegValues.wave6);
-		eegValues.avghigh += parseInt(eegValues.wave7);
-		eegValues.avghigh = Math.floor(eegValues.avghigh / 5);
+		for (w = 3; w <= 7; w++)
+			eegValues.avghigh += parseFloat(eegValues.waves[w]);
+		eegValues.avghigh = eegValues.avghigh / 5;
 
 		if (eegRecording)
 			eegTable.push(eegValues);
