@@ -511,16 +511,16 @@ comm.eeg = function(data) {
 			strings.commands.eeg.messageB, 
 			eegValues.battery,
 			eegValues.signal,
-			eegValues.attention,
-			eegValues.meditation,
-			eegValues.waves[0],
-			eegValues.waves[1],
-			eegValues.waves[2],
-			eegValues.waves[3],
-			eegValues.waves[4],
-			eegValues.waves[5],
-			eegValues.waves[6],
-			eegValues.waves[7]
+			eegValuesEMA.attention.toFixed(2),
+			eegValuesEMA.meditation.toFixed(2),
+			eegValuesEMA.waves[0].toFixed(2),
+			eegValuesEMA.waves[1].toFixed(2),
+			eegValuesEMA.waves[2].toFixed(2),
+			eegValuesEMA.waves[3].toFixed(2),
+			eegValuesEMA.waves[4].toFixed(2),
+			eegValuesEMA.waves[5].toFixed(2),
+			eegValuesEMA.waves[6].toFixed(2),
+			eegValuesEMA.waves[7].toFixed(2)
 		);
 
 		send(data.channelID, message, true);
@@ -1515,6 +1515,7 @@ comm.eegstart = function(data) {
 	}
 	else {
 		eegTable = [];
+		eegTableEMA = [];
 		eegRecording = true;
 		send(data.channelID, strings.commands.eegstart.message, true);
 	}
@@ -1528,8 +1529,6 @@ comm.eegstop = function(data) {
 	else {
 		eegRecording = false;
 		send(data.channelID, strings.commands.eegstop.messageA, true);
-		lowpassEEG();	
-		emaEEG();	
 		saveEEG();	
 
 		setTimeout(function() {
@@ -1540,21 +1539,13 @@ comm.eegstop = function(data) {
 					(new Date(eegTable[eegTable.length - 1].time * 1000))
 				), true, true);
 				setTimeout(function() {
-					if (fs.existsSync(config.eeg.wavespath))
-						embed(channelNameToID(config.options.channels.debug), "", config.eeg.wavespath, util.format(
-							strings.misc.eeg.waves.upload,
+					if (fs.existsSync(config.eeg.rawpath))
+						embed(channelNameToID(config.options.channels.debug), "", config.eeg.rawpath, util.format(
+							strings.misc.eeg.raw.upload,
 							(new Date(eegTable[0].time * 1000)),
 							(new Date(eegTable[eegTable.length - 1].time * 1000))
 						), true, true);
 				}, 1000);
-				setTimeout(function() {
-					if (fs.existsSync(config.eeg.lowpasspath))
-						embed(channelNameToID(config.options.channels.debug), "", config.eeg.lowpasspath, util.format(
-							strings.misc.eeg.lowpass.upload,
-							(new Date(eegTable[0].time * 1000)),
-							(new Date(eegTable[eegTable.length - 1].time * 1000))
-						), true, true);
-				}, 2000);
 				setTimeout(function() {
 					if (fs.existsSync(config.eeg.emapath))
 						embed(channelNameToID(config.options.channels.debug), "", config.eeg.emapath, util.format(
@@ -1562,7 +1553,7 @@ comm.eegstop = function(data) {
 							(new Date(eegTable[0].time * 1000)),
 							(new Date(eegTable[eegTable.length - 1].time * 1000))
 						), true, true);
-				}, 3000);
+				}, 2000);
 			}
 			else
 				send(channelNameToID(config.options.channels.debug), strings.commands.eegstop.errorB, true);	
@@ -1735,17 +1726,27 @@ var np        = {};
 var brains    = {};
 var messages  = {};
 var hTrack    = {};
+
 var startTime;
+
 var powerStatus = null;
 var powerTime;
+
 var eegValues;
+var eegValuesEMA;
+var eegValuesEMAPrev;
+
 var eegTable;
-var eegTableLowpass;
 var eegTableEMA;
+
+var eegInitial = true;
 var eegRecording = false;
+
 var scheduleEntries = [];
 var scheduleJobs    = [];
+
 var rebooting = false;
+
 var purgeReady = false;
 var purgeBrain = "";
 var purgeStart = "";
@@ -2278,10 +2279,12 @@ function normalize(bulb) {
 }
 
 function saveEEG() {
-	if (eegTable.length > 0) {
-		var fileBasic = fs.createWriteStream(config.eeg.basicpath);
+	var file;
 
-		fileBasic.on("error", function(err) {
+	if (eegTable.length > 0) {
+		file = fs.createWriteStream(config.eeg.basicpath);
+
+		file.on("error", function(err) {
 			console.log(util.format(
 				strings.debug.eegerror, 
 				err
@@ -2289,23 +2292,21 @@ function saveEEG() {
 			return;
 		});
 
-		fileBasic.write(strings.misc.eeg.basic.title, "utf-8");
+		file.write(strings.misc.eeg.basic.title, "utf-8");
 		eegTable.forEach(function(e) {
-			fileBasic.write(util.format(
+			file.write(util.format(
 				strings.misc.eeg.basic.values,
 				e.time,
 				e.battery,
-				e.signal,
-				e.attention,
-				e.meditation
+				e.signal
 			), "utf-8");
 		});
 
-		fileBasic.end();
+		file.end();
 
-		var fileWaves = fs.createWriteStream(config.eeg.wavespath);
+		var file = fs.createWriteStream(config.eeg.rawpath);
 
-		fileWaves.on("error", function(err) {
+		file.on("error", function(err) {
 			console.log(util.format(
 				strings.debug.eegerror, 
 				err
@@ -2313,11 +2314,13 @@ function saveEEG() {
 			return;
 		});
 
-		fileWaves.write(strings.misc.eeg.waves.title, "utf-8");
+		file.write(strings.misc.eeg.raw.title, "utf-8");
 		eegTable.forEach(function(e) {
-			fileWaves.write(util.format(
-				strings.misc.eeg.waves.values,
+			file.write(util.format(
+				strings.misc.eeg.raw.values,
 				e.time,
+				e.attention,
+				e.meditation,
 				e.waves[0],
 				e.waves[1],
 				e.waves[2],
@@ -2326,50 +2329,18 @@ function saveEEG() {
 				e.waves[5],
 				e.waves[6],
 				e.waves[7],
-				e.avglow,
-				e.avghigh
+				e.sumlow,
+				e.sumhigh
 			), "utf-8");
 		});
 
-		fileWaves.end();
-	}
-
-	if (eegTableLowpass.length > 0) {
-		var fileLowpass = fs.createWriteStream(config.eeg.lowpasspath);
-
-		fileLowpass.on("error", function(err) {
-			console.log(util.format(
-				strings.debug.eegerror, 
-				err
-			));
-			return;
-		});
-
-		fileLowpass.write(strings.misc.eeg.lowpass.title, "utf-8");
-		eegTableLowpass.forEach(function(e) {
-			fileLowpass.write(util.format(
-				strings.misc.eeg.lowpass.values,
-				e.time,
-				e.waves[0],
-				e.waves[1],
-				e.waves[2],
-				e.waves[3],
-				e.waves[4],
-				e.waves[5],
-				e.waves[6],
-				e.waves[7],
-				e.avglow,
-				e.avghigh
-			), "utf-8");
-		});
-
-		fileLowpass.end();
+		file.end();
 	}
 
 	if (eegTableEMA.length > 0) {
-		var fileEMA = fs.createWriteStream(config.eeg.emapath);
+		var file = fs.createWriteStream(config.eeg.emapath);
 
-		fileEMA.on("error", function(err) {
+		file.on("error", function(err) {
 			console.log(util.format(
 				strings.debug.eegerror, 
 				err
@@ -2377,11 +2348,13 @@ function saveEEG() {
 			return;
 		});
 
-		fileEMA.write(strings.misc.eeg.ema.title, "utf-8");
+		file.write(strings.misc.eeg.ema.title, "utf-8");
 		eegTableEMA.forEach(function(e) {
-			fileEMA.write(util.format(
+			file.write(util.format(
 				strings.misc.eeg.ema.values,
 				e.time,
+				e.attention,
+				e.meditation,
 				e.waves[0],
 				e.waves[1],
 				e.waves[2],
@@ -2390,101 +2363,12 @@ function saveEEG() {
 				e.waves[5],
 				e.waves[6],
 				e.waves[7],
-				e.avglow,
-				e.avghigh
+				e.sumlow,
+				e.sumhigh
 			), "utf-8");
 		});
 
-		fileEMA.end();
-	}
-}
-
-function lowpassEEG() {
-	eegTableLowpass = [];
-
-	var j, w;
-
-	var limit = (config.eeg.lowpass - 1) / 2;
-
-	var average = 0;
-	for (j = -limit; j <= limit; j++)
-		average += parseFloat(limit - Math.abs(j));
-
-	eegTable.forEach(function(e, i) {
-		if (i >= limit && i <= eegTable.length - 1 - limit) {
-			var lowpassValues = {};
-			lowpassValues.time = eegTable[i].time;
-
-			lowpassValues.waves = [];
-			for (w = 0; w <= 7; w++) {
-				var wave = 0;
-				for(j = -limit; j <= limit; j++)
-					wave += parseFloat(eegTable[i + j].waves[w] * parseFloat(limit - Math.abs(j)));
-				wave = wave / average;	
-				lowpassValues.waves.push(wave);
-			}
-
-			lowpassValues.avglow = 0;
-			for (w = 0; w <= 2; w++)
-				lowpassValues.avglow += parseFloat(lowpassValues.waves[w]);
-			lowpassValues.avglow = lowpassValues.avglow / 3;
-
-			lowpassValues.avghigh = 0;
-			for (w = 3; w <= 7; w++)
-				lowpassValues.avghigh += parseFloat(lowpassValues.waves[w]);
-			lowpassValues.avghigh = lowpassValues.avghigh / 3;
-
-			eegTableLowpass.push(lowpassValues);
-		}
-	});
-}
-
-function emaEEG() {
-	eegTableEMA = [];
-
-	if (eegTable.length > 0) {
-		var i, w;
-		var alpha = parseFloat(1.0 / config.eeg.ema);
-
-		var emaValues = {};
-		emaValues.time = eegTable[0].time;
-
-		emaValues.waves = [];
-		for (w = 0; w <= 7; w++)
-			emaValues.waves.push(eegTable[0].waves[w]);
-
-		emaValues.avglow = 0;
-		for (w = 0; w <= 2; w++)
-			emaValues.avglow += parseFloat(emaValues.waves[w]);
-		emaValues.avglow = emaValues.avglow / 3;
-
-		emaValues.avghigh = 0;
-		for (w = 3; w <= 7; w++)
-			emaValues.avghigh += parseFloat(emaValues.waves[w]);
-		emaValues.avghigh = emaValues.avghigh / 5;
-
-		eegTableEMA.push(emaValues);
-
-		for (i = 1; i < eegTable.length; i++) {
-			emaValues = {};
-			emaValues.time = eegTable[i].time;
-
-			emaValues.waves = [];
-			for (w = 0; w <= 7; w++)
-				emaValues.waves.push(alpha * eegTable[i].waves[w] + (1.0 - alpha) * eegTableEMA[i - 1].waves[w]);
-
-			emaValues.avglow = 0;
-			for (w = 0; w <= 2; w++)
-				emaValues.avglow += parseFloat(emaValues.waves[w]);
-			emaValues.avglow = emaValues.avglow / 3;
-
-			emaValues.avghigh = 0;
-			for (w = 3; w <= 7; w++)
-				emaValues.avghigh += parseFloat(emaValues.waves[w]);
-			emaValues.avghigh = emaValues.avghigh / 5;
-
-			eegTableEMA.push(emaValues);
-		}
+		file.end();
 	}
 }
 
@@ -3021,31 +2905,76 @@ function processReqBoot(query) {
 
 function processReqEEG(query) {
 	var w;
+	var alpha = parseFloat(1.0 / config.eeg.ema);
 
 	eegValues = {};
+	eegValues.waves = [];
+
+	eegValuesEMA = {};
+	eegValuesEMA.waves = [];
+
+	// Basic Data
 	eegValues.time = Math.floor((new Date()) / 1000);	
+	eegValuesEMA.time = eegValues.time;
 
 	eegValues.battery    = query.battery;
 	eegValues.signal     = query.signal;
+
+	// Raw Attention/Meditation
 	eegValues.attention  = query.attention;
 	eegValues.meditation = query.meditation;
 
-	eegValues.waves = [];
+	// Raw Waves
 	for (w = 0; w <= 7; w++)
 		eegValues.waves.push(query["wave" + w]);
 
-	eegValues.avglow = 0;
-	for (w = 0; w <= 2; w++)
-		eegValues.avglow += parseFloat(eegValues.waves[w]);
-	eegValues.avglow = eegValues.avglow / 3;
+	// Raw Averages
+	eegValues.sumlow = 0;
+	for (w = 0; w <= 3; w++)
+		eegValues.sumlow += parseFloat(eegValues.waves[w]);
 
-	eegValues.avghigh = 0;
-	for (w = 3; w <= 7; w++)
-		eegValues.avghigh += parseFloat(eegValues.waves[w]);
-	eegValues.avghigh = eegValues.avghigh / 5;
+	eegValues.sumhigh = 0;
+	for (w = 4; w <= 7; w++)
+		eegValues.sumhigh += parseFloat(eegValues.waves[w]);
 
-	if (eegRecording)
+
+	if (eegInitial) {
+		// EMA Attention/Meditation
+		eegValuesEMA.attention  = eegValues.attention;
+		eegValuesEMA.meditation = eegValues.meditation;
+
+		// EMA Waves
+		for (w = 0; w <= 7; w++)
+			eegValuesEMA.waves.push(eegValues.waves[w]);
+		eegInitial = false;
+	}
+	else {
+		// EMA Attention/Meditation
+		eegValuesEMA.attention  = alpha * eegValues.attention + (1.0 - alpha) * eegValuesEMAPrev.attention;
+		eegValuesEMA.meditation = alpha * eegValues.meditation + (1.0 - alpha) * eegValuesEMAPrev.meditation;
+
+		eegValuesEMA.waves = [];
+		for (w = 0; w <= 7; w++)
+			eegValuesEMA.waves.push(alpha * eegValues.waves[w] + (1.0 - alpha) * eegValuesEMAPrev.waves[w]);
+	}
+
+	// EMA Averages
+	eegValuesEMA.sumlow = 0;
+	for (w = 0; w <= 3; w++)
+		eegValuesEMA.sumlow += parseFloat(eegValuesEMA.waves[w]);
+
+	eegValuesEMA.sumhigh = 0;
+	for (w = 4; w <= 7; w++)
+		eegValuesEMA.sumhigh += parseFloat(eegValuesEMA.waves[w]);
+
+	// Copy data to previous.
+	eegValuesEMAPrev = JSON.parse(JSON.stringify(eegValuesEMA));
+	
+	// Push data to array if recording.
+	if (eegRecording) {
 		eegTable.push(eegValues);
+		eegTableEMA.push(eegValuesEMA);
+	}
 }
 
 var processRequest = function(req, res) {
@@ -3262,29 +3191,35 @@ function loadBot() {
 					message
 				));
 
-				process.removeAllListeners();
-				process.on('uncaughtException', function (e) {					
-				    seizureReboot(channelID, userID, message);
-				});
+				if (config.seizure.enabled) {
+					process.removeAllListeners();
+					process.on('uncaughtException', function (e) {					
+					    seizureReboot(channelID, userID, message);
+					});
 
-				tripwire.resetTripwire(config.seizure.timeout * 1000);
+					tripwire.resetTripwire(config.seizure.timeout * 1000);
+				}
 
 		    	if (config.seizure.debug && message.replace(/<.*> /g, "") == config.seizure.force)
 		    		while (true) {}
 
 		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(message), true);
 
-		    	tripwire.clearTripwire();
+				if (config.seizure.enabled) {
+		    		tripwire.clearTripwire();
+				}
 		    }
 		    // All other messages.
 		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID)) {
 
-		    	process.removeAllListeners();
-				process.on('uncaughtException', function (e) {					
-				    seizureReboot(channelID, userID, message);
-				});
+				if (config.seizure.enabled) {
+			    	process.removeAllListeners();
+					process.on('uncaughtException', function (e) {					
+					    seizureReboot(channelID, userID, message);
+					});
 
-				tripwire.resetTripwire(config.seizure.timeout * 1000);
+					tripwire.resetTripwire(config.seizure.timeout * 1000);
+				}
 
 		    	if (config.seizure.debug && message == config.seizure.force)
 		    		while (true) {}
@@ -3292,7 +3227,9 @@ function loadBot() {
 	    		brains[channelIDToBrain(channelID)].addMass(message.replace(/<.*>/g, ""));
 	    		messages[channelIDToBrain(channelID)].push(message);
 
-		    	tripwire.clearTripwire();
+				if (config.seizure.enabled) {
+		    		tripwire.clearTripwire();
+				}
 		    }
 		}
 	});

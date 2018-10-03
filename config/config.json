@@ -56,14 +56,13 @@
 		]
 	},
 	"eeg": {
-		"basicpath":   "/var/www/node/data/eegbasic.csv",
-		"wavespath":   "/var/www/node/data/eegwaves.csv",
-		"lowpasspath": "/var/www/node/data/eeglowpass.csv",
-		"emapath":     "/var/www/node/data/eegema.csv",
-		"lowpass":     7,
-		"ema":         30
+		"basicpath": "/var/www/node/data/eegbasic.csv",
+		"rawpath":   "/var/www/node/data/eegraw.csv",
+		"emapath":   "/var/www/node/data/eegema.csv",
+		"ema":       30
 	},
 	"seizure": {
+		"enabled": true,
 		"timeout": 10,
 		"debug":   false,
 		"force":   "FORCE_SEIZURE"

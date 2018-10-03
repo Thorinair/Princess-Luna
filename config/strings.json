@@ -351,23 +351,18 @@
 		"h":         "h",
 		"eeg": {
 			"basic": {
-				"title":  "Timestamp,Battery,Signal,Attention,Meditation\n",
-				"values": "%s,%s,%s,%s,%s\n",
+				"title":  "Timestamp,Battery,Signal\n",
+				"values": "%s,%s,%s\n",
 				"upload": "EEG Basic - %s - %s.csv"
 			},
-			"waves": {
-				"title":  "Timestamp,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Average,Upper Average\n",
-				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-				"upload": "EEG Waves - %s - %s.csv"
-			},
-			"lowpass": {
-				"title":  "Timestamp,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Average,Upper Average\n",
-				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-				"upload": "EEG Lowpass - %s - %s.csv"
+			"raw": {
+				"title":  "Timestamp,Attention,Meditation,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Sum,Upper Sum\n",
+				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+				"upload": "EEG Raw - %s - %s.csv"
 			},
 			"ema": {
-				"title":  "Timestamp,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Average,Upper Average\n",
-				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+				"title":  "Timestamp,Attention,Meditation,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Sum,Upper Sum\n",
+				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
 				"upload": "EEG EMA - %s - %s.csv"
 			}
 		}
