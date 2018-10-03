@@ -34,6 +34,7 @@ var dtls     = require("./config/dtls.json");
 var tradfri  = require("./config/tradfri.json");
 var schedule = require("./config/schedule.json");
 var wow      = require("./config/wow.json");
+var httpkey  = require("./config/httpkey.json");
 
 // Commands
 var comm = {};
@@ -1532,39 +1533,40 @@ comm.eegstop = function(data) {
 		saveEEG();	
 
 		setTimeout(function() {
-			if (fs.existsSync(config.eeg.basicpath))
+			if (fs.existsSync(config.eeg.basicpath)) {
 				embed(channelNameToID(config.options.channels.debug), strings.commands.eegstop.messageB, config.eeg.basicpath, util.format(
 					strings.misc.eeg.basic.upload,
 					(new Date(eegTable[0].time * 1000)),
 					(new Date(eegTable[eegTable.length - 1].time * 1000))
 				), true, true);
+				setTimeout(function() {
+					if (fs.existsSync(config.eeg.wavespath))
+						embed(channelNameToID(config.options.channels.debug), "", config.eeg.wavespath, util.format(
+							strings.misc.eeg.waves.upload,
+							(new Date(eegTable[0].time * 1000)),
+							(new Date(eegTable[eegTable.length - 1].time * 1000))
+						), true, true);
+				}, 1000);
+				setTimeout(function() {
+					if (fs.existsSync(config.eeg.lowpasspath))
+						embed(channelNameToID(config.options.channels.debug), "", config.eeg.lowpasspath, util.format(
+							strings.misc.eeg.lowpass.upload,
+							(new Date(eegTable[0].time * 1000)),
+							(new Date(eegTable[eegTable.length - 1].time * 1000))
+						), true, true);
+				}, 2000);
+				setTimeout(function() {
+					if (fs.existsSync(config.eeg.emapath))
+						embed(channelNameToID(config.options.channels.debug), "", config.eeg.emapath, util.format(
+							strings.misc.eeg.ema.upload,
+							(new Date(eegTable[0].time * 1000)),
+							(new Date(eegTable[eegTable.length - 1].time * 1000))
+						), true, true);
+				}, 3000);
+			}
 			else
 				send(channelNameToID(config.options.channels.debug), strings.commands.eegstop.errorB, true);	
 		}, 1000);
-		setTimeout(function() {
-			if (fs.existsSync(config.eeg.wavespath))
-				embed(channelNameToID(config.options.channels.debug), "", config.eeg.wavespath, util.format(
-					strings.misc.eeg.waves.upload,
-					(new Date(eegTable[0].time * 1000)),
-					(new Date(eegTable[eegTable.length - 1].time * 1000))
-				), true, true);
-		}, 2000);
-		setTimeout(function() {
-			if (fs.existsSync(config.eeg.lowpasspath))
-				embed(channelNameToID(config.options.channels.debug), "", config.eeg.lowpasspath, util.format(
-					strings.misc.eeg.lowpass.upload,
-					(new Date(eegTable[0].time * 1000)),
-					(new Date(eegTable[eegTable.length - 1].time * 1000))
-				), true, true);
-		}, 3000);
-		setTimeout(function() {
-			if (fs.existsSync(config.eeg.emapath))
-				embed(channelNameToID(config.options.channels.debug), "", config.eeg.emapath, util.format(
-					strings.misc.eeg.ema.upload,
-					(new Date(eegTable[0].time * 1000)),
-					(new Date(eegTable[eegTable.length - 1].time * 1000))
-				), true, true);
-		}, 4000);
 	}
 };
 
@@ -2276,59 +2278,61 @@ function normalize(bulb) {
 }
 
 function saveEEG() {
-	var fileBasic = fs.createWriteStream(config.eeg.basicpath);
+	if (eegTable.length > 0) {
+		var fileBasic = fs.createWriteStream(config.eeg.basicpath);
 
-	fileBasic.on("error", function(err) {
-		console.log(util.format(
-			strings.debug.eegerror, 
-			err
-		));
-		return;
-	});
+		fileBasic.on("error", function(err) {
+			console.log(util.format(
+				strings.debug.eegerror, 
+				err
+			));
+			return;
+		});
 
-	fileBasic.write(strings.misc.eeg.basic.title, "utf-8");
-	eegTable.forEach(function(e) {
-		fileBasic.write(util.format(
-			strings.misc.eeg.basic.values,
-			e.time,
-			e.battery,
-			e.signal,
-			e.attention,
-			e.meditation
-		), "utf-8");
-	});
+		fileBasic.write(strings.misc.eeg.basic.title, "utf-8");
+		eegTable.forEach(function(e) {
+			fileBasic.write(util.format(
+				strings.misc.eeg.basic.values,
+				e.time,
+				e.battery,
+				e.signal,
+				e.attention,
+				e.meditation
+			), "utf-8");
+		});
 
-	fileBasic.end();
+		fileBasic.end();
 
-	var fileWaves = fs.createWriteStream(config.eeg.wavespath);
+		var fileWaves = fs.createWriteStream(config.eeg.wavespath);
 
-	fileWaves.on("error", function(err) {
-		console.log(util.format(
-			strings.debug.eegerror, 
-			err
-		));
-		return;
-	});
+		fileWaves.on("error", function(err) {
+			console.log(util.format(
+				strings.debug.eegerror, 
+				err
+			));
+			return;
+		});
 
-	fileWaves.write(strings.misc.eeg.waves.title, "utf-8");
-	eegTable.forEach(function(e) {
-		fileWaves.write(util.format(
-			strings.misc.eeg.waves.values,
-			e.time,
-			e.waves[0],
-			e.waves[1],
-			e.waves[2],
-			e.waves[3],
-			e.waves[4],
-			e.waves[5],
-			e.waves[6],
-			e.waves[7],
-			e.avglow,
-			e.avghigh
-		), "utf-8");
-	});
+		fileWaves.write(strings.misc.eeg.waves.title, "utf-8");
+		eegTable.forEach(function(e) {
+			fileWaves.write(util.format(
+				strings.misc.eeg.waves.values,
+				e.time,
+				e.waves[0],
+				e.waves[1],
+				e.waves[2],
+				e.waves[3],
+				e.waves[4],
+				e.waves[5],
+				e.waves[6],
+				e.waves[7],
+				e.avglow,
+				e.avghigh
+			), "utf-8");
+		});
 
-	fileWaves.end();
+		fileWaves.end();
+	}
 
 	if (eegTableLowpass.length > 0) {
 		var fileLowpass = fs.createWriteStream(config.eeg.lowpasspath);
@@ -2396,6 +2400,8 @@ function saveEEG() {
 }
 
 function lowpassEEG() {
+	eegTableLowpass = [];
+
 	var j, w;
 
 	var limit = (config.eeg.lowpass - 1) / 2;
@@ -2404,7 +2410,6 @@ function lowpassEEG() {
 	for (j = -limit; j <= limit; j++)
 		average += parseFloat(limit - Math.abs(j));
 
-	eegTableLowpass = [];
 	eegTable.forEach(function(e, i) {
 		if (i >= limit && i <= eegTable.length - 1 - limit) {
 			var lowpassValues = {};
@@ -2435,11 +2440,11 @@ function lowpassEEG() {
 }
 
 function emaEEG() {
+	eegTableEMA = [];
+
 	if (eegTable.length > 0) {
 		var i, w;
 		var alpha = parseFloat(1.0 / config.eeg.ema);
-
-		eegTableEMA = [];
 
 		var emaValues = {};
 		emaValues.time = eegTable[0].time;
@@ -2995,65 +3000,64 @@ function processReqPower(query) {
 }
 
 function processReqMotion(query) {
-	if (query.motion == "true") {
-		send(channelNameToID(config.options.channels.home), util.format(
-				strings.announcements.motion,
-				query.camera
-			), false);
-		download(query.snapshot, config.options.motionimg, function() {
-				console.log(strings.debug.download.stop);
-				embed(channelNameToID(config.options.channels.home), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, true);
-			});
-	}
+	send(channelNameToID(config.options.channels.home), util.format(
+			strings.announcements.motion,
+			query.camera
+		), false);
+	download(query.snapshot, config.options.motionimg, function() {
+			console.log(strings.debug.download.stop);
+			embed(channelNameToID(config.options.channels.home), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, true);
+		});
 }
 
 function processReqBoot(query) {
-	if (query.boot != undefined) {
+	if (query.device != undefined) {
 		send(channelNameToID(config.options.channels.debug), util.format(
 				strings.announcements.boot,
-				query.boot
+				query.device
 			), false);
 	}
 }
 
 function processReqEEG(query) {
-	if (query.action == "eeg") {
-		var w;
+	var w;
 
-		eegValues = {};
-		eegValues.time = Math.floor((new Date()) / 1000);	
+	eegValues = {};
+	eegValues.time = Math.floor((new Date()) / 1000);	
 
-		eegValues.battery    = query.eegbattery;
-		eegValues.signal     = query.eegsignal;
-		eegValues.attention  = query.eegattention;
-		eegValues.meditation = query.eegmeditation;
+	eegValues.battery    = query.battery;
+	eegValues.signal     = query.signal;
+	eegValues.attention  = query.attention;
+	eegValues.meditation = query.meditation;
 
-		eegValues.waves = [];
-		for (w = 0; w <= 7; w++)
-			eegValues.waves.push(query["eegwave" + w]);
+	eegValues.waves = [];
+	for (w = 0; w <= 7; w++)
+		eegValues.waves.push(query["wave" + w]);
 
-		eegValues.avglow = 0;
-		for (w = 0; w <= 2; w++)
-			eegValues.avglow += parseFloat(eegValues.waves[w]);
-		eegValues.avglow = eegValues.avglow / 3;
+	eegValues.avglow = 0;
+	for (w = 0; w <= 2; w++)
+		eegValues.avglow += parseFloat(eegValues.waves[w]);
+	eegValues.avglow = eegValues.avglow / 3;
 
-		eegValues.avghigh = 0;
-		for (w = 3; w <= 7; w++)
-			eegValues.avghigh += parseFloat(eegValues.waves[w]);
-		eegValues.avghigh = eegValues.avghigh / 5;
+	eegValues.avghigh = 0;
+	for (w = 3; w <= 7; w++)
+		eegValues.avghigh += parseFloat(eegValues.waves[w]);
+	eegValues.avghigh = eegValues.avghigh / 5;
 
-		if (eegRecording)
-			eegTable.push(eegValues);
-	}
+	if (eegRecording)
+		eegTable.push(eegValues);
 }
 
 var processRequest = function(req, res) {
     if (req.method == "GET") {
     	var query = url.parse(req.url, true).query;
-    	processReqPower(query);
-    	processReqMotion(query);
-    	processReqBoot(query);
-    	processReqEEG(query);
+    	if (query.key == httpkey.key)
+    		switch (query.action) {
+    			case "power":  processReqPower(query);  break;
+    			case "motion": processReqMotion(query); break;
+    			case "boot":   processReqBoot(query);   break;
+    			case "eeg":    processReqEEG(query);    break;
+    		}    	
     }
 
     //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);
@@ -3062,6 +3066,7 @@ var processRequest = function(req, res) {
     	["Content-Type", "text/plain"], 
     	["Content-Length", 0]
             ]);
+    if (query.key == httpkey.key)
     res.write("");
     res.end();
 };
