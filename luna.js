@@ -1561,6 +1561,35 @@ comm.eegstop = function(data) {
 	}
 };
 
+// Command: !eegset
+comm.eegset = function(data) {
+	var lines = data.message.split("\n");
+
+	if (lines.length == 6) {		
+		eegConfig.ema    = parseInt(lines[1]);
+		eegConfig.type   = lines[2];
+		eegConfig.value  = lines[3];
+		eegConfig.max    = parseInt(lines[4]);
+		eegConfig.expire = parseInt(lines[5]);
+
+	    fs.writeFileSync(config.options.eegpath, JSON.stringify(eegConfig), "utf-8");
+
+	    eegVaripassEdit();
+
+		send(data.channelID, strings.commands.eegset.message, false);
+	}
+	else {
+		send(data.channelID, strings.commands.eegset.errorA + strings.commands.eegset.errorB + strings.commands.eegset.errorC + util.format(
+			strings.commands.eegset.errorD,
+			eegConfig.ema,
+			eegConfig.type,
+			eegConfig.value,
+			eegConfig.max,
+			eegConfig.expire
+		), false);
+	}
+};
+
 // Command: !leave
 comm.leave = function(data) {
 	var server = data.message.replace(config.options.commandsymbol + data.command + " ", "");
@@ -1741,6 +1770,7 @@ var eegTableEMA;
 
 var eegInitial = true;
 var eegRecording = false;
+var eegConfig;
 
 var scheduleEntries = [];
 var scheduleJobs    = [];
@@ -2579,6 +2609,7 @@ function phaseSuccess() {
 	loadNPToggles();
 	loadBlacklist();
 	loadIgnore();
+	loadEEG();
 	loadTimezones();
 	loadTradfri();
 	loadBot();
@@ -2608,6 +2639,7 @@ function phaseFail() {
 	loadNPToggles();
 	loadBlacklist();
 	loadIgnore();
+	loadEEG();
 	loadTimezones();
 	loadTradfri();
 	loadBot();
@@ -2774,6 +2806,31 @@ function loadIgnore() {
 }
 
 /*
+ * Loads the EEG configuration, or creates new.
+ */
+function loadEEG() {
+
+	if (fs.existsSync(config.options.eegpath)) {
+		console.log(strings.debug.eeg.old);
+		eegConfig = JSON.parse(fs.readFileSync(config.options.eegpath, "utf8"));
+		console.log(strings.debug.eeg.done);
+	}
+	else {
+		eegConfig = {};
+		eegConfig.ema    = config.eeg.ema;
+		eegConfig.type   = config.eeg.varipass.type;
+		eegConfig.value  = config.eeg.varipass.value;
+		eegConfig.max    = config.eeg.varipass.max;
+		eegConfig.expire = config.eeg.varipass.expire;
+
+	    fs.writeFileSync(config.options.eegpath, JSON.stringify(eegConfig), "utf-8");
+		console.log(strings.debug.eeg.new);
+	}
+
+	eegVaripassEdit();
+}
+
+/*
  * Loads the seizure data, or creates new and then cleans it up.
  */
 function loadSeizure() {
@@ -2785,7 +2842,7 @@ function loadSeizure() {
 		console.log(strings.debug.seizure.done);
 	}
 	else {
-	    fs.writeFileSync(config.options.seizure, JSON.stringify(seizure), "utf-8");
+	    fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
 		console.log(strings.debug.seizure.new);
 	}
 
@@ -2905,7 +2962,7 @@ function processReqBoot(query) {
 
 function processReqEEG(query) {
 	var w;
-	var alpha = parseFloat(1.0 / config.eeg.ema);
+	var alpha = parseFloat(1.0 / eegConfig.ema);
 
 	eegValues = {};
 	eegValues.waves = [];
@@ -3005,8 +3062,8 @@ var processRequest = function(req, res) {
 function eegVaripassWrite() {
 	var value;
 
-	if (config.eeg.varipass.type == "raw") {
-		switch (config.eeg.varipass.value) {
+	if (eegConfig.type == "raw") {
+		switch (eegConfig.value) {
 			case "timestamp":  value = eegValues.time;       break;
 			case "battery":    value = eegValues.battery;    break;
 			case "signal":     value = eegValues.signal;     break;
@@ -3024,8 +3081,8 @@ function eegVaripassWrite() {
 			case "sumhigh":    value = eegValues.sumhigh;    break;
 		}
 	}
-	else if (config.eeg.varipass.type == "ema") {
-		switch (config.eeg.varipass.value) {
+	else if (eegConfig.type == "ema") {
+		switch (eegConfig.value) {
 			case "timestamp":  value = eegValuesEMA.time;       break;
 			case "battery":    value = eegValuesEMA.battery;    break;
 			case "signal":     value = eegValuesEMA.signal;     break;
@@ -3070,6 +3127,56 @@ function eegVaripassWrite() {
 
 		xhr.send(JSON.stringify(payload));
 	}
+}
+
+function eegVaripassEdit() {
+	var name = util.format(
+    	strings.commands.eegset.varipassA,
+    	eegConfig.type,
+    	eegConfig.value
+    );
+
+	var description = strings.commands.eegset.varipassB;
+
+    if (eegConfig.type == "ema")
+    	description += util.format(
+	    	strings.commands.eegset.varipassC,
+	    	eegConfig.ema
+	    );
+
+	var payload = {
+			"key":    varipass.eeg.key,
+			"action": "edit",
+			"id":     varipass.eeg.ids.eeg,
+			"type":   "float",
+			"name":   name,
+		    "description": description,
+		    "unit":   "",
+		    "graph":  true,
+		    "perc":   false,
+		    "max":    eegConfig.max,
+		    "expire": eegConfig.expire
+		};
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", config.options.varipassurl, true);
+	xhr.setRequestHeader("Content-type", "application/json");
+
+	xhr.onerror = function(err) {
+	    console.log(util.format(
+	    	strings.debug.varipass.error,
+	    	err.target.status
+	    ));
+	    xhr.abort();
+	    eegVaripassEdit();
+	}
+	xhr.ontimeout = function() {
+	    console.log(strings.debug.varipass.timeout);
+	    xhr.abort();
+	    eegVaripassEdit();
+	}
+
+	xhr.send(JSON.stringify(payload));
 }
 
 function seizureReboot(channelID, userID, message) {
@@ -3181,7 +3288,8 @@ function loadBot() {
 	    if (message[0] == config.options.commandsymbol) {
 
 	    	var nocommand = true;
-	    	var command = message.split(" ")[0];
+	    	var command = message.split("\n")[0];
+	    	command = command.split(" ")[0];
 
 		    var packed = {};
 		    packed.user      = user;

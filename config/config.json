@@ -21,6 +21,7 @@
 		"blacklistpath": "/var/www/node/data/blacklist.json",
 		"ignorepath":    "/var/www/node/data/ignore.json",
 		"seizurepath":   "/var/www/node/data/seizure.json",
+		"eegpath":       "/var/www/node/data/eeg.json",
 		"coappath":      "/home/luna/libcoap/examples/coap-client",
 		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
@@ -61,9 +62,10 @@
 		"emapath":   "/var/www/node/data/eegema.csv",
 		"ema":       30,
 		"varipass": {
-			"type":  "ema",
-			"value": "attention",
-			"max":   100
+			"type":   "ema",
+			"value":  "attention",
+			"max":    100,
+			"expire": 180
 		}
 	},
 	"seizure": {

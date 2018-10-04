@@ -267,6 +267,11 @@
 			"type":    "private"
 		},
 		{
+			"command": "eegset",
+			"help":    "",
+			"type":    "private"
+		},
+		{
 			"command": "leave",
 			"help":    "",
 			"type":    "private"

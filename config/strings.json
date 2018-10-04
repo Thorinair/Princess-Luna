@@ -282,6 +282,16 @@
 			"errorA":   "Thori, there is no EEG recording in place.",
 			"errorB":   "I haven't recorded any EEG data in this period."
 		},
+		"eegset": {
+			"message":   "Thori, the EEG configuration has been updated.",
+			"errorA":    "Thori, you need to specify the parameters. The parameters should be written as shown below:",
+			"errorB":    "\n```EMA Window\nVariPass Type (raw/ema)\nVariPass Value (battery/attention/wave0/etc...)\nVariPass Max\nVariPass Expire (seconds)```",
+			"errorC":    "\nThe current configuration is: ",
+			"errorD":    "\n```EMA Window:      %s\nVariPass Type:   %s\nVariPass Value:  %s\nVariPass Max:    %s\nVariPass Expire: %s```",
+			"varipassA": "EEG (%s %s)",
+			"varipassB": "Live measurement of the Lulu EEG system.",
+			"varipassC": " EMA Window: %s"
+		},
 		"leave": {
 			"messageA": "Thori, here is a list of all the servers which I am a member of. Use the ID when leaving:",
 			"messageB": "\n• %s - `%s`",
@@ -295,15 +305,15 @@
 			"message":  "Thori, I have reloaded my configuration."
 		},
 		"backup": {
-			"messageA":  "Thori, I've started a backup of my files. Give me a moment...",
-			"messageB":  "Here, I am sending you the newest backup of all of my files.",
-			"error":     "Looks like something has gone wrong, but I am not sure what... Here is more info: %s"
+			"messageA": "Thori, I've started a backup of my files. Give me a moment...",
+			"messageB": "Here, I am sending you the newest backup of all of my files.",
+			"error":    "Looks like something has gone wrong, but I am not sure what... Here is more info: %s"
 		},
 		"system": {
-			"errorA":    "Thori, you need to specify the system command you wish to run.",
-			"errorB":    "Thori, I don't know of such a command.",
-			"errorC":    "Thori, I was unable to perform the system command. Here is more info: %s",
-			"mreboot":   "I'm going to perform a full system reboot. This might take a bit longer. See you in a bit, Thori!"
+			"errorA":   "Thori, you need to specify the system command you wish to run.",
+			"errorB":   "Thori, I don't know of such a command.",
+			"errorC":   "Thori, I was unable to perform the system command. Here is more info: %s",
+			"mreboot":  "I'm going to perform a full system reboot. This might take a bit longer. See you in a bit, Thori!"
 		}
 	},
 	"announcements": {
@@ -421,6 +431,11 @@
 			"done":    "I've finished loading my ignore file.",
 			"add":     "I am adding the user #%s to the ignore.",
 			"remove":  "I am removing the user #%s from the ignore."
+		},
+		"eeg": {
+			"old":     "An EEG config file already seems to exit. Loading it now...",
+			"new":     "I don't seem to have an EEG config file. I have created a new one.",
+			"done":    "I've finished loading my EEG config file."
 		},
 		"seizure": {
 			"old":     "A seizure file already seems to exit. Loading it now...",
