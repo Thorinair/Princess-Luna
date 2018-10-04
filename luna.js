@@ -390,7 +390,7 @@ comm.moon = function(data) {
 comm.room = function(data) {
 
 	var payload = {
-			"key": varipass.key,
+			"key": varipass.alicorn.key,
 			"action": "all"
 		};
 
@@ -418,13 +418,13 @@ comm.room = function(data) {
 				mention(data.userID),
 				getTimeString(time),
 				time.seconds,
-				findVariable(vpData, varipass.ids.temperature).history[0].value,
-				findVariable(vpData, varipass.ids.humidity).history[0].value,
-				findVariable(vpData, varipass.ids.pressure).history[0].value,
-				findVariable(vpData, varipass.ids.magnitude).history[0].value,
-				findVariable(vpData, varipass.ids.inclination).history[0].value,
-				findVariable(vpData, varipass.ids.counts).history[0].value,
-				findVariable(vpData, varipass.ids.dose).history[0].value
+				findVariable(vpData, varipass.alicorn.ids.temperature).history[0].value,
+				findVariable(vpData, varipass.alicorn.ids.humidity).history[0].value,
+				findVariable(vpData, varipass.alicorn.ids.pressure).history[0].value,
+				findVariable(vpData, varipass.alicorn.ids.magnitude).history[0].value,
+				findVariable(vpData, varipass.alicorn.ids.inclination).history[0].value,
+				findVariable(vpData, varipass.alicorn.ids.counts).history[0].value,
+				findVariable(vpData, varipass.alicorn.ids.dose).history[0].value
 			), true);
 	    }
 	}
@@ -2975,6 +2975,8 @@ function processReqEEG(query) {
 		eegTable.push(eegValues);
 		eegTableEMA.push(eegValuesEMA);
 	}
+
+	eegVaripassWrite();
 }
 
 var processRequest = function(req, res) {
@@ -2999,6 +3001,76 @@ var processRequest = function(req, res) {
     res.write("");
     res.end();
 };
+
+function eegVaripassWrite() {
+	var value;
+
+	if (config.eeg.varipass.type == "raw") {
+		switch (config.eeg.varipass.value) {
+			case "timestamp":  value = eegValues.time;       break;
+			case "battery":    value = eegValues.battery;    break;
+			case "signal":     value = eegValues.signal;     break;
+			case "attention":  value = eegValues.attention;  break;
+			case "meditation": value = eegValues.meditation; break;
+			case "wave0":      value = eegValues.waves[0];   break;
+			case "wave1":      value = eegValues.waves[1];   break;
+			case "wave2":      value = eegValues.waves[2];   break;
+			case "wave3":      value = eegValues.waves[3];   break;
+			case "wave4":      value = eegValues.waves[4];   break;
+			case "wave5":      value = eegValues.waves[5];   break;
+			case "wave6":      value = eegValues.waves[6];   break;
+			case "wave7":      value = eegValues.waves[7];   break;
+			case "sumlow":     value = eegValues.sumlow;     break;
+			case "sumhigh":    value = eegValues.sumhigh;    break;
+		}
+	}
+	else if (config.eeg.varipass.type == "ema") {
+		switch (config.eeg.varipass.value) {
+			case "timestamp":  value = eegValuesEMA.time;       break;
+			case "battery":    value = eegValuesEMA.battery;    break;
+			case "signal":     value = eegValuesEMA.signal;     break;
+			case "attention":  value = eegValuesEMA.attention;  break;
+			case "meditation": value = eegValuesEMA.meditation; break;
+			case "wave0":      value = eegValuesEMA.waves[0];   break;
+			case "wave1":      value = eegValuesEMA.waves[1];   break;
+			case "wave2":      value = eegValuesEMA.waves[2];   break;
+			case "wave3":      value = eegValuesEMA.waves[3];   break;
+			case "wave4":      value = eegValuesEMA.waves[4];   break;
+			case "wave5":      value = eegValuesEMA.waves[5];   break;
+			case "wave6":      value = eegValuesEMA.waves[6];   break;
+			case "wave7":      value = eegValuesEMA.waves[7];   break;
+			case "sumlow":     value = eegValuesEMA.sumlow;     break;
+			case "sumhigh":    value = eegValuesEMA.sumhigh;    break;
+		}
+	}
+
+	if (value != undefined) {
+		var payload = {
+				"key":    varipass.eeg.key,
+				"action": "write",
+				"id":     varipass.eeg.ids.eeg,
+				"value":  value
+			};
+
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", config.options.varipassurl, true);
+		xhr.setRequestHeader("Content-type", "application/json");
+
+		xhr.onerror = function(err) {
+		    console.log(util.format(
+		    	strings.debug.varipass.error,
+		    	err.target.status
+		    ));
+		    xhr.abort();
+		}
+		xhr.ontimeout = function() {
+		    console.log(strings.debug.varipass.timeout);
+		    xhr.abort();
+		}
+
+		xhr.send(JSON.stringify(payload));
+	}
+}
 
 function seizureReboot(channelID, userID, message) {
 	rebooting = true;
