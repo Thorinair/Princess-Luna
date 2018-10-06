@@ -665,6 +665,18 @@ comm.blacklist = function(data) {
 	fs.writeFileSync(config.options.blacklistpath, JSON.stringify(blacklist), "utf-8");
 };
 
+// Command: !coin
+comm.coin = function(data) {
+	send(data.channelID, strings.commands.coin.message, strings.commands.coin.message, true);
+
+	setTimeout(function() {
+		if (Math.random() < 0.5)
+			send(data.channelID, strings.commands.coin.tails, true);
+		else
+			send(data.channelID, strings.commands.coin.heads, true);
+    }, 2000);	
+};
+
 // Command: !stats
 comm.stats = function(data) {
 	var dateNow = new Date();
@@ -727,21 +739,37 @@ comm.about = function(data) {
 
 // Command: !help
 comm.help = function(data) {
-	var reply = "";
+	var reply = strings.commands.help.messageA;
 
-	reply += strings.commands.help.messageA;
-
-	commands.list.forEach(function(c) {
-		if (c.type == "public")
-			reply += util.format(
-				strings.commands.help.messageB, 
-				config.options.commandsymbol,
-				c.command,
-				c.help
-			);
+	commands.list.forEach(function(c, i) {
+		if (i < 10)
+			if (c.type == "public")
+				reply += util.format(
+					strings.commands.help.messageB, 
+					config.options.commandsymbol,
+					c.command,
+					c.help
+				);
 	});
 
 	send(data.userID, reply, true);
+
+	setTimeout(function() {
+		var reply = "";
+
+		commands.list.forEach(function(c, i) {
+			if (i >= 10)
+				if (c.type == "public")
+					reply += util.format(
+						strings.commands.help.messageB, 
+						config.options.commandsymbol,
+						c.command,
+						c.help
+					);
+		});
+
+		send(data.userID, reply, true);
+	}, 1000);
 
 
 	setTimeout(function() {
@@ -778,7 +806,7 @@ comm.help = function(data) {
 		reply += strings.commands.help.messageE;
 
 		send(data.userID, reply, true);
-	}, 1000);
+	}, 2000);
 
 	if (bot.channels[data.channelID] != undefined)	
 		send(data.channelID, util.format(

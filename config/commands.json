@@ -71,6 +71,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "coin",
+			"help":    "Ask me to flip a coin for you if you need to decide on something.",
+			"type":    "public"
+		},
+		{
 			"command": "stats",
 			"help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
 			"type":    "public"

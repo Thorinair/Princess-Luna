@@ -68,6 +68,11 @@
 			"messageA": "%s, I am sad to hear that you no longer wish me to remember your messages. From this point on, I will not remember anything you say in any channel. If you ever change your mind, just use this command again.",
 			"messageB": "%s, I am happy to hear that I may remember your messages again! From this point on, I will again remember everything you say in any channel where learning is enabled."
 		},
+		"coin": {
+			"message":  "*Conjures a magical coin and flips it high up into the air.\nThe coin lands...*",
+			"tails":    "**Tails!**",
+			"heads":    "**Heads!**"
+		},
 		"stats": {
 			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",
