@@ -6,3 +6,4 @@ config/dtls.json
 config/schedule.json
 config/wow.json
 config/httpkey.json
+config/custom.json

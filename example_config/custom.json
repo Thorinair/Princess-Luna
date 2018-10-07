@@ -1,0 +1,17 @@
+{
+	"list": [
+		{
+			"command": "customcommand",
+			"strings": {
+				"single":   "*Perform the custom action on %s.*",
+				"multiple": "*Perform custom actions on %s.*",
+				"self":     "*Perform the custom action on herself.*"
+			},
+			"servers": [
+				000000000000000000,
+				111111111111111111,
+				222222222222222222				
+			]
+		}
+	]
+}

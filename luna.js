@@ -24,6 +24,7 @@ const package  = require("./package.json");
 var token    = require("./config/token.json");
 var config   = require("./config/config.json");
 var commands = require("./config/commands.json");
+var custom   = require("./config/custom.json");
 var strings  = require("./config/strings.json");
 var gotn     = require("./config/gotn.json");
 var mlp      = require("./config/mlp.json");
@@ -1670,6 +1671,7 @@ comm.reload = function(data) {
 	token    = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
 	config   = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
 	commands = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
+	custom   = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
 	strings  = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
 	gotn     = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
 	mlp      = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
@@ -1680,6 +1682,7 @@ comm.reload = function(data) {
 	tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
 	schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
 	wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
+	httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
 
     send(data.channelID, strings.commands.reload.message, false);
 };
@@ -1956,6 +1959,58 @@ function doInterraction(data) {
 		}
 		else
 			send(data.channelID, strings.commands["plushie"].error, true);
+	}
+}
+
+/*
+ * Executes a custom interraction command on one person or more people.
+ * @param  data  Data of the message.
+ * @param  index Index of the command.
+ */
+function doInterractionCustom(data, index) {
+	if (!isplushie) {
+		if (data.data.d.mentions[0] != null) {
+			if (isMentioned(bot.id, data.data) && data.data.d.mentions.length == 1) {
+				send(data.channelID, custom.list[index].strings.self, true);
+			}
+			else {
+				for (i = 0; i < data.data.d.mentions.length; i++)
+					if (bot.id == data.data.d.mentions[i].id)
+						data.data.d.mentions.splice(i, 1);
+
+				if (data.data.d.mentions.length <= 1) {
+					send(data.channelID, util.format(
+						custom.list[index].strings.single, 
+						mention(data.data.d.mentions[0].id)
+					), true);
+				}
+				else {
+					var mentions = "";
+					var i;
+					for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+						mentions += mention(data.data.d.mentions[i].id);
+						if (i < data.data.d.mentions.length - 2) {
+							mentions += config.separators.list;
+						}
+					}
+					mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
+
+					send(data.channelID, util.format(
+						custom.list[index].strings.multiple,
+						mentions
+					), true);
+				}
+			}
+		}
+		else {
+			send(data.channelID, util.format(
+				custom.list[index].strings.single, 
+				mention(data.userID)
+			), true);
+		}
+	}
+	else {
+		send(data.channelID, strings.commands["plushie"].error, true);
 	}
 }
 
@@ -3380,11 +3435,25 @@ function loadBot() {
 		    		}
 		    		else if (c.type == "interraction") {
 		    			doInterraction(packed);
+			    		nocommand = false;
 		    		}
 		    		else {
 			    		comm[c.command](packed);
 			    		nocommand = false;
 			    	}
+		    	}
+		    });
+
+		    custom.list.forEach(function(c, i) {
+		    	if (command == config.options.commandsymbol + c.command && nocommand) {
+		    		if (bot.channels[channelID] != undefined) {
+		    			c.servers.forEach(function(s) {
+		    				if (bot.channels[channelID].guild_id == s && nocommand) {
+		    					doInterractionCustom(packed, i);
+			    				nocommand = false;
+		    				}
+		    			});
+		    		}
 		    	}
 		    });
 		}
