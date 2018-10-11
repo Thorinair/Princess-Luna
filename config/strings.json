@@ -157,6 +157,11 @@
 			"multiple": "*Rolls over on her back, enjoying the attention as %s pet her tummy.*",
 			"self":     "*Pets her own head with her hoof while staring blankly in the distance.*"
 		},
+		"groom": {
+			"single":   "*Goes up to %s and lovingly grooms their fur coat.*",
+			"multiple": "*Lovingly grooms the fur coats of %s.*",
+			"self":     "*Grooms her own coat and sighs, feeling content.*"
+		},
 		"plushie": {
 			"single":   "*Casts a spell at %s, turning them into a plushie.*",
 			"multiple": "*Casts spells at %s, turning everypony into plushies.*",

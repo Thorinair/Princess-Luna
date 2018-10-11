@@ -158,6 +158,11 @@
 			"type":    "interraction"
 		},
 		{
+			"command": "groom",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
 			"command": "plushie",
 			"help":    "",
 			"type":    "interraction"
