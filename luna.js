@@ -678,6 +678,56 @@ comm.coin = function(data) {
     }, 2000);	
 };
 
+// Command: !custom
+comm.custom = function(data) {
+	var interractionCommands = ""
+	custom.list.forEach(function(c) {
+		if (interractionCommands != "")
+			interractionCommands += ", ";
+		interractionCommands += util.format(
+			strings.commands.custom.messageC, 
+			config.options.commandsymbol,
+			c.command
+		);
+	});
+
+	var nocommand = true;
+    // Custom interractions
+    custom.list.forEach(function(c, i) {
+		// Server filtering
+		if (bot.channels[data.channelID] != undefined) {
+			c.servers.forEach(function(s) {
+				if (bot.channels[data.channelID].guild_id == s && nocommand) {
+					send(data.channelID, util.format(    						
+						strings.commands.custom.messageA,
+						mention(data.userID),
+						interractionCommands
+					), true);
+    				nocommand = false;
+				}
+			});
+		}
+		// Channel filtering
+		c.channels.forEach(function(s) {
+			if (channelIDToName(data.channelID) == s && nocommand) {
+				send(data.channelID, util.format(
+					strings.commands.custom.messageB,
+					mention(data.userID),
+					interractionCommands
+				), true);
+				nocommand = false;
+			}
+		});
+    });
+    // Channel was not found
+    if (nocommand) {
+		send(data.channelID, util.format(
+			strings.commands.custom.error,
+			mention(data.userID),
+		), true);
+    }
+};
+
 // Command: !stats
 comm.stats = function(data) {
 	var dateNow = new Date();
@@ -3384,6 +3434,7 @@ function loadBot() {
 
 		    commands.list.forEach(function(c) {
 		    	if (command == config.options.commandsymbol + c.command && nocommand) {
+		    		// Private commands
 		    		if (c.type == "private") {
 		    			if (userID == config.options.adminid) {
 				    		comm[c.command](packed);
@@ -3397,6 +3448,7 @@ function loadBot() {
 		    				nocommand = false;
 		    			}
 		    		}
+		    		// DJ only commands
 		    		else if (c.type == "dj") {
 		    			var roleFound = false;
 
@@ -3433,10 +3485,12 @@ function loadBot() {
 							), true);
 		    			}
 		    		}
+		    		// Interractions
 		    		else if (c.type == "interraction") {
 		    			doInterraction(packed);
 			    		nocommand = false;
 		    		}
+		    		// Other commands
 		    		else {
 			    		comm[c.command](packed);
 			    		nocommand = false;
@@ -3444,8 +3498,10 @@ function loadBot() {
 		    	}
 		    });
 
+		    // Custom interractions
 		    custom.list.forEach(function(c, i) {
 		    	if (command == config.options.commandsymbol + c.command && nocommand) {
+		    		// Server filtering
 		    		if (bot.channels[channelID] != undefined) {
 		    			c.servers.forEach(function(s) {
 		    				if (bot.channels[channelID].guild_id == s && nocommand) {
@@ -3454,6 +3510,13 @@ function loadBot() {
 		    				}
 		    			});
 		    		}
+		    		// Channel filtering
+		    		c.channels.forEach(function(s) {
+		    			if (channelIDToName(channelID) == s && nocommand) {
+	    					doInterractionCustom(packed, i);
+		    				nocommand = false;
+	    				}
+		    		});
 		    	}
 		    });
 		}

@@ -76,6 +76,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "custom",
+			"help":    "Ask me which custom interractions are defined for a server or channel.",
+			"type":    "public"
+		},
+		{
 			"command": "stats",
 			"help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
 			"type":    "public"

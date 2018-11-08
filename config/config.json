@@ -69,7 +69,7 @@
 		}
 	},
 	"seizure": {
-		"enabled": true,
+		"enabled": false,
 		"timeout": 10,
 		"debug":   false,
 		"force":   "FORCE_SEIZURE"

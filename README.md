@@ -31,6 +31,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!token` Lists the the current price of the \[WoW Token\].
     - `!blacklist` Adds the user to a blacklist so their messages are not saved for training purposes.
     - `!coin` Flips a coin which may land either heads or tails.
+    - `!custom` Lists all available custom interractions for a server or channel.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.
