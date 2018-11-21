@@ -168,6 +168,11 @@
 			"multiple": "*Lovingly grooms the fur coats of %s.*",
 			"self":     "*Grooms her own coat and sighs, feeling content.*"
 		},
+		"tickle": {
+			"single":   "*Grabs %s's hoofsies and tickles their undersides.*",
+			"multiple": "*Tickles the underside of %s's hoofsies.*",
+			"self":     "*Grabs her own hind hoofsies and tickles them giggling uncontrollably.*"
+		},
 		"plushie": {
 			"single":   "*Casts a spell at %s, turning them into a plushie.*",
 			"multiple": "*Casts spells at %s, turning everypony into plushies.*",

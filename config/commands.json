@@ -168,6 +168,11 @@
 			"type":    "interraction"
 		},
 		{
+			"command": "tickle",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
 			"command": "plushie",
 			"help":    "",
 			"type":    "interraction"
