@@ -11,7 +11,7 @@ const Discord        = require("discord.io");
 const CronJob        = require("cron").CronJob;
 const moment         = require("moment-timezone");
 const request        = require("request");
-const XMLHttpRequest = require("xhr2");
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const archiver       = require("archiver");
 const tradfrilib     = require('node-tradfri');
 const color          = require('c0lor');
@@ -1882,7 +1882,12 @@ var download = function(uri, filename, callback) {
 					uri
 				));
 
-			request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
+			request({
+				"method": "GET", 
+        		"rejectUnauthorized": false, 
+        		"url": uri,
+        		"headers" : {"Content-Type": "application/json"},
+        		function(err,data,body) {}}).pipe(fs.createWriteStream(filename)).on("close", callback);
 		});
 	};
 
@@ -2788,6 +2793,7 @@ function loadPhases() {
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", config.options.phaseurl, true);
 
+
 	xhr.onreadystatechange = function () { 
 	    if (xhr.readyState == 4 && xhr.status == 200) {
 	        var response = JSON.parse(xhr.responseText);
@@ -2803,7 +2809,7 @@ function loadPhases() {
 	    ));
 	    xhr.abort();
 
-	    phaseFail();
+	    //phaseFail();
 	}
 	xhr.ontimeout = function() {
 	    console.log(util.format(
@@ -3532,7 +3538,6 @@ function loadBot() {
 				));
 
 				if (config.seizure.enabled) {
-					process.removeAllListeners();
 					process.on('uncaughtException', function (e) {					
 					    seizureReboot(channelID, userID, message);
 					});
@@ -3547,13 +3552,13 @@ function loadBot() {
 
 				if (config.seizure.enabled) {
 		    		tripwire.clearTripwire();
+					process.removeAllListeners();
 				}
 		    }
 		    // All other messages.
 		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID)) {
 
 				if (config.seizure.enabled) {
-			    	process.removeAllListeners();
 					process.on('uncaughtException', function (e) {					
 					    seizureReboot(channelID, userID, message);
 					});
@@ -3569,6 +3574,7 @@ function loadBot() {
 
 				if (config.seizure.enabled) {
 		    		tripwire.clearTripwire();
+			    	process.removeAllListeners();
 				}
 		    }
 		}

@@ -159,8 +159,8 @@
 			"self":     "*Randomly bleps for no reason at all.*"
 		},
 		"pet": {
-			"single":   "*Affectionately brushes up against %s as they pet her head.*",
-			"multiple": "*Rolls over on her back, enjoying the attention as %s pet her tummy.*",
+			"single":   "*Excitedly walks over to %s and lovingly pets their head.*",
+			"multiple": "*Squeals upon seeing %s and lovingly pets their heads.*",
 			"self":     "*Pets her own head with her hoof while staring blankly in the distance.*"
 		},
 		"groom": {
