@@ -1887,7 +1887,8 @@ var download = function(uri, filename, callback) {
         		"rejectUnauthorized": false, 
         		"url": uri,
         		"headers" : {"Content-Type": "application/json"},
-        		function(err,data,body) {}}).pipe(fs.createWriteStream(filename)).on("close", callback);
+        		function(err,data,body) {}
+        	}).pipe(fs.createWriteStream(filename)).on("close", callback);
 		});
 	};
 
@@ -2809,7 +2810,7 @@ function loadPhases() {
 	    ));
 	    xhr.abort();
 
-	    //phaseFail();
+	    phaseFail();
 	}
 	xhr.ontimeout = function() {
 	    console.log(util.format(
