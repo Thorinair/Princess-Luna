@@ -888,10 +888,13 @@ comm.nptoggle = function(data) {
 		));
 
 		setTimeout(function() {
-			send(data.channelID, util.format(
-				strings.announcements.nowplaying,
-				np.nowplaying
-			), true);
+			if (np.nowplaying != undefined)
+    			send(data.channelID, util.format(
+    				strings.announcements.nowplaying,
+    				np.nowplaying
+    			), true);
+    		else
+    			send(data.channelID, strings.announcements.nperror, true);
 	    }, 1000);		
 	}
 	else {
@@ -1117,10 +1120,13 @@ comm.npoverride = function(data) {
 
 		Object.keys(nptoggles).forEach(function(n, i) {
     		if (nptoggles[n])
-    			send(n, util.format(
-    				strings.announcements.nowplaying,
-    				np.nowplaying
-    			), true);
+    			if (np.nowplaying != undefined)
+        			send(n, util.format(
+	    				strings.announcements.nowplaying,
+	    				np.nowplaying
+	    			), true);
+        		else
+        			send(n, strings.announcements.nperror, true);
     	});		
 	}
 };
@@ -3631,10 +3637,13 @@ function loopNowPlaying() {
 		        	if (npstarted)
 			        	Object.keys(nptoggles).forEach(function(n, i) {
 			        		if (nptoggles[n])
-			        			send(n, util.format(
-				    				strings.announcements.nowplaying,
-				    				np.nowplaying
-				    			), true);
+			        			if (np.nowplaying != undefined)
+				        			send(n, util.format(
+					    				strings.announcements.nowplaying,
+					    				np.nowplaying
+					    			), true);
+				        		else
+				        			send(n, strings.announcements.nperror, true);
 			        	});
 			        else
 	        		npstarted = true;
