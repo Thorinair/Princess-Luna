@@ -914,6 +914,37 @@ comm.nptoggle = function(data) {
 	fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
 };
 
+// Command: !npoverride
+comm.npoverride = function(data) {
+	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (track == "" || track == config.options.commandsymbol + data.command) {
+		send(data.channelID, util.format(
+			strings.commands.npoverride.error,
+			mention(data.userID)
+		),  false);
+	}
+	else {
+		send(data.channelID, util.format(
+			strings.commands.npoverride.message, 
+			mention(data.userID),
+			track
+		), false);
+
+		np.nowplaying = track;
+
+		Object.keys(nptoggles).forEach(function(n, i) {
+    		if (nptoggles[n])
+    			if (np.nowplaying != undefined)
+        			send(n, util.format(
+	    				strings.announcements.nowplaying,
+	    				np.nowplaying
+	    			), true);
+        		else
+        			send(n, strings.announcements.nperror, true);
+    	});		
+	}
+};
+
 
 
 // Command: !send
@@ -1101,33 +1132,6 @@ comm.purge = function(data) {
 				send(data.channelID, strings.commands.purge.errorB, false);
 			}
 		}
-	}
-};
-
-// Command: !npoverride
-comm.npoverride = function(data) {
-	var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-	if (track == "" || track == config.options.commandsymbol + data.command) {
-		send(data.channelID, strings.commands.npoverride.error, false);
-	}
-	else {
-		send(data.channelID, util.format(
-			strings.commands.npoverride.message, 
-			track
-		), false);
-
-		np.nowplaying = track;
-
-		Object.keys(nptoggles).forEach(function(n, i) {
-    		if (nptoggles[n])
-    			if (np.nowplaying != undefined)
-        			send(n, util.format(
-	    				strings.announcements.nowplaying,
-	    				np.nowplaying
-	    			), true);
-        		else
-        			send(n, strings.announcements.nperror, true);
-    	});		
 	}
 };
 
@@ -3484,8 +3488,21 @@ function loadBot() {
 			    			});
 		    			}
 
-	    				if (!roleFound && bot.channels[channelID] == undefined)	
-	    					roleFound = true;
+		    			if (
+		    				!roleFound &&
+		    				bot.channels[channelID] == undefined &&
+		    				bot.servers[config.options.ponyvillefmid] != undefined &&
+		    				bot.servers[config.options.ponyvillefmid].members[userID] != undefined
+		    				) {
+
+			    			bot.servers[config.options.ponyvillefmid].members[userID].roles.forEach(function (r1, i) {
+								config.options.djroles.forEach(function (r2, j) {
+				    				if (r1 == r2) {
+			    						roleFound = true;
+					    			}
+				    			});
+			    			});
+		    			}
 
 		    			if (roleFound) {
 							comm[c.command](packed);

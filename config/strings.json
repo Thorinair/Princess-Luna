@@ -192,6 +192,12 @@
 			"messageA":  "%s, I will now be posting new track names as they appear to this chat.",
 			"messageB":  "%s, I will no longer be posting new track names."
 		},
+		"npoverride": {
+			"message":  "%s, I'm overriding the Now Playing info with the new track!\nIt is now: **%s**",
+			"error":    "%s, you need to specify the track name after the command."
+		},
+
+
 
 		"send": {
 			"message":  "Thori, I'm sending the message now...",
@@ -215,10 +221,6 @@
 			"errorE":   "Thori, I don't remember that ending message, please try again.",
 			"errorF":   "Thori, a purge is already prepared, please write `!purge yes` or `!purge no`.",
 			"errorG":   "Thori, there was an error while purging the brain."
-		},
-		"npoverride": {
-			"message":  "Thori, I'm overriding the Now Playing info with the new track!\nIt is now: **%s**",
-			"error":    "Thori, you need to specify the track name."
 		},
 		"npstatus": {
 			"messageA": "Thori, here are all the channels where I am currently posting the Now Playing announcements:",
@@ -376,7 +378,7 @@
 		"filefail":  "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
 		"apifail":   "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
 		"timezone":  "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
-		"noperm":    "I am sorry %s, but I am not allowed to do that for you here. Maybe try a direct message?",
+		"noperm":    "I am sorry %s, but only PonyvilleFM DJs and admins are allowed to use this command.",
 		"noadmin":   "I am sorry %s, but only Thorinair is allowed to use this command.",
 		"left":      "%s on %s at %s",
 		"gold":      "%sg %ss %sc",

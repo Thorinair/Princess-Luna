@@ -186,7 +186,12 @@
 
 		{
 			"command": "nptoggle",
-			"help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel. You can only use this if given permission or in direct messages.",
+			"help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel. You can only use this if given PonyvilleFM permissions.",
+			"type":    "dj"
+		},
+		{
+			"command": "npoverride",
+			"help":    "Ask me to manually update the info about the track currently playing. You can only use this if given PonyvilleFM permissions.",
 			"type":    "dj"
 		},
 
@@ -203,11 +208,6 @@
 		},
 		{
 			"command": "purge",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "npoverride",
 			"help":    "",
 			"type":    "private"
 		},
