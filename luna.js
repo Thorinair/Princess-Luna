@@ -3580,7 +3580,7 @@ function loadBot() {
 				}
 		    }
 		    // All other messages.
-		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID)) {
+		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID) && message != "") {
 
 				if (config.seizure.enabled) {
 					process.on('uncaughtException', function (e) {					
