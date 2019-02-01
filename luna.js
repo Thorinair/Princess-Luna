@@ -1971,6 +1971,14 @@ function cleanMessage(message) {
 }
 
 /*
+ * Checks if a message has usable contents.
+ * @param  message  Message text analyze.
+ */
+function isMessageNotEmpty(message) {
+	return message != "" && message != " " && message != "\n";
+}
+
+/*
  * Executes an interraction command on one person or more people.
  * @param  data  Data of the message.
  */
@@ -2574,7 +2582,7 @@ function openBrain(name) {
 		}).on("line", function(line) {
 			if (config.brain.cleanbrain) {
 				var newLine = cleanMessage(line);
-				if (newLine != "" && newLine != " " && newLine != "\n") {
+				if (isMessageNotEmpty(newLine)) {
 					messages[name].push(newLine);
 					brains[name].addMass(newLine);
 				}
@@ -3577,8 +3585,11 @@ function loadBot() {
 		else {
 			if (message == "h")
 				h(channelID);
-		    // When the bot is mentioned.
 
+			// Clean up the message.
+		    var newMessage = cleanMessage(message);
+
+		    // When the bot is mentioned.
 		    if (isMentioned(bot.id, data)) {
 				console.log(util.format(
 					strings.debug.chatting,
@@ -3594,10 +3605,9 @@ function loadBot() {
 					tripwire.resetTripwire(config.seizure.timeout * 1000);
 				}
 
-		    	if (config.seizure.debug && message.replace(/<.*> /g, "") == config.seizure.force)
+		    	if (config.seizure.debug && newMessage == config.seizure.force)
 		    		while (true) {}
 
-		    	var newMessage = cleanMessage(message);
 		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(newMessage), true);
 
 				if (config.seizure.enabled) {
@@ -3606,7 +3616,7 @@ function loadBot() {
 				}
 		    }
 		    // All other messages.
-		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID) && message != "" && message != " " && message != "\n") {
+		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID) && isMessageNotEmpty(newMessage)) {
 
 				if (config.seizure.enabled) {
 					process.on('uncaughtException', function (e) {					
@@ -3616,10 +3626,9 @@ function loadBot() {
 					tripwire.resetTripwire(config.seizure.timeout * 1000);
 				}
 
-		    	if (config.seizure.debug && message == config.seizure.force)
+		    	if (config.seizure.debug && newMessage == config.seizure.force)
 		    		while (true) {}
 
-		    	var newMessage = cleanMessage(message);
 	    		brains[channelIDToBrain(channelID)].addMass(newMessage);
 	    		messages[channelIDToBrain(channelID)].push(newMessage);
 
