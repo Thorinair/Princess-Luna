@@ -992,7 +992,7 @@ comm.learn = function(data) {
 			});
 
 			if (text != "") {
-		    	var cleanText = text.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "");
+		    	var cleanText = cleanMessage(text);
 				brains[brain].addMass(cleanText);
 		    	messages[brain].push(cleanText);
 				send(data.channelID, strings.commands.learn.message, false);
@@ -1963,6 +1963,14 @@ function sendLargeMessage(data, list, message, format) {
 }
 
 /*
+ * Uses regex to clean up a message.
+ * @param  message  Message text to clean up.
+ */
+function cleanMessage(message) {
+	return message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
+}
+
+/*
  * Executes an interraction command on one person or more people.
  * @param  data  Data of the message.
  */
@@ -2564,9 +2572,17 @@ function openBrain(name) {
 		    "input": fs.createReadStream(path),
 		    "terminal": false
 		}).on("line", function(line) {
-		    var cleanLine = line.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "");
-			messages[name].push(cleanLine);
-			brains[name].addMass(cleanLine);
+			if (config.brain.cleanbrain) {
+				var newLine = cleanMessage(line);
+				if (newLine != "" && newLine != " " && newLine != "\n") {
+					messages[name].push(newLine);
+					brains[name].addMass(newLine);
+				}
+			}
+			else {
+				messages[name].push(line);
+				brains[name].addMass(line);
+			}
 		});
 	}
 }
@@ -3581,8 +3597,8 @@ function loadBot() {
 		    	if (config.seizure.debug && message.replace(/<.*> /g, "") == config.seizure.force)
 		    		while (true) {}
 
-		    	var cleanMessage = message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "");
-		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(cleanMessage), true);
+		    	var newMessage = cleanMessage(message);
+		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(newMessage), true);
 
 				if (config.seizure.enabled) {
 		    		tripwire.clearTripwire();
@@ -3590,7 +3606,7 @@ function loadBot() {
 				}
 		    }
 		    // All other messages.
-		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID) && message != "") {
+		    if (data.d.author.id != bot.id && processWhitelist(channelID) && processBlacklist(userID) && processIgnore(userID) && message != "" && message != " " && message != "\n") {
 
 				if (config.seizure.enabled) {
 					process.on('uncaughtException', function (e) {					
@@ -3603,9 +3619,9 @@ function loadBot() {
 		    	if (config.seizure.debug && message == config.seizure.force)
 		    		while (true) {}
 
-		    	var cleanMessage = message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "");
-	    		brains[channelIDToBrain(channelID)].addMass(cleanMessage);
-	    		messages[channelIDToBrain(channelID)].push(cleanMessage);
+		    	var newMessage = cleanMessage(message);
+	    		brains[channelIDToBrain(channelID)].addMass(newMessage);
+	    		messages[channelIDToBrain(channelID)].push(newMessage);
 
 				if (config.seizure.enabled) {
 		    		tripwire.clearTripwire();
