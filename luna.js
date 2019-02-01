@@ -992,8 +992,9 @@ comm.learn = function(data) {
 			});
 
 			if (text != "") {
-				brains[brain].addMass(text.replace(/<.*>/g, ""));
-		    	messages[brain].push(text);
+		    	var cleanText = text.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "");
+				brains[brain].addMass(cleanText);
+		    	messages[brain].push(cleanText);
 				send(data.channelID, strings.commands.learn.message, false);
 			}
 			else {
@@ -2563,8 +2564,9 @@ function openBrain(name) {
 		    "input": fs.createReadStream(path),
 		    "terminal": false
 		}).on("line", function(line) {
-			messages[name].push(line);
-			brains[name].addMass(line.replace(/<.*>/g, ""));
+		    var cleanLine = line.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "");
+			messages[name].push(cleanLine);
+			brains[name].addMass(cleanLine);
 		});
 	}
 }
@@ -2665,6 +2667,12 @@ function loadAnnouncements() {
 					strings.announcements.gotn.shortB,
 					getTimeString(dateShort)
 				), true);
+				config.options.channels.announceC.forEach(function(c, i) {
+					send(c, util.format(
+						strings.announcements.gotn.shortC,
+						getTimeString(dateShort)
+					), true);
+				});
 			}, function () {}, true);
 
 		// Now air-time announcement.
@@ -3554,6 +3562,7 @@ function loadBot() {
 			if (message == "h")
 				h(channelID);
 		    // When the bot is mentioned.
+
 		    if (isMentioned(bot.id, data)) {
 				console.log(util.format(
 					strings.debug.chatting,
@@ -3572,7 +3581,8 @@ function loadBot() {
 		    	if (config.seizure.debug && message.replace(/<.*> /g, "") == config.seizure.force)
 		    		while (true) {}
 
-		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(message), true);
+		    	var cleanMessage = message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "");
+		    	send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(cleanMessage), true);
 
 				if (config.seizure.enabled) {
 		    		tripwire.clearTripwire();
@@ -3593,8 +3603,9 @@ function loadBot() {
 		    	if (config.seizure.debug && message == config.seizure.force)
 		    		while (true) {}
 
-	    		brains[channelIDToBrain(channelID)].addMass(message.replace(/<.*>/g, ""));
-	    		messages[channelIDToBrain(channelID)].push(message);
+		    	var cleanMessage = message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "");
+	    		brains[channelIDToBrain(channelID)].addMass(cleanMessage);
+	    		messages[channelIDToBrain(channelID)].push(cleanMessage);
 
 				if (config.seizure.enabled) {
 		    		tripwire.clearTripwire();
