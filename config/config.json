@@ -148,6 +148,25 @@
 			"icon": ":waning_crescent_moon:"
 		}
 	],
+	"minesweeper": {
+		"difficulties": {
+			"1": {
+				"x": 8,
+				"y": 8,
+				"m": 10
+			},
+			"2": {
+				"x": 16,
+				"y": 16,
+				"m": 40
+			},
+			"3": {
+				"x": 24,
+				"y": 24,
+				"m": 100
+			}
+		}
+	},
 	"separators": {
 		"date":  "-",
 		"time":  ":",

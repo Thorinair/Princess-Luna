@@ -70,8 +70,23 @@
 		},
 		"coin": {
 			"message":  "*Conjures a magical coin and flips it high up into the air.\nThe coin lands...*",
-			"tails":    "**Tails!**",
+			"error":    "**Tails!**",
 			"heads":    "**Heads!**"
+		},
+		"minesweeper": {
+			"message":  "%s, I have created a new %sx%s minesweeper field for you with a total of %s mines. Good luck!",
+			"error":    "%s, you need to specify the difficulty after the command. You can choose 1, 2 or 3.",
+			"icomine":  ":triangular_flag_on_post:",
+			"ico0":     ":stop_button:",
+			"ico1":     ":one:",
+			"ico2":     ":two:",
+			"ico3":     ":three:",
+			"ico4":     ":four:",
+			"ico5":     ":five:",
+			"ico6":     ":six:",
+			"ico7":     ":seven:",
+			"ico8":     ":eight:",
+			"spoiler":  "||"
 		},
 		"custom": {
 			"messageA": "%s, the following custom interractions are defined for this server: %s ",

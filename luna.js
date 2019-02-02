@@ -668,7 +668,7 @@ comm.blacklist = function(data) {
 
 // Command: !coin
 comm.coin = function(data) {
-	send(data.channelID, strings.commands.coin.message, strings.commands.coin.message, true);
+	send(data.channelID, strings.commands.coin.message, true);
 
 	setTimeout(function() {
 		if (Math.random() < 0.5)
@@ -676,6 +676,102 @@ comm.coin = function(data) {
 		else
 			send(data.channelID, strings.commands.coin.heads, true);
     }, 2000);	
+};
+
+// Command: !minesweeper
+comm.minesweeper = function(data) {
+	var difficulty = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	if (difficulty == "" || difficulty == config.options.commandsymbol + data.command || config.minesweeper.difficulties[difficulty] == undefined) {
+		send(data.channelID, util.format(
+			strings.commands.minesweeper.error, 
+			mention(data.userID)
+		), true);
+	}
+	else {
+		// Prepare values.
+		var i, j, k, m, n, count;
+		var x = config.minesweeper.difficulties[difficulty].x;
+		var y = config.minesweeper.difficulties[difficulty].y;
+		var field = new Array(y);
+
+		// Prepare a new empty field.
+		for (i = 0; i < y; i++) {
+			field[i] = new Array(x);
+		}
+
+		// Randomly place mines.
+		for (k = 0; k < config.minesweeper.difficulties[difficulty].m; k++) {
+			do {
+				i = Math.floor(Math.random() * y);
+				j = Math.floor(Math.random() * x);
+			}
+			while (field[i][j] == strings.commands.minesweeper.icomine);
+			field[i][j] = strings.commands.minesweeper.icomine;
+		}
+
+		// Calculate numbers.
+		for (i = 0; i < y; i++)
+			for (j = 0; j < x; j++)
+				if (field[i][j] != strings.commands.minesweeper.icomine) {
+					count = 0;
+					for (m = -1; m <= 1; m++)
+						for (n = -1; n <= 1; n++)
+							if (i + m >= 0 && j + n >= 0 && i + m < y && j + n < x)
+								if (field[i + m][j + n] == strings.commands.minesweeper.icomine)
+									count++;
+					field[i][j] = strings.commands.minesweeper["ico" + count];
+				}
+
+		// Spoiler relevant tiles.
+		for (i = 0; i < y; i++)
+			for (j = 0; j < x; j++) {
+					count = 0;
+					for (m = -1; m <= 1; m++)
+						for (n = -1; n <= 1; n++)
+							if (i + m >= 0 && j + n >= 0 && i + m < y && j + n < x)
+								if (field[i + m][j + n] == strings.commands.minesweeper.ico0)
+									count++;
+					if (count == 0)
+						field[i][j] = strings.commands.minesweeper.spoiler + field[i][j] + strings.commands.minesweeper.spoiler;
+			}
+
+		// Construct messages.
+		var messages = [];
+		var message = "";
+		var messageNew = "";
+		for (i = 0; i < y; i++) {
+
+			for (j = 0; j < x; j++)
+				messageNew += field[i][j];
+			messageNew += "\n";
+
+			if (message.length + messageNew.length > config.options.maxlength) {
+				messages.push(message);
+			    message = "" + messageNew;
+			    messageNew = "";
+			}
+			else {
+			    message += messageNew;
+			    messageNew = "";
+			}
+
+		}
+		messages.push(message);
+
+		// Dump messages.
+		send(data.channelID, util.format(
+			strings.commands.minesweeper.message, 
+			mention(data.userID),
+			x,
+			y,
+			config.minesweeper.difficulties[difficulty].m
+		), true);
+		messages.forEach(function(m, i) {
+			setTimeout(function() {
+				send(data.channelID, m, true);
+		    }, 500 * (i+1));
+		});
+	}
 };
 
 // Command: !custom

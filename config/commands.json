@@ -76,6 +76,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "minesweeper",
+			"help":    "Ask me to create a new minesweeper field. Add the number 1, 2 or 3 after the command to set the difficulty. I suggest using desktop Discord to have it displayed properly.",
+			"type":    "public"
+		},
+		{
 			"command": "custom",
 			"help":    "Ask me which custom interractions are defined for a server or channel.",
 			"type":    "public"
