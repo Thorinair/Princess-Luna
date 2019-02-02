@@ -149,6 +149,7 @@
 		}
 	],
 	"minesweeper": {
+		"delay": 1000,
 		"difficulties": {
 			"1": {
 				"x": 8,

@@ -769,7 +769,7 @@ comm.minesweeper = function(data) {
         messages.forEach(function(m, i) {
             setTimeout(function() {
                 send(data.channelID, m, true);
-            }, 500 * (i+1));
+            }, config.minesweeper.delay * (i+1));
         });
     }
 };
