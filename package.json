@@ -5,7 +5,7 @@
   "main": "luna.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Thorinair/Princess-Luna.git"
+    "url": "git+https://github.com/Thorinair/jsmegahal"
   },
   "keywords": [
     "Discord",
@@ -29,7 +29,7 @@
     "archiver": "^2.0.0",
     "node-tradfri": "github:Thorinair/node-tradfri",
     "c0lor": "^0.1.0",
-    "jsmegahal": "github:seiyria/jsmegahal",
+    "jsmegahal": "github:Thorinair/jsmegahal",
     "tripwire": "^4.1.0"
   }
 }
