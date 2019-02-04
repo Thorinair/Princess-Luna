@@ -2969,7 +2969,7 @@ function loadPhases() {
 function loadBrain() {
     channels.list.forEach(function(c) {
         if (brains[c.brain] == undefined) {
-            brains[c.brain] = new jsmegahal(config.brain.markov, config.brain.default);
+            brains[c.brain] = new jsmegahal(config.brain.markov, config.brain.default, config.brain.maxloop);
         }
         if (messages[c.brain] == undefined) {
             messages[c.brain] = [];
