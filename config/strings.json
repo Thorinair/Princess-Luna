@@ -41,7 +41,7 @@
 			"messageB": "Here is how the Moon looks like right now."
 		},
 		"room": {
-			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
+			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago.\n```\nTemperature:   %s °C\nHumidity:      %s %\nPressure:      %s hPa\nAir Quality:   %s %\nMagnitude:     %s uT\nInclination:   %s °\nGeiger Counts: %s CPM\nDose Rate:     %s uSv/h```",
 			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
 		},
 		"power": {

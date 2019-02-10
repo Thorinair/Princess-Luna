@@ -98,7 +98,7 @@
 		"markov":     2,
 		"maxloop":    100,
 		"timeout":    60,
-		"maxlines":   16384,
+		"maxlines":   32768,
 		"cleanbrain": false
 	},
 	"backup": {

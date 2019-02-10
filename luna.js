@@ -422,6 +422,7 @@ comm.room = function(data) {
                 findVariable(vpData, varipass.alicorn.ids.temperature).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.humidity).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.pressure).history[0].value,
+                findVariable(vpData, varipass.alicorn.ids.airquality).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.magnitude).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.inclination).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.counts).history[0].value,
@@ -3314,6 +3315,41 @@ function processReqEEG(query) {
     eegVaripassWrite();
 }
 
+function processReqToggle(query) {
+    if (query.bulb == undefined) {
+        refreshTradfriDevices(function() {
+            var message = strings.commands.toggle.messageA;
+            devices.forEach(function(d) {
+                var on = d.on;
+                if (on == true)
+                    on = "on";
+                else
+                    on = "off";
+                message += util.format(
+                    strings.commands.toggle.messageB, 
+                    d.name,
+                    on
+                );
+            });
+            send(channelNameToID(config.options.channels.debug), message, false);
+        });
+    }
+    else {      
+        var found = false;
+
+        devices.forEach(function(d) {       
+            if (d.name == query.bulb) {
+                found = true;   
+                send(channelNameToID(config.options.channels.debug), strings.commands.toggle.messageC, false);
+                hub.toggleDevice(d.id);
+            }
+        });
+
+        if (!found)
+            send(channelNameToID(config.options.channels.debug), strings.commands.toggle.error, false);
+    }
+}
+
 var processRequest = function(req, res) {
     if (req.method == "GET") {
         var query = url.parse(req.url, true).query;
@@ -3323,6 +3359,7 @@ var processRequest = function(req, res) {
                 case "motion": processReqMotion(query); break;
                 case "boot":   processReqBoot(query);   break;
                 case "eeg":    processReqEEG(query);    break;
+                case "toggle": processReqToggle(query); break;
             }       
     }
 
