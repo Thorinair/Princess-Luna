@@ -425,7 +425,7 @@ comm.room = function(data) {
                 findVariable(vpData, varipass.alicorn.ids.airquality).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.magnitude).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.inclination).history[0].value,
-                findVariable(vpData, varipass.alicorn.ids.counts).history[0].value,
+                findVariable(vpData, varipass.alicorn.idscounts).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.dose).history[0].value
             ), true);
         }
@@ -3350,6 +3350,36 @@ function processReqToggle(query) {
     }
 }
 
+function processReqMood(query) {
+    if (query.mood == undefined) {
+        var message = strings.commands.mood.messageA;
+        tradfri.moods.forEach(function(m) {
+            message += util.format(
+                strings.commands.mood.messageB, 
+                m.name
+            );
+        });
+        send(channelNameToID(config.options.channels.debug), message, false);
+    }
+    else {      
+        var found = false;
+
+        tradfri.moods.forEach(function(m) {     
+            if (m.name == query.mood) {
+                found = true;   
+                send(channelNameToID(config.options.channels.debug), util.format(
+                    strings.commands.mood.messageC, 
+                    m.name
+                ), false);
+                setMood(m.name);
+            }
+        });
+
+        if (!found)
+            send(channelNameToID(config.options.channels.debug), strings.commands.mood.error, false);
+    }
+}
+
 var processRequest = function(req, res) {
     if (req.method == "GET") {
         var query = url.parse(req.url, true).query;
@@ -3360,6 +3390,7 @@ var processRequest = function(req, res) {
                 case "boot":   processReqBoot(query);   break;
                 case "eeg":    processReqEEG(query);    break;
                 case "toggle": processReqToggle(query); break;
+                case "mood":   processReqMood(query);   break;
             }       
     }
 
