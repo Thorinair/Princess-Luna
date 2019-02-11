@@ -3175,17 +3175,18 @@ function refreshTradfriDevices(callback) {
             devices.length
         ));
 
-        devices.forEach(function(d) {
-            console.log(util.format(
-                strings.debug.tradfri.bulb,
-                d.name,
-                d.id,
-                d.type,
-                d.color,
-                d.brightness,
-                d.on
-            ));
-        });
+        if (config.options.debugtradfri)
+            devices.forEach(function(d) {
+                console.log(util.format(
+                    strings.debug.tradfri.bulb,
+                    d.name,
+                    d.id,
+                    d.type,
+                    d.color,
+                    d.brightness,
+                    d.on
+                ));
+            });
 
         callback();
 

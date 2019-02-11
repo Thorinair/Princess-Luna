@@ -36,6 +36,7 @@
 		"reconnecttime": 10,
 		"htimeout":      1800,
 		"hmessage":      1,
+		"debugtradfri":  false,
 		"channels": {
 			"debug":     "debug",
 			"home":      "home_luna",
