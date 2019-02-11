@@ -3316,67 +3316,37 @@ function processReqEEG(query) {
 }
 
 function processReqToggle(query) {
-    if (query.bulb == undefined) {
-        refreshTradfriDevices(function() {
-            var message = strings.commands.toggle.messageA;
-            devices.forEach(function(d) {
-                var on = d.on;
-                if (on == true)
-                    on = "on";
-                else
-                    on = "off";
-                message += util.format(
-                    strings.commands.toggle.messageB, 
-                    d.name,
-                    on
-                );
-            });
-            send(channelNameToID(config.options.channels.debug), message, false);
-        });
-    }
-    else {      
-        var found = false;
-
+    if (query.bulb != undefined) { 
         devices.forEach(function(d) {       
             if (d.name == query.bulb) {
-                found = true;   
-                send(channelNameToID(config.options.channels.debug), strings.commands.toggle.messageC, false);
                 hub.toggleDevice(d.id);
             }
         });
+    }
+}
 
-        if (!found)
-            send(channelNameToID(config.options.channels.debug), strings.commands.toggle.error, false);
+function processReqState(query) {
+    if (query.bulb != undefined && query.state != undefined) {
+        refreshTradfriDevices(function() {            
+            devices.forEach(function(d) {       
+                if (d.name == query.bulb) {
+                    if (d.on == true && query.state == "off")
+                        hub.toggleDevice(d.id);
+                    else if (d.on == false && query.state == "on")
+                        hub.toggleDevice(d.id);
+                }
+            });
+        });
     }
 }
 
 function processReqMood(query) {
-    if (query.mood == undefined) {
-        var message = strings.commands.mood.messageA;
-        tradfri.moods.forEach(function(m) {
-            message += util.format(
-                strings.commands.mood.messageB, 
-                m.name
-            );
-        });
-        send(channelNameToID(config.options.channels.debug), message, false);
-    }
-    else {      
-        var found = false;
-
+    if (query.mood != undefined) {
         tradfri.moods.forEach(function(m) {     
             if (m.name == query.mood) {
-                found = true;   
-                send(channelNameToID(config.options.channels.debug), util.format(
-                    strings.commands.mood.messageC, 
-                    m.name
-                ), false);
                 setMood(m.name);
             }
         });
-
-        if (!found)
-            send(channelNameToID(config.options.channels.debug), strings.commands.mood.error, false);
     }
 }
 
@@ -3390,6 +3360,7 @@ var processRequest = function(req, res) {
                 case "boot":   processReqBoot(query);   break;
                 case "eeg":    processReqEEG(query);    break;
                 case "toggle": processReqToggle(query); break;
+                case "state":  processReqState(query);  break;
                 case "mood":   processReqMood(query);   break;
             }       
     }
