@@ -79,8 +79,8 @@
 	"seizure": {
 		"enabled": true,
 		"timeout": 10,
-		"debug":   false,
-		"force":   "FORCE_SEIZURE"
+		"force":   "FORCE_SEIZURE",
+		"debug":   false
 	},
 	"nowplaying": {
 		"url":     "http://dj.bronyradio.com:8000/status-json.xsl?mount=/pvfm1.ogg",
@@ -100,7 +100,8 @@
 		"maxloop":    100,
 		"timeout":    60,
 		"maxlines":   32768,
-		"cleanbrain": false
+		"cleanbrain": false,
+		"debug":      false
 	},
 	"backup": {
 		"output": {

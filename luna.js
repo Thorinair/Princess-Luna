@@ -2979,15 +2979,17 @@ function loadBrain() {
 
     Object.keys(brains).forEach(function(b) {
         if (fs.existsSync(config.brain.path + b)) {
-            console.log(util.format(
-                strings.debug.brain.old,
-                b
-            ));
+            if (config.brain.debug)
+                console.log(util.format(
+                    strings.debug.brain.old,
+                    b
+                ));
             openBrain(b);
-            console.log(util.format(
-                strings.debug.brain.done,
-                b
-            ));
+            if (config.brain.debug)
+                console.log(util.format(
+                    strings.debug.brain.done,
+                    b
+                ));
         }
         else {
             saveBrain(b);
@@ -3317,25 +3319,29 @@ function processReqEEG(query) {
 }
 
 function processReqToggle(query) {
-    if (query.bulb != undefined) { 
-        devices.forEach(function(d) {       
-            if (d.name == query.bulb) {
-                hub.toggleDevice(d.id);
-            }
+    if (query.bulbs != undefined) { 
+        query.bulbs.split(",").forEach(function(b) {
+            devices.forEach(function(d) {       
+                if (d.name == b) {
+                    hub.toggleDevice(d.id);
+                }
+            });
         });
     }
 }
 
 function processReqState(query) {
-    if (query.bulb != undefined && query.state != undefined) {
-        refreshTradfriDevices(function() {            
-            devices.forEach(function(d) {       
-                if (d.name == query.bulb) {
-                    if (d.on == true && query.state == "off")
-                        hub.toggleDevice(d.id);
-                    else if (d.on == false && query.state == "on")
-                        hub.toggleDevice(d.id);
-                }
+    if (query.bulbs != undefined && query.state != undefined) {
+        refreshTradfriDevices(function() {
+            query.bulbs.split(",").forEach(function(b) {
+                devices.forEach(function(d) {  
+                    if (d.name == b) {
+                        if (d.on == true && query.state == "off")
+                            hub.toggleDevice(d.id);
+                        else if (d.on == false && query.state == "on")
+                            hub.toggleDevice(d.id);
+                    }
+                });
             });
         });
     }
