@@ -1847,22 +1847,7 @@ comm.reboot = function(data) {
 
 // Command: !reload
 comm.reload = function(data) {  
-    token    = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
-    config   = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
-    commands = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
-    custom   = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
-    strings  = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
-    gotn     = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
-    mlp      = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
-    channels = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
-    varipass = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
-    printer  = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
-    dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
-    tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
-    schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
-    wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
-    httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
-
+    reloadConfig();
     send(data.channelID, strings.commands.reload.message, false);
 };
 
@@ -2087,6 +2072,27 @@ function sendLargeMessage(data, list, message, format) {
 function cleanMessage(message) {
     return message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
 }
+
+/*
+ * Reloads the configuration.
+ */
+function reloadConfig() {  
+    token    = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
+    config   = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
+    commands = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
+    custom   = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
+    strings  = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
+    gotn     = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
+    mlp      = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
+    channels = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
+    varipass = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
+    printer  = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
+    dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
+    tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
+    schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
+    wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
+    httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
+};
 
 /*
  * Checks if a message has usable contents.
@@ -3447,6 +3453,11 @@ function processReqReboot(query) {
     }
 }
 
+function processReqReload(query) {    
+    reloadConfig();
+    send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.reload.message, false);
+}
+
 var processRequest = function(req, res) {
     if (req.method == "GET") {
         var query = url.parse(req.url, true).query;
@@ -3461,6 +3472,7 @@ var processRequest = function(req, res) {
                 case "mood":   processReqMood(query);   break;
                 case "camera": processReqCamera(query); break;
                 case "reboot": processReqReboot(query); break;
+                case "reload": processReqReload(query); break;
             }       
     }
 
