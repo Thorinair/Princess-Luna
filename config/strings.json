@@ -368,6 +368,9 @@
 			"message": "Thori, I am turning the following bulbs %s: **%s**",
 			"error":   "Thori, I don't know of any bulbs with those names."
 		},
+		"camera": {
+			"error": "Thori, you have specified an incorrect camera password."
+		},
 		"reboot": {
 			"error": "Thori, you have specified an incorrect reboot password."
 		}

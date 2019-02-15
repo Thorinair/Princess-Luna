@@ -3422,8 +3422,12 @@ function processReqCamera(query) {
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.messageA, false);
         }
         else if (query.state == "off") {
-            exec("sudo /home/luna/mjpg-streamer_norm.sh stop");
-            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.messageB, false);
+            if (query.camera == httpkey.camera) {
+                exec("sudo /home/luna/mjpg-streamer_norm.sh stop");
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.messageB, false);
+            }
+            else
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.camera.error, false);
         }
         else
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.error, false);
