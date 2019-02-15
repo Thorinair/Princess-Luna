@@ -1806,6 +1806,27 @@ comm.leave = function(data) {
     }
 };
 
+// Command: !camera
+comm.camera = function(data) {
+    var state = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (state == "" || state == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.camera.error, true);
+    }
+    else {
+        if (state == "on") {
+            exec("sudo /home/luna/mjpg-streamer_norm.sh start");
+            send(data.channelID, strings.commands.camera.messageA, true);
+        }
+        else if (state == "off") {
+            exec("sudo /home/luna/mjpg-streamer_norm.sh stop");
+            send(data.channelID, strings.commands.camera.messageB, true);
+        }
+        else
+            send(data.channelID, strings.commands.camera.error, true);
+    }
+};
+
+
 // Command: !reboot
 comm.reboot = function(data) {  
     rebooting = true;
@@ -3320,40 +3341,109 @@ function processReqEEG(query) {
 
 function processReqToggle(query) {
     if (query.bulbs != undefined) { 
+        var found = false;
         query.bulbs.split(",").forEach(function(b) {
             devices.forEach(function(d) {       
                 if (d.name == b) {
                     hub.toggleDevice(d.id);
+                    found = true;
                 }
             });
         });
+        if (found)
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
+                strings.voice.toggle.message,
+                query.bulbs
+            ), false);
+        else
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.toggle.error, false);
     }
 }
 
 function processReqState(query) {
     if (query.bulbs != undefined && query.state != undefined) {
         refreshTradfriDevices(function() {
+            var found = false;
             query.bulbs.split(",").forEach(function(b) {
                 devices.forEach(function(d) {  
                     if (d.name == b) {
-                        if (d.on == true && query.state == "off")
+                        if (d.on == true && query.state == "off") {
                             hub.toggleDevice(d.id);
-                        else if (d.on == false && query.state == "on")
+                            found = true;
+                        }
+                        else if (d.on == false && query.state == "on") {
                             hub.toggleDevice(d.id);
+                            found = true;
+                        }
                     }
                 });
             });
+            if (found)
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
+                    strings.voice.state.message,
+                    query.state,
+                    query.bulbs
+                ), false);
+            else
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.state.error, false);
         });
     }
 }
 
 function processReqMood(query) {
     if (query.mood != undefined) {
+        var found = false;
         tradfri.moods.forEach(function(m) {     
             if (m.name == query.mood) {
                 setMood(m.name);
+                found = true;
             }
         });
+        if (found)
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
+                strings.commands.mood.messageC,
+                m.name
+            ), false);
+        else
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.mood.error, false);
+    }
+}
+
+function processReqCamera(query) {
+    if (query.state != undefined) {
+        if (query.state == "on") {
+            exec("sudo /home/luna/mjpg-streamer_norm.sh start");
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.messageA, false);
+        }
+        else if (query.state == "off") {
+            exec("sudo /home/luna/mjpg-streamer_norm.sh stop");
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.messageB, false);
+        }
+        else
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.error, false);
+    }
+}
+
+function processReqReboot(query) {
+    if (query.reboot != undefined) {
+        if (query.reboot == httpkey.reboot) {
+            Object.keys(nptoggles).forEach(function(n, i) {
+                if (nptoggles[n])
+                    send(n, strings.announcements.npreboot, true);
+            });
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.reboot.message, false);
+
+            saveAllBrains();
+
+            setTimeout(function() {
+                console.log(strings.debug.stopped);
+                process.exit();
+            }, config.options.reboottime * 1000);
+
+            rebooting = true;
+        }
+        else
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.reboot.error, false);
     }
 }
 
@@ -3369,6 +3459,8 @@ var processRequest = function(req, res) {
                 case "toggle": processReqToggle(query); break;
                 case "state":  processReqState(query);  break;
                 case "mood":   processReqMood(query);   break;
+                case "camera": processReqCamera(query); break;
+                case "reboot": processReqReboot(query); break;
             }       
     }
 

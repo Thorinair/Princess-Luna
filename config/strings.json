@@ -336,6 +336,11 @@
 			"messageC": "Thori, I have left the server *%s*!",
 			"error":    "Thori, I am not a part of any server with that ID."
 		},
+		"camera": {
+			"messageA": "Thori, I have turned my camera **on**.",
+			"messageB": "Thori, I have turned my camera **off**.",
+			"error":    "Thori, you need to specify `on` or `off` parameter after the command."
+		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
 		},
@@ -352,6 +357,19 @@
 			"errorB":   "Thori, I don't know of such a command.",
 			"errorC":   "Thori, I was unable to perform the system command. Here is more info: %s",
 			"mreboot":  "I'm going to perform a full system reboot. This might take a bit longer. See you in a bit, Thori!"
+		}
+	},
+	"voice": {
+		"toggle": {
+			"message": "Thori, I am toggling the following bulbs: **%s**",
+			"error":   "Thori, I don't know of any bulbs with those names."
+		},
+		"state": {
+			"message": "Thori, I am turning the following bulbs %s: **%s**",
+			"error":   "Thori, I don't know of any bulbs with those names."
+		},
+		"reboot": {
+			"error": "Thori, you have specified an incorrect reboot password."
 		}
 	},
 	"announcements": {
@@ -398,6 +416,7 @@
 		"noadmin":   "I am sorry %s, but only Thorinair is allowed to use this command.",
 		"left":      "%s on %s at %s",
 		"gold":      "%sg %ss %sc",
+		"voicetag":  "`[voice]` ",
 		"h":         "h",
 		"eeg": {
 			"basic": {
