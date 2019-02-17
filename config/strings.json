@@ -70,7 +70,7 @@
 		},
 		"coin": {
 			"message":  "*Conjures a magical coin and flips it high up into the air.\nThe coin lands...*",
-			"error":    "**Tails!**",
+			"tails":    "**Tails!**",
 			"heads":    "**Heads!**"
 		},
 		"minesweeper": {
