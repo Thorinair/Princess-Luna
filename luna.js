@@ -1826,6 +1826,26 @@ comm.camera = function(data) {
     }
 };
 
+// Command: !stream
+comm.stream = function(data) {
+    var state = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (state == "" || state == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.camera.error, true);
+    }
+    else {
+        if (state == "start") {
+            exec("sudo -H -u luna bash -c \"/usr/bin/tmux new-session -d -s live '/home/luna/live.sh'\"");
+            send(data.channelID, strings.commands.stream.messageA, true);
+        }
+        else if (state == "stop") {
+            exec("sudo -H -u luna bash -c \"/usr/bin/tmux kill-session -t live\"");
+            send(data.channelID, strings.commands.stream.messageB, true);
+        }
+        else
+            send(data.channelID, strings.commands.stream.error, true);
+    }
+};
+
 
 // Command: !reboot
 comm.reboot = function(data) {  
@@ -3418,8 +3438,12 @@ function processReqMood(query) {
 function processReqCamera(query) {
     if (query.state != undefined) {
         if (query.state == "on") {
-            exec("sudo /home/luna/mjpg-streamer_norm.sh start");
-            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.messageA, false);
+            if (query.camera == httpkey.camera) {
+                exec("sudo /home/luna/mjpg-streamer_norm.sh start");
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.messageA, false);
+            }
+            else
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.camera.error, false);
         }
         else if (query.state == "off") {
             if (query.camera == httpkey.camera) {
@@ -3431,6 +3455,29 @@ function processReqCamera(query) {
         }
         else
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.error, false);
+    }
+}
+
+function processReqStream(query) {
+    if (query.state != undefined) {
+        if (query.state == "start") {
+            if (query.stream == httpkey.stream) {
+                exec("sudo -H -u luna bash -c \"/usr/bin/tmux new-session -d -s live '/home/luna/live.sh'\"");
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.stream.messageA, false);
+            }
+            else
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.stream.error, false);
+        }
+        else if (query.state == "stop") {
+            if (query.stream == httpkey.stream) {
+                exec("sudo -H -u luna bash -c \"/usr/bin/tmux kill-session -t live\"");
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.stream.messageB, false);
+            }
+            else
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.stream.error, false);
+        }
+        else
+            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.stream.error, false);
     }
 }
 
@@ -3475,6 +3522,7 @@ var processRequest = function(req, res) {
                 case "state":  processReqState(query);  break;
                 case "mood":   processReqMood(query);   break;
                 case "camera": processReqCamera(query); break;
+                case "stream": processReqStream(query); break;
                 case "reboot": processReqReboot(query); break;
                 case "reload": processReqReload(query); break;
             }       

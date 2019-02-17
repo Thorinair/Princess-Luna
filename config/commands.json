@@ -306,6 +306,11 @@
 			"help":    "",
 			"type":    "private"
 		},
+		{
+			"command": "stream",
+			"help":    "",
+			"type":    "private"
+		},
 
 		{
 			"command": "reboot",

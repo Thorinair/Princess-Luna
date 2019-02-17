@@ -59,7 +59,8 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!eegstart` Starts recording the brainwave data through the EEG system.
     - `!eegstop` Finishes recording the EEG data and processes it. Four different files are sent: basic values, raw brainwave data, lowpassed data and data smoothed with exponential moving average.
     - `!leave` Leave a specified server that the bot has previously joined. Call the command without a server ID to list all servers the bot may leave.
-    - `!leave` Start or stop the attached camera. Use `on` or `off` as a parameter aftet the command.
+    - `!camera` Start or stop the attached camera. Use `on` or `off` as a parameter after the command.
+    - `!stream` Start or stop the live stream routing of the camera. Use `start` or `stop` as a parameter after the command.
     - `!reboot` Reboots the bot by exiting the process, letting the service restart it automatically.
     - `!reload` Reloads the configuration files. Note that only the actual configuration will be reloaded, and reloading may not sometimes be enough to change the behavior.
     - `!backup` Creates a backup of the data and config directories and sends it as a file through Discord.

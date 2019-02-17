@@ -339,7 +339,12 @@
 		"camera": {
 			"messageA": "Thori, I have turned my camera **on**.",
 			"messageB": "Thori, I have turned my camera **off**.",
-			"error":    "Thori, you need to specify `on` or `off` parameter after the command."
+			"error":    "Thori, you need to specify the `on` or `off` parameter after the command."
+		},
+		"stream": {
+			"messageA": "Thori, I have **started** the live stream.",
+			"messageB": "Thori, I have **stopped** the live stream.",
+			"error":    "Thori, you need to specify the `start` or `stop` parameter after the command."
 		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
@@ -370,6 +375,9 @@
 		},
 		"camera": {
 			"error": "Thori, you have specified an incorrect camera password."
+		},
+		"stream": {
+			"error": "Thori, you have specified an incorrect stream password."
 		},
 		"reboot": {
 			"error": "Thori, you have specified an incorrect reboot password."
