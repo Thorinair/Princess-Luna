@@ -425,7 +425,7 @@ comm.room = function(data) {
                 findVariable(vpData, varipass.alicorn.ids.airquality).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.magnitude).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.inclination).history[0].value,
-                findVariable(vpData, varipass.alicorn.idscounts).history[0].value,
+                findVariable(vpData, varipass.alicorn.ids.counts).history[0].value,
                 findVariable(vpData, varipass.alicorn.ids.dose).history[0].value
             ), true);
         }
