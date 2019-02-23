@@ -3428,7 +3428,7 @@ function processReqMood(query) {
         if (found)
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
                 strings.commands.mood.messageC,
-                m.name
+                query.mood
             ), false);
         else
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.mood.error, false);
