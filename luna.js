@@ -1997,6 +1997,8 @@ var purgeBrain = "";
 var purgeStart = "";
 var purgeEnd   = "";
 
+var doseWasWarned = false;
+
 // Persistant Objects
 var bot;
 var hub;
@@ -3735,6 +3737,7 @@ function loadBot() {
             loadSeizure();
 
             loopNowPlaying();
+            loopGeigerCalculation();
             setTimeout(loopBrainSave, config.brain.timeout * 1000);
         }
     });
@@ -4005,6 +4008,96 @@ function loopNowPlaying() {
 
     xhr.send();
     setTimeout(loopNowPlaying, config.nowplaying.timeout * 1000);
+}
+
+function sendDoseEMA(value) {
+	var payload = {
+            "key": varipass.alicorn.key,
+            "id": varipass.alicorn.ids.doseema,
+            "action": "write",
+            "value": value
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+        }
+    }
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.varipass.error,
+            err.target.status
+        ));
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.varipass.timeout);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
+
+    if (value > config.geiger.warning) {
+    	if (!doseWasWarned) {
+    		doseWasWarned = true;
+	    	send(channelNameToID(config.options.channels.home), util.format(
+		        strings.announcements.dosehigh,
+		        config.geiger.warning,
+		        value.toFixed(4)
+		    ), false);
+	    }
+    }
+    else {
+    	if (doseWasWarned) {
+    		doseWasWarned = false;
+	    	send(channelNameToID(config.options.channels.home), util.format(
+		        strings.announcements.doselow,
+		        value.toFixed(4),
+		        config.geiger.warning
+		    ), false);
+    	}
+    }
+}
+
+function loopGeigerCalculation() {
+	var payload = {
+            "key": varipass.alicorn.key,
+            "action": "all"
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var vpData = JSON.parse(xhr.responseText);  
+            
+            var vpDose = findVariable(vpData, varipass.alicorn.ids.dose).history;
+            var vpDoseEMA = findVariable(vpData, varipass.alicorn.ids.doseema).history;
+
+		    var alpha = parseFloat(1.0 / config.geiger.samples);
+		    sendDoseEMA(alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value);
+	    }
+	}
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.varipass.error,
+            err.target.status
+        ));
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.varipass.timeout);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
+
+    setTimeout(loopGeigerCalculation, config.geiger.timeout * 1000);
 }
 
 /*

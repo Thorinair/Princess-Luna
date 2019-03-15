@@ -410,6 +410,8 @@
 			"return": "Okay, I think I feel a little bit better now..."
 		},
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
+		"dosehigh":   "@everyone, WARNING: Radiation has exceeded the set maximum allowed level of %s uSv/h! I am currently reading an average of **%s uSv/h**!",
+		"doselow":    "@everyone, The radiation has dropped back to acceptable levels. I am currently reading an average of **%s uSv/h** out of %s uSv/h allowed.",
 		"boot":       "Thori, I have detected that the device **%s** has booted up.",
 		"schedule":   "As scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
 		"nowplaying": "**Now playing:** %s",

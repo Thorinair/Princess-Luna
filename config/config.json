@@ -76,6 +76,11 @@
 			"expire": 180
 		}
 	},
+	"geiger": {
+		"timeout": 60,
+		"samples": 20,
+		"warning": 0.2
+	},
 	"seizure": {
 		"enabled": true,
 		"timeout": 10,
