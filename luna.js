@@ -1998,6 +1998,7 @@ var purgeStart = "";
 var purgeEnd   = "";
 
 var doseWasWarned = false;
+var doseTime;
 
 // Persistant Objects
 var bot;
@@ -4079,8 +4080,13 @@ function loopGeigerCalculation() {
             var vpDose = findVariable(vpData, varipass.alicorn.ids.dose).history;
             var vpDoseEMA = findVariable(vpData, varipass.alicorn.ids.doseema).history;
 
-		    var alpha = parseFloat(1.0 / config.geiger.samples);
-		    sendDoseEMA(alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value);
+            if (!(doseTime != undefined && vpDose[0].time <= doseTime)) {
+            	doseTime = vpDose[0].time;
+
+		    	var alpha = parseFloat(1.0 / config.geiger.samples);
+		    	sendDoseEMA(alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value);
+            }
+
 	    }
 	}
     xhr.onerror = function(err) {
