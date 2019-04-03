@@ -1460,12 +1460,16 @@ comm.mood = function(data) {
 
         tradfri.moods.forEach(function(m) {     
             if (m.name == name) {
-                found = true;   
-                send(data.channelID, util.format(
-                    strings.commands.mood.messageC, 
-                    m.name
-                ), false);
-                setMood(m.name);
+                found = true;  
+                setMood(m.name, function(result) {
+                    if (result) 
+                        send(data.channelID, util.format(
+                            strings.commands.mood.messageC, 
+                            m.name
+                        ), false);
+                    else
+                        send(data.channelID, strings.misc.tradfrierror, false);
+                });
             }
         });
 
@@ -1480,19 +1484,24 @@ comm.bulb = function(data) {
 
     var name = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
     if ((name == "" || name == config.options.commandsymbol + data.command) && lines.length <= 1) {
-        refreshTradfriDevices(function() {
-            var message = strings.commands.bulb.messageA;
-            devices.forEach(function(d) {
-                var color = d.color;
-                if (color == "0")
-                    color = "custom";
-                message += util.format(
-                    strings.commands.bulb.messageB, 
-                    d.name,
-                    color
-                );
-            });
-            send(data.channelID, message, false);
+        refreshTradfriDevices(function(result) {
+            if (result) {
+                var message = strings.commands.bulb.messageA;
+                devices.forEach(function(d) {
+                    var color = d.color;
+                    if (color == "0")
+                        color = "custom";
+                    message += util.format(
+                        strings.commands.bulb.messageB, 
+                        d.name,
+                        color
+                    );
+                });
+                send(data.channelID, message, false);
+            }
+            else {
+                send(data.channelID, strings.misc.tradfrierror, false);                
+            }
         });
     }
     else {
@@ -1553,21 +1562,26 @@ comm.bulb = function(data) {
 comm.toggle = function(data) {
     var name = data.message.replace(config.options.commandsymbol + data.command + " ", "");
     if (name == "" || name == config.options.commandsymbol + data.command) {
-        refreshTradfriDevices(function() {
-            var message = strings.commands.toggle.messageA;
-            devices.forEach(function(d) {
-                var on = d.on;
-                if (on == true)
-                    on = "on";
-                else
-                    on = "off";
-                message += util.format(
-                    strings.commands.toggle.messageB, 
-                    d.name,
-                    on
-                );
-            });
-            send(data.channelID, message, false);
+        refreshTradfriDevices(function(result) {
+            if (result) {
+                var message = strings.commands.toggle.messageA;
+                devices.forEach(function(d) {
+                    var on = d.on;
+                    if (on == true)
+                        on = "on";
+                    else
+                        on = "off";
+                    message += util.format(
+                        strings.commands.toggle.messageB, 
+                        d.name,
+                        on
+                    );
+                });
+                send(data.channelID, message, false);
+            }
+            else {
+                send(data.channelID, strings.misc.tradfrierror, false);                
+            }
         });
     }
     else {      
@@ -1643,29 +1657,34 @@ comm.schedulestart = function(data) {
                 );
 
                 var job = new CronJob(e.date, function() {
-                    refreshTradfriDevices(function() {
-                        var message = "";
-                        e.bulbs.forEach(function(b) {
-                            devices.forEach(function(d) {
-                                if (b == d.name) {
-                                    if (e.toggle == "off" && d.on) {
-                                        hub.toggleDevice(d.id);
+                    refreshTradfriDevices(function(result) {
+                        if (result) {
+                            var message = "";
+                            e.bulbs.forEach(function(b) {
+                                devices.forEach(function(d) {
+                                    if (b == d.name) {
+                                        if (e.toggle == "off" && d.on) {
+                                            hub.toggleDevice(d.id);
+                                        }
+                                        else if (e.toggle == "on" && !d.on) {
+                                            hub.toggleDevice(d.id);
+                                        }
                                     }
-                                    else if (e.toggle == "on" && !d.on) {
-                                        hub.toggleDevice(d.id);
-                                    }
-                                }
-                            }); 
-                            if (message == "")
-                                message += b;
-                            else
-                                message += ", " + b;
-                        });                     
-                        send(channelNameToID(config.options.channels.home), util.format(
-                                strings.announcements.schedule, 
-                                e.toggle,
-                                message
-                            ), false);
+                                }); 
+                                if (message == "")
+                                    message += b;
+                                else
+                                    message += ", " + b;
+                            });                     
+                            send(channelNameToID(config.options.channels.home), util.format(
+                                    strings.announcements.schedule, 
+                                    e.toggle,
+                                    message
+                                ), false);
+                        }
+                        else {
+                            send(channelNameToID(config.options.channels.home), strings.misc.tradfrierror, false);                
+                        }
                     });
                 }, function () {}, true);
                 scheduleJobs.push(job);
@@ -1968,6 +1987,7 @@ var isplushie = false;
 var npradio   = {};
 var np        = {};
 var brains    = {};
+var brainProg = 0;
 var messages  = {};
 var hTrack    = {};
 
@@ -2579,18 +2599,23 @@ function processIgnore(userID) {
     return okay;
 }
 
-function setMood(name) {
+function setMood(name, callback) {
     tradfri.moods.forEach(function(m) { 
         if (m.name == name) {
-            found = true;   
-            refreshTradfriDevices(function() {
-                m.devices.forEach(function(d1) {
-                    devices.forEach(function(d2) {
-                        if (d1.name == d2.name) {
-                            setBulb(d1.config, d2.id);
-                        }
+            refreshTradfriDevices(function(result) {
+                if (result) {
+                    m.devices.forEach(function(d1) {
+                        devices.forEach(function(d2) {
+                            if (d1.name == d2.name) {
+                                setBulb(d1.config, d2.id);
+                            }
+                        });
                     });
-                }); 
+                    callback(true);
+                }
+                else {
+                    callback(false);
+                }
             });
         }
     }); 
@@ -2738,6 +2763,8 @@ function openBrain(name) {
                 messages[name].push(line);
                 brains[name].addMass(line);
             }
+        }).on("close", function() {
+            brains[name].loaded = true;
         });
     }
 }
@@ -2780,6 +2807,27 @@ function saveAllBrains() {
     Object.keys(brains).forEach(function(b) {
         saveBrain(b);
     });
+}
+
+function startupProcedure() {
+    startTime = new Date();
+    console.log(strings.debug.started);
+    console.log(util.format(
+        strings.debug.startedtime,
+        moment.tz(startTime, "UTC").format("YYYY-MM-DD, HH:mm")
+    ));
+
+    loadAnnouncements();
+    loadLyrics();
+    loadArtwork();
+    loadNPToggles();
+    loadBlacklist();
+    loadIgnore();
+    loadEEG();
+    loadTimezones();
+    loadTradfri();
+    loadServer();
+    loadPhases();
 }
 
 /*
@@ -2853,7 +2901,10 @@ function loadAnnouncements() {
                     strings.announcements.gotn.nowB,
                     mentionRole(config.options.squadid)
                 ), true);
-                setMood("gotn");
+                setMood("gotn", function(result) {
+                    if (!result)
+                        send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                });                
 
                 setTimeout(function() {
 
@@ -2870,7 +2921,10 @@ function loadAnnouncements() {
         var jobAfter = new CronJob(new Date(date - after), function() {
                 send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.afterA, true);
                 send(channelNameToID(config.options.channels.announceB), strings.announcements.gotn.afterB, true);
-                setMood("norm");
+                setMood("norm", function(result) {
+                    if (!result)
+                        send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                });
 
                 send(channelNameToID(config.options.channels.debug), strings.debug.nptoggles.autooff, false);
                 config.options.channels.nowplaying.forEach(function(n, i) {
@@ -2926,52 +2980,28 @@ function processPhases() {
 /*
  * Called if phases were successfully loaded.
  */
-function phaseSuccess() {
-    fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
-    processPhases();
-    console.log(strings.debug.phases.done);
+function phaseDone(fail) {
+    if (fail) {
+        apifail = true;
 
-    loadBrain();
-    loadLyrics();
-    loadArtwork();
-    loadNPToggles();
-    loadBlacklist();
-    loadIgnore();
-    loadEEG();
-    loadTimezones();
-    loadTradfri();
-    loadBot();
-    loadServer();
-}
-
-/*
- * Called if phases were not loaded.
- */
-function phaseFail() {
-    apifail = true;
-
-    if (fs.existsSync(config.options.phasepath)) {
-        console.log(strings.debug.phases.file);     
-        phases = JSON.parse(fs.readFileSync(config.options.phasepath, "utf8"));
-        processPhases();
-        console.log(strings.debug.phases.filed);
+        if (fs.existsSync(config.options.phasepath)) {
+            console.log(strings.debug.phases.file);     
+            phases = JSON.parse(fs.readFileSync(config.options.phasepath, "utf8"));
+            processPhases();
+            console.log(strings.debug.phases.filed);
+        }
+        else {
+            filefail = true;
+            console.log(strings.debug.phases.no);
+        }
     }
     else {
-        filefail = true;
-        console.log(strings.debug.phases.no);
+        fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
+        processPhases();
+        console.log(strings.debug.phases.done);
     }
 
     loadBrain();
-    loadLyrics();
-    loadArtwork();
-    loadNPToggles();
-    loadBlacklist();
-    loadIgnore();
-    loadEEG();
-    loadTimezones();
-    loadTradfri();
-    loadBot();
-    loadServer();
 }
 
 /*
@@ -2989,7 +3019,7 @@ function loadPhases() {
             var response = JSON.parse(xhr.responseText);
             phases = response.phasedata;
 
-            phaseSuccess();
+            phaseDone(false);
         }
     }
     xhr.onerror = function(err) {
@@ -2999,7 +3029,7 @@ function loadPhases() {
         ));
         xhr.abort();
 
-        phaseFail();
+        phaseDone(true);
     }
     xhr.ontimeout = function() {
         console.log(util.format(
@@ -3008,7 +3038,7 @@ function loadPhases() {
         ));
         xhr.abort();
 
-        phaseFail();
+        phaseDone(true);
     }
 
     xhr.send();
@@ -3018,6 +3048,8 @@ function loadPhases() {
  * Loads the brain data, or creates new.
  */
 function loadBrain() {
+    console.log(strings.debug.brain.start);
+
     channels.list.forEach(function(c) {
         if (brains[c.brain] == undefined) {
             brains[c.brain] = new jsmegahal(config.brain.markov, config.brain.default, config.brain.maxloop);
@@ -3026,6 +3058,11 @@ function loadBrain() {
             messages[c.brain] = [];
         }
     });
+    console.log(util.format(
+        strings.debug.brain.prog,
+        brainProg,
+        Object.keys(brains).length
+    ));
 
     Object.keys(brains).forEach(function(b) {
         if (fs.existsSync(config.brain.path + b)) {
@@ -3047,8 +3084,39 @@ function loadBrain() {
                 strings.debug.brain.new,
                 b
             ));
+            b.loaded = true;
+
         }
     }); 
+
+    loadBrainWait();
+}
+
+function loadBrainWait() {
+    var counter = 0;
+    Object.keys(brains).forEach(function(b) {
+        if (brains[b].loaded)
+            counter++;
+    });
+
+    if (counter > brainProg) {
+        brainProg = counter;
+        console.log(util.format(
+            strings.debug.brain.prog,
+            brainProg,
+            Object.keys(brains).length
+        ));        
+    }
+
+    if (counter == Object.keys(brains).length) {
+        console.log(strings.debug.brain.end);
+        loadBot();
+    }
+    else {
+        setTimeout(function() {
+            loadBrainWait();
+        }, 100);
+    }
 }
 
 /*
@@ -3201,15 +3269,11 @@ function loadTimezones() {
  * Loads the Tradfri client.
  */
 function loadTradfri() {
-
     hub = tradfrilib.create({
         "coapClientPath": config.options.coappath,
         "identity":       dtls.identity,
         "preSharedKey":   dtls.preSharedKey,
         "hubIpAddress":   dtls.hubIpAddress
-    });
-
-    refreshTradfriDevices(function() {
     });
 }
 
@@ -3240,11 +3304,11 @@ function refreshTradfriDevices(callback) {
                 ));
             });
 
-        callback();
+        callback(true);
 
-    }).catch((error) => {
+    }).catch((error) => {    	
         console.log(strings.debug.tradfri.errorA);
-        refreshTradfriDevices(callback);
+        callback(false);
     });
 }
 
@@ -3370,51 +3434,63 @@ function processReqEEG(query) {
 
 function processReqToggle(query) {
     if (query.bulbs != undefined) { 
-        var found = false;
-        query.bulbs.split(",").forEach(function(b) {
-            devices.forEach(function(d) {       
-                if (d.name == b) {
-                    hub.toggleDevice(d.id);
-                    found = true;
-                }
-            });
+        refreshTradfriDevices(function(result) {
+            if (result) {
+                var found = false;
+                query.bulbs.split(",").forEach(function(b) {
+                    devices.forEach(function(d) {       
+                        if (d.name == b) {
+                            hub.toggleDevice(d.id);
+                            found = true;
+                        }
+                    });
+                });
+                if (found)
+                    send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
+                        strings.voice.toggle.message,
+                        query.bulbs
+                    ), false);
+                else
+                    send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.toggle.error, false);
+            }
+            else {
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.misc.tradfrierror, false);                
+            }
         });
-        if (found)
-            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
-                strings.voice.toggle.message,
-                query.bulbs
-            ), false);
-        else
-            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.toggle.error, false);
     }
 }
 
 function processReqState(query) {
     if (query.bulbs != undefined && query.state != undefined) {
-        refreshTradfriDevices(function() {
-            var found = false;
-            query.bulbs.split(",").forEach(function(b) {
-                devices.forEach(function(d) {  
-                    if (d.name == b) {
-                        if (d.on == true && query.state == "off") {
-                            hub.toggleDevice(d.id);
-                            found = true;
+        refreshTradfriDevices(function(result) {
+        	if (result) {
+                var found = false;
+                query.bulbs.split(",").forEach(function(b) {
+                    devices.forEach(function(d) {  
+                        if (d.name == b) {
+                            if (d.on == true && query.state == "off") {
+                                hub.toggleDevice(d.id);
+                                found = true;
+                            }
+                            else if (d.on == false && query.state == "on") {
+                                hub.toggleDevice(d.id);
+                                found = true;
+                            }
                         }
-                        else if (d.on == false && query.state == "on") {
-                            hub.toggleDevice(d.id);
-                            found = true;
-                        }
-                    }
+                    });
                 });
-            });
-            if (found)
-                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
-                    strings.voice.state.message,
-                    query.state,
-                    query.bulbs
-                ), false);
-            else
-                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.state.error, false);
+                if (found)
+                    send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
+                        strings.voice.state.message,
+                        query.state,
+                        query.bulbs
+                    ), false);
+                else
+                    send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.voice.state.error, false);
+            }
+            else {
+                send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.misc.tradfrierror, false);                
+            }
         });
     }
 }
@@ -3422,19 +3498,24 @@ function processReqState(query) {
 function processReqMood(query) {
     if (query.mood != undefined) {
         var found = false;
+        var result = false;
         tradfri.moods.forEach(function(m) {     
             if (m.name == query.mood) {
-                setMood(m.name);
+                setMood(m.name, function(result) {
+                    if (result)
+                        send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
+                            strings.commands.mood.messageC,
+                            query.mood
+                        ), false);
+                    else
+                        send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.misc.tradfrierror, false);
+                });
                 found = true;
             }
         });
-        if (found)
-            send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + util.format(
-                strings.commands.mood.messageC,
-                query.mood
-            ), false);
-        else
+        if (!found) {
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.mood.error, false);
+        }
     }
 }
 
@@ -4119,11 +4200,4 @@ function loopBrainSave() {
 
 
 // Start the bot.
-startTime = new Date();
-console.log(strings.debug.started);
-console.log(util.format(
-    strings.debug.startedtime,
-    moment.tz(startTime, "UTC").format("YYYY-MM-DD, HH:mm")
-));
-loadAnnouncements();
-loadPhases();
+startupProcedure();

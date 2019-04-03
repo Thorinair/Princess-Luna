@@ -420,17 +420,18 @@
 		"npback":     "Hey, I'm back! Now back to track posting..."
 	},	
 	"misc": {
-		"welcome":   "**My children, welcome %s to our beautiful night!**",
-		"load":      "Hey Thori, I'm back! My current version is v%s.",
-		"filefail":  "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
-		"apifail":   "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
-		"timezone":  "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
-		"noperm":    "I am sorry %s, but only PonyvilleFM DJs and admins are allowed to use this command.",
-		"noadmin":   "I am sorry %s, but only Thorinair is allowed to use this command.",
-		"left":      "%s on %s at %s",
-		"gold":      "%sg %ss %sc",
-		"voicetag":  "`[voice]` ",
-		"h":         "h",
+		"welcome":      "**My children, welcome %s to our beautiful night!**",
+		"load":         "Hey Thori, I'm back! My current version is v%s.",
+		"filefail":     "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
+		"apifail":      "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
+		"timezone":     "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
+		"noperm":       "I am sorry %s, but only PonyvilleFM DJs and admins are allowed to use this command.",
+		"noadmin":      "I am sorry %s, but only Thorinair is allowed to use this command.",
+		"tradfrierror": "Thori, I am having trouble connecting to the Tradfri hub. Please try again later.",
+		"left":         "%s on %s at %s",
+		"gold":         "%sg %ss %sc",
+		"voicetag":     "`[voice]` ",
+		"h":            "h",
 		"eeg": {
 			"basic": {
 				"title":  "Timestamp,Battery,Signal\n",
@@ -466,23 +467,26 @@
 			"stop":  "Finished downloading!"
 		},
 		"brain": {
-			"old":     "A brain \"%s\" already seems to exit. Loading it now...",
+			"old":     "A brain \"%s\" already seems to exist. Loading it now...",
 			"new":     "I don't seem to have a brain \"%s\". I have created a new one.",
 			"done":    "I've finished loading my brain \"%s\".",
-			"error":   "I am having some trouble saving my brain. Here is more info: %s"
+			"error":   "I am having some trouble saving my brain. Here is more info: %s",
+			"start":   "I have started loading my brain data. This may take a while...",
+			"prog":    "  %s/%s",
+			"end":     "I've finished loading my brain data. Proceeding."
 		},
 		"lyrics": {
-			"old":     "A lyrics file already seems to exit. Loading it now...",
+			"old":     "A lyrics file already seems to exist. Loading it now...",
 			"new":     "I don't seem to have a lyrics file. I have created a new one.",
 			"done":    "I've finished loading my lyrics file."
 		},
 		"artwork": {
-			"old":     "An artwork file already seems to exit. Loading it now...",
+			"old":     "An artwork file already seems to exist. Loading it now...",
 			"new":     "I don't seem to have an artwork file. I have created a new one.",
 			"done":    "I've finished loading my artwork file."
 		},
 		"nptoggles": {
-			"old":     "A Now Playing toggle file already seems to exit. Loading it now...",
+			"old":     "A Now Playing toggle file already seems to exist. Loading it now...",
 			"new":     "I don't seem to have a Now Playing toggle file. I have created a new one.",
 			"done":    "I've finished loading my Now Playing toggle file.",
 			"add":     "I am subscribing the channel #%s (%s) to automatic Now Playing announcements.",
@@ -491,26 +495,26 @@
 			"autooff": "Thori, I am **disabling** the automatic posting of Now Playing info."
 		},
 		"blacklist": {
-			"old":     "A blacklist file already seems to exit. Loading it now...",
+			"old":     "A blacklist file already seems to exist. Loading it now...",
 			"new":     "I don't seem to have a blacklist file. I have created a new one.",
 			"done":    "I've finished loading my blacklist file.",
 			"add":     "I am adding the user #%s to the blacklist.",
 			"remove":  "I am removing the user #%s from the blacklist."
 		},
 		"ignore": {
-			"old":     "An ignore file already seems to exit. Loading it now...",
+			"old":     "An ignore file already seems to exist. Loading it now...",
 			"new":     "I don't seem to have an ignore file. I have created a new one.",
 			"done":    "I've finished loading my ignore file.",
 			"add":     "I am adding the user #%s to the ignore.",
 			"remove":  "I am removing the user #%s from the ignore."
 		},
 		"eeg": {
-			"old":     "An EEG config file already seems to exit. Loading it now...",
+			"old":     "An EEG config file already seems to exist. Loading it now...",
 			"new":     "I don't seem to have an EEG config file. I have created a new one.",
 			"done":    "I've finished loading my EEG config file."
 		},
 		"seizure": {
-			"old":     "A seizure file already seems to exit. Loading it now...",
+			"old":     "A seizure file already seems to exist. Loading it now...",
 			"new":     "I don't seem to have a seizure file. I have created a new one.",
 			"done":    "I've finished loading my seizure file."
 		},
