@@ -448,6 +448,11 @@
 				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
 				"upload": "EEG EMA - %s - %s.csv"
 			}
+		},
+		"celly": {
+			"messageA": "Thori, Celly has sent me some debug data. I have relayed it to you below.\n```",
+			"messageB": "%s: %s\n",
+			"messageC": "```"
 		}
 	},
 	"debug": {

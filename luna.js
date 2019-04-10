@@ -3437,6 +3437,25 @@ function processReqEEG(query) {
     eegVaripassWrite();
 }
 
+function processReqCelly(query) {
+	console.log("lel");
+
+	delete query.key;
+	delete query.action;
+
+	var message = strings.misc.celly.messageA;
+	Object.keys(query).forEach(function(q) {
+		message += util.format(
+            strings.misc.celly.messageB,
+            q,
+            query[q]
+        );
+    });
+	message += strings.misc.celly.messageC;
+
+	send(channelNameToID(config.options.channels.debug), message, false);
+}
+
 function processReqToggle(query) {
     if (query.bulbs != undefined) { 
         refreshTradfriDevices(function(result) {
@@ -3607,6 +3626,7 @@ var processRequest = function(req, res) {
                 case "motion": processReqMotion(query); break;
                 case "boot":   processReqBoot(query);   break;
                 case "eeg":    processReqEEG(query);    break;
+                case "celly":  processReqCelly(query);  break;
                 case "toggle": processReqToggle(query); break;
                 case "state":  processReqState(query);  break;
                 case "mood":   processReqMood(query);   break;
