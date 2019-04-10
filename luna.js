@@ -391,7 +391,7 @@ comm.moon = function(data) {
 comm.room = function(data) {
 
     var payload = {
-            "key": varipass.alicorn.key,
+            "key": varipass.main.key,
             "action": "all"
         };
 
@@ -419,14 +419,19 @@ comm.room = function(data) {
                 mention(data.userID),
                 getTimeString(time),
                 time.seconds,
-                findVariable(vpData, varipass.alicorn.ids.temperature).history[0].value,
-                findVariable(vpData, varipass.alicorn.ids.humidity).history[0].value,
-                findVariable(vpData, varipass.alicorn.ids.pressure).history[0].value,
-                findVariable(vpData, varipass.alicorn.ids.airquality).history[0].value,
-                findVariable(vpData, varipass.alicorn.ids.magnitude).history[0].value,
-                findVariable(vpData, varipass.alicorn.ids.inclination).history[0].value,
-                findVariable(vpData, varipass.alicorn.ids.counts).history[0].value,
-                findVariable(vpData, varipass.alicorn.ids.dose).history[0].value
+                findVariable(vpData, varipass.main.ids.temperature).history[0].value,
+                findVariable(vpData, varipass.main.ids.humidity).history[0].value,
+                findVariable(vpData, varipass.main.ids.pressure).history[0].value,
+                findVariable(vpData, varipass.main.ids.co2).history[0].value,
+                findVariable(vpData, varipass.main.ids.voc).history[0].value,
+                findVariable(vpData, varipass.main.ids.light).history[0].value,
+                findVariable(vpData, varipass.main.ids.magnitude).history[0].value,
+                findVariable(vpData, varipass.main.ids.inclination).history[0].value,
+                findVariable(vpData, varipass.main.ids.vibrations_x).history[0].value,
+                findVariable(vpData, varipass.main.ids.vibrations_y).history[0].value,
+                findVariable(vpData, varipass.main.ids.vibrations_z).history[0].value,
+                findVariable(vpData, varipass.main.ids.counts).history[0].value,
+                findVariable(vpData, varipass.main.ids.dose).history[0].value
             ), true);
         }
     }
@@ -4094,8 +4099,8 @@ function loopNowPlaying() {
 
 function sendDoseEMA(value) {
 	var payload = {
-            "key": varipass.alicorn.key,
-            "id": varipass.alicorn.ids.doseema,
+            "key": varipass.main.key,
+            "id": varipass.main.ids.doseema,
             "action": "write",
             "value": value
         };
@@ -4146,7 +4151,7 @@ function sendDoseEMA(value) {
 
 function loopGeigerCalculation() {
 	var payload = {
-            "key": varipass.alicorn.key,
+            "key": varipass.main.key,
             "action": "all"
         };
 
@@ -4158,8 +4163,8 @@ function loopGeigerCalculation() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             var vpData = JSON.parse(xhr.responseText);  
             
-            var vpDose = findVariable(vpData, varipass.alicorn.ids.dose).history;
-            var vpDoseEMA = findVariable(vpData, varipass.alicorn.ids.doseema).history;
+            var vpDose = findVariable(vpData, varipass.main.ids.dose).history;
+            var vpDoseEMA = findVariable(vpData, varipass.main.ids.doseema).history;
 
             if (!(doseTime != undefined && vpDose[0].time <= doseTime)) {
             	doseTime = vpDose[0].time;
