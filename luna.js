@@ -3354,9 +3354,13 @@ function processReqMotion(query) {
 
 function processReqBoot(query) {
     if (query.device != undefined) {
+    	var now = new Date();
+        var momentTime = moment.tz(now, "UTC");
         send(channelNameToID(config.options.channels.debug), util.format(
                 strings.announcements.boot,
-                query.device
+                query.device,
+                momentTime.format("ddd MMM DD, YYYY"),
+                momentTime.format("HH:mm:ss (z)")
             ), false);
     }
 }

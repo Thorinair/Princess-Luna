@@ -41,7 +41,7 @@
 			"messageB": "Here is how the Moon looks like right now."
 		},
 		"room": {
-			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago. Radiation data was measured by Chryssy, while the rest of the data was measured by Celly.\n```\nTemperature:          %s °C\nHumidity:             %s %\nPressure:             %s mbar\nCO2 Concentration:    %s ppm\nVOC Concentration:    %s ppb\nAmbient Light:        %s\nMagnetic Magnitude:   %s uT\nMagnetic Inclination: %s °\nVibrations X:         %s\nVibrations Y:         %s\nVibrations Z:         %s\nGeiger Counts:        %s CPM\nRadiation Dose Rate:  %s uSv/h```",
+			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago. Radiation data was measured by Chryssy, while the rest of the data was measured by Celly.\n```\nTemperature:          %s °C\nHumidity:             %s %\nPressure:             %s hPa\nCO2 Concentration:    %s ppm\nVOC Concentration:    %s ppb\nAmbient Light:        %s\nMagnetic Magnitude:   %s uT\nMagnetic Inclination: %s °\nVibrations X:         %s\nVibrations Y:         %s\nVibrations Z:         %s\nGeiger Counts:        %s CPM\nRadiation Dose Rate:  %s uSv/h```",
 			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
 		},
 		"power": {
@@ -412,7 +412,7 @@
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"dosehigh":   "@everyone, WARNING: Radiation has exceeded the set maximum allowed level of %s uSv/h! I am currently reading an average of **%s uSv/h**!",
 		"doselow":    "@everyone, The radiation has dropped back to acceptable levels. I am currently reading an average of **%s uSv/h** out of %s uSv/h allowed.",
-		"boot":       "Thori, I have detected that the device **%s** has booted up.",
+		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
 		"schedule":   "As scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
 		"nowplaying": "**Now playing:** %s",
 		"nperror":    "There appears to be a new track playing, but I was unable to read what it is.",
