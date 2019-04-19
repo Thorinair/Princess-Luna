@@ -430,8 +430,11 @@ comm.room = function(data) {
                 findVariable(vpData, varipass.main.ids.vibrations_x).history[0].value,
                 findVariable(vpData, varipass.main.ids.vibrations_y).history[0].value,
                 findVariable(vpData, varipass.main.ids.vibrations_z).history[0].value,
-                findVariable(vpData, varipass.main.ids.counts).history[0].value,
-                findVariable(vpData, varipass.main.ids.dose).history[0].value
+                findVariable(vpData, varipass.main.ids.gravity_x).history[0].value,
+                findVariable(vpData, varipass.main.ids.gravity_y).history[0].value,
+                findVariable(vpData, varipass.main.ids.gravity_z).history[0].value,
+                findVariable(vpData, varipass.main.ids.doseema).history[0].value,
+                findVariable(vpData, varipass.main.ids.counts).history[0].value
             ), true);
         }
     }

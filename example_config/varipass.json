@@ -13,9 +13,12 @@
 			"vibrations_x": "0000AAAA",
 			"vibrations_y": "0000AAAA",
 			"vibrations_z": "0000AAAA",
+			"gravity_x":    "0000AAAA",
+			"gravity_y":    "0000AAAA",
+			"gravity_z":    "0000AAAA",
+			"doseema":      "0000AAAA",
 			"counts":       "0000AAAA",
-			"dose":         "0000AAAA",
-			"doseema":      "0000AAAA"
+			"dose":         "0000AAAA"
 		}
 	},
 	"eeg": {
