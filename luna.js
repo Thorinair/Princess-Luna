@@ -4126,7 +4126,7 @@ function sendDoseEMA(value) {
             "key": varipass.main.key,
             "id": varipass.main.ids.doseema,
             "action": "write",
-            "value": value
+            "value": value.toFixed(4)
         };
 
     var xhr = new XMLHttpRequest();
