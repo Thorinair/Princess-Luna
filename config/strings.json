@@ -104,11 +104,12 @@
 		},
 		"help": {
 			"message":  "%s, check your direct messages, I've sent you the information there!",
-			"messageA": "Here are some of the commands you can use:",
+			"messageA": "**Here are some of the commands you can use:**",
 			"messageB": "\n• `%s%s` %s",
-			"messageC": "`%s%s`",
-			"messageD": "\n• I can also interract with others. Use any of the following commands and mention somepony or multiple of them afterwards: %s.",
-			"messageE": "\n• You can also talk with me by mentioning me in the chat."
+			"messageC": "**The following commands may only be used by PonyvilleFM DJs and related roles:**",
+			"messageD": "`%s%s`",
+			"messageE": "\n\nI can also interract with others. Use any of the following commands and mention somepony or multiple of them afterwards: %s.",
+			"messageF": "\n\nLastly, you may have a conversation with me by mentioning me in the chat. Have fun!"
 		},
 
 

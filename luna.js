@@ -184,116 +184,6 @@ comm.np = function(data) {
         ), true);
 };
 
-// Command: !lyrics
-comm.lyrics = function(data) {
-    var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-
-    if (param == "" || param == config.options.commandsymbol + data.command) {
-        if (lyrics[np.nowplaying] != undefined) {
-
-            sendLargeMessage(data, lyrics[np.nowplaying].split("\n"), util.format(
-                strings.commands.lyrics.radio,
-                mention(data.userID)
-            ), true);
-
-        }
-        else {
-
-            send(data.channelID, util.format(
-                strings.commands.lyrics.errorB,
-                mention(data.userID)
-            ), true);
-
-        }
-    }
-    else if (param == "list") {
-        if (bot.channels[data.channelID] != undefined)  
-            send(data.channelID, util.format(
-                strings.commands.lyrics.listA, 
-                mention(data.userID)
-            ), true);
-
-        data.channelID = data.userID;
-        sendLargeMessage(data, Object.keys(lyrics).sort(), util.format(
-            strings.commands.lyrics.listB
-        ), false);
-    }
-    else if (lyrics[param] != undefined) {
-
-        sendLargeMessage(data, lyrics[param].split("\n"), util.format(
-            strings.commands.lyrics.message,
-            mention(data.userID)
-        ), true);
-
-    }
-    else {
-        send(data.channelID, util.format(
-            strings.commands.lyrics.errorA,
-            mention(data.userID)
-        ), true);
-    }
-};
-
-// Command: !artwork
-comm.artwork = function(data) {
-    var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-
-    if (param == "" || param == config.options.commandsymbol + data.command) {
-        if (artwork[np.nowplaying] != undefined) {
-
-            send(data.channelID, util.format(
-                strings.commands.artwork.load,
-                mention(data.userID)
-            ), true);
-
-            download(artwork[np.nowplaying], config.options.artimg, function() {
-                console.log(strings.debug.download.stop);
-                embed(data.channelID, strings.commands.artwork.radio, config.options.artimg, np.nowplaying + ".png", true, true);
-            });
-
-        }
-        else {
-
-            send(data.channelID, util.format(
-                strings.commands.artwork.errorB,
-                mention(data.userID)
-            ), true);
-
-        }
-    }
-    else if (param == "list") {
-        if (bot.channels[data.channelID] != undefined)  
-            send(data.channelID, util.format(
-                strings.commands.artwork.listA, 
-                mention(data.userID)
-            ), true);
-
-        data.channelID = data.userID;
-        sendLargeMessage(data, Object.keys(artwork).sort(), util.format(
-            strings.commands.artwork.listB
-        ), false);
-    }
-    else if (artwork[param] != undefined) {
-
-        send(data.channelID, util.format(
-            strings.commands.artwork.load,
-            mention(data.userID)
-        ), true);
-
-        download(artwork[param], config.options.artimg, function() {
-            console.log(strings.debug.download.stop);
-            embed(data.channelID, strings.commands.artwork.message, config.options.artimg, param + ".png", true, true);
-        });
-
-    }
-    else {
-        send(data.channelID, util.format(
-            strings.commands.artwork.errorA,
-            mention(data.userID)
-        ), true);
-    }
-};
-
 // Command: !phase
 comm.phase = function(data) {
     var dateNow = new Date();
@@ -929,7 +819,7 @@ comm.help = function(data) {
 
 
     setTimeout(function() {
-        var reply = "";
+        var reply = strings.commands.help.messageC;
 
         commands.list.forEach(function(c) {
             if (c.type == "dj")
@@ -947,7 +837,7 @@ comm.help = function(data) {
                 if (interractionCommands != "")
                     interractionCommands += ", ";
                 interractionCommands += util.format(
-                    strings.commands.help.messageC, 
+                    strings.commands.help.messageD, 
                     config.options.commandsymbol,
                     c.command
                 );
@@ -955,11 +845,11 @@ comm.help = function(data) {
         });
 
         reply += util.format(
-            strings.commands.help.messageD,
+            strings.commands.help.messageE,
             interractionCommands
         );
 
-        reply += strings.commands.help.messageE;
+        reply += strings.commands.help.messageF;
 
         send(data.userID, reply, true);
     }, 2000);
@@ -976,6 +866,116 @@ comm.help = function(data) {
 // Interraction commands are called dynamically by type.
 
 
+
+// Command: !lyrics
+comm.lyrics = function(data) {
+    var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+
+    if (param == "" || param == config.options.commandsymbol + data.command) {
+        if (lyrics[np.nowplaying] != undefined) {
+
+            sendLargeMessage(data, lyrics[np.nowplaying].split("\n"), util.format(
+                strings.commands.lyrics.radio,
+                mention(data.userID)
+            ), true);
+
+        }
+        else {
+
+            send(data.channelID, util.format(
+                strings.commands.lyrics.errorB,
+                mention(data.userID)
+            ), true);
+
+        }
+    }
+    else if (param == "list") {
+        if (bot.channels[data.channelID] != undefined)  
+            send(data.channelID, util.format(
+                strings.commands.lyrics.listA, 
+                mention(data.userID)
+            ), true);
+
+        data.channelID = data.userID;
+        sendLargeMessage(data, Object.keys(lyrics).sort(), util.format(
+            strings.commands.lyrics.listB
+        ), false);
+    }
+    else if (lyrics[param] != undefined) {
+
+        sendLargeMessage(data, lyrics[param].split("\n"), util.format(
+            strings.commands.lyrics.message,
+            mention(data.userID)
+        ), true);
+
+    }
+    else {
+        send(data.channelID, util.format(
+            strings.commands.lyrics.errorA,
+            mention(data.userID)
+        ), true);
+    }
+};
+
+// Command: !artwork
+comm.artwork = function(data) {
+    var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+
+    if (param == "" || param == config.options.commandsymbol + data.command) {
+        if (artwork[np.nowplaying] != undefined) {
+
+            send(data.channelID, util.format(
+                strings.commands.artwork.load,
+                mention(data.userID)
+            ), true);
+
+            download(artwork[np.nowplaying], config.options.artimg, function() {
+                console.log(strings.debug.download.stop);
+                embed(data.channelID, strings.commands.artwork.radio, config.options.artimg, np.nowplaying + ".png", true, true);
+            });
+
+        }
+        else {
+
+            send(data.channelID, util.format(
+                strings.commands.artwork.errorB,
+                mention(data.userID)
+            ), true);
+
+        }
+    }
+    else if (param == "list") {
+        if (bot.channels[data.channelID] != undefined)  
+            send(data.channelID, util.format(
+                strings.commands.artwork.listA, 
+                mention(data.userID)
+            ), true);
+
+        data.channelID = data.userID;
+        sendLargeMessage(data, Object.keys(artwork).sort(), util.format(
+            strings.commands.artwork.listB
+        ), false);
+    }
+    else if (artwork[param] != undefined) {
+
+        send(data.channelID, util.format(
+            strings.commands.artwork.load,
+            mention(data.userID)
+        ), true);
+
+        download(artwork[param], config.options.artimg, function() {
+            console.log(strings.debug.download.stop);
+            embed(data.channelID, strings.commands.artwork.message, config.options.artimg, param + ".png", true, true);
+        });
+
+    }
+    else {
+        send(data.channelID, util.format(
+            strings.commands.artwork.errorA,
+            mention(data.userID)
+        ), true);
+    }
+};
 
 // Command: !nptoggle
 comm.nptoggle = function(data) {

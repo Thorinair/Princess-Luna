@@ -21,8 +21,6 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!mlp` Lists the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.
     - `!time` Lists the current date and time. You may also specify the timezone after the command.
     - `!np` Lists the currently playing track on PonyvilleFM.
-    - `!lyrics` Lists lyrics of a specified track. Also functions similar like previous command to list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
-    - `!artwork` Shows artwork for a specified track. Also functions similar like previous command to show artwork for tracks on PonyvilleFM. Use "list" parameter to list all known artworks.
     - `!phase` Lists info about the Moon phases. You may also specify the timezone after the command.
     - `!moon` Sends an image of the Moon as it is right now.
     - `!room` Lists the physical status of Thorinair's real life room. Powered using the [VariPass](https://varipass.org) website.
@@ -38,6 +36,8 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!help` Lists all available commands.
     - The bot can interract with people. Mention someone or multiple people after the command to interract with them. Supported commands: `!hug`, `!kiss`, `!boop`, `!glomp`, `!snuggle`, `!nuzzle`, `!wings`, `!snack`, `!floof`, `!nom`, `!preen`, `!blep`, `!pet`, `!groom`, `!tickle`, `!plushie`, `!unplushie`.
 * Commands usable by DJs (set roles):
+    - `!lyrics` Lists lyrics of a specified track. Can also list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
+    - `!artwork` Shows artwork for a specified track. Functions similar like previous command to show artwork for tracks on PonyvilleFM. Use "list" parameter to list all known artworks.
     - `!nptoggle` Manually toggles the automatic listing of Now Playing info for a specific channel. Only usable if given a role or in private messages.
     - `!npoverride` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
 * Private commands for the admin:

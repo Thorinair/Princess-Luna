@@ -21,16 +21,6 @@
 			"type":    "public"
 		},
 		{
-			"command": "lyrics",
-			"help":    "Ask me about lyrics for a specific track. You can also use it like the previous command to get lyrics for music on PonyvilleFM. Use the \"list\" parameter to see all the tracks I know.",
-			"type":    "public"
-		},
-		{
-			"command": "artwork",
-			"help":    "Ask me to show the artwork for a specific track. You can also use it like the previous command to get artwork for music on PonyvilleFM. Use the \"list\" parameter to see all the tracks I have an artwork for.",
-			"type":    "public"
-		},
-		{
 			"command": "phase",
 			"help":    "Ask me about the status of the Moon's phase. You may also specify the timezone after the command.",
 			"type":    "public"
@@ -190,13 +180,23 @@
 
 
 		{
+			"command": "lyrics",
+			"help":    "Ask me the lyrics of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I know.",
+			"type":    "dj"
+		},
+		{
+			"command": "artwork",
+			"help":    "Ask me to show the artwork of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I have an artwork for.",
+			"type":    "dj"
+		},
+		{
 			"command": "nptoggle",
-			"help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel. You can only use this if given PonyvilleFM permissions.",
+			"help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel.",
 			"type":    "dj"
 		},
 		{
 			"command": "npoverride",
-			"help":    "Ask me to manually update the info about the track currently playing. You can only use this if given PonyvilleFM permissions.",
+			"help":    "Ask me to manually update the info about the track currently playing.",
 			"type":    "dj"
 		},
 
