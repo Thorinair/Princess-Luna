@@ -4209,8 +4209,8 @@ function loopVariPassPull() {
             if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure)) {
             	vpTimePressure = vpPressure[0].time;
 
-            	if (vpPressure[1] != undefined) {
-            		var value = vpPressure[0] - vpPressure[1];
+            	if (vpPressure[1].value != undefined) {
+            		var value = vpPressure[0].value - vpPressure[1].value;
             		if (Math.abs(value) >= config.varipass.pressure.warning) {
             			send(channelNameToID(config.options.channels.home), util.format(
 					        strings.announcements.varipass.pressure,
