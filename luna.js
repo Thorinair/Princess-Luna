@@ -2026,7 +2026,8 @@ var purgeStart = "";
 var purgeEnd   = "";
 
 var doseWasWarned = false;
-var doseTime;
+var vpTimeDose;
+var vpTimePressure;
 
 // Persistant Objects
 var bot;
@@ -3851,7 +3852,7 @@ function loadBot() {
             loadSeizure();
 
             loopNowPlaying();
-            loopGeigerCalculation();
+            loopVariPassPull();
             setTimeout(loopBrainSave, config.brain.timeout * 1000);
         }
     });
@@ -4153,30 +4154,9 @@ function sendDoseEMA(value) {
     }
 
     xhr.send(JSON.stringify(payload));
-
-    if (value > config.geiger.warning) {
-    	if (!doseWasWarned) {
-    		doseWasWarned = true;
-	    	send(channelNameToID(config.options.channels.home), util.format(
-		        strings.announcements.dosehigh,
-		        config.geiger.warning,
-		        value.toFixed(4)
-		    ), false);
-	    }
-    }
-    else {
-    	if (doseWasWarned) {
-    		doseWasWarned = false;
-	    	send(channelNameToID(config.options.channels.home), util.format(
-		        strings.announcements.doselow,
-		        value.toFixed(4),
-		        config.geiger.warning
-		    ), false);
-    	}
-    }
 }
 
-function loopGeigerCalculation() {
+function loopVariPassPull() {
 	var payload = {
             "key": varipass.main.key,
             "action": "all"
@@ -4190,14 +4170,54 @@ function loopGeigerCalculation() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             var vpData = JSON.parse(xhr.responseText);  
             
+            // Geiger Calculation
             var vpDose = findVariable(vpData, varipass.main.ids.dose).history;
             var vpDoseEMA = findVariable(vpData, varipass.main.ids.doseema).history;
 
-            if (!(doseTime != undefined && vpDose[0].time <= doseTime)) {
-            	doseTime = vpDose[0].time;
+            if (!(vpTimeDose != undefined && vpDose[0].time <= vpTimeDose)) {
+            	vpTimeDose = vpDose[0].time;
 
-		    	var alpha = parseFloat(1.0 / config.geiger.samples);
-		    	sendDoseEMA(alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value);
+		    	var alpha = parseFloat(1.0 / config.varipass.geiger.samples);
+		    	var value = alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value;
+		    	sendDoseEMA(value);
+
+			    if (value > config.varipass.geiger.warning) {
+			    	if (!doseWasWarned) {
+			    		doseWasWarned = true;
+				    	send(channelNameToID(config.options.channels.home), util.format(
+					        strings.announcements.varipass.dosehigh,
+					        config.varipass.geiger.warning,
+					        value.toFixed(4)
+					    ), false);
+				    }
+			    }
+			    else {
+			    	if (doseWasWarned) {
+			    		doseWasWarned = false;
+				    	send(channelNameToID(config.options.channels.home), util.format(
+					        strings.announcements.varipass.doselow,
+					        value.toFixed(4),
+					        config.varipass.geiger.warning
+					    ), false);
+			    	}
+			    }
+            }
+
+            var vpPressure = findVariable(vpData, varipass.main.ids.pressure).history;
+
+            // Weather Alerts
+            if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure)) {
+            	vpTimePressure = vpPressure[0].time;
+
+            	if (vpPressure[1] != undefined) {
+            		var value = vpPressure[0] - vpPressure[1];
+            		if (Math.abs(value) >= config.varipass.pressure.warning) {
+            			send(channelNameToID(config.options.channels.home), util.format(
+					        strings.announcements.varipass.pressure,
+					        value.toFixed(2)
+					    ), false);
+            		}
+            	}
             }
 
 	    }
@@ -4216,7 +4236,7 @@ function loopGeigerCalculation() {
 
     xhr.send(JSON.stringify(payload));
 
-    setTimeout(loopGeigerCalculation, config.geiger.timeout * 1000);
+    setTimeout(loopVariPassPull, config.varipass.timeout * 1000);
 }
 
 /*

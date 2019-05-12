@@ -76,10 +76,15 @@
 			"expire": 180
 		}
 	},
-	"geiger": {
+	"varipass": {
 		"timeout": 60,
-		"samples": 20,
-		"warning": 0.2
+		"geiger": {
+			"samples": 20,
+			"warning": 0.2
+		},
+		"pressure": {
+			"warning": 0.2
+		}
 	},
 	"seizure": {
 		"enabled": true,
