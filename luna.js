@@ -1052,6 +1052,31 @@ comm.npoverride = function(data) {
 
 
 
+
+// Command: !stop
+comm.stop = function(data) {
+	if (isLive) {
+		isLive = false;
+	    send(channelNameToID(config.options.channels.debug), strings.commands.stop.message, false);
+
+		send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.afterA, true);
+	    send(channelNameToID(config.options.channels.announceB), strings.announcements.gotn.afterB, true);
+	    setMood("norm", function(result) {
+	        if (!result)
+	            send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+	    });
+
+	    config.options.channels.nowplaying.forEach(function(n, i) {
+	        if (nptoggles[channelNameToID(n)] != undefined)
+	            delete nptoggles[channelNameToID(n)];
+	    });
+	    fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
+	}
+	else {
+	    send(channelNameToID(config.options.channels.debug), strings.commands.stop.error, false);
+	}
+};
+
 // Command: !send
 comm.send = function(data) {    
     var lines = data.message.split("\n");
@@ -2029,6 +2054,8 @@ var doseWasWarned = false;
 var vpTimeDose;
 var vpTimePressure;
 
+var isLive = false;
+
 // Persistant Objects
 var bot;
 var hub;
@@ -2860,10 +2887,6 @@ function loadAnnouncements() {
     dateShort.hours   = parseInt(partsShort[0]);
     dateShort.minutes = parseInt(partsShort[1]);
 
-    // After Message
-    var partsAfter = gotn.announce.after.split(config.separators.time);
-    var after = - (parseInt(partsAfter[0]) * 60 + parseInt(partsAfter[1])) * 60000;
-
     console.log(strings.debug.announcements.load);
 
     gotn.dates.forEach(function(d) {
@@ -2905,6 +2928,8 @@ function loadAnnouncements() {
 
         // Now air-time announcement.
         var jobNow = new CronJob(new Date(date), function() {
+        		isLive = true;
+
                 send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.nowA, true);
                 send(channelNameToID(config.options.channels.announceB), util.format(
                     strings.announcements.gotn.nowB,
@@ -2926,28 +2951,9 @@ function loadAnnouncements() {
                 }, config.options.starttime * 1000);
             }, function () {}, true);
 
-        // After air-time announcement.
-        var jobAfter = new CronJob(new Date(date - after), function() {
-                send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.afterA, true);
-                send(channelNameToID(config.options.channels.announceB), strings.announcements.gotn.afterB, true);
-                setMood("norm", function(result) {
-                    if (!result)
-                        send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
-                });
-
-                send(channelNameToID(config.options.channels.debug), strings.debug.nptoggles.autooff, false);
-                config.options.channels.nowplaying.forEach(function(n, i) {
-                    if (nptoggles[channelNameToID(n)] != undefined)
-                        delete nptoggles[channelNameToID(n)];
-                });
-                fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
-
-            }, function () {}, true);
-
         jobs.push(jobLong);
         jobs.push(jobShort);
         jobs.push(jobNow);
-        jobs.push(jobAfter);
     });
 
     console.log(strings.debug.announcements.done);

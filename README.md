@@ -41,6 +41,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!nptoggle` Manually toggles the automatic listing of Now Playing info for a specific channel. Only usable if given a role or in private messages.
     - `!npoverride` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
 * Private commands for the admin:
+    - `!stop` Stops the currently active Glory of The Night session and sends the relevant announcements.
     - `!send` Sends a message to a channel. Specify the channel name after the command, and message in the lines below.
     - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Use the following regex to remove usernames and timestamps: `([)([0-9]+:[0-9]+ [A-Z]+)(]) .*: `
     - `!purge` Purges data from a brain specified after the command. A starting and ending message should be specified below the command.

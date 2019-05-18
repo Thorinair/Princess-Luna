@@ -215,6 +215,10 @@
 
 
 
+		"stop": {
+			"message":  "Thori, I'm stopping the Glory of The Night session...",
+			"error":    "Thori, there is currently no Glory of The Night session active."
+		},
 		"send": {
 			"message":  "Thori, I'm sending the message now...",
 			"errorA":   "Thori, you need to specify the channel for me to send to.",
@@ -500,8 +504,7 @@
 			"done":    "I've finished loading my Now Playing toggle file.",
 			"add":     "I am subscribing the channel #%s (%s) to automatic Now Playing announcements.",
 			"remove":  "I am unsubscribing the channel #%s (%s) from automatic Now Playing announcements.",
-			"autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info.",
-			"autooff": "Thori, I am **disabling** the automatic posting of Now Playing info."
+			"autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info."
 		},
 		"blacklist": {
 			"old":     "A blacklist file already seems to exist. Loading it now...",

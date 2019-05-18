@@ -202,6 +202,11 @@
 
 
 		{
+			"command": "stop",
+			"help":    "",
+			"type":    "private"
+		},
+		{
 			"command": "send",
 			"help":    "",
 			"type":    "private"
