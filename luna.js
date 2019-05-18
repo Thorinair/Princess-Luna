@@ -1057,7 +1057,7 @@ comm.npoverride = function(data) {
 comm.stop = function(data) {
 	if (isLive) {
 		isLive = false;
-	    send(channelNameToID(config.options.channels.debug), strings.commands.stop.message, false);
+	    send(data.channelID, strings.commands.stop.message, false);
 
 		send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.afterA, true);
 	    send(channelNameToID(config.options.channels.announceB), strings.announcements.gotn.afterB, true);
@@ -1073,7 +1073,7 @@ comm.stop = function(data) {
 	    fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
 	}
 	else {
-	    send(channelNameToID(config.options.channels.debug), strings.commands.stop.error, false);
+	    send(data.channelID, strings.commands.stop.error, false);
 	}
 };
 
