@@ -4216,13 +4216,15 @@ function loopVariPassPull() {
             	vpTimePressure = vpPressure[0].time;
 
             	if (vpPressure[1].value != undefined) {
-            		var value = vpPressure[0].value - vpPressure[1].value;
-            		if (Math.abs(value) >= config.varipass.pressure.warning) {
-            			send(channelNameToID(config.options.channels.home), util.format(
-					        strings.announcements.varipass.pressure,
-					        value.toFixed(2)
-					    ), false);
-            		}
+            		if (vpPressure[0].time - vpPressure[1].time <= config.varipass.pressure.pause) {
+	            		var value = vpPressure[0].value - vpPressure[1].value;
+	            		if (Math.abs(value) >= config.varipass.pressure.warning) {
+	            			send(channelNameToID(config.options.channels.home), util.format(
+						        strings.announcements.varipass.pressure,
+						        value.toFixed(2)
+						    ), false);
+	            		}
+	            	}
             	}
             }
 

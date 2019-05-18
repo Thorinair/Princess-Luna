@@ -83,7 +83,8 @@
 			"warning": 0.2
 		},
 		"pressure": {
-			"warning": 0.25
+			"warning": 0.25,
+			"pause":   240
 		}
 	},
 	"seizure": {
