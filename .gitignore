@@ -7,3 +7,4 @@ config/schedule.json
 config/wow.json
 config/httpkey.json
 config/custom.json
+config/mac.json

@@ -36,6 +36,7 @@ var tradfri  = require("./config/tradfri.json");
 var schedule = require("./config/schedule.json");
 var wow      = require("./config/wow.json");
 var httpkey  = require("./config/httpkey.json");
+var mac      = require("./config/mac.json");
 
 // Commands
 var comm = {};
@@ -1983,7 +1984,9 @@ comm.system = function(data) {
         send(data.channelID, strings.commands.system.errorA, false);
     }
     else {
-        switch (command) {
+    	var parts = command.split(" ");
+        switch (parts[0]) {
+
             case "reboot":
                 rebooting = true;
 
@@ -2002,6 +2005,19 @@ comm.system = function(data) {
 
                 }, config.options.reboottime * 1000);
                 break;
+            case "wake":
+            	if (parts[1] in mac) {
+	                send(data.channelID, util.format(
+	                	strings.commands.system.mwake,
+	                	parts[1]
+	                ), false);
+	                exec("sudo etherwake " + mac[parts[1]]);
+	            }
+	            else {
+	                send(data.channelID, strings.commands.system.ewake, false);
+	            }
+                break;
+
             default:
                 send(data.channelID, strings.commands.system.errorB, false);
                 break;
@@ -2171,6 +2187,7 @@ function reloadConfig() {
     schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
     wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
     httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
+    mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
 };
 
 /*
