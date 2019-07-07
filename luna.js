@@ -2726,13 +2726,10 @@ function sphericalDistance(pos1, pos2, radius) {
     const da2 = degToRad(pos2.latitude - pos1.latitude) / 2;
     const db2 = degToRad(pos2.longitude - pos1.latitude) / 2;
     const a = Math.sin(da2) * Math.sin(da2) +
-        Math.cos(a1) * Math.cos(a2) *
-            Math.sin(db2) * Math.sin(db2);
+			  Math.cos(a1)  * Math.cos(a2)  *
+              Math.sin(db2) * Math.sin(db2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return radius * c;
-}
-
-function processLightnining() {
 }
 
 function connectBlitzortung() {
