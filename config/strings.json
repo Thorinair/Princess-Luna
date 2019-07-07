@@ -417,9 +417,13 @@
 			"return": "Okay, I think I feel a little bit better now..."
 		},
 		"varipass": {
-			"dosehigh":   "@everyone, WARNING: Radiation has exceeded the set maximum allowed level of %s uSv/h! I am currently reading an average of **%s uSv/h**!",
-			"doselow":    "@everyone, the radiation has dropped back to acceptable levels. I am currently reading an average of **%s uSv/h** out of %s uSv/h allowed.",
-			"pressure":   "@everyone, I have detected an atmospheric disturbance! Pressure has changed by **%s hPa**. Expect a sudden change in weather!"
+			"dosehigh": "@everyone, WARNING: Radiation has exceeded the set maximum allowed level of %s uSv/h! I am currently reading an average of **%s uSv/h**!",
+			"doselow":  "@everyone, the radiation has dropped back to acceptable levels. I am currently reading an average of **%s uSv/h** out of %s uSv/h allowed.",
+			"pressure": "@everyone, I have detected an atmospheric disturbance! Pressure has changed by **%s hPa**. Expect a sudden change in weather!"
+		},
+		"blitzortung": {
+			"strike": "@everyone, lightning activity detected! New closest distance: **%s km**!",
+			"expire": "@everyone, I have not detected any close lightning activity in a while, so we can assume that the danger has passed."
 		},
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
@@ -568,6 +572,11 @@
 			"errorB":  "I was unable to set the bulb, trying again...",
 			"done":    "I've finished connecting to the Tradfri hub! Found bulb devices: %s",
 			"bulb":    "  %s\n  #%s\n    Type:   %s\n    Color:  #%s\n    Bright: %s\n    On:     %s"
+		},
+		"blitzortung": {
+			"connect": "I'm connecting to the Blitzortung API...",
+			"done":    "I've finished connecting to the Blitzortung API!",
+			"strike":  "Lightning strike detected! Here is the data:\n    dist: %s, lat: %s, lng: %s"
 		}
 	}
 }

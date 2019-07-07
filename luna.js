@@ -5,6 +5,7 @@ const readline       = require("readline");
 const http           = require("http");
 const url            = require('url');
 const exec           = require('child_process').exec;
+const WebSocket      = require('ws');
 
 // 3rd Party Modules
 const Discord        = require("discord.io");
@@ -17,6 +18,7 @@ const tradfrilib     = require('node-tradfri');
 const color          = require('c0lor');
 const jsmegahal      = require("jsmegahal");
 const tripwire       = require("tripwire");
+const blitzortung    = require("@simonschick/blitzortungapi");
 
 const package  = require("./package.json");
 
@@ -37,6 +39,7 @@ var schedule = require("./config/schedule.json");
 var wow      = require("./config/wow.json");
 var httpkey  = require("./config/httpkey.json");
 var mac      = require("./config/mac.json");
+var blitzor  = require("./config/blitzor.json");
 
 // Commands
 var comm = {};
@@ -1180,6 +1183,7 @@ comm.purge = function(data) {
                     });
 
                     saveAllBrains();
+            		blitz.close();
 
                     setTimeout(function() {
                         console.log(strings.debug.stopped);
@@ -1911,6 +1915,7 @@ comm.reboot = function(data) {
     send(data.channelID, strings.commands.reboot.message, false);
 
     saveAllBrains();
+    blitz.close();
 
     setTimeout(function() {
         console.log(strings.debug.stopped);
@@ -1997,6 +2002,7 @@ comm.system = function(data) {
                 send(data.channelID, strings.commands.system.mreboot, false);
 
                 saveAllBrains();
+            	blitz.close();
 
                 setTimeout(function() {
                     console.log(strings.debug.stopped);
@@ -2072,6 +2078,10 @@ var vpTimePressure;
 
 var isLive = false;
 
+var lightningRange = blitzor.range + 1;
+var lightningNew   = blitzor.range + 1;
+var lightningTimeout;
+
 // Persistant Objects
 var bot;
 var hub;
@@ -2082,6 +2092,7 @@ var nptoggles;
 var blacklist;
 var ignore;
 var server;
+var blitz;
 
 // Callback for downloading of files. 
 var download = function(uri, filename, callback) {
@@ -2188,6 +2199,12 @@ function reloadConfig() {
     wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
     httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
     mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
+    blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
+
+    blitz.close();
+    connectBlitzortung();
+
+
 };
 
 /*
@@ -2697,6 +2714,57 @@ function normalize(bulb) {
         newBulb.brightness = Math.round(newBulb.brightness * 254);
     }
     return newBulb;
+}
+
+function degToRad(deg) {
+    return deg / 180 * Math.PI;
+}
+
+function sphericalDistance(pos1, pos2, radius) {
+    const a1 = degToRad(pos1.latitude);
+    const a2 = degToRad(pos2.latitude);
+    const da2 = degToRad(pos2.latitude - pos1.latitude) / 2;
+    const db2 = degToRad(pos2.longitude - pos1.latitude) / 2;
+    const a = Math.sin(da2) * Math.sin(da2) +
+        Math.cos(a1) * Math.cos(a2) *
+            Math.sin(db2) * Math.sin(db2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return radius * c;
+}
+
+function processLightnining() {
+}
+
+function connectBlitzortung() {
+    console.log(strings.debug.blitzortung.connect);
+
+	blitz = new blitzortung.Client({
+	    make(address) {
+	        return new WebSocket(address);
+	    }
+	});
+
+	blitz.connect();
+	blitz.on('error', console.error);
+	blitz.on('connect', () => {
+	    blitz.setIncludeDetectors(false);
+	    blitz.setArea(blitzor.area.from, blitzor.area.to);
+	});
+	blitz.on('data', strike => {
+		var distance = sphericalDistance(blitzor.location, strike.location, 6371.0);
+
+		if (distance < lightningNew) {
+			lightningNew = distance;
+			console.log(util.format(
+	            strings.debug.blitzortung.strike,
+	            distance,
+	            strike.location.latitude,
+	            strike.location.longitude                
+	        ));
+		}
+	});
+
+    console.log(strings.debug.blitzortung.done);
 }
 
 function saveEEG() {
@@ -3630,6 +3698,7 @@ function processReqReboot(query) {
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.reboot.message, false);
 
             saveAllBrains();
+            blitz.close();
 
             setTimeout(function() {
                 console.log(strings.debug.stopped);
@@ -3822,6 +3891,7 @@ function seizureReboot(channelID, userID, message) {
     fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
 
     saveAllBrains();
+    blitz.close();
 
     setTimeout(function() {
         console.log(strings.debug.stopped);
@@ -3873,7 +3943,9 @@ function loadBot() {
             });
 
             loadSeizure();
+            connectBlitzortung();
 
+            loopLightning();
             loopNowPlaying();
             loopVariPassPull();
             setTimeout(loopBrainSave, config.brain.timeout * 1000);
@@ -4090,6 +4162,26 @@ function loadBot() {
 
 function loadServer() {
     server = http.createServer(processRequest).listen(config.options.serverport);
+}
+
+function loopLightning() {
+	if (lightningNew < lightningRange) {
+		lightningRange = lightningNew;
+
+		clearTimeout(lightningTimeout);
+		lightningTimeout = setTimeout(function() {
+			lightningRange = blitzor.range + 1;
+			lightningNew   = blitzor.range + 1;
+    		send(channelNameToID(config.options.channels.home), strings.announcements.blitzortung.expire, false);
+		}, blitzor.expire * 1000);
+
+    	send(channelNameToID(config.options.channels.home), util.format(
+	        strings.announcements.blitzortung.strike,
+	        lightningRange.toFixed(2)
+	    ), false);
+	}
+
+    setTimeout(loopLightning, blitzor.loop * 1000);
 }
 
 /*

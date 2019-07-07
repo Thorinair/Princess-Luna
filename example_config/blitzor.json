@@ -1,0 +1,19 @@
+{
+	"range":  50,
+	"expire": 1800,
+	"loop":   1,
+	"location": {
+		"latitude": 0,
+		"longitude": 0
+	},
+	"area": {
+	    "from": {
+	      "latitude": 0,
+	      "longitude": 0
+	    },
+	    "to": {
+	      "latitude": 0,
+	      "longitude": 0
+	    }
+	}
+}

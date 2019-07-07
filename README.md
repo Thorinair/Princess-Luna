@@ -16,6 +16,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Supports [motionEye](https://github.com/ccrisan/motioneye) detection notifications via web interface.
 * Can control and emulate human presence via light automatic bulb control.
 * Automatically processes Chryssy Geiger counter information.
+* Blitzortung lightning data integration.
 * Features a variety of commands:
     - `!gotn` Lists the time left until the next Glory of The Night episode. You may also specify the timezone after the command.
     - `!mlp` Lists the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.
