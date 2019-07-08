@@ -2203,8 +2203,6 @@ function reloadConfig() {
 
     blitz.close();
     connectBlitzortung();
-
-
 };
 
 /*
@@ -2717,19 +2715,19 @@ function normalize(bulb) {
 }
 
 function degToRad(deg) {
-    return deg / 180 * Math.PI;
+    return deg * (Math.PI/180);
 }
 
-function sphericalDistance(pos1, pos2, radius) {
-    const a1 = degToRad(pos1.latitude);
-    const a2 = degToRad(pos2.latitude);
-    const da2 = degToRad(pos2.latitude - pos1.latitude) / 2;
-    const db2 = degToRad(pos2.longitude - pos1.latitude) / 2;
-    const a = Math.sin(da2) * Math.sin(da2) +
-			  Math.cos(a1)  * Math.cos(a2)  *
-              Math.sin(db2) * Math.sin(db2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return radius * c;
+function sphericalDistance(lat1, lon1, lat2, lon2) {
+	var R = 6371;
+	var dLat = degToRad(lat2-lat1);
+	var dLon = degToRad(lon2-lon1); 
+	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+			Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * 
+			Math.sin(dLon/2) * Math.sin(dLon/2); 
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+	var d = R * c;
+	return d;
 }
 
 function connectBlitzortung() {
@@ -2741,14 +2739,21 @@ function connectBlitzortung() {
 	    }
 	});
 
+	var from = {};
+	from.latitude = blitzor.location.latitude + blitzor.expand;
+	from.longitude = blitzor.location.longitude - blitzor.expand;
+	var to = {};
+	to.latitude = blitzor.location.latitude - blitzor.expand;
+	to.longitude = blitzor.location.longitude + blitzor.expand;
+
 	blitz.connect();
-	blitz.on('error', console.error);
-	blitz.on('connect', () => {
+	blitz.on("error", console.error);
+	blitz.on("connect", () => {
 	    blitz.setIncludeDetectors(false);
-	    blitz.setArea(blitzor.area.from, blitzor.area.to);
+	    blitz.setArea(from, to);
 	});
-	blitz.on('data', strike => {
-		var distance = sphericalDistance(blitzor.location, strike.location, 6371.0);
+	blitz.on("data", strike => {
+		var distance = sphericalDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
 
 		if (distance < lightningNew) {
 			lightningNew = distance;
@@ -2759,6 +2764,9 @@ function connectBlitzortung() {
 	            strike.location.longitude                
 	        ));
 		}
+	});
+	blitz.on("close", function() {
+		connectBlitzortung();
 	});
 
     console.log(strings.debug.blitzortung.done);
