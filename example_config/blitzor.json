@@ -1,10 +1,11 @@
 {
 	"range":  32,
-	"expire": 1800,
-	"loop":   1,
 	"expand": 1,
+	"loop":   1,
+	"expire": 1800,
 	"location": {
 		"latitude": 0,
 		"longitude": 0
-	}
+	},
+	"debug": false
 }

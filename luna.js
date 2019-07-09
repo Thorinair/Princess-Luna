@@ -18,7 +18,7 @@ const tradfrilib     = require('node-tradfri');
 const color          = require('c0lor');
 const jsmegahal      = require("jsmegahal");
 const tripwire       = require("tripwire");
-const blitzortung    = require("@simonschick/blitzortungapi");
+const blitzorapi     = require("@simonschick/blitzortungapi");
 
 const package  = require("./package.json");
 
@@ -1183,7 +1183,7 @@ comm.purge = function(data) {
                     });
 
                     saveAllBrains();
-            		blitz.close();
+            		blitzorws.close();
 
                     setTimeout(function() {
                         console.log(strings.debug.stopped);
@@ -1915,7 +1915,7 @@ comm.reboot = function(data) {
     send(data.channelID, strings.commands.reboot.message, false);
 
     saveAllBrains();
-    blitz.close();
+    blitzorws.close();
 
     setTimeout(function() {
         console.log(strings.debug.stopped);
@@ -2002,7 +2002,7 @@ comm.system = function(data) {
                 send(data.channelID, strings.commands.system.mreboot, false);
 
                 saveAllBrains();
-            	blitz.close();
+            	blitzorws.close();
 
                 setTimeout(function() {
                     console.log(strings.debug.stopped);
@@ -2080,6 +2080,7 @@ var isLive = false;
 
 var lightningRange = blitzor.range + 1;
 var lightningNew   = blitzor.range + 1;
+var lightningBearing = 0;
 var lightningTimeout;
 
 // Persistant Objects
@@ -2092,7 +2093,7 @@ var nptoggles;
 var blacklist;
 var ignore;
 var server;
-var blitz;
+var blitzorws;
 
 // Callback for downloading of files. 
 var download = function(uri, filename, callback) {
@@ -2201,8 +2202,11 @@ function reloadConfig() {
     mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
     blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
 
-    blitz.close();
-    connectBlitzortung();
+    blitzorws.close();
+
+	lightningRange = blitzor.range + 1;
+	lightningNew   = blitzor.range + 1;
+	connectBlitzortung();
 };
 
 /*
@@ -2718,7 +2722,11 @@ function degToRad(deg) {
     return deg * (Math.PI/180);
 }
 
-function sphericalDistance(lat1, lon1, lat2, lon2) {
+function radToDeg(rad) {
+    return rad * (180/Math.PI);
+}
+
+function earthDistance(lat1, lon1, lat2, lon2) {
 	var R = 6371;
 	var dLat = degToRad(lat2-lat1);
 	var dLon = degToRad(lon2-lon1); 
@@ -2730,10 +2738,20 @@ function sphericalDistance(lat1, lon1, lat2, lon2) {
 	return d;
 }
 
-function connectBlitzortung() {
-    console.log(strings.debug.blitzortung.connect);
+function earthBearing(lat1, lon1, lat2, lon2) {
+    var dLon = degToRad(lon2-lon1);
+    var y = Math.sin(dLon) * Math.cos(degToRad(lat2));
+    var x = Math.cos(degToRad(lat1)) * Math.sin(degToRad(lat2)) -
+    		Math.sin(degToRad(lat1)) * Math.cos(degToRad(lat2)) * 
+    		Math.cos(dLon);
+    var brng = radToDeg(Math.atan2(y, x));
+    return ((brng + 360) % 360);
+}
 
-	blitz = new blitzortung.Client({
+function connectBlitzortung() {
+    console.log(strings.debug.blitzor.connect);
+
+	blitzorws = new blitzorapi.Client({
 	    make(address) {
 	        return new WebSocket(address);
 	    }
@@ -2746,30 +2764,43 @@ function connectBlitzortung() {
 	to.latitude = blitzor.location.latitude - blitzor.expand;
 	to.longitude = blitzor.location.longitude + blitzor.expand;
 
-	blitz.connect();
-	blitz.on("error", console.error);
-	blitz.on("connect", () => {
-	    blitz.setIncludeDetectors(false);
-	    blitz.setArea(from, to);
+	blitzorws.connect();
+	blitzorws.on("error", console.error);
+	blitzorws.on("connect", () => {
+	    blitzorws.setIncludeDetectors(false);
+	    blitzorws.setArea(from, to);
 	});
-	blitz.on("data", strike => {
-		var distance = sphericalDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
+	blitzorws.on("data", strike => {
+		var distance = earthDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
+		var bearing  = earthBearing(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
 
 		if (distance < lightningNew) {
 			lightningNew = distance;
+			lightningBearing = bearing;
+
+			if (!blitzor.debug)
+				console.log(util.format(
+		            strings.debug.blitzor.strike,
+		            distance,
+		            bearing,
+		            strike.location.latitude,
+		            strike.location.longitude                
+		        ));
+		}
+		if (blitzor.debug)
 			console.log(util.format(
-	            strings.debug.blitzortung.strike,
+	            strings.debug.blitzor.strike,
 	            distance,
+		        bearing,
 	            strike.location.latitude,
 	            strike.location.longitude                
 	        ));
-		}
 	});
-	blitz.on("close", function() {
+	blitzorws.on("close", function() {
 		connectBlitzortung();
 	});
 
-    console.log(strings.debug.blitzortung.done);
+    console.log(strings.debug.blitzor.done);
 }
 
 function saveEEG() {
@@ -3703,7 +3734,7 @@ function processReqReboot(query) {
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.reboot.message, false);
 
             saveAllBrains();
-            blitz.close();
+            blitzorws.close();
 
             setTimeout(function() {
                 console.log(strings.debug.stopped);
@@ -3896,7 +3927,7 @@ function seizureReboot(channelID, userID, message) {
     fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
 
     saveAllBrains();
-    blitz.close();
+    blitzorws.close();
 
     setTimeout(function() {
         console.log(strings.debug.stopped);
@@ -4177,12 +4208,32 @@ function loopLightning() {
 		lightningTimeout = setTimeout(function() {
 			lightningRange = blitzor.range + 1;
 			lightningNew   = blitzor.range + 1;
-    		send(channelNameToID(config.options.channels.home), strings.announcements.blitzortung.expire, false);
+    		send(channelNameToID(config.options.channels.home), strings.announcements.blitzor.expire, false);
 		}, blitzor.expire * 1000);
 
+		var b = lightningBearing;
+		var bear = "N";
+			 if (b >  11.25 && b <  33.75) bear = "NNE";
+		else if (b >  33.75 && b <  56.25) bear = "NE";
+		else if (b >  56.25 && b <  78.75) bear = "ENE";
+		else if (b >  78.75 && b < 101.25) bear = "E";
+		else if (b > 101.25 && b < 123.75) bear = "ESE";
+		else if (b > 123.75 && b < 146.25) bear = "SE";
+		else if (b > 146.25 && b < 168.75) bear = "SSE";
+		else if (b > 168.75 && b < 191.25) bear = "S";
+		else if (b > 191.25 && b < 213.75) bear = "SSW";
+		else if (b > 213.75 && b < 236.25) bear = "SW";
+		else if (b > 236.25 && b < 258.75) bear = "WSW";
+		else if (b > 258.75 && b < 281.25) bear = "W";
+		else if (b > 281.25 && b < 303.75) bear = "WNW";
+		else if (b > 303.75 && b < 326.25) bear = "NW";
+		else if (b > 326.25 && b < 348.75) bear = "NNW";
+
     	send(channelNameToID(config.options.channels.home), util.format(
-	        strings.announcements.blitzortung.strike,
-	        lightningRange.toFixed(2)
+	        strings.announcements.blitzor.strike,
+	        lightningRange.toFixed(2),
+	        bear,
+	        lightningBearing.toFixed(2)
 	    ), false);
 	}
 
