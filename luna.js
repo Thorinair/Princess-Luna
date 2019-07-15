@@ -4211,7 +4211,7 @@ function loadServer() {
 }
 
 function toUpper(str) {
-	return str.toLowerCase().replace(/^\w|\s\w/g, function (letter) {
+	return str.toLowerCase().replace(/^[a-zA-Z0-9À-ž]|[-\r\n\t\f\v ][a-zA-Z0-9À-ž]/g, function (letter) {
 		return letter.toUpperCase();
 	})
  }
@@ -4263,44 +4263,47 @@ function loopLightning() {
 	        if (xhr.readyState == 4 && xhr.status == 200) {
 	            var response = JSON.parse(xhr.responseText);
 
-	            var town = "Unknown";
-	            var country = "Unknown";
+	            var loc = "Unknown";
+	            var ctr = "Unknown";
 
 	            if (response.error != undefined && response.error.code == "008") {
 	            	if (response.suggestion != undefined) {
-	            		if (response.suggestion.south.distance != undefined && response.suggestion.north.distance != undefined) {
-	            			if (response.suggestion.north.distance < response.suggestion.south.distance) {
-	            				if (response.suggestion.north.city != undefined)
-	            					town = response.suggestion.north.city;
-	            				if (response.suggestion.north.prov != undefined)
-	            					country = response.suggestion.north.prov;
+	            		var north = response.suggestion.north;
+	            		var south = response.suggestion.south;
+
+	            		if (south.distance != undefined && north.distance != undefined) {
+	            			if (north.distance < south.distance) {
+	            				if (north.city != undefined)
+	            					loc = north.city;
+	            				if (north.prov != undefined)
+	            					ctr = north.prov;
 	            			}
 	            			else {
-	            				if (response.suggestion.south.city != undefined)
-	            					town = response.suggestion.south.city;
-	            				if (response.suggestion.south.prov != undefined)
-	            					country = response.suggestion.south.prov;
+	            				if (south.city != undefined)
+	            					loc = south.city;
+	            				if (south.prov != undefined)
+	            					ctr = south.prov;
 	            			}
 	            		}
-	            		else if (response.suggestion.north.city != undefined) {
-	            			town = response.suggestion.north.city;
-            				if (response.suggestion.north.prov != undefined)
-            					country = response.suggestion.north.prov;
+	            		else if (north.city != undefined) {
+	            			loc = north.city;
+            				if (north.prov != undefined)
+            					ctr = north.prov;
 	            		}
-	            		else if (response.suggestion.south.city != undefined) {
-	            			town = response.suggestion.south.city;
-            				if (response.suggestion.south.prov != undefined)
-            					country = response.suggestion.south.prov;
+	            		else if (rsouth.city != undefined) {
+	            			loc = south.city;
+            				if (south.prov != undefined)
+            					ctr = south.prov;
 	            		}
 	            	}
 	            }
 	            else {
 	            	if (response.city != undefined)
-	            		town = response.city;  
+	            		loc = response.city;
 	            	if (response.prov != undefined)
-	            		country = response.prov;	
+	            		ctr = response.prov;
 	            }
-	            town = toUpper(town);
+	            loc = toUpper(loc);
 
 	            //console.log(response);
 
@@ -4309,8 +4312,8 @@ function loopLightning() {
 			        rng.toFixed(2),
 			        bear,
 			        b.toFixed(2),
-			        town,
-			        country,
+			        loc,
+			        ctr,
 			        time
 			    ), false);
 	        }
