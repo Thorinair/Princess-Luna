@@ -2080,8 +2080,10 @@ var isLive = false;
 
 var lightningRange = blitzor.range + 1;
 var lightningNew   = blitzor.range + 1;
-var lightningBearing = 0;
+var lightningLat = 0;
+var lightningLng = 0;
 var lightningTimeout;
+var lightningReconnect;
 
 // Persistant Objects
 var bot;
@@ -2202,11 +2204,12 @@ function reloadConfig() {
     mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
     blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
 
+	clearTimeout(lightningReconnect);
     blitzorws.close();
 
 	lightningRange = blitzor.range + 1;
 	lightningNew   = blitzor.range + 1;
-	connectBlitzortung();
+	connectBlitzortung(false);
 };
 
 /*
@@ -2748,8 +2751,11 @@ function earthBearing(lat1, lon1, lat2, lon2) {
     return ((brng + 360) % 360);
 }
 
-function connectBlitzortung() {
-    console.log(strings.debug.blitzor.connect);
+function connectBlitzortung(reconnect) {
+	if (reconnect && blitzor.debug)
+    	console.log(strings.debug.blitzor.reconnect);
+	else if (!reconnect)
+    	console.log(strings.debug.blitzor.connect);
 
 	blitzorws = new blitzorapi.Client({
 	    make(address) {
@@ -2772,17 +2778,16 @@ function connectBlitzortung() {
 	});
 	blitzorws.on("data", strike => {
 		var distance = earthDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
-		var bearing  = earthBearing(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
 
 		if (distance < lightningNew) {
 			lightningNew = distance;
-			lightningBearing = bearing;
+			lightningLat = strike.location.latitude;
+			lightningLng = strike.location.longitude;
 
 			if (!blitzor.debug)
 				console.log(util.format(
 		            strings.debug.blitzor.strike,
 		            distance,
-		            bearing,
 		            strike.location.latitude,
 		            strike.location.longitude                
 		        ));
@@ -2791,16 +2796,20 @@ function connectBlitzortung() {
 			console.log(util.format(
 	            strings.debug.blitzor.strike,
 	            distance,
-		        bearing,
 	            strike.location.latitude,
 	            strike.location.longitude                
 	        ));
 	});
-	blitzorws.on("close", function() {
-		connectBlitzortung();
-	});
 
-    console.log(strings.debug.blitzor.done);
+	lightningReconnect = setTimeout(function() {
+    	blitzorws.close();
+		connectBlitzortung(true);
+	}, blitzor.reconnect * 1000);
+
+	if (reconnect && blitzor.debug)
+    	console.log(strings.debug.blitzor.done);
+   	else if (!reconnect)
+    	console.log(strings.debug.blitzor.done);
 }
 
 function saveEEG() {
@@ -3147,6 +3156,7 @@ function loadPhases() {
     console.log(strings.debug.phases.load);
 
     var xhr = new XMLHttpRequest();
+    xhr.timeout = config.options.phasetimeout * 1000;
     xhr.open("GET", config.options.phaseurl, true);
 
 
@@ -3979,7 +3989,7 @@ function loadBot() {
             });
 
             loadSeizure();
-            connectBlitzortung();
+            connectBlitzortung(false);
 
             loopLightning();
             loopNowPlaying();
@@ -4200,6 +4210,12 @@ function loadServer() {
     server = http.createServer(processRequest).listen(config.options.serverport);
 }
 
+function toUpper(str) {
+	return str.toLowerCase().replace(/^\w|\s\w/g, function (letter) {
+		return letter.toUpperCase();
+	})
+ }
+
 function loopLightning() {
 	if (lightningNew < lightningRange) {
 		lightningRange = lightningNew;
@@ -4211,7 +4227,12 @@ function loopLightning() {
     		send(channelNameToID(config.options.channels.home), strings.announcements.blitzor.expire, false);
 		}, blitzor.expire * 1000);
 
-		var b = lightningBearing;
+        var time = moment.tz(new Date(), "Europe/Zagreb").format("HH:mm:ss");
+		var rng = lightningRange;
+		var lat = lightningLat;
+		var lng = lightningLng;
+		var b  = earthBearing(blitzor.location.latitude, blitzor.location.longitude, lat, lng);
+
 		var bear = "N";
 			 if (b >  11.25 && b <  33.75) bear = "NNE";
 		else if (b >  33.75 && b <  56.25) bear = "NE";
@@ -4229,12 +4250,73 @@ function loopLightning() {
 		else if (b > 303.75 && b < 326.25) bear = "NW";
 		else if (b > 326.25 && b < 348.75) bear = "NNW";
 
-    	send(channelNameToID(config.options.channels.home), util.format(
-	        strings.announcements.blitzor.strike,
-	        lightningRange.toFixed(2),
-	        bear,
-	        lightningBearing.toFixed(2)
-	    ), false);
+	    var xhr = new XMLHttpRequest();
+
+	    xhr.open("GET", util.format(
+	    	config.options.geourl,
+	    	lat,
+	    	lng,
+	    	blitzor.auth
+	    ), true);
+
+	    xhr.onreadystatechange = function () { 
+	        if (xhr.readyState == 4 && xhr.status == 200) {
+	            var response = JSON.parse(xhr.responseText);
+
+	            var town = "Unknown";
+	            var country = "Unknown";
+
+	            if (response.error != undefined && response.error.code == "008") {
+	            	if (response.suggestion != undefined) {
+	            		if (response.suggestion.south.distance != undefined && response.suggestion.north.distance != undefined) {
+	            			if (response.suggestion.north.distance < response.suggestion.south.distance) {
+	            				if (response.suggestion.north.city != undefined)
+	            					town = response.suggestion.north.city;
+	            				if (response.suggestion.north.prov != undefined)
+	            					country = response.suggestion.north.prov;
+	            			}
+	            			else {
+	            				if (response.suggestion.south.city != undefined)
+	            					town = response.suggestion.south.city;
+	            				if (response.suggestion.south.prov != undefined)
+	            					country = response.suggestion.south.prov;
+	            			}
+	            		}
+	            		else if (response.suggestion.north.city != undefined) {
+	            			town = response.suggestion.north.city;
+            				if (response.suggestion.north.prov != undefined)
+            					country = response.suggestion.north.prov;
+	            		}
+	            		else if (response.suggestion.south.city != undefined) {
+	            			town = response.suggestion.south.city;
+            				if (response.suggestion.south.prov != undefined)
+            					country = response.suggestion.south.prov;
+	            		}
+	            	}
+	            }
+	            else {
+	            	if (response.city != undefined)
+	            		town = response.city;  
+	            	if (response.prov != undefined)
+	            		country = response.prov;	
+	            }
+	            town = toUpper(town);
+
+	            //console.log(response);
+
+		    	send(channelNameToID(config.options.channels.home), util.format(
+			        strings.announcements.blitzor.strike,
+			        rng.toFixed(2),
+			        bear,
+			        b.toFixed(2),
+			        town,
+			        country,
+			        time
+			    ), false);
+	        }
+	    }
+
+	    xhr.send();
 	}
 
     setTimeout(loopLightning, blitzor.loop * 1000);

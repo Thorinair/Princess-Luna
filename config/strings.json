@@ -422,7 +422,7 @@
 			"pressure": "@everyone, I have detected an atmospheric disturbance! Pressure has changed by **%s hPa**. Expect a sudden change in weather!"
 		},
 		"blitzor": {
-			"strike": "@everyone, WARNING: New close lightning activity detected!\nDistance: **%s km**, Bearing: **%s** (%s°)",
+			"strike": "@everyone, WARNING: New close lightning activity detected!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
 			"expire": "@everyone, I have not detected any closer lightning activity in a while. The danger has potentially passed."
 		},
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
@@ -574,9 +574,10 @@
 			"bulb":    "  %s\n  #%s\n    Type:   %s\n    Color:  #%s\n    Bright: %s\n    On:     %s"
 		},
 		"blitzor": {
-			"connect": "I'm connecting to the Blitzortung API...",
-			"done":    "I've finished connecting to the Blitzortung API!",
-			"strike":  "Lightning strike detected! Here is the data:\n    dist: %s, bear: %s, lati: %s, long: %s"
+			"reconnect": "I'm reconnecting to the Blitzortung API...",
+			"connect":   "I'm connecting to the Blitzortung API...",
+			"done":      "I've finished connecting to the Blitzortung API!",
+			"strike":    "Lightning strike detected! Here is the data:\n    dist: %s, lati: %s, long: %s"
 		}
 	}
 }
