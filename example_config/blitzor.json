@@ -1,9 +1,10 @@
 {
-	"range":     32,
+	"range":     30,
 	"expand":    1,
 	"loop":      1,
 	"reconnect": 300,
 	"expire":    1800,
+	"spread":    300,
 	"location": {
 		"latitude": 0,
 		"longitude": 0

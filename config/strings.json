@@ -574,10 +574,12 @@
 			"bulb":    "  %s\n  #%s\n    Type:   %s\n    Color:  #%s\n    Bright: %s\n    On:     %s"
 		},
 		"blitzor": {
-			"reconnect": "I'm reconnecting to the Blitzortung API...",
-			"connect":   "I'm connecting to the Blitzortung API...",
+			"reconnect": "I'm reconnecting to the Blitzortung API using coordinates: lati %s to %s, long %s to %s...",
+			"connect":   "I'm connecting to the Blitzortung API using coordinates: lati %s to %s, long %s to %s...",
 			"done":      "I've finished connecting to the Blitzortung API!",
-			"strike":    "Lightning strike detected! Here is the data:\n    dist: %s, lati: %s, long: %s"
+			"strike":    "Lightning strike! dist: %s, lati: %s, long: %s",
+			"spread":    "Spreading the lightning range from %s to %s.",
+			"max":       "Spreading outside of range. Clamping to max range of %s."
 		}
 	}
 }

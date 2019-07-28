@@ -2048,6 +2048,8 @@ var hTrack    = {};
 
 var startTime;
 
+var phaseTimeout;
+
 var powerStatus = null;
 var powerTime;
 
@@ -2078,11 +2080,12 @@ var vpTimePressure;
 
 var isLive = false;
 
-var lightningRange = blitzor.range + 1;
-var lightningNew   = blitzor.range + 1;
+var lightningRange = blitzor.range;
+var lightningNew   = blitzor.range;
 var lightningLat = 0;
 var lightningLng = 0;
-var lightningTimeout;
+var lightningExpire;
+var lightningSpread;
 var lightningReconnect;
 
 // Persistant Objects
@@ -2207,8 +2210,11 @@ function reloadConfig() {
 	clearTimeout(lightningReconnect);
     blitzorws.close();
 
-	lightningRange = blitzor.range + 1;
-	lightningNew   = blitzor.range + 1;
+    if (lightningRange > blitzor.range) {
+		lightningRange = blitzor.range;
+	    lightningNew = blitzor.range;
+    }
+
 	connectBlitzortung(false);
 };
 
@@ -2752,23 +2758,35 @@ function earthBearing(lat1, lon1, lat2, lon2) {
 }
 
 function connectBlitzortung(reconnect) {
-	if (reconnect && blitzor.debug)
-    	console.log(strings.debug.blitzor.reconnect);
-	else if (!reconnect)
-    	console.log(strings.debug.blitzor.connect);
-
-	blitzorws = new blitzorapi.Client({
-	    make(address) {
-	        return new WebSocket(address);
-	    }
-	});
-
 	var from = {};
 	from.latitude = blitzor.location.latitude + blitzor.expand;
 	from.longitude = blitzor.location.longitude - blitzor.expand;
 	var to = {};
 	to.latitude = blitzor.location.latitude - blitzor.expand;
 	to.longitude = blitzor.location.longitude + blitzor.expand;
+
+	if (reconnect && blitzor.debug)
+    	console.log(util.format(
+    		strings.debug.blitzor.reconnect,
+    		from.latitude,
+    		to.latitude,
+    		from.longitude,
+    		to.longitude
+    	));
+	else if (!reconnect)
+    	console.log(util.format(
+    		strings.debug.blitzor.connect,
+    		from.latitude,
+    		to.latitude,
+    		from.longitude,
+    		to.longitude
+    	));
+
+	blitzorws = new blitzorapi.Client({
+	    make(address) {
+	        return new WebSocket(address);
+	    }
+	});
 
 	blitzorws.connect();
 	blitzorws.on("error", console.error);
@@ -3125,8 +3143,15 @@ function processPhases() {
 /*
  * Called if phases were successfully loaded.
  */
-function phaseDone(fail) {
-    if (fail) {
+function phaseDone(done) {
+	clearTimeout(phaseTimeout);
+
+    if (done) {
+        fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
+        processPhases();
+        console.log(strings.debug.phases.done);
+    }
+    else {
         apifail = true;
 
         if (fs.existsSync(config.options.phasepath)) {
@@ -3140,11 +3165,6 @@ function phaseDone(fail) {
             console.log(strings.debug.phases.no);
         }
     }
-    else {
-        fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
-        processPhases();
-        console.log(strings.debug.phases.done);
-    }
 
     loadBrain();
 }
@@ -3156,7 +3176,6 @@ function loadPhases() {
     console.log(strings.debug.phases.load);
 
     var xhr = new XMLHttpRequest();
-    xhr.timeout = config.options.phasetimeout * 1000;
     xhr.open("GET", config.options.phaseurl, true);
 
 
@@ -3165,7 +3184,7 @@ function loadPhases() {
             var response = JSON.parse(xhr.responseText);
             phases = response.phasedata;
 
-            phaseDone(false);
+            phaseDone(true);
         }
     }
     xhr.onerror = function(err) {
@@ -3173,21 +3192,25 @@ function loadPhases() {
             strings.debug.phases.error,
             err.target.status
         ));
-        xhr.abort();
 
-        phaseDone(true);
+        xhr.abort();
+        phaseDone(false);
     }
     xhr.ontimeout = function() {
-        console.log(util.format(
-            strings.debug.phases.timeout,
-            err.target.status
-        ));
-        xhr.abort();
+        console.log(strings.debug.phases.timeout);
 
-        phaseDone(true);
+        xhr.abort();
+        phaseDone(false);
     }
 
     xhr.send();
+
+    phaseTimeout = setTimeout(function() {
+        console.log(strings.debug.phases.timeout);
+
+        xhr.abort();
+        phaseDone(false);
+    }, config.options.phasetimeout * 1000);
 }
 
 /*
@@ -4214,16 +4237,43 @@ function toUpper(str) {
 	return str.toLowerCase().replace(/^[a-zA-Z0-9À-ž]|[-\r\n\t\f\v ][a-zA-Z0-9À-ž]/g, function (letter) {
 		return letter.toUpperCase();
 	})
- }
+}
+
+function spreadLightning() {
+	var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
+	if (blitzor.debug)
+    	console.log(util.format(
+    		strings.debug.blitzor.spread,
+    		lightningRange,
+    		lightningRange + rangeSpread
+    	));
+
+	lightningRange = lightningRange + rangeSpread;
+	lightningNew   = lightningNew + rangeSpread;
+
+	if (lightningRange > blitzor.range) {
+		if (blitzor.debug)
+	    	console.log(util.format(
+	    		strings.debug.blitzor.max,
+	    		blitzor.range
+	    	));
+		lightningRange = blitzor.range;
+		lightningNew = blitzor.range;
+	}
+	else {
+		lightningSpread = setTimeout(spreadLightning, blitzor.spread * 1000);
+	}
+}
 
 function loopLightning() {
 	if (lightningNew < lightningRange) {
 		lightningRange = lightningNew;
 
-		clearTimeout(lightningTimeout);
-		lightningTimeout = setTimeout(function() {
-			lightningRange = blitzor.range + 1;
-			lightningNew   = blitzor.range + 1;
+		clearTimeout(lightningSpread);
+		lightningSpread = setTimeout(spreadLightning, blitzor.spread * 1000);
+
+		clearTimeout(lightningExpire);
+		lightningExpire = setTimeout(function() {
     		send(channelNameToID(config.options.channels.home), strings.announcements.blitzor.expire, false);
 		}, blitzor.expire * 1000);
 
@@ -4303,6 +4353,9 @@ function loopLightning() {
 	            	if (response.prov != undefined)
 	            		ctr = response.prov;
 	            }
+	            var locs = loc.split(" / ");
+	            if (locs.length > 1)
+	            	loc = locs[1];
 	            loc = toUpper(loc);
 
 	            //console.log(response);
