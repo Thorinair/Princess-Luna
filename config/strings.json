@@ -189,6 +189,16 @@
 			"multiple": "*Tickles the underside of %s's hoofsies.*",
 			"self":     "*Grabs her own hind hoofsies and tickles them giggling uncontrollably.*"
 		},
+		"rawr": {
+			"single":   "*Sits proudly in front of %s and lets out a cute little rawr.*",
+			"multiple": "*Positions herself in between %s and lets out a cute little rawr.*",
+			"self":     "*Lets out a series of small and cute rawrs towards nopony in particular.*"
+		},
+		"eee": {
+			"single":   "*Clings against %s and **eeeees** loudly at them.*",
+			"multiple": "*Looks at %s and **eeeees** loudly at all of them.*",
+			"self":     "*Loudly **eeeees** at the empty space in front of her.*"
+		},
 		"plushie": {
 			"single":   "*Casts a spell at %s, turning them into a plushie.*",
 			"multiple": "*Casts spells at %s, turning everypony into plushies.*",

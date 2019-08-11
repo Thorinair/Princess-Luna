@@ -168,6 +168,16 @@
 			"type":    "interraction"
 		},
 		{
+			"command": "rawr",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
+			"command": "eee",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
 			"command": "plushie",
 			"help":    "",
 			"type":    "interraction"
