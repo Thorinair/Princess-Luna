@@ -44,7 +44,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Private commands for the admin:
     - `!stop` Stops the currently active Glory of The Night session and sends the relevant announcements.
     - `!send` Sends a message to a channel. Specify the channel name after the command, and message in the lines below.
-    - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Use the following regex to remove usernames and timestamps: `([)([0-9]+:[0-9]+ [A-Z]+)(]) .*: `
+    - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Please refer to the guide below on how to clean the data up.
     - `!purge` Purges data from a brain specified after the command. A starting and ending message should be specified below the command.
     - `!npstatus` Lists the current status of automatic Now Playing info announcing across channels.
     - `!nppurge` Disables the automatic Now Playing info announcing for all channels.
@@ -68,6 +68,18 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!reload` Reloads the configuration files. Note that only the actual configuration will be reloaded, and reloading may not sometimes be enough to change the behavior.
     - `!backup` Creates a backup of the data and config directories and sends it as a file through Discord.
     - `!system` Performs a system-level command on the host operating system. Currently available commands: `reboot`, `wake <device>`
+
+## Cleaning Up Chatlogs For Training
+You can use a software like Sublime text in order to clean up previous chatlogs copied from Discord in order to use them for training. The examples below show various regex formulas youcan use to clean up different unwanted data from copy pasted Discord chatwindow:
+
+* User names, timestamps and newlines: `\n.* at [0-9]+:+[0-9]+ [A-Z]+`
+* Mentioned users (will also remove some text): `@.*`
+* Channels (will also remove some text): `#.*`
+* Level up messages for a certain bot (do this **before** emojis): `:[a-zA-Z0-9]+:  \|  .* leveled up!\n`
+* Emojis: `:[a-zA-Z0-9_\-]+:`
+* URLs: `http(|s):\/\/(\S+)*`
+* Double newlines: `\n `
+
 
 ## Privacy & Data Collection
 This bot stores message history in plain text files and uses them as training data upon startup. The files are not avilable to anyone using the bot other than the admin who has access to the file system the bot is running on. The messages are stored anonymously (no user names are saved) and the messages are kept either indefinitely or until too many messages have accumulated for a certain brain (see the config.json file). Message history can also be manually deleted. Plain text storage allows for later editing in case the data needs to be modified (cleanup and such). The messages are stored only in the channels where learning has been enabled. Please use the `!stats` command to verify whether any data collection will take place in the specific channel. In case a user wants to completely prevent their messages from being gathered anywhere, they can simply use the `!blacklist` command.
