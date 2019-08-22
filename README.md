@@ -70,12 +70,12 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!system` Performs a system-level command on the host operating system. Currently available commands: `reboot`, `wake <device>`
 
 ## Cleaning Up Chatlogs For Training
-You can use a software like Sublime text in order to clean up previous chatlogs copied from Discord in order to use them for training. The examples below show various regex formulas youcan use to clean up different unwanted data from copy pasted Discord chatwindow:
+You can use a software like Sublime Text in order to clean up previous chatlogs copied from Discord in order to use them for training. The examples below show various regex formulas you can use to clean up different unwanted data from copy pasted Discord chatwindow:
 
 * User names, timestamps and newlines: `\n.* at [0-9]+:+[0-9]+ [A-Z]+`
 * Mentioned users (will also remove some text): `@.*`
 * Channels (will also remove some text): `#.*`
-* Level up messages for a certain bot (do this **before** emojis): `:[a-zA-Z0-9]+:  \|  .* leveled up!\n`
+* Level up messages from Tatsumaki bot (do this **before** emojis): `:[a-zA-Z0-9]+:  \|  .* leveled up!\n`
 * Emojis: `:[a-zA-Z0-9_\-]+:`
 * URLs: `http(|s):\/\/(\S+)*`
 * Double newlines: `\n `
