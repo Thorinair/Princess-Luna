@@ -721,7 +721,7 @@ comm.waifu = function(data) {
 					        ), true);
 
 					        var url = util.format(
-					        	config.ann.waifu.url,
+					        	config.ann.waifu.request,
 					        	httpkey.key,
 					        	image,
 					        	data.channelID,
@@ -3940,6 +3940,28 @@ function processReqReload(query) {
     send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.reload.message, false);
 }
 
+function processReqWaifu(query) {
+    if (query.url != undefined && query.channelid != undefined && query.userid != undefined && query.time != undefined && query.size != undefined) {
+        send(query.channelid, util.format(
+            strings.misc.ann.waifu.message,
+            mention(query.userid),
+            query.time,
+            query.size,
+            query.url
+        ), true);
+    }
+    else if (query.error != undefined && query.channelid != undefined && query.userid != undefined) {
+        send(query.channelid, util.format(
+            strings.misc.ann.waifu.errorA,
+            mention(query.userid)
+        ), true);
+        send(channelNameToID(config.options.channels.debug), util.format(
+            strings.misc.ann.waifu.errorB,
+            mention(config.options.adminid)
+        ), true);    	
+    }
+}
+
 var processRequest = function(req, res) {
     if (req.method == "GET") {
         var query = url.parse(req.url, true).query;
@@ -3957,6 +3979,7 @@ var processRequest = function(req, res) {
                 case "stream": processReqStream(query); break;
                 case "reboot": processReqReboot(query); break;
                 case "reload": processReqReload(query); break;
+                case "waifu":  processReqWaifu(query);  break;
             }       
     }
 
