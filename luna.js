@@ -686,140 +686,152 @@ comm.waifu = function(data) {
 	});
 
 	if (isPublicChannel) {
-	    var parameters = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-	    if ((parameters == "" || parameters == config.options.commandsymbol + data.command) && data.data.d.attachments[0] == undefined) {
-	        send(data.channelID, util.format(
-	            strings.commands.waifu.errorA, 
-	            mention(data.userID)
-	        ), true);
-	    }
-	    else {
-	    	if (data.data.d.attachments[0] != undefined) {
-	    		var image = data.data.d.attachments[0].url;
 
-	    		var parameterParts = parameters.split(" ");
-	    		var n = 0;
-	    		var s = 1;
-	    		var hasParameters = false;
-	    		parameterParts.forEach(function(p) {
-	    			if (p[0] == "n") {
-	    				hasParameters = true;
-	    				n = p[1];
-	    			}
-	    			else if (p[0] == "s") {
-	    				hasParameters = true;
-	    				s = p[1];
-	    			}
-	    		});
+		if (annStatus.enabled) {
+		    var parameters = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+		    if ((parameters == "" || parameters == config.options.commandsymbol + data.command) && data.data.d.attachments[0] == undefined) {
+		        send(data.channelID, util.format(
+		            strings.commands.waifu.errorA, 
+		            mention(data.userID)
+		        ), true);
+		    }
+		    else {
+		    	if (data.data.d.attachments[0] != undefined) {
+		    		var image = data.data.d.attachments[0].url;
 
-	    		if (hasParameters) {
-	    			if (n == 0 || n == 1 || n == 2 || n == 3) {
-		    			if (s == 1 || s == 2 || s == 4 || s == 8) {
-					        send(data.channelID, util.format(
-					            strings.commands.waifu.message,
-					            mention(data.userID)
-					        ), true);
+		    		var parameterParts = parameters.split(" ");
+		    		var n = 0;
+		    		var s = 1;
+		    		var hasParameters = false;
+		    		parameterParts.forEach(function(p) {
+		    			if (p[0] == "n") {
+		    				hasParameters = true;
+		    				n = p[1];
+		    			}
+		    			else if (p[0] == "s") {
+		    				hasParameters = true;
+		    				s = p[1];
+		    			}
+		    		});
 
-					        var url = util.format(
-					        	config.ann.waifu.request,
-					        	httpkey.key,
-					        	image,
-					        	data.channelID,
-					        	data.userID,
-					        	n,
-					        	s
-					        );
+		    		if (hasParameters) {
+		    			if (n == 0 || n == 1 || n == 2 || n == 3) {
+			    			if (s == 1 || s == 2 || s == 4 || s == 8) {
+						        send(data.channelID, util.format(
+						            strings.commands.waifu.message,
+						            mention(data.userID),
+						            n,
+						            s
+						        ), true);
 
-					        var xhr = new XMLHttpRequest();
-					        xhr.open("GET", url, true);
+						        var url = util.format(
+						        	config.ann.waifu.request,
+						        	httpkey.key,
+						        	image,
+						        	data.channelID,
+						        	data.userID,
+						        	n,
+						        	s
+						        );
 
-						    xhr.onreadystatechange = function () { 
-						        if (xhr.readyState == 4) {
-						        	if (xhr.status != 200)
-						        		setTimeout(function() {
-									        send(data.channelID, util.format(
-									            strings.commands.waifu.errorG,
-									            mention(data.userID)
-									        ), true);
-									        send(channelNameToID(config.options.channels.debug), util.format(
-									            strings.commands.waifu.errorI,
-									            mention(config.options.adminid)
-									        ), true);
-						    			}, 2000);
-						            
-						            clearTimeout(waifuTimeout);
+						        var xhr = new XMLHttpRequest();
+						        xhr.open("GET", url, true);
+
+							    xhr.onreadystatechange = function () { 
+							        if (xhr.readyState == 4) {
+							        	if (xhr.status != 200)
+							        		setTimeout(function() {
+										        send(data.channelID, util.format(
+										            strings.commands.waifu.errorG,
+										            mention(data.userID)
+										        ), true);
+										        send(channelNameToID(config.options.channels.debug), util.format(
+										            strings.commands.waifu.errorI,
+										            mention(config.options.adminid)
+										        ), true);
+							    			}, 2000);
+							            
+							            clearTimeout(waifuTimeout);
+							        }
+							    }
+						        xhr.onerror = function(err) {
+						            xhr.abort();
+
+							        send(data.channelID, util.format(
+							            strings.commands.waifu.errorG,
+							            mention(data.userID)
+							        ), true);
+							        send(channelNameToID(config.options.channels.debug), util.format(
+							            strings.commands.waifu.errorI,
+							            mention(config.options.adminid)
+							        ), true);
 						        }
-						    }
-					        xhr.onerror = function(err) {
-					            xhr.abort();
+						        xhr.ontimeout = function() {
+						            xhr.abort();
 
+							        send(data.channelID, util.format(
+							            strings.commands.waifu.errorH,
+							            mention(data.userID)
+							        ), true);
+							        send(channelNameToID(config.options.channels.debug), util.format(
+							            strings.commands.waifu.errorJ,
+							            mention(config.options.adminid)
+							        ), true);
+						        }
+
+						        xhr.send();
+
+							    waifuTimeout = setTimeout(function() {
+							        xhr.abort();
+
+							        send(data.channelID, util.format(
+							            strings.commands.waifu.errorH,
+							            mention(data.userID)
+							        ), true);
+							        send(channelNameToID(config.options.channels.debug), util.format(
+							            strings.commands.waifu.errorJ,
+							            mention(config.options.adminid)
+							        ), true);
+							    }, config.ann.waifu.timeout * 1000);
+			    			}
+			    			else {
 						        send(data.channelID, util.format(
-						            strings.commands.waifu.errorG,
-						            mention(data.userID)
+						            strings.commands.waifu.errorE,
+						            mention(data.userID),
+						            s
 						        ), true);
-						        send(channelNameToID(config.options.channels.debug), util.format(
-						            strings.commands.waifu.errorI,
-						            mention(config.options.adminid)
-						        ), true);
-					        }
-					        xhr.ontimeout = function() {
-					            xhr.abort();
-
-						        send(data.channelID, util.format(
-						            strings.commands.waifu.errorH,
-						            mention(data.userID)
-						        ), true);
-						        send(channelNameToID(config.options.channels.debug), util.format(
-						            strings.commands.waifu.errorJ,
-						            mention(config.options.adminid)
-						        ), true);
-					        }
-
-					        xhr.send();
-
-						    waifuTimeout = setTimeout(function() {
-						        xhr.abort();
-
-						        send(data.channelID, util.format(
-						            strings.commands.waifu.errorH,
-						            mention(data.userID)
-						        ), true);
-						        send(channelNameToID(config.options.channels.debug), util.format(
-						            strings.commands.waifu.errorJ,
-						            mention(config.options.adminid)
-						        ), true);
-						    }, config.ann.waifu.timeout * 1000);
+			    			}
 		    			}
 		    			else {
 					        send(data.channelID, util.format(
-					            strings.commands.waifu.errorE,
+					            strings.commands.waifu.errorD,
 					            mention(data.userID),
-					            s
+					            n
 					        ), true);
 		    			}
-	    			}
-	    			else {
+		    		}
+		    		else {
 				        send(data.channelID, util.format(
-				            strings.commands.waifu.errorD,
-				            mention(data.userID),
-				            n
+				            strings.commands.waifu.errorC, 
+				            mention(data.userID)
 				        ), true);
-	    			}
-	    		}
-	    		else {
+		    		}
+		    	}
+		    	else {
 			        send(data.channelID, util.format(
-			            strings.commands.waifu.errorC, 
+			            strings.commands.waifu.errorB, 
 			            mention(data.userID)
 			        ), true);
-	    		}
-	    	}
-	    	else {
-		        send(data.channelID, util.format(
-		            strings.commands.waifu.errorB, 
-		            mention(data.userID)
-		        ), true);
-	    	}
-	    }
+		    	}
+		    }
+		}
+		else {
+	        send(data.channelID, util.format(
+	            strings.commands.waifu.paused, 
+	            mention(data.userID),
+	            annStatus.message
+	        ), true);
+		}
 	}
 	else {
         send(data.channelID, util.format(
@@ -935,7 +947,8 @@ comm.about = function(data) {
     send(data.channelID, util.format(
         strings.commands.about.message, 
         mention(data.userID),
-        package.homepage
+        package.homepage,
+        config.options.chrysalisgit
     ), true);
 };
 
@@ -2055,6 +2068,35 @@ comm.stream = function(data) {
     }
 };
 
+// Command: !ann
+comm.ann = function(data) {
+	var parts = data.message.split("\n");
+    var state = parts[0].replace(config.options.commandsymbol + data.command + " ", "");
+    if (state == "" || state == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.ann.errorA, true);
+    }
+    else {
+        if (state == "on") {
+        	annStatus.enabled = true;
+        	annStatus.message = "";
+            fs.writeFileSync(config.ann.path, JSON.stringify(annStatus), "utf-8");
+            send(data.channelID, strings.commands.ann.messageB, true);
+        }
+        else if (state == "off") {
+        	if (parts[1] != undefined && parts[1] != "" && parts[1] != " ") {
+	        	annStatus.enabled = false;
+	        	annStatus.message = parts[1];
+	            fs.writeFileSync(config.ann.path, JSON.stringify(annStatus), "utf-8");
+            	send(data.channelID, strings.commands.ann.messageA, true);
+        	}
+        	else
+            	send(data.channelID, strings.commands.ann.errorB, true);
+        }
+        else
+            send(data.channelID, strings.commands.ann.errorA, true);
+    }
+};
+
 
 // Command: !reboot
 comm.reboot = function(data) {  
@@ -2240,6 +2282,7 @@ var lightningExpire;
 var lightningSpread;
 var lightningReconnect;
 
+var annStatus;
 var waifuTimeout;
 
 // Persistant Objects
@@ -3159,6 +3202,7 @@ function startupProcedure() {
     loadLyrics();
     loadArtwork();
     loadNPToggles();
+    loadANN();
     loadBlacklist();
     loadIgnore();
     loadEEG();
@@ -3490,6 +3534,25 @@ function loadNPToggles() {
     else {
         fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
         console.log(strings.debug.nptoggles.new);
+    }
+}
+
+/*
+ * Loads the ANN toggle data, or creates new.
+ */
+function loadANN() {
+    annStatus = {};
+
+    if (fs.existsSync(config.ann.path)) {
+        console.log(strings.debug.ann.old);
+        annStatus = JSON.parse(fs.readFileSync(config.ann.path, "utf8"));
+        console.log(strings.debug.ann.done);
+    }
+    else {
+    	annStatus.enabled = true;
+    	annStatus.message = "";
+        fs.writeFileSync(config.ann.path, JSON.stringify(annStatus), "utf-8");
+        console.log(strings.debug.ann.new);
     }
 }
 

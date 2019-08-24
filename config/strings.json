@@ -89,18 +89,18 @@
 			"spoiler":  "||"
 		},
 		"waifu": {
-			"message":  "%s, everything seems to be in order. I am sending the data to Queen Chrysalis for processing. Please stand by.",
-			"errorA":   "%s, in order to use this command, you must attach an image to the message containing the command. Additionally, you need to supply two parameters: noise level (`nX`) and scale (`sX`). Note that at least one parameter needs to be defined.\n\nNoise level selects much much noise reduction the processing will do. This is mostly useful when sending a JPG image for processing. You may only use the following values: `n0`, `n1`, `n2` or `n3`.\n\nScale selects how much will the image be scaled up. You may only use the following values: `s1`, `s2`, `s4` or `s8`.\n\nHere is an example how to use the command: `!waifu n3 s2` - this will perform a noise reduction of level 3, and scale the image up by double.",
+			"message":  "%s, everything seems to be in order. I am sending the image to Queen Chrysalis for processing with the **noise reduction** of strength **%s** and **scaling factor** of **%sx**. Please stand by.",
+			"errorA":   "%s, in order to use this command, you must attach an image to the message containing the command. Additionally, you need to supply at least one of the two parameters: **noise reduction** and **scaling factor**.\n\n**Noise reduction** selects how much noise (JPEG artefacts and/or grain) will be removed from the image. This is mostly useful when sending an image of lower apparent quality. You may only use the following parameters: `n0`, `n1`, `n2` or `n3` for different strengths of the filer. The value of 0 disables it, while the value of 3 sets it to the maximum strength.\n\n**Scaling factor** selects how much will the image be scaled up. You may only use the following parameters: `s1`, `s2`, `s4` or `s8` to not scale, scale double, four times or eight times respectively.\n\nHere is an example how to use the command: `!waifu n3 s2` - this will perform a noise reduction of strength 3, and scale the image up by double.",
 			"errorB":   "%s, you need to attach a picture for me to be able to send anything for processing.",
-			"errorC":   "%s, you need to specify at least one parameter, noise level (`nX`) or scale (`sX`).",
-			"errorD":   "%s, **%s** is not a valid value for the noise level. You may only use values 0, 1, 2 or 3.",
-			"errorE":   "%s, **%s** is not a valid value for the scale. You may only use values 1, 2, 4 or 8.",
+			"errorC":   "%s, you need to specify at least one parameter, **noise reduction** (`n0`, `n1`, `n2` or `n3`) or **scaling factor** (`s1`, `s2`, `s4` or `s8`).",
+			"errorD":   "%s, **%s** is not a valid value for the noise reduction. You may only use values 0, 1, 2 or 3.",
+			"errorE":   "%s, **%s** is not a valid value for the scaling factor. You may only use values 1, 2, 4 or 8.",
 			"errorF":   "%s, you may only use this command in one of the channels which are defined for me internally. This includes most server channels where Thorinair has approved my usage.",
 			"errorG":   "%s, there was an error while I was trying to send the data to Queen Chrysalis. Please let Thorinair know.",
 			"errorH":   "%s, I was unable to contact Queen Chrysalis, she may be offline right now.",
-			"errorI":   "%s, somepony tried to start a Waifu2x rescaling, but I have encountered an error while contacting Queen Chrysalis. Please check what's up.",
-			"errorJ":   "%s, somepony tried to start a Waifu2x rescaling, but Queen Chrysalis was not responding. Please check what's up.",
-			"paused":   "%s, it appears that Thorinair has temporarily paused the usage of Queen Chrysalis' neural network features. Here is the message he has left:\n>%s"
+			"errorI":   "%s, somepony tried to start a Waifu2x processing, but I have encountered an error while contacting Queen Chrysalis. Please check what's up.",
+			"errorJ":   "%s, somepony tried to start a Waifu2x processing, but Queen Chrysalis was not responding. Please check what's up.",
+			"paused":   "%s, it appears that Thorinair has temporarily paused the usage of Queen Chrysalis' neural network features. Here is the message he has left:\n> %s"
 		},
 		"custom": {
 			"messageA": "%s, the following custom interractions are defined for this server: %s ",
@@ -114,7 +114,7 @@
 			"learnno":  "I am unable to learn anything from this specific chatroom."
 		},
 		"about": {
-			"message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Hope you have a lovely night!"
+			"message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Addtionally, I rely on an extension called Queen Chrysalis in order to preform ANN (Artificial Neural Network) functionalities. You can find her source code here: <%s>. Hope you have a lovely night!"
 		},
 		"help": {
 			"message":  "%s, check your direct messages, I've sent you the information there!",
@@ -375,6 +375,12 @@
 			"messageB": "Thori, I have **stopped** the live stream.",
 			"error":    "Thori, you need to specify the `start` or `stop` parameter after the command."
 		},
+		"ann": {
+			"messageA": "Thori, I have disabled the public use of the ANN functionalities.",
+			"messageB": "Thori, the ANN functionalities are available to the public again.",
+			"errorA":   "Thori, you need to specify the `off` or `on` parameter after the command.",
+			"errorB":   "Thori, you need to specify the reason for disabling below the command."
+		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
 		},
@@ -542,6 +548,11 @@
 			"add":     "I am subscribing the channel #%s (%s) to automatic Now Playing announcements.",
 			"remove":  "I am unsubscribing the channel #%s (%s) from automatic Now Playing announcements.",
 			"autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info."
+		},
+		"ann": {
+			"old":     "An ANN toggle file already seems to exist. Loading it now...",
+			"new":     "I don't seem to have an ANN toggle file. I have created a new one.",
+			"done":    "I've finished loading my ANN toggle file."
 		},
 		"blacklist": {
 			"old":     "A blacklist file already seems to exist. Loading it now...",

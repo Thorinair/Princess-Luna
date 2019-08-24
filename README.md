@@ -32,7 +32,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!blacklist` Adds the user to a blacklist so their messages are not saved for training purposes.
     - `!coin` Flips a coin which may land either heads or tails.
     - `!minesweeper` Creates a minesweeper grid using Discord spoiler tags. Set the difficulty by adding a number 1, 2 or 3 after the command.
-    - `!waifu` Performs the Waifu2x ANN scaling algorithm on the image given as attachment. You can specify the noise level and scale using parameters `nX` and `sX` respectively. This command makes use of the Queen Chrysalis extension running on a separate server.
+    - `!waifu` Performs the Waifu2x ANN scaling algorithm on the image given as attachment. You can specify the noise level and scale using parameters `nX` and `sX` respectively. This command makes use of the [Queen Chrysalis](https://github.com/Thorinair/Queen-Chrysalis) extension running on a separate server.
     - `!custom` Lists all available custom interractions for a server or channel.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!stats` Lists information about the bot and links the source code.
@@ -66,6 +66,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!leave` Leave a specified server that the bot has previously joined. Call the command without a server ID to list all servers the bot may leave.
     - `!camera` Start or stop the attached camera. Use `on` or `off` as a parameter after the command.
     - `!stream` Start or stop the live stream routing of the camera. Use `start` or `stop` as a parameter after the command.
+    - `!ann` Enable or disable the ANN functionalities. Use `on` or `off` as a parameter after the command. If `off` is specified, supply the message other users will see in a new line below the command.
     - `!reboot` Reboots the bot by exiting the process, letting the service restart it automatically.
     - `!reload` Reloads the configuration files. Note that only the actual configuration will be reloaded, and reloading may not sometimes be enough to change the behavior.
     - `!backup` Creates a backup of the data and config directories and sends it as a file through Discord.

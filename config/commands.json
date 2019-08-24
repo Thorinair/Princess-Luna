@@ -331,6 +331,11 @@
 			"help":    "",
 			"type":    "private"
 		},
+		{
+			"command": "ann",
+			"help":    "",
+			"type":    "private"
+		},
 
 		{
 			"command": "reboot",
