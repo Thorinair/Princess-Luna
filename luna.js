@@ -677,6 +677,158 @@ comm.minesweeper = function(data) {
     }
 };
 
+// Command: !waifu
+comm.waifu = function(data) {
+	var isPublicChannel = false
+	channels.list.forEach(function(c) {
+		if (data.channelID == c.id)
+			isPublicChannel = true;
+	});
+
+	if (isPublicChannel) {
+	    var parameters = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+	    if ((parameters == "" || parameters == config.options.commandsymbol + data.command) && data.data.d.attachments[0] == undefined) {
+	        send(data.channelID, util.format(
+	            strings.commands.waifu.errorA, 
+	            mention(data.userID)
+	        ), true);
+	    }
+	    else {
+	    	if (data.data.d.attachments[0] != undefined) {
+	    		var image = data.data.d.attachments[0].url;
+
+	    		var parameterParts = parameters.split(" ");
+	    		var n = 0;
+	    		var s = 1;
+	    		var hasParameters = false;
+	    		parameterParts.forEach(function(p) {
+	    			if (p[0] == "n") {
+	    				hasParameters = true;
+	    				n = p[1];
+	    			}
+	    			else if (p[0] == "s") {
+	    				hasParameters = true;
+	    				s = p[1];
+	    			}
+	    		});
+
+	    		if (hasParameters) {
+	    			if (n == 0 || n == 1 || n == 2 || n == 3) {
+		    			if (s == 1 || s == 2 || s == 4 || s == 8) {
+					        send(data.channelID, util.format(
+					            strings.commands.waifu.message,
+					            mention(data.userID)
+					        ), true);
+
+					        var url = util.format(
+					        	config.ann.waifu.url,
+					        	httpkey.key,
+					        	image,
+					        	data.channelID,
+					        	data.userID,
+					        	n,
+					        	s
+					        );
+
+					        var xhr = new XMLHttpRequest();
+					        xhr.open("GET", url, true);
+
+						    xhr.onreadystatechange = function () { 
+						        if (xhr.readyState == 4) {
+						        	if (xhr.status != 200)
+						        		setTimeout(function() {
+									        send(data.channelID, util.format(
+									            strings.commands.waifu.errorG,
+									            mention(data.userID)
+									        ), true);
+									        send(channelNameToID(config.options.channels.debug), util.format(
+									            strings.commands.waifu.errorI,
+									            mention(config.options.adminid)
+									        ), true);
+						    			}, 2000);
+						            
+						            clearTimeout(waifuTimeout);
+						        }
+						    }
+					        xhr.onerror = function(err) {
+					            xhr.abort();
+
+						        send(data.channelID, util.format(
+						            strings.commands.waifu.errorG,
+						            mention(data.userID)
+						        ), true);
+						        send(channelNameToID(config.options.channels.debug), util.format(
+						            strings.commands.waifu.errorI,
+						            mention(config.options.adminid)
+						        ), true);
+					        }
+					        xhr.ontimeout = function() {
+					            xhr.abort();
+
+						        send(data.channelID, util.format(
+						            strings.commands.waifu.errorH,
+						            mention(data.userID)
+						        ), true);
+						        send(channelNameToID(config.options.channels.debug), util.format(
+						            strings.commands.waifu.errorJ,
+						            mention(config.options.adminid)
+						        ), true);
+					        }
+
+					        xhr.send();
+
+						    waifuTimeout = setTimeout(function() {
+						        xhr.abort();
+
+						        send(data.channelID, util.format(
+						            strings.commands.waifu.errorH,
+						            mention(data.userID)
+						        ), true);
+						        send(channelNameToID(config.options.channels.debug), util.format(
+						            strings.commands.waifu.errorJ,
+						            mention(config.options.adminid)
+						        ), true);
+						    }, config.ann.waifu.timeout * 1000);
+		    			}
+		    			else {
+					        send(data.channelID, util.format(
+					            strings.commands.waifu.errorE,
+					            mention(data.userID),
+					            s
+					        ), true);
+		    			}
+	    			}
+	    			else {
+				        send(data.channelID, util.format(
+				            strings.commands.waifu.errorD,
+				            mention(data.userID),
+				            n
+				        ), true);
+	    			}
+	    		}
+	    		else {
+			        send(data.channelID, util.format(
+			            strings.commands.waifu.errorC, 
+			            mention(data.userID)
+			        ), true);
+	    		}
+	    	}
+	    	else {
+		        send(data.channelID, util.format(
+		            strings.commands.waifu.errorB, 
+		            mention(data.userID)
+		        ), true);
+	    	}
+	    }
+	}
+	else {
+        send(data.channelID, util.format(
+            strings.commands.waifu.errorF, 
+            mention(data.userID)
+        ), true);
+	}
+};
+
 // Command: !custom
 comm.custom = function(data) {
     var interractionCommands = ""
@@ -2087,6 +2239,8 @@ var lightningLng = 0;
 var lightningExpire;
 var lightningSpread;
 var lightningReconnect;
+
+var waifuTimeout;
 
 // Persistant Objects
 var bot;

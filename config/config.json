@@ -184,6 +184,12 @@
 			}
 		}
 	},
+	"ann": {
+		"waifu": {
+			"url":     "http://chrysalis.local:20200/?key=%s&action=waifu&url=%s&channelid=%s&userid=%s&n=%s&s=%s",
+			"timeout": 10
+		}
+	},
 	"separators": {
 		"date":  "-",
 		"time":  ":",

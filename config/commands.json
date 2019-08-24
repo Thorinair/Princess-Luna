@@ -71,6 +71,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "waifu",
+			"help":    "Use this command to have me ask Queen Chrysalis to scale an image up for you or remove noise from it. The image needs to be sent as an attachment with the command. Use the command without any parameters for a detailed tutorial.",
+			"type":    "public"
+		},
+		{
 			"command": "custom",
 			"help":    "Ask me which custom interractions are defined for a server or channel.",
 			"type":    "public"
