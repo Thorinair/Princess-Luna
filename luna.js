@@ -704,11 +704,11 @@ comm.waifu = function(data) {
 		    		var s = 1;
 		    		var hasParameters = false;
 		    		parameterParts.forEach(function(p) {
-		    			if (p[0] == "n") {
+		    			if (p[0] == "n" || p[0] == "N") {
 		    				hasParameters = true;
 		    				n = p[1];
 		    			}
-		    			else if (p[0] == "s") {
+		    			else if (p[0] == "s" || p[0] == "S") {
 		    				hasParameters = true;
 		    				s = p[1];
 		    			}
