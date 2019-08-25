@@ -100,6 +100,7 @@
 			"errorH":   "%s, I was unable to contact Queen Chrysalis, she may be offline right now.",
 			"errorI":   "%s, somepony tried to start a Waifu2x processing, but I have encountered an error while contacting Queen Chrysalis. Please check what's up.",
 			"errorJ":   "%s, somepony tried to start a Waifu2x processing, but Queen Chrysalis was not responding. Please check what's up.",
+			"errorK":   "%s, setting parameters like this would not do anything to the image (no noise reduction and no scaling).",
 			"paused":   "%s, it appears that Thorinair has temporarily paused the usage of Queen Chrysalis' neural network features. Here is the message he has left:\n> %s"
 		},
 		"custom": {

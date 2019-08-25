@@ -717,82 +717,90 @@ comm.waifu = function(data) {
 		    		if (hasParameters) {
 		    			if (n == 0 || n == 1 || n == 2 || n == 3) {
 			    			if (s == 1 || s == 2 || s == 4 || s == 8) {
-						        send(data.channelID, util.format(
-						            strings.commands.waifu.message,
-						            mention(data.userID),
-						            n,
-						            s
-						        ), true);
+			    				if (!(n == 0 && s == 1)) {
+							        send(data.channelID, util.format(
+							            strings.commands.waifu.message,
+							            mention(data.userID),
+							            n,
+							            s
+							        ), true);
 
-						        var url = util.format(
-						        	config.ann.waifu.request,
-						        	httpkey.key,
-						        	image,
-						        	data.channelID,
-						        	data.userID,
-						        	n,
-						        	s
-						        );
+							        var url = util.format(
+							        	config.ann.waifu.request,
+							        	httpkey.key,
+							        	image,
+							        	data.channelID,
+							        	data.userID,
+							        	n,
+							        	s
+							        );
 
-						        var xhr = new XMLHttpRequest();
-						        xhr.open("GET", url, true);
+							        var xhr = new XMLHttpRequest();
+							        xhr.open("GET", url, true);
 
-							    xhr.onreadystatechange = function () { 
-							        if (xhr.readyState == 4) {
-							        	if (xhr.status != 200)
-							        		setTimeout(function() {
-										        send(data.channelID, util.format(
-										            strings.commands.waifu.errorG,
-										            mention(data.userID)
-										        ), true);
-										        send(channelNameToID(config.options.channels.debug), util.format(
-										            strings.commands.waifu.errorI,
-										            mention(config.options.adminid)
-										        ), true);
-							    			}, 2000);
-							            
-							            clearTimeout(waifuTimeout);
+								    xhr.onreadystatechange = function () { 
+								        if (xhr.readyState == 4) {
+								        	if (xhr.status != 200)
+								        		setTimeout(function() {
+											        send(data.channelID, util.format(
+											            strings.commands.waifu.errorG,
+											            mention(data.userID)
+											        ), true);
+											        send(channelNameToID(config.options.channels.debug), util.format(
+											            strings.commands.waifu.errorI,
+											            mention(config.options.adminid)
+											        ), true);
+								    			}, 2000);
+								            
+								            clearTimeout(waifuTimeout);
+								        }
+								    }
+							        xhr.onerror = function(err) {
+							            xhr.abort();
+
+								        send(data.channelID, util.format(
+								            strings.commands.waifu.errorG,
+								            mention(data.userID)
+								        ), true);
+								        send(channelNameToID(config.options.channels.debug), util.format(
+								            strings.commands.waifu.errorI,
+								            mention(config.options.adminid)
+								        ), true);
 							        }
-							    }
-						        xhr.onerror = function(err) {
-						            xhr.abort();
+							        xhr.ontimeout = function() {
+							            xhr.abort();
 
+								        send(data.channelID, util.format(
+								            strings.commands.waifu.errorH,
+								            mention(data.userID)
+								        ), true);
+								        send(channelNameToID(config.options.channels.debug), util.format(
+								            strings.commands.waifu.errorJ,
+								            mention(config.options.adminid)
+								        ), true);
+							        }
+
+							        xhr.send();
+
+								    waifuTimeout = setTimeout(function() {
+								        xhr.abort();
+
+								        send(data.channelID, util.format(
+								            strings.commands.waifu.errorH,
+								            mention(data.userID)
+								        ), true);
+								        send(channelNameToID(config.options.channels.debug), util.format(
+								            strings.commands.waifu.errorJ,
+								            mention(config.options.adminid)
+								        ), true);
+								    }, config.ann.waifu.timeout * 1000);
+								}
+								else {
 							        send(data.channelID, util.format(
-							            strings.commands.waifu.errorG,
+							            strings.commands.waifu.errorK,
 							            mention(data.userID)
 							        ), true);
-							        send(channelNameToID(config.options.channels.debug), util.format(
-							            strings.commands.waifu.errorI,
-							            mention(config.options.adminid)
-							        ), true);
-						        }
-						        xhr.ontimeout = function() {
-						            xhr.abort();
-
-							        send(data.channelID, util.format(
-							            strings.commands.waifu.errorH,
-							            mention(data.userID)
-							        ), true);
-							        send(channelNameToID(config.options.channels.debug), util.format(
-							            strings.commands.waifu.errorJ,
-							            mention(config.options.adminid)
-							        ), true);
-						        }
-
-						        xhr.send();
-
-							    waifuTimeout = setTimeout(function() {
-							        xhr.abort();
-
-							        send(data.channelID, util.format(
-							            strings.commands.waifu.errorH,
-							            mention(data.userID)
-							        ), true);
-							        send(channelNameToID(config.options.channels.debug), util.format(
-							            strings.commands.waifu.errorJ,
-							            mention(config.options.adminid)
-							        ), true);
-							    }, config.ann.waifu.timeout * 1000);
+								}
 			    			}
 			    			else {
 						        send(data.channelID, util.format(
