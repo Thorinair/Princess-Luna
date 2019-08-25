@@ -33,7 +33,7 @@
 		"serverport":    80,
 		"maxlength":     2000,
 		"typetime":      2,
-		"reboottime":    5,
+		"reboottime":    10,
 		"starttime":     60,
 		"reconnecttime": 10,
 		"htimeout":      1800,
@@ -112,7 +112,7 @@
 		"default":    "I am The Night.",
 		"markov":     2,
 		"maxloop":    100,
-		"timeout":    60,
+		"saveloop":   1800,
 		"maxlines":   32768,
 		"cleanbrain": false,
 		"debug":      false

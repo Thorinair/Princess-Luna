@@ -4023,6 +4023,13 @@ function processReqWaifu(query) {
             mention(config.options.adminid)
         ), true);    	
     }
+    else if (query.queue != undefined && query.channelid != undefined && query.userid != undefined) {
+        send(query.channelid, util.format(
+            strings.misc.ann.waifu.queue,
+            mention(query.userid),
+            query.queue
+        ), true);
+    }
 }
 
 var processRequest = function(req, res) {
@@ -4257,7 +4264,7 @@ function loadBot() {
             loopLightning();
             loopNowPlaying();
             loopVariPassPull();
-            setTimeout(loopBrainSave, config.brain.timeout * 1000);
+            setTimeout(loopBrainSave, config.brain.saveloop * 1000);
         }
     });
 
@@ -4797,7 +4804,7 @@ function loopBrainSave() {
     if (!rebooting)
         saveAllBrains();
 
-    setTimeout(loopBrainSave, config.brain.timeout * 1000);
+    setTimeout(loopBrainSave, config.brain.saveloop * 1000);
 }
 
 
