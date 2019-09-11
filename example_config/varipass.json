@@ -18,7 +18,8 @@
 			"gravity_z":    "0000AAAA",
 			"doseema":      "0000AAAA",
 			"counts":       "0000AAAA",
-			"dose":         "0000AAAA"
+			"dose":         "0000AAAA",
+			"location":     "0000AAAA"
 		}
 	},
 	"eeg": {

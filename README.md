@@ -34,6 +34,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!minesweeper` Creates a minesweeper grid using Discord spoiler tags. Set the difficulty by adding a number 1, 2 or 3 after the command.
     - `!waifu` Performs the Waifu2x ANN scaling algorithm on the image given as attachment. You can specify the noise level and scale using parameters `nX` and `sX` respectively. This command makes use of the [Queen Chrysalis](https://github.com/Thorinair/Queen-Chrysalis) extension running on a separate server.
     - `!custom` Lists all available custom interractions for a server or channel.
+    - `!thori` Sends Thorinair's location info, pulled from VariPass. Users need to be whitelisted in order to use this command.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.

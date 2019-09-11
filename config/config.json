@@ -11,6 +11,7 @@
 		"phaseurl":      "https://api.usno.navy.mil/moon/phase?date=today&nump=50",
 		"moonurl":       "https://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
 		"geourl":        "https://geocode.xyz/%s,%s?geoit=json&auth=%s",
+		"mapsurl":       "https://www.google.com/maps/search/?api=1&query=%s,%s",
 		"configpath":    "/var/www/node/config/",
 		"moonimg":       "/var/www/node/data/moon.png",
 		"motionimg":     "/var/www/node/data/motion.jpg",

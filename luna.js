@@ -40,6 +40,7 @@ var wow      = require("./config/wow.json");
 var httpkey  = require("./config/httpkey.json");
 var mac      = require("./config/mac.json");
 var blitzor  = require("./config/blitzor.json");
+var thori    = require("./config/thori.json");
 
 // Commands
 var comm = {};
@@ -895,6 +896,104 @@ comm.custom = function(data) {
         send(data.channelID, util.format(
             strings.commands.custom.error,
             mention(data.userID),
+        ), true);
+    }
+};
+
+// Command: !thori
+comm.thori = function(data) {
+	var found = false;
+	if (data.userID == config.options.adminid)
+		found = true;
+	thori.whitelist.forEach(function(u) {
+		if (data.userID == u.id)
+			found = true;
+	});
+
+	if (found) {
+	    var payload = {
+	            "key": varipass.main.key,
+	            "action": "read",
+	            "id": varipass.main.ids.location
+	        };
+
+	    var xhr = new XMLHttpRequest();
+	    xhr.open("POST", config.options.varipassurl, true);
+	    xhr.setRequestHeader("Content-type", "application/json");
+
+	    xhr.onreadystatechange = function () { 
+	        if (xhr.readyState == 4 && xhr.status == 200) {
+	            var vpData = JSON.parse(xhr.responseText);
+	            console.log(strings.debug.varipass.done);
+
+	            var values = vpData.value.split("\\n");
+	            var lat = 0.0;
+	            var lng = 0.0;
+	            var alt = 0.0;
+	            values.forEach(function(v) {
+	            	var parts = v.split(":");
+	            	if (parts[0] == "lat")
+	            		lat = parseFloat(parts[1]);
+	            	else if (parts[0] == "lng")
+	            		lng = parseFloat(parts[1]);
+	            	else if (parts[0] == "alt")
+	            		alt = parseFloat(parts[1]);
+	            });
+
+	            var diff = vpData.current - vpData.time;
+	            var time = {};
+
+	            time.seconds = Math.floor(diff % 60);
+	            diff = Math.floor(diff / 60);
+	            time.minutes = Math.floor(diff % 60);
+	            diff = Math.floor(diff / 60);
+	            time.hours = Math.floor(diff % 24);
+	            time.days = Math.floor(diff / 24);
+
+	            var url = util.format(
+	            	config.options.mapsurl,
+	            	lat,
+	            	lng
+	            );
+		    
+				getLocationInfo(function(locInfo) {
+			    	send(data.userID, util.format(
+				        strings.commands.thori.messageB,
+				        locInfo.town,
+				        locInfo.country,
+				        alt.toFixed(1),
+	                	getTimeString(time),
+	                	time.seconds,
+	                	url
+				    ), false);
+
+				    if (bot.channels[data.channelID] != undefined)  
+				        send(data.channelID, util.format(
+				            strings.commands.thori.messageA, 
+				            mention(data.userID)
+				        ), true);
+				}, lat, lng);
+	        }
+	    }
+	    xhr.onerror = function(err) {
+	        console.log(util.format(
+	            strings.debug.varipass.error,
+	            err.target.status
+	        ));
+	        xhr.abort();
+	    }
+	    xhr.ontimeout = function() {
+	        console.log(strings.debug.varipass.timeout);
+	        xhr.abort();
+	    }
+
+	    console.log(strings.debug.varipass.load);
+	    xhr.send(JSON.stringify(payload));
+	}
+	else {
+        send(data.channelID, util.format(
+            strings.commands.thori.error, 
+            mention(data.userID)
         ), true);
     }
 };
@@ -2411,6 +2510,7 @@ function reloadConfig() {
     httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
     mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
     blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
+    thori    = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
 
 	clearTimeout(lightningReconnect);
     blitzorws.close();
@@ -2930,6 +3030,75 @@ function normalize(bulb) {
         newBulb.brightness = Math.round(newBulb.brightness * 254);
     }
     return newBulb;
+}
+
+function getLocationInfo(callback, lat, lng) {
+	var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", util.format(
+    	config.options.geourl,
+    	lat,
+    	lng,
+    	blitzor.auth
+    ), true);
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            var locInfo = {};
+            locInfo.town = "Unknown";
+            locInfo.country = "Unknown";
+
+            if (response.error != undefined && response.error.code == "008") {
+            	if (response.suggestion != undefined) {
+            		var north = response.suggestion.north;
+            		var south = response.suggestion.south;
+
+            		if (south.distance != undefined && north.distance != undefined) {
+            			if (north.distance < south.distance) {
+            				if (north.city != undefined)
+            					locInfo.town = north.city;
+            				if (north.prov != undefined)
+            					locInfo.country = north.prov;
+            			}
+            			else {
+            				if (south.city != undefined)
+            					locInfo.town = south.city;
+            				if (south.prov != undefined)
+            					locInfo.country = south.prov;
+            			}
+            		}
+            		else if (north.city != undefined) {
+            			locInfo.town = north.city;
+        				if (north.prov != undefined)
+        					locInfo.country = north.prov;
+            		}
+            		else if (rsouth.city != undefined) {
+            			locInfo.town = south.city;
+        				if (south.prov != undefined)
+        					locInfo.country = south.prov;
+            		}
+            	}
+            }
+            else {
+            	if (response.city != undefined)
+            		locInfo.town = response.city;
+            	if (response.prov != undefined)
+            		locInfo.country = response.prov;
+            }
+            var locs = locInfo.town.split(" / ");
+            if (locs.length > 1)
+            	locInfo.town = locs[1];
+            locInfo.town = toUpper(locInfo.town);
+
+            //console.log(response);
+
+            callback(locInfo);
+        }
+    }
+
+    xhr.send();
 }
 
 function degToRad(deg) {
@@ -4554,80 +4723,18 @@ function loopLightning() {
 		else if (b > 281.25 && b < 303.75) bear = "WNW";
 		else if (b > 303.75 && b < 326.25) bear = "NW";
 		else if (b > 326.25 && b < 348.75) bear = "NNW";
-
-	    var xhr = new XMLHttpRequest();
-
-	    xhr.open("GET", util.format(
-	    	config.options.geourl,
-	    	lat,
-	    	lng,
-	    	blitzor.auth
-	    ), true);
-
-	    xhr.onreadystatechange = function () { 
-	        if (xhr.readyState == 4 && xhr.status == 200) {
-	            var response = JSON.parse(xhr.responseText);
-
-	            var loc = "Unknown";
-	            var ctr = "Unknown";
-
-	            if (response.error != undefined && response.error.code == "008") {
-	            	if (response.suggestion != undefined) {
-	            		var north = response.suggestion.north;
-	            		var south = response.suggestion.south;
-
-	            		if (south.distance != undefined && north.distance != undefined) {
-	            			if (north.distance < south.distance) {
-	            				if (north.city != undefined)
-	            					loc = north.city;
-	            				if (north.prov != undefined)
-	            					ctr = north.prov;
-	            			}
-	            			else {
-	            				if (south.city != undefined)
-	            					loc = south.city;
-	            				if (south.prov != undefined)
-	            					ctr = south.prov;
-	            			}
-	            		}
-	            		else if (north.city != undefined) {
-	            			loc = north.city;
-            				if (north.prov != undefined)
-            					ctr = north.prov;
-	            		}
-	            		else if (rsouth.city != undefined) {
-	            			loc = south.city;
-            				if (south.prov != undefined)
-            					ctr = south.prov;
-	            		}
-	            	}
-	            }
-	            else {
-	            	if (response.city != undefined)
-	            		loc = response.city;
-	            	if (response.prov != undefined)
-	            		ctr = response.prov;
-	            }
-	            var locs = loc.split(" / ");
-	            if (locs.length > 1)
-	            	loc = locs[1];
-	            loc = toUpper(loc);
-
-	            //console.log(response);
-
-		    	send(channelNameToID(config.options.channels.home), util.format(
-			        strings.announcements.blitzor.strike,
-			        rng.toFixed(2),
-			        bear,
-			        b.toFixed(2),
-			        loc,
-			        ctr,
-			        time
-			    ), false);
-	        }
-	    }
-
-	    xhr.send();
+	    
+		getLocationInfo(function(locInfo) {
+	    	send(channelNameToID(config.options.channels.home), util.format(
+		        strings.announcements.blitzor.strike,
+		        rng.toFixed(2),
+		        bear,
+		        b.toFixed(2),
+		        locInfo.town,
+		        locInfo.country,
+		        time
+		    ), false);
+		}, lat, lng);
 	}
 
     setTimeout(loopLightning, blitzor.loop * 1000);

@@ -109,6 +109,11 @@
 			"messageC": "`%s%s`",
 			"error":    "%s, there seem to be no custom interractions defined for this server or channel."
 		},
+		"thori": {
+			"messageA": "%s, check your direct messages, I've sent you the information there!",
+			"messageB": "Thorinair is currently located at **%s, %s** at the altitude of **%s m**. Last update was %s and %s seconds ago.\nYou can view his location on the following link: %s",
+			"error":    "%s, you need to be whitelisted by Thorinair in order to this command. Maybe he will if you ask him nicely."
+		},
 		"stats": {
 			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",
