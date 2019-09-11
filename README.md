@@ -68,6 +68,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!camera` Start or stop the attached camera. Use `on` or `off` as a parameter after the command.
     - `!stream` Start or stop the live stream routing of the camera. Use `start` or `stop` as a parameter after the command.
     - `!ann` Enable or disable the ANN functionalities. Use `on` or `off` as a parameter after the command. If `off` is specified, supply the message other users will see in a new line below the command.
+    - `!chase` Start or stop storm chasing mode. While active, the bot will send direct messages on lightning strikes to the admin, based on Thorinair's location.
     - `!reboot` Reboots the bot by exiting the process, letting the service restart it automatically.
     - `!reload` Reloads the configuration files. Note that only the actual configuration will be reloaded, and reloading may not sometimes be enough to change the behavior.
     - `!backup` Creates a backup of the data and config directories and sends it as a file through Discord.

@@ -2,6 +2,7 @@
 	"range":     30,
 	"expand":    1,
 	"loop":      1,
+	"chase":     60,
 	"reconnect": 300,
 	"expire":    1800,
 	"spread":    300,

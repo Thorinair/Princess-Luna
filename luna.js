@@ -2204,6 +2204,32 @@ comm.ann = function(data) {
     }
 };
 
+// Command: !chase
+comm.chase = function(data) {
+    var state = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (state == "" || state == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.chase.error, true);
+    }
+    else {
+        if (state == "start") {
+			connectChase(false);
+            send(data.channelID, strings.commands.chase.messageA, true);
+        }
+        else if (state == "stop") {
+			clearTimeout(chaseReconnect);
+		    chasews.close();
+
+		    if (chaseRange > blitzor.range) {
+				chaseRange = blitzor.range;
+			    chaseNew = blitzor.range;
+		    }
+            send(data.channelID, strings.commands.chase.messageB, true);
+        }
+        else
+            send(data.channelID, strings.commands.chase.error, true);
+    }
+};
+
 
 // Command: !reboot
 comm.reboot = function(data) {  
@@ -2389,6 +2415,17 @@ var lightningExpire;
 var lightningSpread;
 var lightningReconnect;
 
+var isChasing = false;
+var chaseRange = blitzor.range;
+var chaseNew   = blitzor.range;
+var chaseLat = 0;
+var chaseLng = 0;
+var chaseExpire;
+var chaseSpread;
+var chaseReconnect;
+var chaseThoriLat = 0.0;
+var chaseThoriLng = 0.0;
+
 var annStatus;
 var waifuTimeout;
 
@@ -2403,6 +2440,7 @@ var blacklist;
 var ignore;
 var server;
 var blitzorws;
+var chasews;
 
 // Callback for downloading of files. 
 var download = function(uri, filename, callback) {
@@ -2521,6 +2559,18 @@ function reloadConfig() {
     }
 
 	connectBlitzortung(false);
+
+	if (isChasing) {
+		clearTimeout(chaseReconnect);
+	    chasews.close();
+
+	    if (chaseRange > blitzor.range) {
+			chaseRange = blitzor.range;
+		    chaseNew = blitzor.range;
+	    }
+
+		connectChase(false);
+	}
 };
 
 /*
@@ -3055,7 +3105,7 @@ function getLocationInfo(callback, lat, lng) {
             		var north = response.suggestion.north;
             		var south = response.suggestion.south;
 
-            		if (south.distance != undefined && north.distance != undefined) {
+            		if (south != undefined && north != undefined && south.distance != undefined && north.distance != undefined) {
             			if (north.distance < south.distance) {
             				if (north.city != undefined)
             					locInfo.town = north.city;
@@ -3069,12 +3119,12 @@ function getLocationInfo(callback, lat, lng) {
             					locInfo.country = south.prov;
             			}
             		}
-            		else if (north.city != undefined) {
+            		else if (north != undefined && north.city != undefined) {
             			locInfo.town = north.city;
         				if (north.prov != undefined)
         					locInfo.country = north.prov;
             		}
-            		else if (rsouth.city != undefined) {
+            		else if (south != undefined && south.city != undefined) {
             			locInfo.town = south.city;
         				if (south.prov != undefined)
         					locInfo.country = south.prov;
@@ -3202,6 +3252,117 @@ function connectBlitzortung(reconnect) {
     	console.log(strings.debug.blitzor.done);
    	else if (!reconnect)
     	console.log(strings.debug.blitzor.done);
+}
+
+function connectChase(reconnect) {
+
+    var payload = {
+            "key": varipass.main.key,
+            "action": "read",
+            "id": varipass.main.ids.location
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var vpData = JSON.parse(xhr.responseText);
+
+            var values = vpData.value.split("\\n");
+            chaseThoriLat = 0.0;
+            chaseThoriLng = 0.0;
+            values.forEach(function(v) {
+            	var parts = v.split(":");
+            	if (parts[0] == "lat")
+            		chaseThoriLat = parseFloat(parts[1]);
+            	else if (parts[0] == "lng")
+            		chaseThoriLng = parseFloat(parts[1]);
+            });
+
+			var from = {};
+			from.latitude = chaseThoriLat + blitzor.expand;
+			from.longitude = chaseThoriLng - blitzor.expand;
+			var to = {};
+			to.latitude = chaseThoriLat - blitzor.expand;
+			to.longitude = chaseThoriLng + blitzor.expand;
+
+			if (reconnect && blitzor.debug)
+		    	console.log(util.format(
+		    		strings.debug.chase.reconnect,
+		    		from.latitude,
+		    		to.latitude,
+		    		from.longitude,
+		    		to.longitude
+		    	));
+			else if (!reconnect)
+		    	console.log(util.format(
+		    		strings.debug.chase.connect,
+		    		from.latitude,
+		    		to.latitude,
+		    		from.longitude,
+		    		to.longitude
+		    	));
+
+			chasews = new blitzorapi.Client({
+			    make(address) {
+			        return new WebSocket(address);
+			    }
+			});
+
+			chasews.connect();
+			chasews.on("error", console.error);
+			chasews.on("connect", () => {
+			    chasews.setIncludeDetectors(false);
+			    chasews.setArea(from, to);
+			});
+			chasews.on("data", strike => {
+				var distance = earthDistance(chaseThoriLat, chaseThoriLng, strike.location.latitude, strike.location.longitude);
+
+				if (distance < chaseNew) {
+					chaseNew = distance;
+					chaseLat = strike.location.latitude;
+					chaseLng = strike.location.longitude;
+
+					if (!blitzor.debug)
+						console.log(util.format(
+				            strings.debug.chase.strike,
+				            distance,
+				            strike.location.latitude,
+				            strike.location.longitude                
+				        ));
+				}
+				if (blitzor.debug)
+					console.log(util.format(
+			            strings.debug.chase.strike,
+			            distance,
+			            strike.location.latitude,
+			            strike.location.longitude                
+			        ));
+			});
+
+			chaseReconnect = setTimeout(function() {
+		    	chasews.close();
+				connectChase(true);
+			}, blitzor.chase * 1000);
+
+			if (reconnect && blitzor.debug)
+		    	console.log(strings.debug.chase.done);
+		   	else if (!reconnect)
+		    	console.log(strings.debug.chase.done);	    
+        }
+    }
+    xhr.onerror = function(err) {
+		connectChase(true);
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+		connectChase(true);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
 }
 
 function saveEEG() {
@@ -4689,6 +4850,32 @@ function spreadLightning() {
 	}
 }
 
+function spreadChase() {
+	var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
+	if (blitzor.debug)
+    	console.log(util.format(
+    		strings.debug.chase.spread,
+    		chaseRange,
+    		chaseRange + rangeSpread
+    	));
+
+	chaseRange = chaseRange + rangeSpread;
+	chaseNew   = chaseNew + rangeSpread;
+
+	if (chaseRange > blitzor.range) {
+		if (blitzor.debug)
+	    	console.log(util.format(
+	    		strings.debug.chase.max,
+	    		blitzor.range
+	    	));
+		chaseRange = blitzor.range;
+		chaseNew = blitzor.range;
+	}
+	else {
+		chaseSpread = setTimeout(spreadChase, blitzor.spread * 1000);
+	}
+}
+
 function loopLightning() {
 	if (lightningNew < lightningRange) {
 		lightningRange = lightningNew;
@@ -4727,6 +4914,53 @@ function loopLightning() {
 		getLocationInfo(function(locInfo) {
 	    	send(channelNameToID(config.options.channels.home), util.format(
 		        strings.announcements.blitzor.strike,
+		        rng.toFixed(2),
+		        bear,
+		        b.toFixed(2),
+		        locInfo.town,
+		        locInfo.country,
+		        time
+		    ), false);
+		}, lat, lng);
+	}
+
+	if (chaseNew < chaseRange) {
+		chaseRange = chaseNew;
+
+		clearTimeout(chaseSpread);
+		chaseSpread = setTimeout(spreadChase, blitzor.spread * 1000);
+
+		clearTimeout(chaseExpire);
+		chaseExpire = setTimeout(function() {
+    		send(config.options.adminid, strings.announcements.chase.expire, false);
+		}, blitzor.expire * 1000);
+
+        var time = moment.tz(new Date(), "Europe/Zagreb").format("HH:mm:ss");
+		var rng = chaseRange;
+		var lat = chaseLat;
+		var lng = chaseLng;
+		var b  = earthBearing(chaseThoriLat, chaseThoriLng, lat, lng);
+
+		var bear = "N";
+			 if (b >  11.25 && b <  33.75) bear = "NNE";
+		else if (b >  33.75 && b <  56.25) bear = "NE";
+		else if (b >  56.25 && b <  78.75) bear = "ENE";
+		else if (b >  78.75 && b < 101.25) bear = "E";
+		else if (b > 101.25 && b < 123.75) bear = "ESE";
+		else if (b > 123.75 && b < 146.25) bear = "SE";
+		else if (b > 146.25 && b < 168.75) bear = "SSE";
+		else if (b > 168.75 && b < 191.25) bear = "S";
+		else if (b > 191.25 && b < 213.75) bear = "SSW";
+		else if (b > 213.75 && b < 236.25) bear = "SW";
+		else if (b > 236.25 && b < 258.75) bear = "WSW";
+		else if (b > 258.75 && b < 281.25) bear = "W";
+		else if (b > 281.25 && b < 303.75) bear = "WNW";
+		else if (b > 303.75 && b < 326.25) bear = "NW";
+		else if (b > 326.25 && b < 348.75) bear = "NNW";
+	    
+		getLocationInfo(function(locInfo) {
+	    	send(config.options.adminid, util.format(
+		        strings.announcements.chase.strike,
 		        rng.toFixed(2),
 		        bear,
 		        b.toFixed(2),

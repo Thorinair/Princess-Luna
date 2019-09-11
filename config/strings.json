@@ -387,6 +387,11 @@
 			"errorA":   "Thori, you need to specify the `off` or `on` parameter after the command.",
 			"errorB":   "Thori, you need to specify the reason for disabling below the command."
 		},
+		"chase": {
+			"messageA": "Thori, I have **started** the storm chasing mode.",
+			"messageB": "Thori, I have **stopped** the storm chasing mode.",
+			"error":    "Thori, you need to specify the `start` or `stop` parameter after the command."
+		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
 		},
@@ -460,6 +465,10 @@
 		"blitzor": {
 			"strike": "@everyone, WARNING: Lightning activity detected!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
 			"expire": "@everyone, I have not detected any lightning activity in a while. The danger has potentially passed."
+		},
+		"chase": {
+			"strike": "**BOOM!** Lightning activity detected near your location!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
+			"expire": "Thori, I have not detected any lightning activity near you in a while."
 		},
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
@@ -629,6 +638,14 @@
 			"strike":    "Lightning strike! dist: %s, lati: %s, long: %s",
 			"spread":    "Spreading the lightning range from %s to %s.",
 			"max":       "Spreading outside of range. Clamping to max range of %s."
+		},
+		"chase": {
+			"reconnect": "Storm Chasing! I'm reconnecting to the Blitzortung API using coordinates: lati %s to %s, long %s to %s...",
+			"connect":   "Storm Chasing! I'm connecting to the Blitzortung API using coordinates: lati %s to %s, long %s to %s...",
+			"done":      "Storm Chasing! I've finished connecting to the Blitzortung API!",
+			"strike":    "Storm Chasing! Lightning strike! dist: %s, lati: %s, long: %s",
+			"spread":    "Storm Chasing! Spreading the lightning range from %s to %s.",
+			"max":       "Storm Chasing! Spreading outside of range. Clamping to max range of %s."
 		}
 	}
 }

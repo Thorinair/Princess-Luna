@@ -341,6 +341,11 @@
 			"help":    "",
 			"type":    "private"
 		},
+		{
+			"command": "chase",
+			"help":    "",
+			"type":    "private"
+		},
 
 		{
 			"command": "reboot",
