@@ -2208,25 +2208,39 @@ comm.ann = function(data) {
 comm.chase = function(data) {
     var state = data.message.replace(config.options.commandsymbol + data.command + " ", "");
     if (state == "" || state == config.options.commandsymbol + data.command) {
-        send(data.channelID, strings.commands.chase.error, true);
+        send(data.channelID, strings.commands.chase.errorA, true);
     }
     else {
         if (state == "start") {
-			connectChase(false);
-            send(data.channelID, strings.commands.chase.messageA, true);
+			if (!isChasing) {
+				isChasing = true;
+
+				connectChase(false);
+	            send(data.channelID, strings.commands.chase.messageA, true);
+	        }
+	        else {
+            	send(data.channelID, strings.commands.chase.errorB, true);
+	        }
         }
         else if (state == "stop") {
-			clearTimeout(chaseReconnect);
-		    chasews.close();
+			if (isChasing) {
+				isChasing = false;
+				
+				clearTimeout(chaseReconnect);
+			    chasews.close();
 
-		    if (chaseRange > blitzor.range) {
-				chaseRange = blitzor.range;
-			    chaseNew = blitzor.range;
-		    }
-            send(data.channelID, strings.commands.chase.messageB, true);
+			    if (chaseRange > blitzor.range) {
+					chaseRange = blitzor.range;
+				    chaseNew = blitzor.range;
+			    }
+            	send(data.channelID, strings.commands.chase.messageB, true);
+			}
+			else {
+            	send(data.channelID, strings.commands.chase.errorC, true);
+			}
         }
         else
-            send(data.channelID, strings.commands.chase.error, true);
+            send(data.channelID, strings.commands.chase.errorA, true);
     }
 };
 

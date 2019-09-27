@@ -390,7 +390,9 @@
 		"chase": {
 			"messageA": "Thori, I have **started** the storm chasing mode.",
 			"messageB": "Thori, I have **stopped** the storm chasing mode.",
-			"error":    "Thori, you need to specify the `start` or `stop` parameter after the command."
+			"errorA":   "Thori, you need to specify the `start` or `stop` parameter after the command.",
+			"errorB":   "Thori, the storm chasing mode is already active.",
+			"errorC":   "Thori, the storm chasing mode is currently not active."
 		},
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
