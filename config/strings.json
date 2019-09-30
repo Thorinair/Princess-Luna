@@ -41,7 +41,7 @@
 			"messageB": "Here is how the Moon looks like right now."
 		},
 		"room": {
-			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago. Radiation data was measured by Chryssy, while the rest of the data was measured by Celly.\n```\nTemperature:          %s °C\nHumidity:             %s %\nPressure:             %s hPa\nCO2 Concentration:    %s ppm\nVOC Concentration:    %s ppb\nAmbient Light:        %s\nMagnetic Magnitude:   %s uT\nMagnetic Inclination: %s °\nVibrations X:         %s\nVibrations Y:         %s\nVibrations Z:         %s\nGravity X:            %s m/s2\nGravity Y:            %s m/s2\nGravity Z:            %s m/s2\nRadiation Dose EMA:   %s uSv/h\nGeiger Counts:        %s CPM```",
+			"message":  "%s, here is the status of Thorinair's room. Last update was %s and %s seconds ago. Radiation data was measured by Chryssy, particle data was measured by Dashie, and the rest of the data was measured by Celly.\n```\nTemperature:          %s °C\nHumidity:             %s %\nPressure:             %s hPa\nCO2 Concentration:    %s ppm\nVOC Concentration:    %s ppb\nAmbient Light:        %s\nMagnetic Magnitude:   %s uT\nMagnetic Inclination: %s °\nVibrations X:         %s\nVibrations Y:         %s\nVibrations Z:         %s\nGravity X:            %s m/s2\nGravity Y:            %s m/s2\nGravity Z:            %s m/s2\nRadiation Dose EMA:   %s uSv/h\nGeiger Counts:        %s CPM\nParticles  >0.3 um:   %s pcs/L\nParticles  >0.5 um:   %s pcs/L\nParticles  >1.0 um:   %s pcs/L\nParticles  >2.5 um:   %s pcs/L\nParticles  >5.0 um:   %s pcs/L\nParticles >10.0 um:   %s pcs/L```",
 			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
 		},
 		"power": {

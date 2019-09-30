@@ -329,7 +329,13 @@ comm.room = function(data) {
                 findVariable(vpData, varipass.main.ids.gravity_y).history[0].value,
                 findVariable(vpData, varipass.main.ids.gravity_z).history[0].value,
                 findVariable(vpData, varipass.main.ids.doseema).history[0].value,
-                findVariable(vpData, varipass.main.ids.counts).history[0].value
+                findVariable(vpData, varipass.main.ids.counts).history[0].value,
+                findVariable(vpData, varipass.main.ids.particles003).history[0].value,
+                findVariable(vpData, varipass.main.ids.particles005).history[0].value,
+                findVariable(vpData, varipass.main.ids.particles010).history[0].value,
+                findVariable(vpData, varipass.main.ids.particles025).history[0].value,
+                findVariable(vpData, varipass.main.ids.particles050).history[0].value,
+                findVariable(vpData, varipass.main.ids.particles100).history[0].value
             ), true);
         }
     }

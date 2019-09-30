@@ -19,6 +19,12 @@
 			"doseema":      "0000AAAA",
 			"counts":       "0000AAAA",
 			"dose":         "0000AAAA",
+			"particles003": "0000AAAA",
+			"particles005": "0000AAAA",
+			"particles010": "0000AAAA",
+			"particles025": "0000AAAA",
+			"particles050": "0000AAAA",
+			"particles100": "0000AAAA",
 			"location":     "0000AAAA"
 		}
 	},
