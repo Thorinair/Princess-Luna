@@ -299,21 +299,40 @@ comm.room = function(data) {
             var vpData = JSON.parse(xhr.responseText);
             console.log(strings.debug.varipass.done);
 
-            var diff = (vpData.current - vpData.list[0].history[0].time);
-            var time = {};
+            var diffCelly = (vpData.current - findVariable(vpData, varipass.main.ids.temperature).history[0].time);
+            var timeCelly = {};
 
-            time.seconds = Math.floor(diff % 60);
-            diff = Math.floor(diff / 60);
-            time.minutes = Math.floor(diff % 60);
-            diff = Math.floor(diff / 60);
-            time.hours = Math.floor(diff % 24);
-            time.days = Math.floor(diff / 24);
+            timeCelly.seconds = Math.floor(diffCelly % 60);
+            diffCelly = Math.floor(diffCelly / 60);
+            timeCelly.minutes = Math.floor(diffCelly % 60);
+            diffCelly = Math.floor(diffCelly / 60);
+            timeCelly.hours = Math.floor(diffCelly % 24);
+            timeCelly.days = Math.floor(diffCelly / 24);
+            
+            var diffChryssy = (vpData.current - findVariable(vpData, varipass.main.ids.counts).history[0].time);
+            var timeChryssy = {};
+
+            timeChryssy.seconds = Math.floor(diffChryssy % 60);
+            diffChryssy = Math.floor(diffChryssy / 60);
+            timeChryssy.minutes = Math.floor(diffChryssy % 60);
+            diffChryssy = Math.floor(diffChryssy / 60);
+            timeChryssy.hours = Math.floor(diffChryssy % 24);
+            timeChryssy.days = Math.floor(diffChryssy / 24);
+            
+            var diffDashie = (vpData.current - findVariable(vpData, varipass.main.ids.pm010).history[0].time);
+            var timeDashie = {};
+
+            timeDashie.seconds = Math.floor(diffDashie % 60);
+            diffDashie = Math.floor(diffDashie / 60);
+            timeDashie.minutes = Math.floor(diffDashie % 60);
+            diffDashie = Math.floor(diffDashie / 60);
+            timeDashie.hours = Math.floor(diffDashie % 24);
+            timeDashie.days = Math.floor(diffDashie / 24);
 
             send(data.channelID, util.format(
                 strings.commands.room.message, 
                 mention(data.userID),
-                getTimeString(time),
-                time.seconds,
+                getTimeStringSimple(timeCelly),
                 findVariable(vpData, varipass.main.ids.temperature).history[0].value,
                 findVariable(vpData, varipass.main.ids.humidity).history[0].value,
                 findVariable(vpData, varipass.main.ids.pressure).history[0].value,
@@ -328,8 +347,13 @@ comm.room = function(data) {
                 findVariable(vpData, varipass.main.ids.gravity_x).history[0].value,
                 findVariable(vpData, varipass.main.ids.gravity_y).history[0].value,
                 findVariable(vpData, varipass.main.ids.gravity_z).history[0].value,
+                getTimeStringSimple(timeChryssy),
                 findVariable(vpData, varipass.main.ids.doseema).history[0].value,
                 findVariable(vpData, varipass.main.ids.counts).history[0].value,
+                getTimeStringSimple(timeDashie),
+                findVariable(vpData, varipass.main.ids.pm010).history[0].value,
+                findVariable(vpData, varipass.main.ids.pm025).history[0].value,
+                findVariable(vpData, varipass.main.ids.pm100).history[0].value,
                 findVariable(vpData, varipass.main.ids.particles003).history[0].value,
                 findVariable(vpData, varipass.main.ids.particles005).history[0].value,
                 findVariable(vpData, varipass.main.ids.particles010).history[0].value,
@@ -2830,6 +2854,33 @@ function getTimeString(date) {
 
     if (string == "")
         string = "0 minutes";
+
+    return string;
+}
+
+/*
+ * Converts a given date to a simplified format.
+ * @param  date  The input date, this is not the JS Date object.
+ * @return       Formatted string.
+ */
+function getTimeStringSimple(date) {
+    var string = "";
+
+    if (date.days != null && date.days != 0) {
+        string += date.days + "d ";
+    }
+
+    if (date.hours != null && date.hours != 0) {
+        string += date.hours + "h ";
+    }
+
+    if (date.minutes != null) {
+        string += date.minutes + "m ";
+    }
+
+    if (date.seconds != null) {
+        string += date.seconds + "s";
+    }
 
     return string;
 }
