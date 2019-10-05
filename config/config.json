@@ -100,8 +100,7 @@
 		"light": {
 			"threshold": 7,
 			"bulbs": [
-				"bed",
-				"bath"
+				"bed"
 			]
 		}
 	},

@@ -5252,22 +5252,23 @@ function statusVariPass() {
 		    // Lamp Off
 		    var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
 
-		    refreshTradfriDevices(function(result) {
-	        	if (result) {
-	                config.varipass.light.bulbs.forEach(function(b) {
-	                    devices.forEach(function(d) {  
-	                        if (d.name == b && d.on == true) {
-	                        	hub.toggleDevice(d.id);
-						    	send(channelNameToID(config.options.channels.debug), util.format(
-							        strings.announcements.varipass.lightoff,
-			            			mention(config.options.adminid),
-							        b
-							    ), false);
-	                        }
-	                    });
-	                });
-	            }
-	        });
+		    if (vpLight >= config.varipass.light.threshold)
+			    refreshTradfriDevices(function(result) {
+		        	if (result) {
+		                config.varipass.light.bulbs.forEach(function(b) {
+		                    devices.forEach(function(d) {  
+		                        if (d.name == b && d.on == true) {
+		                        	hub.toggleDevice(d.id);
+							    	send(channelNameToID(config.options.channels.debug), util.format(
+								        strings.announcements.varipass.lightoff,
+				            			mention(config.options.adminid),
+								        b
+								    ), false);
+		                        }
+		                    });
+		                });
+		            }
+		        });
 	    }
 	}
     xhr.onerror = function(err) {
