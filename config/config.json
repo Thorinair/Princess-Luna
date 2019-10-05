@@ -40,7 +40,8 @@
 		"htimeout":      1800,
 		"hmessage":      1,
 		"phasetimeout":  30,
-		"debugtradfri":  false,
+		"statuspull":    60,
+		"statuspush":    1,
 		"channels": {
 			"debug":     "debug",
 			"home":      "home_luna",
@@ -81,14 +82,27 @@
 		}
 	},
 	"varipass": {
-		"timeout": 60,
 		"geiger": {
 			"samples": 20,
-			"warning": 0.2
+			"warning": 0.2,
+			"okay":    0.18
 		},
 		"pressure": {
 			"warning": 0.25,
 			"pause":   240
+		},
+		"pm025": {
+			"warningA": 12.1,
+			"okayA":    11.1,
+			"warningB": 35.5,
+			"okayB":    34.5
+		},
+		"light": {
+			"threshold": 7,
+			"bulbs": [
+				"bed",
+				"bath"
+			]
 		}
 	},
 	"seizure": {

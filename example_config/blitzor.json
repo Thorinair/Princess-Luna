@@ -11,5 +11,6 @@
 		"longitude": 0
 	},
 	"auth": "000000000000000000000x0000",
-	"debug": false
+	"debugstrikes": true,
+	"debugconnect": false
 }

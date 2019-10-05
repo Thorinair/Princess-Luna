@@ -2449,6 +2449,9 @@ var doseWasWarned = false;
 var vpTimeDose;
 var vpTimePressure;
 
+var pm025WasWarnedA = false;
+var pm025WasWarnedB = false;
+
 var isLive = false;
 
 var lightningRange = blitzor.range;
@@ -3260,7 +3263,7 @@ function connectBlitzortung(reconnect) {
 	to.latitude = blitzor.location.latitude - blitzor.expand;
 	to.longitude = blitzor.location.longitude + blitzor.expand;
 
-	if (reconnect && blitzor.debug)
+	if (reconnect && blitzor.debugconnect)
     	console.log(util.format(
     		strings.debug.blitzor.reconnect,
     		from.latitude,
@@ -3297,7 +3300,7 @@ function connectBlitzortung(reconnect) {
 			lightningLat = strike.location.latitude;
 			lightningLng = strike.location.longitude;
 
-			if (!blitzor.debug)
+			if (!blitzor.debugstrikes)
 				console.log(util.format(
 		            strings.debug.blitzor.strike,
 		            distance,
@@ -3305,7 +3308,7 @@ function connectBlitzortung(reconnect) {
 		            strike.location.longitude                
 		        ));
 		}
-		if (blitzor.debug)
+		if (blitzor.debugstrikes)
 			console.log(util.format(
 	            strings.debug.blitzor.strike,
 	            distance,
@@ -3319,7 +3322,7 @@ function connectBlitzortung(reconnect) {
 		connectBlitzortung(true);
 	}, blitzor.reconnect * 1000);
 
-	if (reconnect && blitzor.debug)
+	if (reconnect && blitzor.debugconnect)
     	console.log(strings.debug.blitzor.done);
    	else if (!reconnect)
     	console.log(strings.debug.blitzor.done);
@@ -3359,7 +3362,7 @@ function connectChase(reconnect) {
 			to.latitude = chaseThoriLat - blitzor.expand;
 			to.longitude = chaseThoriLng + blitzor.expand;
 
-			if (reconnect && blitzor.debug)
+			if (reconnect && blitzor.debugconnect)
 		    	console.log(util.format(
 		    		strings.debug.chase.reconnect,
 		    		from.latitude,
@@ -3396,7 +3399,7 @@ function connectChase(reconnect) {
 					chaseLat = strike.location.latitude;
 					chaseLng = strike.location.longitude;
 
-					if (!blitzor.debug)
+					if (!blitzor.debugstrikes)
 						console.log(util.format(
 				            strings.debug.chase.strike,
 				            distance,
@@ -3404,7 +3407,7 @@ function connectChase(reconnect) {
 				            strike.location.longitude                
 				        ));
 				}
-				if (blitzor.debug)
+				if (blitzor.debugstrikes)
 					console.log(util.format(
 			            strings.debug.chase.strike,
 			            distance,
@@ -3418,7 +3421,7 @@ function connectChase(reconnect) {
 				connectChase(true);
 			}, blitzor.chase * 1000);
 
-			if (reconnect && blitzor.debug)
+			if (reconnect && blitzor.debugconnect)
 		    	console.log(strings.debug.chase.done);
 		   	else if (!reconnect)
 		    	console.log(strings.debug.chase.done);	    
@@ -4073,7 +4076,8 @@ function loadTradfri() {
 }
 
 function refreshTradfriDevices(callback) {
-    console.log(strings.debug.tradfri.connect);
+	if (tradfri.debug)
+    	console.log(strings.debug.tradfri.connect);
 
     hub.getDevices().then((result) => {
 
@@ -4081,12 +4085,12 @@ function refreshTradfriDevices(callback) {
             return d.color != undefined;
         });
 
-        console.log(util.format(
-            strings.debug.tradfri.done,
-            devices.length
-        ));
+		if (tradfri.debug) {
+	        console.log(util.format(
+	            strings.debug.tradfri.done,
+	            devices.length
+	        ));
 
-        if (config.options.debugtradfri)
             devices.forEach(function(d) {
                 console.log(util.format(
                     strings.debug.tradfri.bulb,
@@ -4098,6 +4102,7 @@ function refreshTradfriDevices(callback) {
                     d.on
                 ));
             });
+        }
 
         callback(true);
 
@@ -4672,7 +4677,8 @@ function loadBot() {
 
             loopLightning();
             loopNowPlaying();
-            loopVariPassPull();
+            loopStatusPull();
+            loopStatusPush();
             setTimeout(loopBrainSave, config.brain.saveloop * 1000);
         }
     });
@@ -4897,7 +4903,7 @@ function toUpper(str) {
 
 function spreadLightning() {
 	var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
-	if (blitzor.debug)
+	if (blitzor.debugstrikes)
     	console.log(util.format(
     		strings.debug.blitzor.spread,
     		lightningRange,
@@ -4908,7 +4914,7 @@ function spreadLightning() {
 	lightningNew   = lightningNew + rangeSpread;
 
 	if (lightningRange > blitzor.range) {
-		if (blitzor.debug)
+		if (blitzor.debugstrikes)
 	    	console.log(util.format(
 	    		strings.debug.blitzor.max,
 	    		blitzor.range
@@ -4923,7 +4929,7 @@ function spreadLightning() {
 
 function spreadChase() {
 	var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
-	if (blitzor.debug)
+	if (blitzor.debugstrikes)
     	console.log(util.format(
     		strings.debug.chase.spread,
     		chaseRange,
@@ -4934,7 +4940,7 @@ function spreadChase() {
 	chaseNew   = chaseNew + rangeSpread;
 
 	if (chaseRange > blitzor.range) {
-		if (blitzor.debug)
+		if (blitzor.debugstrikes)
 	    	console.log(util.format(
 	    		strings.debug.chase.max,
 	    		blitzor.range
@@ -5132,7 +5138,7 @@ function sendDoseEMA(value) {
     xhr.send(JSON.stringify(payload));
 }
 
-function loopVariPassPull() {
+function statusVariPass() {
 	var payload = {
             "key": varipass.main.key,
             "action": "all"
@@ -5157,31 +5163,31 @@ function loopVariPassPull() {
 		    	var value = alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value;
 		    	sendDoseEMA(value);
 
-			    if (value > config.varipass.geiger.warning) {
+		    	if (value <= config.varipass.geiger.okay) {
+			    	if (doseWasWarned) {
+			    		doseWasWarned = false;
+				    	send(channelNameToID(config.options.channels.home), util.format(
+					        strings.announcements.varipass.doseokay,
+					        value.toFixed(4),
+					        config.varipass.geiger.okay
+					    ), false);
+			    	}
+			    }
+			    else if (value >= config.varipass.geiger.warning) {
 			    	if (!doseWasWarned) {
 			    		doseWasWarned = true;
 				    	send(channelNameToID(config.options.channels.home), util.format(
-					        strings.announcements.varipass.dosehigh,
+					        strings.announcements.varipass.dosewarning,
 					        config.varipass.geiger.warning,
 					        value.toFixed(4)
 					    ), false);
 				    }
 			    }
-			    else {
-			    	if (doseWasWarned) {
-			    		doseWasWarned = false;
-				    	send(channelNameToID(config.options.channels.home), util.format(
-					        strings.announcements.varipass.doselow,
-					        value.toFixed(4),
-					        config.varipass.geiger.warning
-					    ), false);
-			    	}
-			    }
             }
 
+            // Pressure Alerts
             var vpPressure = findVariable(vpData, varipass.main.ids.pressure).history;
 
-            // Weather Alerts
             if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure)) {
             	vpTimePressure = vpPressure[0].time;
 
@@ -5198,6 +5204,70 @@ function loopVariPassPull() {
             	}
             }
 
+            // Particle Alerts
+            var vpPM025 = findVariable(vpData, varipass.main.ids.pm025).history[0].value;
+
+		    if (vpPM025 <= config.varipass.pm025.okayB) {
+		    	if (pm025WasWarnedB) {
+		    		pm025WasWarnedB = false;
+			    	send(channelNameToID(config.options.channels.debug), util.format(
+				        strings.announcements.varipass.pm025okayB,
+            			mention(config.options.adminid),
+				        vpPM025.toFixed(2)
+				    ), false);
+			    }
+		    }
+            else if (vpPM025 >= config.varipass.pm025.warningB) {
+		    	if (!pm025WasWarnedB) {
+		    		pm025WasWarnedB = true;
+		    		pm025WasWarnedA = true;
+			    	send(channelNameToID(config.options.channels.debug), util.format(
+				        strings.announcements.varipass.pm025warningB,
+            			mention(config.options.adminid),
+				        vpPM025.toFixed(2)
+				    ), false);
+			    }
+		    }
+		    if (vpPM025 <= config.varipass.pm025.okayA) {
+		    	if (pm025WasWarnedA) {
+		    		pm025WasWarnedA = false;
+			    	send(channelNameToID(config.options.channels.debug), util.format(
+				        strings.announcements.varipass.pm025okayA,
+            			mention(config.options.adminid),
+				        vpPM025.toFixed(2)
+				    ), false);
+			    }
+		    }
+            else if (vpPM025 >= config.varipass.pm025.warningA) {
+		    	if (!pm025WasWarnedA) {
+		    		pm025WasWarnedA = true;
+			    	send(channelNameToID(config.options.channels.debug), util.format(
+				        strings.announcements.varipass.pm025warningA,
+            			mention(config.options.adminid),
+				        vpPM025.toFixed(2)
+				    ), false);
+			    }
+		    }
+
+		    // Lamp Off
+		    var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
+
+		    refreshTradfriDevices(function(result) {
+	        	if (result) {
+	                config.varipass.light.bulbs.forEach(function(b) {
+	                    devices.forEach(function(d) {  
+	                        if (d.name == b && d.on == true) {
+	                        	hub.toggleDevice(d.id);
+						    	send(channelNameToID(config.options.channels.debug), util.format(
+							        strings.announcements.varipass.lightoff,
+			            			mention(config.options.adminid),
+							        b
+							    ), false);
+	                        }
+	                    });
+	                });
+	            }
+	        });
 	    }
 	}
     xhr.onerror = function(err) {
@@ -5213,8 +5283,17 @@ function loopVariPassPull() {
     }
 
     xhr.send(JSON.stringify(payload));
+}
 
-    setTimeout(loopVariPassPull, config.varipass.timeout * 1000);
+function loopStatusPull() {
+	statusVariPass();
+
+    setTimeout(loopStatusPull, config.options.statuspull * 1000);
+}
+
+function loopStatusPush() {
+
+    setTimeout(loopStatusPush, config.options.statuspush * 1000);
 }
 
 /*
