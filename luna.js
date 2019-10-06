@@ -2476,6 +2476,24 @@ var chaseThoriLng = 0.0;
 var annStatus;
 var waifuTimeout;
 
+
+var statusGlobal = {};
+
+var statusTimeoutLunaLocal;
+var statusTimeoutLunaPublic;
+
+var statusTimeoutChrysalisFileLocal;
+var statusTimeoutChrysalisFilePublic;
+var statusTimeoutChrysalisStreamLocal;
+var statusTimeoutChrysalisStreamPublic;
+var statusTimeoutChrysalisAnn;
+
+var statusTimeoutRarityLocal;
+var statusTimeoutRarityPublic;
+
+var statusTimeoutTantabusLocal;
+var statusTimeoutTantabusPublic;
+
 // Persistant Objects
 var bot;
 var hub;
@@ -4113,6 +4131,8 @@ function refreshTradfriDevices(callback) {
 }
 
 function processReqPower(query) {
+	statusGlobal.sparkle = Math.floor((new Date()) / 1000);
+
     if (query.power == "on") {
         if (powerStatus != null && powerStatus != 0)            
             send(channelNameToID(config.options.channels.home), strings.announcements.power.on, false);
@@ -4161,6 +4181,8 @@ function processReqBoot(query) {
 }
 
 function processReqEEG(query) {
+	statusGlobal.lulu = Math.floor((new Date()) / 1000);
+
     var w;
     var alpha = parseFloat(1.0 / eegConfig.ema);
 
@@ -4237,8 +4259,6 @@ function processReqEEG(query) {
 }
 
 function processReqCelly(query) {
-	console.log("lel");
-
 	delete query.key;
 	delete query.action;
 
@@ -4469,12 +4489,22 @@ var processRequest = function(req, res) {
 
     //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);
 
-    res.writeHead(200, [
-        ["Content-Type", "text/plain"], 
-        ["Content-Length", 0]
-            ]);
-    if (query.key == httpkey.key)
-    res.write("");
+    if (query.key == httpkey.key) {
+    	if (query.action == "ping") {
+		    res.writeHead(200, [
+		        ["Content-Type", "text/plain"], 
+		        ["Content-Length", 4]
+		            ]);
+    		res.write("pong");
+    	}
+    	else {
+		    res.writeHead(200, [
+		        ["Content-Type", "text/plain"], 
+		        ["Content-Length", 0]
+		            ]);
+    		res.write("");
+    	}
+    }
     res.end();
 };
 
@@ -5150,7 +5180,15 @@ function statusVariPass() {
 
     xhr.onreadystatechange = function () { 
         if (xhr.readyState == 4 && xhr.status == 200) {
-            var vpData = JSON.parse(xhr.responseText);  
+			statusGlobal.varipass = Math.floor((new Date()) / 1000);
+
+			var vpData = JSON.parse(xhr.responseText);
+
+			var timeOffset = Math.floor((new Date()) / 1000) - vpData.current;
+			statusGlobal.celly    = findVariable(vpData, varipass.main.ids.temperature).history[0].time + timeOffset;
+			statusGlobal.chryssy  = findVariable(vpData, varipass.main.ids.counts     ).history[0].time + timeOffset;
+			statusGlobal.dashie   = findVariable(vpData, varipass.main.ids.pm010      ).history[0].time + timeOffset;
+			statusGlobal.twilight = findVariable(vpData, varipass.main.ids.location   ).history[0].time + timeOffset;
             
             // Geiger Calculation
             var vpDose = findVariable(vpData, varipass.main.ids.dose).history;
@@ -5252,9 +5290,11 @@ function statusVariPass() {
 		    // Lamp Off
 		    var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
 
-		    if (vpLight >= config.varipass.light.threshold)
-			    refreshTradfriDevices(function(result) {
-		        	if (result) {
+		    refreshTradfriDevices(function(result) {
+		        if (result) {
+					statusGlobal.tradfri = Math.floor((new Date()) / 1000);
+
+		    		if (vpLight >= config.varipass.light.threshold)
 		                config.varipass.light.bulbs.forEach(function(b) {
 		                    devices.forEach(function(d) {  
 		                        if (d.name == b && d.on == true) {
@@ -5267,8 +5307,8 @@ function statusVariPass() {
 		                        }
 		                    });
 		                });
-		            }
-		        });
+	            }
+	        });
 	    }
 	}
     xhr.onerror = function(err) {
@@ -5286,13 +5326,193 @@ function statusVariPass() {
     xhr.send(JSON.stringify(payload));
 }
 
+function getStatus(url, timeout, callback) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", url, true);
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4) {
+        	callback(xhr.responseText, xhr.status);            
+            clearTimeout(timeout);
+        }
+    }
+    xhr.onerror = function(err) {
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        xhr.abort();
+    }
+
+    xhr.send();
+
+    timeout = setTimeout(function() {
+        xhr.abort();
+    }, config.status.timeout * 1000);
+}
+
+function statusLuna() {
+    var url = util.format(
+        config.status.urls.luna_local,
+		httpkey.key
+    );
+    getStatus(url, statusTimeoutLunaLocal, function(r, s) {
+    	if (s == 200)
+    		if (r == config.status.responses.luna_local)
+    			statusGlobal.luna_local = Math.floor((new Date()) / 1000);
+    });
+
+    url = util.format(
+        config.status.urls.luna_public,
+        httpkey.port,
+		httpkey.key
+    );
+    getStatus(url, statusTimeoutLunaPublic, function(r, s) {
+    	if (s == 200)
+    		if (r == config.status.responses.luna_public)
+    			statusGlobal.luna_public = Math.floor((new Date()) / 1000);
+    });
+}
+
+function statusChrysalis() {
+    getStatus(config.status.urls.chrysalis_file_local, statusTimeoutChrysalisFileLocal, function(r, s) {
+		if (r == config.status.responses.chrysalis_file_local)
+			statusGlobal.chrysalis_file_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.chrysalis_file_public, statusTimeoutChrysalisFilePublic, function(r, s) {
+		if (r == config.status.responses.chrysalis_file_public)
+			statusGlobal.chrysalis_file_public = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.chrysalis_stream_local, statusTimeoutChrysalisStreamLocal, function(r, s) {
+    	if (s == 200)
+    		if (JSON.parse(r)[config.status.responses.chrysalis_stream_local] != undefined)
+    			statusGlobal.chrysalis_stream_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.chrysalis_stream_public, statusTimeoutChrysalisStreamPublic, function(r, s) {
+    	if (s == 200)
+    		if (JSON.parse(r)[config.status.responses.chrysalis_stream_public] != undefined)
+    			statusGlobal.chrysalis_stream_public = Math.floor((new Date()) / 1000);
+    });
+
+    var url = util.format(
+        config.status.urls.chrysalis_ann,
+		httpkey.key
+    );
+    getStatus(url, statusTimeoutChrysalisAnn, function(r, s) {
+    	if (s == 200)
+    		if (r == config.status.responses.chrysalis_ann)
+    			statusGlobal.chrysalis_ann = Math.floor((new Date()) / 1000);
+    });
+}
+
+function statusRarity() {
+    getStatus(config.status.urls.rarity_local, statusTimeoutRarityLocal, function(r, s) {
+		if (r == config.status.responses.rarity_local)
+			statusGlobal.rarity_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.rarity_public, statusTimeoutRarityPublic, function(r, s) {
+		if (r == config.status.responses.rarity_public)
+			statusGlobal.rarity_public = Math.floor((new Date()) / 1000);
+    });
+}
+
+function statusTantabus() {
+    getStatus(config.status.urls.tantabus_local, statusTimeoutTantabusLocal, function(r, s) {
+		if (r == config.status.responses.tantabus_local)
+			statusGlobal.tantabus_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.tantabus_public, statusTimeoutTantabusPublic, function(r, s) {
+		if (r == config.status.responses.tantabus_public)
+			statusGlobal.tantabus_public = Math.floor((new Date()) / 1000);
+    });
+}
+
+function generateStatus(key, val, now) {
+	var value;
+	if (val == undefined)
+		value = "undefined";
+	else
+		value = (now - val).toString();
+
+	return key + ":" + value + ",";
+}
+
 function loopStatusPull() {
 	statusVariPass();
+	statusLuna();
+	statusChrysalis();
+	statusRarity();
+	statusTantabus();
 
     setTimeout(loopStatusPull, config.options.statuspull * 1000);
 }
 
 function loopStatusPush() {
+	var now =  Math.floor((new Date()) / 1000);
+
+	var data = "";
+
+	data += generateStatus("luna_local", statusGlobal.luna_local, now);
+	data += generateStatus("luna_public", statusGlobal.luna_public, now);
+	
+	data += generateStatus("chrysalis_file_local", statusGlobal.chrysalis_file_local, now);
+	data += generateStatus("chrysalis_file_public", statusGlobal.chrysalis_file_public, now);
+	data += generateStatus("chrysalis_stream_local", statusGlobal.chrysalis_stream_local, now);
+	data += generateStatus("chrysalis_stream_public", statusGlobal.chrysalis_stream_public, now);
+	data += generateStatus("chrysalis_ann", statusGlobal.chrysalis_ann, now);
+
+	data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
+	data += generateStatus("rarity_public", statusGlobal.rarity_public, now);
+
+	data += generateStatus("tantabus_local", statusGlobal.tantabus_local, now);
+	data += generateStatus("tantabus_public", statusGlobal.tantabus_public, now);
+
+	data += generateStatus("varipass", statusGlobal.varipass, now);
+	data += generateStatus("celly", statusGlobal.celly, now);
+	data += generateStatus("chryssy", statusGlobal.chryssy, now);
+	data += generateStatus("dashie", statusGlobal.dashie, now);
+	data += generateStatus("twilight", statusGlobal.twilight, now);
+
+	data += generateStatus("tradfri", statusGlobal.tradfri, now);
+	data += generateStatus("lulu", statusGlobal.lulu, now);
+	data += generateStatus("sparkle", statusGlobal.sparkle, now);
+
+	var payload = {
+            "key": httpkey.key,
+            "data": data
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.status.api, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4)
+        	if (xhr.status != 200) {
+		        console.log(util.format(
+		            strings.debug.status.error,
+		            xhr.status
+		        ));
+	    	}
+	}
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.status.error,
+            err.target.status
+        ));
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.status.timeout);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
 
     setTimeout(loopStatusPush, config.options.statuspush * 1000);
 }

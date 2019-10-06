@@ -653,6 +653,10 @@
 			"strike":    "Storm Chasing! Lightning strike! dist: %s, lati: %s, long: %s",
 			"spread":    "Storm Chasing! Spreading the lightning range from %s to %s.",
 			"max":       "Storm Chasing! Spreading outside of range. Clamping to max range of %s."
+		},
+		"status": {
+			"error":   "I've encountered some problems sending the data. Here is more info: \"%s\"",
+			"timeout": "My attempt to load the data took too long."
 		}
 	}
 }
