@@ -1079,6 +1079,15 @@ comm.stats = function(data) {
     }
 };
 
+// Command: !status
+comm.status = function(data) {
+    send(data.channelID, util.format(
+        strings.commands.status.message, 
+        mention(data.userID),
+        config.status.home
+    ), true);
+};
+
 // Command: !about
 comm.about = function(data) {
     send(data.channelID, util.format(
@@ -5258,7 +5267,8 @@ function statusVariPass() {
             else if (vpPM025 >= config.varipass.pm025.warningB) {
 		    	if (!pm025WasWarnedB) {
 		    		pm025WasWarnedB = true;
-		    		pm025WasWarnedA = true;
+		    		if (config.varipass.pm025.enableA)
+		    			pm025WasWarnedA = true;
 			    	send(channelNameToID(config.options.channels.debug), util.format(
 				        strings.announcements.varipass.pm025warningB,
             			mention(config.options.adminid),
@@ -5266,26 +5276,28 @@ function statusVariPass() {
 				    ), false);
 			    }
 		    }
-		    if (vpPM025 <= config.varipass.pm025.okayA) {
-		    	if (pm025WasWarnedA) {
-		    		pm025WasWarnedA = false;
-			    	send(channelNameToID(config.options.channels.debug), util.format(
-				        strings.announcements.varipass.pm025okayA,
-            			mention(config.options.adminid),
-				        vpPM025.toFixed(2)
-				    ), false);
+		    if (config.varipass.pm025.enableA) {
+			    if (vpPM025 <= config.varipass.pm025.okayA) {
+			    	if (pm025WasWarnedA) {
+			    		pm025WasWarnedA = false;
+				    	send(channelNameToID(config.options.channels.debug), util.format(
+					        strings.announcements.varipass.pm025okayA,
+	            			mention(config.options.adminid),
+					        vpPM025.toFixed(2)
+					    ), false);
+				    }
 			    }
-		    }
-            else if (vpPM025 >= config.varipass.pm025.warningA) {
-		    	if (!pm025WasWarnedA) {
-		    		pm025WasWarnedA = true;
-			    	send(channelNameToID(config.options.channels.debug), util.format(
-				        strings.announcements.varipass.pm025warningA,
-            			mention(config.options.adminid),
-				        vpPM025.toFixed(2)
-				    ), false);
+	            else if (vpPM025 >= config.varipass.pm025.warningA) {
+			    	if (!pm025WasWarnedA) {
+			    		pm025WasWarnedA = true;
+				    	send(channelNameToID(config.options.channels.debug), util.format(
+					        strings.announcements.varipass.pm025warningA,
+	            			mention(config.options.adminid),
+					        vpPM025.toFixed(2)
+					    ), false);
+				    }
 			    }
-		    }
+			}
 
 		    // Lamp Off
 		    var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;

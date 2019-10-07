@@ -119,6 +119,9 @@
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",
 			"learnno":  "I am unable to learn anything from this specific chatroom."
 		},
+		"status": {
+			"message":  "%s, you can check the current status of Thorinair's Lunar Infrastructure on the following link: %s\nPlease note that I am the one who performs the status checks, and I do so every minute for various systems and devices."
+		},
 		"about": {
 			"message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Addtionally, I rely on an extension called Queen Chrysalis in order to preform ANN (Artificial Neural Network) functionalities. You can find her source code here: <%s>. Hope you have a lovely night!"
 		},

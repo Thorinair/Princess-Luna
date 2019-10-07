@@ -91,9 +91,10 @@
 			"warning": 0.25,
 			"pause":   240
 		},
-		"pm025": {
+		"pm025": {			
 			"warningA": 12.1,
 			"okayA":    11.1,
+			"enableA":  false,
 			"warningB": 35.5,
 			"okayB":    34.5
 		},
@@ -209,6 +210,7 @@
 	},
 	"status": {
 		"timeout": 10,
+		"home": "https://status.thorinair.net/",
 		"api": "https://status.thorinair.net/api/",
 		"urls": {
 			"luna_local":  "http://luna.local/?key=%s&action=ping",

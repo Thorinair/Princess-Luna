@@ -91,6 +91,11 @@
 			"type":    "public"
 		},
 		{
+			"command": "status",
+			"help":    "Ask me to link you a page where you can see the status of Thorinair's Lunar Infrastructure.",
+			"type":    "public"
+		},
+		{
 			"command": "about",
 			"help":    "Ask me to introduce myself and tell you where you can find my source code.",
 			"type":    "public"
