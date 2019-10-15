@@ -463,14 +463,14 @@
 			"return": "Okay, I think I feel a little bit better now..."
 		},
 		"varipass": {
-			"dosewarning":   "@everyone, WARNING: Radiation has exceeded the set maximum allowed level of %s uSv/h! I am currently reading an average of **%s uSv/h**!",
-			"doseokay":      "@everyone, the radiation has dropped back to acceptable levels. I am currently reading an average of **%s uSv/h** out of %s uSv/h allowed.",
-			"pressure":      "@everyone, I have detected an atmospheric disturbance! Pressure has changed by **%s hPa**. Expect a sudden change in weather!",
-			"pm025warningA": "%s, the PM2.5 concentration in your room has reached a **Moderate** level at **%s** ug/m3. Consider airing the room out.",
-			"pm025okayA":    "%s, the PM2.5 concentration has fallen back to **Good** level at **%s** ug/m3.",
-			"pm025warningB": "%s, the PM2.5 concentration in your room has reached an **Unhealthy for Sensitive Groups** level at **%s** ug/m3!",
-			"pm025okayB":    "%s, the PM2.5 concentration has fallen back to **Moderate** level at **%s** ug/m3.",
-			"lightoff":      "%s, you forgot to turn off the **%s** bulb, so I turned it off for you."
+			"dosewarning":      "@everyone, WARNING: Radiation has exceeded the set maximum allowed level of %s uSv/h! I am currently reading an average of **%s uSv/h**!",
+			"doseokay":         "@everyone, the radiation has dropped back to acceptable levels. I am currently reading an average of **%s uSv/h** out of %s uSv/h allowed.",
+			"pressure":         "@everyone, I have detected an atmospheric disturbance! Pressure has changed by **%s hPa**. Expect a sudden change in weather!",
+			"pm025warning":     "%s, the PM2.5 concentration in your room has reached a **%s** level at **%s** ug/m3. Consider airing the room out.",
+			"pm025warningname": "Unhealthy",
+			"pm025okay":        "%s, the PM2.5 concentration has fallen back to **%s** level at **%s** ug/m3.",
+			"pm025okayname":    "Good",
+			"lightoff":         "%s, you forgot to turn off the **%s** bulb, so I turned it off for you."
 		},
 		"blitzor": {
 			"strike": "@everyone, WARNING: Lightning activity detected!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
@@ -539,6 +539,7 @@
 		"stopped":      "<STOPPED>",
 		"startedtime":  "Started at %s.",
 		"disconnected": "I seem to have disconnected from Discord... Reconnecting.",
+		"failed":       "There was an error sending this message. Retrying...",
 		"chatting":     "< I've received the following message from \"%s\": \"%s\", replying...",
 		"welcome":      "New user, \"%s\" has joined our server! I'm promoting them to Children of The Night!",
 		"welcomefail":  "Something bad has happened during the promotion. Here is more info: %s",
@@ -546,6 +547,7 @@
 		"eegerror":     "I am having some trouble saving the EEG data. Here is more info: %s",
 		"download": {
 			"start": "I'm downloading the following file: %s",
+			"error": "Error while downloading. Response: \"%s\". Retrying.",
 			"stop":  "Finished downloading!"
 		},
 		"brain": {
@@ -658,7 +660,7 @@
 			"max":       "Storm Chasing! Spreading outside of range. Clamping to max range of %s."
 		},
 		"status": {
-			"error":   "I've encountered some problems sending the data. Here is more info: \"%s\"",
+			"error":   "I've encountered some problems sending the status data. Here is more info: \"%s\"",
 			"timeout": "My attempt to load the data took too long."
 		}
 	}

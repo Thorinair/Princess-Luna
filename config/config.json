@@ -92,11 +92,8 @@
 			"pause":   240
 		},
 		"pm025": {			
-			"warningA": 12.1,
-			"okayA":    11.1,
-			"enableA":  false,
-			"warningB": 35.5,
-			"okayB":    34.5
+			"warning": 55.5,
+			"okay":    12.0
 		},
 		"light": {
 			"threshold": 7,

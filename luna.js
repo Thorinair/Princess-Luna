@@ -2458,8 +2458,7 @@ var doseWasWarned = false;
 var vpTimeDose;
 var vpTimePressure;
 
-var pm025WasWarnedA = false;
-var pm025WasWarnedB = false;
+var pm025WasWarned = false;
 
 var isLive = false;
 
@@ -2518,21 +2517,27 @@ var chasews;
 
 // Callback for downloading of files. 
 var download = function(uri, filename, callback) {
-        request.head(uri, function(err, res, body) {
-            console.log(util.format(
-                    strings.debug.download.start,
-                    uri
-                ));
+    request.head(uri, function(err, res, body) {
+        console.log(util.format(
+            strings.debug.download.start,
+            uri
+        ));
 
-            request({
-                "method": "GET", 
-                "rejectUnauthorized": false, 
-                "url": uri,
-                "headers" : {"Content-Type": "application/json"},
-                function(err,data,body) {}
-            }).pipe(fs.createWriteStream(filename)).on("close", callback);
-        });
-    };
+        request({
+            "method": "GET", 
+            "rejectUnauthorized": false, 
+            "url": uri,
+            "headers" : {"Content-Type": "application/json"},
+            function(err,data,body) {}
+        }).on("error", function(err) {
+	    	console.log(util.format(
+	            strings.debug.download.error,
+	            err
+	        ));
+	        download(uri, filename, callback);
+        }).pipe(fs.createWriteStream(filename)).on("close", callback);
+    });
+};
 
 /*
  * Formats a mention string.
@@ -3027,7 +3032,12 @@ function send(id, message, typing) {
                 channel,
                 message
             ));
-            bot.sendMessage(msg);
+            bot.sendMessage(msg, function(err) {
+            	if (err != undefined) {
+	            	console.log(strings.debug.failed);
+	            	send(id, message, typing);
+	            }
+            });
         }, config.options.typetime * 1000); 
     }
     else {
@@ -3036,7 +3046,12 @@ function send(id, message, typing) {
             channel,
             message
         ));
-        bot.sendMessage(msg);   
+        bot.sendMessage(msg, function(err) {
+        	if (err != undefined) {
+            	console.log(strings.debug.failed);
+            	send(id, message, typing);
+            }
+        });
     }
 }
 
@@ -5254,50 +5269,28 @@ function statusVariPass() {
             // Particle Alerts
             var vpPM025 = findVariable(vpData, varipass.main.ids.pm025).history[0].value;
 
-		    if (vpPM025 <= config.varipass.pm025.okayB) {
-		    	if (pm025WasWarnedB) {
-		    		pm025WasWarnedB = false;
+		    if (vpPM025 <= config.varipass.pm025.okay) {
+		    	if (pm025WasWarned) {
+		    		pm025WasWarned = false;
 			    	send(channelNameToID(config.options.channels.debug), util.format(
-				        strings.announcements.varipass.pm025okayB,
+				        strings.announcements.varipass.pm025okay,
             			mention(config.options.adminid),
+				        strings.announcements.varipass.pm025okayname,
 				        vpPM025.toFixed(2)
 				    ), false);
 			    }
 		    }
-            else if (vpPM025 >= config.varipass.pm025.warningB) {
-		    	if (!pm025WasWarnedB) {
-		    		pm025WasWarnedB = true;
-		    		if (config.varipass.pm025.enableA)
-		    			pm025WasWarnedA = true;
+            else if (vpPM025 >= config.varipass.pm025.warning) {
+		    	if (!pm025WasWarned) {
+		    		pm025WasWarned = true;
 			    	send(channelNameToID(config.options.channels.debug), util.format(
-				        strings.announcements.varipass.pm025warningB,
+				        strings.announcements.varipass.pm025warning,
             			mention(config.options.adminid),
+				        strings.announcements.varipass.pm025warningname,
 				        vpPM025.toFixed(2)
 				    ), false);
 			    }
 		    }
-		    if (config.varipass.pm025.enableA) {
-			    if (vpPM025 <= config.varipass.pm025.okayA) {
-			    	if (pm025WasWarnedA) {
-			    		pm025WasWarnedA = false;
-				    	send(channelNameToID(config.options.channels.debug), util.format(
-					        strings.announcements.varipass.pm025okayA,
-	            			mention(config.options.adminid),
-					        vpPM025.toFixed(2)
-					    ), false);
-				    }
-			    }
-	            else if (vpPM025 >= config.varipass.pm025.warningA) {
-			    	if (!pm025WasWarnedA) {
-			    		pm025WasWarnedA = true;
-				    	send(channelNameToID(config.options.channels.debug), util.format(
-					        strings.announcements.varipass.pm025warningA,
-	            			mention(config.options.adminid),
-					        vpPM025.toFixed(2)
-					    ), false);
-				    }
-			    }
-			}
 
 		    // Lamp Off
 		    var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
@@ -5505,7 +5498,7 @@ function loopStatusPush() {
 
     xhr.onreadystatechange = function () { 
         if (xhr.readyState == 4)
-        	if (xhr.status != 200) {
+        	if (xhr.status != 200 && xhr.status != 503) {
 		        console.log(util.format(
 		            strings.debug.status.error,
 		            xhr.status
