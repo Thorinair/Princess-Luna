@@ -3107,6 +3107,27 @@ function embed(id, message, file, filename, typing, del) {
 }
 
 /*
+ * Adds a reaction to a message on Discord.
+ * @param  channelID  ID of the channel.
+ * @param  messageID  ID of the message.
+ * @param  reaction   String of the react to use.
+ */
+function react(channelID, messageID, reaction) {
+	var input = {
+		"channelID": channelID,
+		"messageID": messageID,
+		"reaction": reaction
+	};
+
+	bot.addReaction(input, function(err) {
+    	if (err != undefined) {
+        	console.log(strings.debug.failed);
+        	react(channelID, messageID, reaction);
+        }
+    });
+}
+
+/*
  * Parses whether a certain ID was mentioned.
  * @param  id    ID to check the mentions of.
  * @param  data  Discord's event data.
@@ -4762,6 +4783,11 @@ function loadBot() {
     });
 
     bot.on("message", function(user, userID, channelID, message, data) {
+
+    	config.autoreact.channels.forEach(function(c, i) {
+    		if (c == channelID)
+    			react(channelID, data.d.id, config.autoreact.reacts[i]);
+    	});
 
         if (message[0] == config.options.commandsymbol) {
 

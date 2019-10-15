@@ -539,7 +539,7 @@
 		"stopped":      "<STOPPED>",
 		"startedtime":  "Started at %s.",
 		"disconnected": "I seem to have disconnected from Discord... Reconnecting.",
-		"failed":       "There was an error sending this message. Retrying...",
+		"failed":       "There was an error sending this message or reacting. Retrying...",
 		"chatting":     "< I've received the following message from \"%s\": \"%s\", replying...",
 		"welcome":      "New user, \"%s\" has joined our server! I'm promoting them to Children of The Night!",
 		"welcomefail":  "Something bad has happened during the promotion. Here is more info: %s",

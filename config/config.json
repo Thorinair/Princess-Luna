@@ -243,6 +243,14 @@
 		}
 
 	},
+	"autoreact": {
+		"channels": [
+			"566782458528268288"
+		],
+		"reacts": [
+			"glimboop_352:575477782922919936"
+		]
+	},
 	"separators": {
 		"date":  "-",
 		"time":  ":",
