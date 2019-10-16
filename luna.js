@@ -2482,6 +2482,8 @@ var chaseReconnect;
 var chaseThoriLat = 0.0;
 var chaseThoriLng = 0.0;
 
+var nightLightCount = 0;
+
 var annStatus;
 var waifuTimeout;
 
@@ -5229,6 +5231,21 @@ function sendDoseEMA(value) {
     xhr.send(JSON.stringify(payload));
 }
 
+function turnBulbsOff(bulbs, message) {
+	bulbs.forEach(function(b) {
+        devices.forEach(function(d) {  
+            if (d.name == b && d.on == true) {
+            	hub.toggleDevice(d.id);
+		    	send(channelNameToID(config.options.channels.debug), util.format(
+			        strings.announcements.varipass.daylightoff,
+        			mention(config.options.adminid),
+			        b
+			    ), false);
+            }
+        });
+    });
+}
+
 function statusVariPass() {
 	var payload = {
             "key": varipass.main.key,
@@ -5329,26 +5346,56 @@ function statusVariPass() {
 			    }
 		    }
 
-		    // Lamp Off
+		    // Light Control Features
 		    var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
 
 		    refreshTradfriDevices(function(result) {
 		        if (result) {
 					statusGlobal.tradfri = Math.floor((new Date()) / 1000);
 
-		    		if (vpLight >= config.varipass.light.threshold)
-		                config.varipass.light.bulbs.forEach(function(b) {
-		                    devices.forEach(function(d) {  
-		                        if (d.name == b && d.on == true) {
-		                        	hub.toggleDevice(d.id);
+		    		// Day Lamp Off
+		    		if (vpLight >= config.varipass.daylight.threshold) {
+						config.varipass.daylight.bulbs.forEach(function(b) {
+					        devices.forEach(function(d) {  
+					            if (d.name == b && d.on == true) {
+					            	hub.toggleDevice(d.id);
 							    	send(channelNameToID(config.options.channels.debug), util.format(
-								        strings.announcements.varipass.lightoff,
-				            			mention(config.options.adminid),
+								        strings.announcements.varipass.daylightoff,
+					        			mention(config.options.adminid),
 								        b
 								    ), false);
-		                        }
-		                    });
-		                });
+					            }
+					        });
+					    });
+		    		}
+
+		            // Night Lamp Off
+		            var controlOn = false;
+		            devices.forEach(function(d) {  
+			            if (d.name == config.varipass.nightlight.control && d.on == true) {
+			            	controlOn = true;
+			            }
+			        });			        
+		    		if (vpLight > config.varipass.nightlight.rangemin && vpLight < config.varipass.nightlight.rangemax && !controlOn) {
+		    			nightLightCount++;
+
+		    			if (nightLightCount >= config.varipass.nightlight.count)
+							config.varipass.nightlight.bulbs.forEach(function(b) {
+						        devices.forEach(function(d) {  
+						            if (d.name == b && d.on == true) {
+						            	hub.toggleDevice(d.id);
+								    	send(channelNameToID(config.options.channels.debug), util.format(
+									        strings.announcements.varipass.nightlightoff,
+						        			mention(config.options.adminid),
+									        b
+									    ), false);
+						            }
+						        });
+						    });
+		    		}
+		    		else {
+		    			nightLightCount = 0;
+		    		}
 	            }
 	        });
 	    }

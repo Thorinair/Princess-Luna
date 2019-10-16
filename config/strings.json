@@ -470,7 +470,8 @@
 			"pm025warningname": "Unhealthy",
 			"pm025okay":        "%s, the PM2.5 concentration has fallen back to **%s** level at **%s** ug/m3.",
 			"pm025okayname":    "Good",
-			"lightoff":         "%s, you forgot to turn off the **%s** bulb, so I turned it off for you."
+			"daylightoff":      "%s, it is day time, and you forgot to turn off the **%s** bulb, so I turned it off for you.",
+			"nightlightoff":    "%s, it is night time, and you forgot to turn off the **%s** bulb, so I turned it off for you."
 		},
 		"blitzor": {
 			"strike": "@everyone, WARNING: Lightning activity detected!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",

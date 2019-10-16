@@ -97,8 +97,17 @@
 			"warning": 55.5,
 			"okay":    12.0
 		},
-		"light": {
+		"daylight": {
 			"threshold": 7,
+			"bulbs": [
+				"bed"
+			]
+		},
+		"nightlight": {
+			"rangemax": 3.6,
+			"rangemin": 3.45,
+			"count":    10,
+			"control": "bath",
 			"bulbs": [
 				"bed"
 			]
