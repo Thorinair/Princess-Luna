@@ -42,6 +42,8 @@
 		"phasetimeout":  30,
 		"statuspull":    60,
 		"statuspush":    1,
+		"debugphase":    false,
+		"debuggotn":     false,
 		"channels": {
 			"debug":     "debug",
 			"home":      "home_luna",

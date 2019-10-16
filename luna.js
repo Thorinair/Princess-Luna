@@ -2425,6 +2425,7 @@ var brains    = {};
 var brainProg = 0;
 var messages  = {};
 var hTrack    = {};
+var hubRetry  = 0;
 
 var startTime;
 
@@ -3034,7 +3035,7 @@ function send(id, message, typing) {
             ));
             bot.sendMessage(msg, function(err) {
             	if (err != undefined) {
-	            	console.log(strings.debug.failed);
+	            	console.log(strings.debug.failedm);
 	            	send(id, message, typing);
 	            }
             });
@@ -3048,7 +3049,7 @@ function send(id, message, typing) {
         ));
         bot.sendMessage(msg, function(err) {
         	if (err != undefined) {
-            	console.log(strings.debug.failed);
+            	console.log(strings.debug.failedm);
             	send(id, message, typing);
             }
         });
@@ -3121,7 +3122,7 @@ function react(channelID, messageID, reaction) {
 
 	bot.addReaction(input, function(err) {
     	if (err != undefined) {
-        	console.log(strings.debug.failed);
+        	console.log(strings.debug.failedr);
         	react(channelID, messageID, reaction);
         }
     });
@@ -3716,10 +3717,11 @@ function loadAnnouncements() {
         var partsTime = gotn.time.split(config.separators.time);
 
         var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
-        console.log(util.format(
-            strings.debug.announcements.item,
-            date
-        ));
+        if (config.options.debuggotn)
+	        console.log(util.format(
+	            strings.debug.announcements.item,
+	            date
+	        ));
 
         // Long air-time announcement.
         var jobLong = new CronJob(new Date(date - long), function() {
@@ -3787,11 +3789,12 @@ function processPhases() {
     phases.forEach(function(p) {
         var date = new Date(p.date + " " + p.time);
         var message;
-        console.log(util.format(
-            strings.debug.phases.item,
-            date,
-            p.phase
-        ));
+        if (config.options.debugphase)
+	        console.log(util.format(
+	            strings.debug.phases.item,
+	            date,
+	            p.phase
+	        ));
 
         if (p.phase == config.options.fullmoon) {
             message = util.format(
@@ -4167,10 +4170,17 @@ function refreshTradfriDevices(callback) {
             });
         }
 
+        hubRetry = 0;
         callback(true);
 
-    }).catch((error) => {    	
-        console.log(strings.debug.tradfri.errorA);
+    }).catch((error) => {
+        if (hubRetry >= tradfri.retries)
+        	console.log(util.format(
+        		strings.debug.tradfri.errorA,
+        		hubRetry
+        	));
+
+        hubRetry++;
         callback(false);
     });
 }
@@ -4916,6 +4926,7 @@ function loadBot() {
                 console.log(util.format(
                     strings.debug.chatting,
                     user,
+                    channelIDToName(channelID),
                     message
                 ));
 

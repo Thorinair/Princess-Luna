@@ -1,5 +1,6 @@
 {
-	"debug": false,
+	"debug":   false,
+	"retries": 1,
 	"moods": [
 
 		{

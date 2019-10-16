@@ -533,102 +533,111 @@
 		}
 	},
 	"debug": {
-		"message":      "> I'm sending the following message to #%s: \"%s\"",
-		"embed":        "> I'm sending the following message to #%s: \"%s\" with image \"%s\" and path \"%s\"",
+		"message":      "=> #%s: \"%s\"",
+		"embed":        "=> #%s: \"%s\" with image \"%s\" and path \"%s\"",
 		"started":      "<STARTED>",
 		"stopped":      "<STOPPED>",
 		"startedtime":  "Started at %s.",
-		"disconnected": "I seem to have disconnected from Discord... Reconnecting.",
-		"failed":       "There was an error sending this message or reacting. Retrying...",
-		"chatting":     "< I've received the following message from \"%s\": \"%s\", replying...",
-		"welcome":      "New user, \"%s\" has joined our server! I'm promoting them to Children of The Night!",
-		"welcomefail":  "Something bad has happened during the promotion. Here is more info: %s",
-		"join":         "I've successfully joined Discord. My name is \"%s\" with ID #%s.",
-		"eegerror":     "I am having some trouble saving the EEG data. Here is more info: %s",
+		"disconnected": "Disconnected from Discord... Reconnecting.",
+		"failedm":      "Error sending message. Retrying...",
+		"failedr":      "Error reacting. Retrying...",
+		"chatting":     "<= @%s, #%s: \"%s\"",
+		"welcome":      "@%s has joined GOTN server! Assigning Children of The Night role.",
+		"welcomefail":  "Error assigning role: %s",
+		"join":         "Joined Discord. My name is \"%s\" with ID #%s.",
+		"eegerror":     "Error saving EEG data: %s",
 		"download": {
-			"start": "I'm downloading the following file: %s",
-			"error": "Error while downloading. Response: \"%s\". Retrying.",
-			"stop":  "Finished downloading!"
+			"start": "Downloading file: %s",
+			"error": "  Error while downloading: \"%s\". Retrying...",
+			"stop":  "  Finished downloading!"
 		},
-		"brain": {
-			"old":     "A brain \"%s\" already seems to exist. Loading it now...",
-			"new":     "I don't seem to have a brain \"%s\". I have created a new one.",
-			"done":    "I've finished loading my brain \"%s\".",
-			"error":   "I am having some trouble saving my brain. Here is more info: %s",
-			"start":   "I have started loading my brain data. This may take a while...",
-			"prog":    "  %s/%s",
-			"end":     "I've finished loading my brain data. Proceeding."
+		"announcements": {
+			"load":    "Loading: GOTN dates...",
+			"item":    "  - Loading air date: %s",
+			"done":    "  Done."
 		},
 		"lyrics": {
-			"old":     "A lyrics file already seems to exist. Loading it now...",
-			"new":     "I don't seem to have a lyrics file. I have created a new one.",
-			"done":    "I've finished loading my lyrics file."
+			"old":     "Loading: Lyrics file...",
+			"new":     "Created: Lyrics file.",
+			"done":    "  Done."
 		},
 		"artwork": {
-			"old":     "An artwork file already seems to exist. Loading it now...",
-			"new":     "I don't seem to have an artwork file. I have created a new one.",
-			"done":    "I've finished loading my artwork file."
+			"old":     "Loading: Artworks file...",
+			"new":     "Created: Artworks file.",
+			"done":    "  Done."
 		},
 		"nptoggles": {
-			"old":     "A Now Playing toggle file already seems to exist. Loading it now...",
-			"new":     "I don't seem to have a Now Playing toggle file. I have created a new one.",
-			"done":    "I've finished loading my Now Playing toggle file.",
-			"add":     "I am subscribing the channel #%s (%s) to automatic Now Playing announcements.",
-			"remove":  "I am unsubscribing the channel #%s (%s) from automatic Now Playing announcements.",
+			"old":     "Loading: Now Playing file...",
+			"new":     "Created: Now Playing file.",
+			"done":    "  Done.",
+			"add":     "Subscribing #%s (%s) to Now Playing announcements.",
+			"remove":  "Unsubscribing #%s (%s) from Now Playing announcements.",
 			"autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info."
 		},
 		"ann": {
-			"old":     "An ANN toggle file already seems to exist. Loading it now...",
-			"new":     "I don't seem to have an ANN toggle file. I have created a new one.",
-			"done":    "I've finished loading my ANN toggle file."
+			"old":     "Loading: ANN file...",
+			"new":     "Created: ANN file.",
+			"done":    "  Done."
 		},
 		"blacklist": {
-			"old":     "A blacklist file already seems to exist. Loading it now...",
-			"new":     "I don't seem to have a blacklist file. I have created a new one.",
-			"done":    "I've finished loading my blacklist file.",
-			"add":     "I am adding the user #%s to the blacklist.",
-			"remove":  "I am removing the user #%s from the blacklist."
+			"old":     "Loading: Blacklist file...",
+			"new":     "Created: Blacklist file.",
+			"done":    "  Done.",
+			"add":     "Adding @%s to the blacklist.",
+			"remove":  "Removing @%s from the blacklist."
 		},
 		"ignore": {
-			"old":     "An ignore file already seems to exist. Loading it now...",
-			"new":     "I don't seem to have an ignore file. I have created a new one.",
-			"done":    "I've finished loading my ignore file.",
-			"add":     "I am adding the user #%s to the ignore.",
-			"remove":  "I am removing the user #%s from the ignore."
+			"old":     "Loading: Ignore file...",
+			"new":     "Created: Ignore file.",
+			"done":    "  Done.",
+			"add":     "Adding @%s to the ignore.",
+			"remove":  "Removing @%s from the ignore."
 		},
 		"eeg": {
-			"old":     "An EEG config file already seems to exist. Loading it now...",
-			"new":     "I don't seem to have an EEG config file. I have created a new one.",
-			"done":    "I've finished loading my EEG config file."
+			"old":     "Loading: EEG file...",
+			"new":     "Created: EEG file.",
+			"done":    "  Done."
+		},
+		"timezones": {
+			"load":    "Loading: Timezone data...",
+			"done":    "  Done."
+		},
+		"phases": {
+			"load":    "Loading: Online Phase data...",
+			"item":    "  - Loading phase date: %s - %s",
+			"done":    "  Done.",
+			"error":   "  Error loading: \"%s\" ",
+			"timeout": "  Timed out. Loading backup...",
+			"file":    "  Loading: Backup Phase data...",
+			"filed":   "    Done.",
+			"no":      "    No backup found. The command will not function."
+		},
+		"brain": {
+			"start":   "Loading: Brain data...",
+			"prog":    "  %s/%s",
+			"old":     "  Loading: Brain \"%s\"...",
+			"new":     "  Created: Brain \"%s\".",
+			"done":    "    Done with \"%s\".",
+			"error":   "Error saving brain: %s",
+			"end":     "  Done."
 		},
 		"seizure": {
-			"old":     "A seizure file already seems to exist. Loading it now...",
-			"new":     "I don't seem to have a seizure file. I have created a new one.",
-			"done":    "I've finished loading my seizure file."
+			"old":     "Loading: Seizure file...",
+			"new":     "Created: Seizure file.",
+			"done":    "  Done."
+		},
+		"blitzor": {
+			"reconnect": "Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+			"connect":   "Connecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+			"done":      "  Done.",
+			"strike":    "Lightning strike! dist: %s, lati: %s, long: %s",
+			"spread":    "Spreading the lightning range from %s to %s.",
+			"max":       "Spreading outside of range. Clamping to max range of %s."
 		},
 		"backup": {
 			"start":   "Started a backup...",
-			"done":    "I've finished backing up my data. Total size of %s bytes. Sending it now.",
-			"error":   "Something has gone wrong. Here is more info: %s"
-		},
-		"phases": {
-			"load":    "I'm loading all of the upcoming phase dates...",
-			"item":    "- Loading phase date: %s - %s",
-			"done":    "I've finished loading the phase dates!",
-			"error":   "I've encountered some problems loading the dates. Here is more info: \"%s\" ",
-			"timeout": "My attempt to load the dates took too long. Loading from backup file...",
-			"file":    "Loading phase data from backup file...",
-			"filed":   "I've finished loading my phase backup file.",
-			"no":      "There was no phase backup file to load. The command will not function."
-		},
-		"announcements": {
-			"load":    "I'm loading all of the upcoming show dates...",
-			"item":    "- Loading air date: %s",
-			"done":    "I've finished loading the announcement dates!"
-		},
-		"timezones": {
-			"load":    "I'm loading timezone data...",
-			"done":    "I've finished loading the timezones!"
+			"done":    "  Done. Total size of %s bytes. Sending it now.",
+			"error":   "  Error backing up: %s"
 		},
 		"varipass": {
 			"load":    "I'm loading data from VariPass...",
@@ -637,31 +646,23 @@
 			"timeout": "My attempt to load the data took too long."
 		},
 		"tradfri": {
-			"connect": "I'm connecting to the Tradfri hub...",
-			"errorA":  "Something went wrong while connecting to the hub, retrying...",
-			"errorB":  "I was unable to set the bulb, trying again...",
-			"done":    "I've finished connecting to the Tradfri hub! Found bulb devices: %s",
-			"bulb":    "  %s\n  #%s\n    Type:   %s\n    Color:  #%s\n    Bright: %s\n    On:     %s"
-		},
-		"blitzor": {
-			"reconnect": "I'm reconnecting to the Blitzortung API using coordinates: lati %s to %s, long %s to %s...",
-			"connect":   "I'm connecting to the Blitzortung API using coordinates: lati %s to %s, long %s to %s...",
-			"done":      "I've finished connecting to the Blitzortung API!",
-			"strike":    "Lightning strike! dist: %s, lati: %s, long: %s",
-			"spread":    "Spreading the lightning range from %s to %s.",
-			"max":       "Spreading outside of range. Clamping to max range of %s."
+			"connect": "Connecting to Tradfri hub...",
+			"errorA":  "Error connecting to Tradfri hub, retrying... (Attempt %s)",
+			"errorB":  "Unable to set the bulb, trying again...",
+			"done":    "  Done. Found bulb devices: %s",
+			"bulb":    "    %s\n  #%s\n    Type:   %s\n    Color:  #%s\n    Bright: %s\n    On:     %s"
 		},
 		"chase": {
-			"reconnect": "Storm Chasing! I'm reconnecting to the Blitzortung API using coordinates: lati %s to %s, long %s to %s...",
-			"connect":   "Storm Chasing! I'm connecting to the Blitzortung API using coordinates: lati %s to %s, long %s to %s...",
-			"done":      "Storm Chasing! I've finished connecting to the Blitzortung API!",
+			"reconnect": "Storm Chasing! Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+			"connect":   "Storm Chasing! Connecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+			"done":      "Storm Chasing!   Done.",
 			"strike":    "Storm Chasing! Lightning strike! dist: %s, lati: %s, long: %s",
 			"spread":    "Storm Chasing! Spreading the lightning range from %s to %s.",
 			"max":       "Storm Chasing! Spreading outside of range. Clamping to max range of %s."
 		},
 		"status": {
-			"error":   "I've encountered some problems sending the status data. Here is more info: \"%s\"",
-			"timeout": "My attempt to load the data took too long."
+			"error":   "Error sending status data: \"%s\"",
+			"timeout": "Loading status source timed out."
 		}
 	}
 }
