@@ -2412,20 +2412,21 @@ comm.system = function(data) {
 };
 
 // Status Variables
-var jobs      = [];
-var phases    = [];
-var started   = false;
-var apifail   = false;
-var filefail  = false;
-var npstarted = false;
-var isplushie = false;
-var npradio   = {};
-var np        = {};
-var brains    = {};
-var brainProg = 0;
-var messages  = {};
-var hTrack    = {};
-var hubRetry  = 0;
+var jobsGOTN   = [];
+var jobsPhases = [];
+var phases     = [];
+var started    = false;
+var apifail    = false;
+var filefail   = false;
+var npstarted  = false;
+var isplushie  = false;
+var npradio    = {};
+var np         = {};
+var brains     = {};
+var brainProg  = 0;
+var messages   = {};
+var hTrack     = {};
+var hubRetry   = 0;
 
 var startTime;
 
@@ -3776,12 +3777,15 @@ function loadAnnouncements() {
                 }, config.options.starttime * 1000);
             }, function () {}, true);
 
-        jobs.push(jobLong);
-        jobs.push(jobShort);
-        jobs.push(jobNow);
+        jobsGOTN.push(jobLong);
+        jobsGOTN.push(jobShort);
+        jobsGOTN.push(jobNow);
     });
 
-    console.log(strings.debug.announcements.done);
+    console.log(util.format(
+    	strings.debug.announcements.done,
+    	jobsGOTN.length
+    ));
 }
 
 /*
@@ -3814,7 +3818,7 @@ function processPhases() {
         var job = new CronJob(date, function() {
                 send(channelNameToID(config.options.channels.phases), message, true);
             }, function () {}, true);
-        jobs.push(job);
+        jobsPhases.push(job);
     });
 }
 
@@ -3827,7 +3831,10 @@ function phaseDone(done) {
     if (done) {
         fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
         processPhases();
-        console.log(strings.debug.phases.done);
+        console.log(util.format(
+        	strings.debug.phases.done,
+    		jobsPhases.length
+        ));
     }
     else {
         apifail = true;
@@ -3836,7 +3843,10 @@ function phaseDone(done) {
             console.log(strings.debug.phases.file);     
             phases = JSON.parse(fs.readFileSync(config.options.phasepath, "utf8"));
             processPhases();
-            console.log(strings.debug.phases.filed);
+	        console.log(util.format(
+	        	strings.debug.phases.filed,
+	    		jobsPhases.length
+	        ));
         }
         else {
             filefail = true;

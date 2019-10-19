@@ -555,7 +555,7 @@
 		"announcements": {
 			"load":    "Loading: GOTN dates...",
 			"item":    "  - Loading air date: %s",
-			"done":    "  Done."
+			"done":    "  Done. Loaded: %s"
 		},
 		"lyrics": {
 			"old":     "Loading: Lyrics file...",
@@ -606,11 +606,11 @@
 		"phases": {
 			"load":    "Loading: Online Phase data...",
 			"item":    "  - Loading phase date: %s - %s",
-			"done":    "  Done.",
+			"done":    "  Done. Loaded: %s",
 			"error":   "  Error loading: \"%s\" ",
 			"timeout": "  Timed out. Loading backup...",
 			"file":    "  Loading: Backup Phase data...",
-			"filed":   "    Done.",
+			"filed":   "    Done. Loaded: %s",
 			"no":      "    No backup found. The command will not function."
 		},
 		"brain": {
