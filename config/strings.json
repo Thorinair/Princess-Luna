@@ -222,6 +222,11 @@
 			"multiple": "*Looks at %s and **eeeees** loudly at all of them.*",
 			"self":     "*Loudly **eeeees** at the empty space in front of her.*"
 		},
+		"socks": {
+			"single":   "*Levitates %s in the air and puts %s socksies on their hooves.*",
+			"multiple": "*Prepares %s socksies, levitates %s in the air and puts them on their hooves respectively.*",
+			"self":     "*Puts %s socksies on her own hooves and giggles.*"
+		},
 		"plushie": {
 			"single":   "*Casts a spell at %s, turning them into a plushie.*",
 			"multiple": "*Casts spells at %s, turning everypony into plushies.*",
@@ -531,6 +536,37 @@
 				"errorB":  "%s, somepony tried to start a Waifu2x rescaling, but Queen Chrysalis has reported an error while processing. Please check what's up.",
 				"queue":   "%s, Queen Chrysalis says that there are already other requests being processed so she has put your request in a queue.\nThere are currently **%s** requests left."
 			}
+		},
+		"socks": {
+			"single": [
+				"rainbow",
+				"red",
+				"orange",
+				"yellow",
+				"green",
+				"cyan",
+				"blue",
+				"purple",
+				"magenta",
+				"pink",
+				"white",
+				"gray",
+				"black"
+			],
+			"double": [
+				"red",
+				"orange",
+				"yellow",
+				"green",
+				"cyan",
+				"blue",
+				"purple",
+				"magenta",
+				"pink",
+				"white",
+				"gray",
+				"black"
+			]
 		}
 	},
 	"debug": {

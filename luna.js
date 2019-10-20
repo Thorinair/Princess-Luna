@@ -2664,6 +2664,39 @@ function isMessageNotEmpty(message) {
     return message != "" && message != " " && message != "\n";
 }
 
+function generateSock() {
+    if (Math.random() < 0.5) {
+    	// Single color
+    	return strings.misc.socks.single[Math.floor(Math.random() * strings.misc.socks.single.length)];
+    }
+    else {
+    	// Double color
+    	var colorA = strings.misc.socks.double[Math.floor(Math.random() * strings.misc.socks.double.length)];
+    	var colorB = "";
+    	do {
+    		colorB = strings.misc.socks.double[Math.floor(Math.random() * strings.misc.socks.double.length)];
+    	} while (colorB == colorA);
+    	return colorA + "-" + colorB;
+    }
+}
+
+function generateSocks(count) {
+	var sockList = [];
+	var socks = "";
+	var i;
+	for (i = 0; i < count; i++)
+		sockList.push(generateSock());
+    for (i = 0; i < count - 1; i++) {
+        socks += sockList[i];
+        if (i < count - 2) {
+            socks += config.separators.list;
+        }
+    }
+    socks += config.separators.lend + sockList[i];
+
+	return socks;
+}
+
 /*
  * Executes an interraction command on one person or more people.
  * @param  data  Data of the message.
@@ -2679,7 +2712,15 @@ function doInterraction(data) {
                     if (data.command == "plushie")
                         isplushie = true;
 
-                    send(data.channelID, strings.commands[data.command].self, true);
+                    if (data.command == "socks") {
+                    	send(data.channelID, util.format(
+                    		strings.commands[data.command].self,
+                    		generateSock()
+                    	), true);
+                    }
+                    else {
+                    	send(data.channelID, strings.commands[data.command].self, true);
+                    }
                 }
             }
             else {
@@ -2688,10 +2729,19 @@ function doInterraction(data) {
                         data.data.d.mentions.splice(i, 1);
 
                 if (data.data.d.mentions.length <= 1) {
-                    send(data.channelID, util.format(
-                        strings.commands[data.command].single, 
-                        mention(data.data.d.mentions[0].id)
-                    ), true);
+                    if (data.command == "socks") {
+	                    send(data.channelID, util.format(
+	                        strings.commands[data.command].single,
+	                        mention(data.data.d.mentions[0].id),
+	                		generateSock()
+	                    ), true);                    	
+                    }
+                    else {
+	                    send(data.channelID, util.format(
+	                        strings.commands[data.command].single, 
+	                        mention(data.data.d.mentions[0].id)
+	                    ), true);
+	                }
                 }
                 else {
                     var mentions = "";
@@ -2704,18 +2754,36 @@ function doInterraction(data) {
                     }
                     mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
 
-                    send(data.channelID, util.format(
-                        strings.commands[data.command].multiple,
-                        mentions
-                    ), true);
+                    if (data.command == "socks") {
+	                    send(data.channelID, util.format(
+	                        strings.commands[data.command].multiple,
+	                        generateSocks(data.data.d.mentions.length),
+	                        mentions
+	                    ), true);
+                    }
+                    else {
+	                    send(data.channelID, util.format(
+	                        strings.commands[data.command].multiple,
+	                        mentions
+	                    ), true);
+		            }
                 }
             }
         }
         else {
-            send(data.channelID, util.format(
-                strings.commands[data.command].single, 
-                mention(data.userID)
-            ), true);
+            if (data.command == "socks") {
+	            send(data.channelID, util.format(
+	                strings.commands[data.command].single,
+	                mention(data.userID),
+	                generateSock()
+	            ), true);
+            }
+            else {
+	            send(data.channelID, util.format(
+	                strings.commands[data.command].single, 
+	                mention(data.userID)
+	            ), true);
+	        }
         }
     }
     else {

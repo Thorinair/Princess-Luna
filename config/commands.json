@@ -193,6 +193,11 @@
 			"type":    "interraction"
 		},
 		{
+			"command": "socks",
+			"help":    "",
+			"type":    "interraction"
+		},
+		{
 			"command": "plushie",
 			"help":    "",
 			"type":    "interraction"

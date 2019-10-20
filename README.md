@@ -38,7 +38,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.
-    - The bot can interract with people. Mention someone or multiple people after the command to interract with them. Supported commands: `!hug`, `!kiss`, `!boop`, `!glomp`, `!snuggle`, `!nuzzle`, `!wings`, `!snack`, `!floof`, `!nom`, `!preen`, `!blep`, `!pet`, `!groom`, `!tickle`, `!rawr`, `!eee`, `!plushie`, `!unplushie`.
+    - The bot can interract with people. Mention someone or multiple people after the command to interract with them. Supported commands: `!hug`, `!kiss`, `!boop`, `!glomp`, `!snuggle`, `!nuzzle`, `!wings`, `!snack`, `!floof`, `!nom`, `!preen`, `!blep`, `!pet`, `!groom`, `!tickle`, `!rawr`, `!eee`, `!socks`, `!plushie`, `!unplushie`.
 * Commands usable by DJs (set roles):
     - `!lyrics` Lists lyrics of a specified track. Can also list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
     - `!artwork` Shows artwork for a specified track. Functions similar like previous command to show artwork for tracks on PonyvilleFM. Use "list" parameter to list all known artworks.
