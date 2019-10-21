@@ -42,7 +42,154 @@ var mac      = require("./config/mac.json");
 var blitzor  = require("./config/blitzor.json");
 var thori    = require("./config/thori.json");
 
-// Commands
+/************************************
+ * Princess Luna's functions are divided in multiple categories
+ * based on various functionality. In order to jump to a
+ * certain category, please search for the terms below.
+ *
+ * Function index:
+ *
+ *   STATUS VARIABLES
+ *   COMMAND DEFINITIONS
+ *   COMPONENT AND CONFIG LOADING
+ *   REST API REQUESTS
+ *   DISCORD FUNCTIONALITY
+ *   VARIPASS FUNCTIONALITY
+ *   BLITZORTUNG FUNCTIONALITY
+ *   TRADFRI FUNCTIONALITY
+ *   CHANNEL AND DATA TRANSLATION
+ *   STRING MANIPULATION AND GENERATION
+ *   GEOGRAPHIC DATA PROCESSING
+ *   STATUS MONITORING
+ *   MISCELLANEOUS FUNCTIONS
+ *
+ ************************************/
+ 
+
+
+/*******************
+ * STATUS VARIABLES
+ *******************/
+
+var started    = false;
+
+// Loaded
+var jobsGOTN = [];
+var lyrics;
+var artwork;
+var nptoggles;
+var annStatus;
+var blacklist;
+var ignore;
+
+// Phase Data
+var phaseTimeout;
+var phaseApiFail  = false;
+var phaseFileFail = false;
+var phases        = [];
+var jobsPhases    = [];
+
+// Brain Data
+var brains    = {};
+var brainProg = 0;
+var messages  = {};
+
+// Now Playing Data
+var np        = {};
+var npradio   = {};
+var npstarted = false;
+
+// EEG Data
+var eegValues;
+var eegValuesEMA;
+var eegValuesEMAPrev;
+var eegTable;
+var eegTableEMA;
+var eegInitial   = true;
+var eegRecording = false;
+var eegConfig;
+
+// Tradfri
+var hub;
+var devices;
+var hubRetry        = 0;
+var scheduleEntries = [];
+var scheduleJobs    = [];
+
+// VariPass
+var vpTimeDose;
+var vpTimePressure;
+var doseWasWarned   = false;
+var pm025WasWarned  = false;
+var nightLightCount = 0;
+
+// Purging
+var purgeReady = false;
+var purgeBrain = "";
+var purgeStart = "";
+var purgeEnd   = "";
+
+// Power Monitoring
+var powerStatus = null;
+var powerTime;
+
+// Blitzortung
+var blitzorws;
+var lightningRange = blitzor.range;
+var lightningNew   = blitzor.range;
+var lightningLat   = 0;
+var lightningLng   = 0;
+var lightningExpire;
+var lightningSpread;
+var lightningReconnect;
+
+// Blitzortung Storm Chasing
+var chasews;
+var isChasing  = false;
+var chaseRange = blitzor.range;
+var chaseNew   = blitzor.range;
+var chaseLat   = 0;
+var chaseLng   = 0;
+var chaseExpire;
+var chaseSpread;
+var chaseReconnect;
+var chaseThoriLat = 0.0;
+var chaseThoriLng = 0.0;
+
+// Status
+var statusGlobal = {};
+var statusTimeoutLunaLocal;
+var statusTimeoutLunaPublic;
+var statusTimeoutChrysalisFileLocal;
+var statusTimeoutChrysalisFilePublic;
+var statusTimeoutChrysalisStreamLocal;
+var statusTimeoutChrysalisStreamPublic;
+var statusTimeoutChrysalisAnn;
+var statusTimeoutRarityLocal;
+var statusTimeoutRarityPublic;
+var statusTimeoutTantabusLocal;
+var statusTimeoutTantabusPublic;
+
+// Miscellaneous
+var bot;
+var server;
+
+var startTime;
+var waifuTimeout;
+
+var rebooting = false;
+var isLive    = false;
+var isplushie = false;
+
+var hTrack = {};
+
+
+
+/**********************
+ * COMMAND DEFINITIONS
+ **********************/
+
+// Object storing all the commands.
 var comm = {};
 
 // Command: !gotn
@@ -284,9 +431,10 @@ comm.moon = function(data) {
 
 // Command: !room
 comm.room = function(data) {
+    var _key = varipass.main.key;
 
     var payload = {
-            "key": varipass.main.key,
+            "key": _key,
             "action": "all"
         };
 
@@ -710,174 +858,174 @@ comm.minesweeper = function(data) {
 
 // Command: !waifu
 comm.waifu = function(data) {
-	var isPublicChannel = false
-	channels.list.forEach(function(c) {
-		if (data.channelID == c.id)
-			isPublicChannel = true;
-	});
+    var isPublicChannel = false
+    channels.list.forEach(function(c) {
+        if (data.channelID == c.id)
+            isPublicChannel = true;
+    });
 
-	if (isPublicChannel) {
+    if (isPublicChannel) {
 
-		if (annStatus.enabled) {
-		    var parameters = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-		    if ((parameters == "" || parameters == config.options.commandsymbol + data.command) && data.data.d.attachments[0] == undefined) {
-		        send(data.channelID, util.format(
-		            strings.commands.waifu.errorA, 
-		            mention(data.userID)
-		        ), true);
-		    }
-		    else {
-		    	if (data.data.d.attachments[0] != undefined) {
-		    		var image = data.data.d.attachments[0].url;
+        if (annStatus.enabled) {
+            var parameters = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+            if ((parameters == "" || parameters == config.options.commandsymbol + data.command) && data.data.d.attachments[0] == undefined) {
+                send(data.channelID, util.format(
+                    strings.commands.waifu.errorA, 
+                    mention(data.userID)
+                ), true);
+            }
+            else {
+                if (data.data.d.attachments[0] != undefined) {
+                    var image = data.data.d.attachments[0].url;
 
-		    		var parameterParts = parameters.split(" ");
-		    		var n = 0;
-		    		var s = 1;
-		    		var hasParameters = false;
-		    		parameterParts.forEach(function(p) {
-		    			if (p[0] == "n" || p[0] == "N") {
-		    				hasParameters = true;
-		    				n = p[1];
-		    			}
-		    			else if (p[0] == "s" || p[0] == "S") {
-		    				hasParameters = true;
-		    				s = p[1];
-		    			}
-		    		});
+                    var parameterParts = parameters.split(" ");
+                    var n = 0;
+                    var s = 1;
+                    var hasParameters = false;
+                    parameterParts.forEach(function(p) {
+                        if (p[0] == "n" || p[0] == "N") {
+                            hasParameters = true;
+                            n = p[1];
+                        }
+                        else if (p[0] == "s" || p[0] == "S") {
+                            hasParameters = true;
+                            s = p[1];
+                        }
+                    });
 
-		    		if (hasParameters) {
-		    			if (n == 0 || n == 1 || n == 2 || n == 3) {
-			    			if (s == 1 || s == 2 || s == 4 || s == 8) {
-			    				if (!(n == 0 && s == 1)) {
-							        send(data.channelID, util.format(
-							            strings.commands.waifu.message,
-							            mention(data.userID),
-							            n,
-							            s
-							        ), true);
+                    if (hasParameters) {
+                        if (n == 0 || n == 1 || n == 2 || n == 3) {
+                            if (s == 1 || s == 2 || s == 4 || s == 8) {
+                                if (!(n == 0 && s == 1)) {
+                                    send(data.channelID, util.format(
+                                        strings.commands.waifu.message,
+                                        mention(data.userID),
+                                        n,
+                                        s
+                                    ), true);
 
-							        var url = util.format(
-							        	config.ann.waifu.request,
-							        	httpkey.key,
-							        	image,
-							        	data.channelID,
-							        	data.userID,
-							        	n,
-							        	s
-							        );
+                                    var url = util.format(
+                                        config.ann.waifu.request,
+                                        httpkey.key,
+                                        image,
+                                        data.channelID,
+                                        data.userID,
+                                        n,
+                                        s
+                                    );
 
-							        var xhr = new XMLHttpRequest();
-							        xhr.open("GET", url, true);
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open("GET", url, true);
 
-								    xhr.onreadystatechange = function () { 
-								        if (xhr.readyState == 4) {
-								        	if (xhr.status != 200)
-								        		setTimeout(function() {
-											        send(data.channelID, util.format(
-											            strings.commands.waifu.errorG,
-											            mention(data.userID)
-											        ), true);
-											        send(channelNameToID(config.options.channels.debug), util.format(
-											            strings.commands.waifu.errorI,
-											            mention(config.options.adminid)
-											        ), true);
-								    			}, 2000);
-								            
-								            clearTimeout(waifuTimeout);
-								        }
-								    }
-							        xhr.onerror = function(err) {
-							            xhr.abort();
+                                    xhr.onreadystatechange = function () { 
+                                        if (xhr.readyState == 4) {
+                                            if (xhr.status != 200)
+                                                setTimeout(function() {
+                                                    send(data.channelID, util.format(
+                                                        strings.commands.waifu.errorG,
+                                                        mention(data.userID)
+                                                    ), true);
+                                                    send(channelNameToID(config.options.channels.debug), util.format(
+                                                        strings.commands.waifu.errorI,
+                                                        mention(config.options.adminid)
+                                                    ), true);
+                                                }, 2000);
+                                            
+                                            clearTimeout(waifuTimeout);
+                                        }
+                                    }
+                                    xhr.onerror = function(err) {
+                                        xhr.abort();
 
-								        send(data.channelID, util.format(
-								            strings.commands.waifu.errorG,
-								            mention(data.userID)
-								        ), true);
-								        send(channelNameToID(config.options.channels.debug), util.format(
-								            strings.commands.waifu.errorI,
-								            mention(config.options.adminid)
-								        ), true);
-							        }
-							        xhr.ontimeout = function() {
-							            xhr.abort();
+                                        send(data.channelID, util.format(
+                                            strings.commands.waifu.errorG,
+                                            mention(data.userID)
+                                        ), true);
+                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                            strings.commands.waifu.errorI,
+                                            mention(config.options.adminid)
+                                        ), true);
+                                    }
+                                    xhr.ontimeout = function() {
+                                        xhr.abort();
 
-								        send(data.channelID, util.format(
-								            strings.commands.waifu.errorH,
-								            mention(data.userID)
-								        ), true);
-								        send(channelNameToID(config.options.channels.debug), util.format(
-								            strings.commands.waifu.errorJ,
-								            mention(config.options.adminid)
-								        ), true);
-							        }
+                                        send(data.channelID, util.format(
+                                            strings.commands.waifu.errorH,
+                                            mention(data.userID)
+                                        ), true);
+                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                            strings.commands.waifu.errorJ,
+                                            mention(config.options.adminid)
+                                        ), true);
+                                    }
 
-							        xhr.send();
+                                    xhr.send();
 
-								    waifuTimeout = setTimeout(function() {
-								        xhr.abort();
+                                    waifuTimeout = setTimeout(function() {
+                                        xhr.abort();
 
-								        send(data.channelID, util.format(
-								            strings.commands.waifu.errorH,
-								            mention(data.userID)
-								        ), true);
-								        send(channelNameToID(config.options.channels.debug), util.format(
-								            strings.commands.waifu.errorJ,
-								            mention(config.options.adminid)
-								        ), true);
-								    }, config.ann.waifu.timeout * 1000);
-								}
-								else {
-							        send(data.channelID, util.format(
-							            strings.commands.waifu.errorK,
-							            mention(data.userID)
-							        ), true);
-								}
-			    			}
-			    			else {
-						        send(data.channelID, util.format(
-						            strings.commands.waifu.errorE,
-						            mention(data.userID),
-						            s
-						        ), true);
-			    			}
-		    			}
-		    			else {
-					        send(data.channelID, util.format(
-					            strings.commands.waifu.errorD,
-					            mention(data.userID),
-					            n
-					        ), true);
-		    			}
-		    		}
-		    		else {
-				        send(data.channelID, util.format(
-				            strings.commands.waifu.errorC, 
-				            mention(data.userID)
-				        ), true);
-		    		}
-		    	}
-		    	else {
-			        send(data.channelID, util.format(
-			            strings.commands.waifu.errorB, 
-			            mention(data.userID)
-			        ), true);
-		    	}
-		    }
-		}
-		else {
-	        send(data.channelID, util.format(
-	            strings.commands.waifu.paused, 
-	            mention(data.userID),
-	            annStatus.message
-	        ), true);
-		}
-	}
-	else {
+                                        send(data.channelID, util.format(
+                                            strings.commands.waifu.errorH,
+                                            mention(data.userID)
+                                        ), true);
+                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                            strings.commands.waifu.errorJ,
+                                            mention(config.options.adminid)
+                                        ), true);
+                                    }, config.ann.waifu.timeout * 1000);
+                                }
+                                else {
+                                    send(data.channelID, util.format(
+                                        strings.commands.waifu.errorK,
+                                        mention(data.userID)
+                                    ), true);
+                                }
+                            }
+                            else {
+                                send(data.channelID, util.format(
+                                    strings.commands.waifu.errorE,
+                                    mention(data.userID),
+                                    s
+                                ), true);
+                            }
+                        }
+                        else {
+                            send(data.channelID, util.format(
+                                strings.commands.waifu.errorD,
+                                mention(data.userID),
+                                n
+                            ), true);
+                        }
+                    }
+                    else {
+                        send(data.channelID, util.format(
+                            strings.commands.waifu.errorC, 
+                            mention(data.userID)
+                        ), true);
+                    }
+                }
+                else {
+                    send(data.channelID, util.format(
+                        strings.commands.waifu.errorB, 
+                        mention(data.userID)
+                    ), true);
+                }
+            }
+        }
+        else {
+            send(data.channelID, util.format(
+                strings.commands.waifu.paused, 
+                mention(data.userID),
+                annStatus.message
+            ), true);
+        }
+    }
+    else {
         send(data.channelID, util.format(
             strings.commands.waifu.errorF, 
             mention(data.userID)
         ), true);
-	}
+    }
 };
 
 // Command: !custom
@@ -932,95 +1080,98 @@ comm.custom = function(data) {
 
 // Command: !thori
 comm.thori = function(data) {
-	var found = false;
-	if (data.userID == config.options.adminid)
-		found = true;
-	thori.whitelist.forEach(function(u) {
-		if (data.userID == u.id)
-			found = true;
-	});
+    var found = false;
+    if (data.userID == config.options.adminid)
+        found = true;
+    thori.whitelist.forEach(function(u) {
+        if (data.userID == u.id)
+            found = true;
+    });
 
-	if (found) {
-	    var payload = {
-	            "key": varipass.main.key,
-	            "action": "read",
-	            "id": varipass.main.ids.location
-	        };
+    if (found) {
+        var _key = varipass.main.key;
+        var _id = varipass.main.ids.location;
 
-	    var xhr = new XMLHttpRequest();
-	    xhr.open("POST", config.options.varipassurl, true);
-	    xhr.setRequestHeader("Content-type", "application/json");
+        var payload = {
+                "key": _key,
+                "action": "read",
+                "id": _id
+            };
 
-	    xhr.onreadystatechange = function () { 
-	        if (xhr.readyState == 4 && xhr.status == 200) {
-	            var vpData = JSON.parse(xhr.responseText);
-	            console.log(strings.debug.varipass.done);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", config.options.varipassurl, true);
+        xhr.setRequestHeader("Content-type", "application/json");
 
-	            var values = vpData.value.split("\\n");
-	            var lat = 0.0;
-	            var lng = 0.0;
-	            var alt = 0.0;
-	            values.forEach(function(v) {
-	            	var parts = v.split(":");
-	            	if (parts[0] == "lat")
-	            		lat = parseFloat(parts[1]);
-	            	else if (parts[0] == "lng")
-	            		lng = parseFloat(parts[1]);
-	            	else if (parts[0] == "alt")
-	            		alt = parseFloat(parts[1]);
-	            });
+        xhr.onreadystatechange = function () { 
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var vpData = JSON.parse(xhr.responseText);
+                console.log(strings.debug.varipass.done);
 
-	            var diff = vpData.current - vpData.time;
-	            var time = {};
+                var values = vpData.value.split("\\n");
+                var lat = 0.0;
+                var lng = 0.0;
+                var alt = 0.0;
+                values.forEach(function(v) {
+                    var parts = v.split(":");
+                    if (parts[0] == "lat")
+                        lat = parseFloat(parts[1]);
+                    else if (parts[0] == "lng")
+                        lng = parseFloat(parts[1]);
+                    else if (parts[0] == "alt")
+                        alt = parseFloat(parts[1]);
+                });
 
-	            time.seconds = Math.floor(diff % 60);
-	            diff = Math.floor(diff / 60);
-	            time.minutes = Math.floor(diff % 60);
-	            diff = Math.floor(diff / 60);
-	            time.hours = Math.floor(diff % 24);
-	            time.days = Math.floor(diff / 24);
+                var diff = vpData.current - vpData.time;
+                var time = {};
 
-	            var url = util.format(
-	            	config.options.mapsurl,
-	            	lat,
-	            	lng
-	            );
-		    
-				getLocationInfo(function(locInfo) {
-			    	send(data.userID, util.format(
-				        strings.commands.thori.messageB,
-				        locInfo.town,
-				        locInfo.country,
-				        alt.toFixed(1),
-	                	getTimeString(time),
-	                	time.seconds,
-	                	url
-				    ), false);
+                time.seconds = Math.floor(diff % 60);
+                diff = Math.floor(diff / 60);
+                time.minutes = Math.floor(diff % 60);
+                diff = Math.floor(diff / 60);
+                time.hours = Math.floor(diff % 24);
+                time.days = Math.floor(diff / 24);
 
-				    if (bot.channels[data.channelID] != undefined)  
-				        send(data.channelID, util.format(
-				            strings.commands.thori.messageA, 
-				            mention(data.userID)
-				        ), true);
-				}, lat, lng);
-	        }
-	    }
-	    xhr.onerror = function(err) {
-	        console.log(util.format(
-	            strings.debug.varipass.error,
-	            err.target.status
-	        ));
-	        xhr.abort();
-	    }
-	    xhr.ontimeout = function() {
-	        console.log(strings.debug.varipass.timeout);
-	        xhr.abort();
-	    }
+                var url = util.format(
+                    config.options.mapsurl,
+                    lat,
+                    lng
+                );
+            
+                getLocationInfo(function(locInfo) {
+                    send(data.userID, util.format(
+                        strings.commands.thori.messageB,
+                        locInfo.town,
+                        locInfo.country,
+                        alt.toFixed(1),
+                        getTimeString(time),
+                        time.seconds,
+                        url
+                    ), false);
 
-	    console.log(strings.debug.varipass.load);
-	    xhr.send(JSON.stringify(payload));
-	}
-	else {
+                    if (bot.channels[data.channelID] != undefined)  
+                        send(data.channelID, util.format(
+                            strings.commands.thori.messageA, 
+                            mention(data.userID)
+                        ), true);
+                }, lat, lng);
+            }
+        }
+        xhr.onerror = function(err) {
+            console.log(util.format(
+                strings.debug.varipass.error,
+                err.target.status
+            ));
+            xhr.abort();
+        }
+        xhr.ontimeout = function() {
+            console.log(strings.debug.varipass.timeout);
+            xhr.abort();
+        }
+
+        console.log(strings.debug.varipass.load);
+        xhr.send(JSON.stringify(payload));
+    }
+    else {
         send(data.channelID, util.format(
             strings.commands.thori.error, 
             mention(data.userID)
@@ -1189,7 +1340,7 @@ comm.lyrics = function(data) {
     if (param == "" || param == config.options.commandsymbol + data.command) {
         if (lyrics[np.nowplaying] != undefined) {
 
-            sendLargeMessage(data, lyrics[np.nowplaying].split("\n"), util.format(
+            sendLarge(data, lyrics[np.nowplaying].split("\n"), util.format(
                 strings.commands.lyrics.radio,
                 mention(data.userID)
             ), true);
@@ -1212,13 +1363,13 @@ comm.lyrics = function(data) {
             ), true);
 
         data.channelID = data.userID;
-        sendLargeMessage(data, Object.keys(lyrics).sort(), util.format(
+        sendLarge(data, Object.keys(lyrics).sort(), util.format(
             strings.commands.lyrics.listB
         ), false);
     }
     else if (lyrics[param] != undefined) {
 
-        sendLargeMessage(data, lyrics[param].split("\n"), util.format(
+        sendLarge(data, lyrics[param].split("\n"), util.format(
             strings.commands.lyrics.message,
             mention(data.userID)
         ), true);
@@ -1267,7 +1418,7 @@ comm.artwork = function(data) {
             ), true);
 
         data.channelID = data.userID;
-        sendLargeMessage(data, Object.keys(artwork).sort(), util.format(
+        sendLarge(data, Object.keys(artwork).sort(), util.format(
             strings.commands.artwork.listB
         ), false);
     }
@@ -1370,26 +1521,26 @@ comm.npoverride = function(data) {
 
 // Command: !stop
 comm.stop = function(data) {
-	if (isLive) {
-		isLive = false;
-	    send(data.channelID, strings.commands.stop.message, false);
+    if (isLive) {
+        isLive = false;
+        send(data.channelID, strings.commands.stop.message, false);
 
-		send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.afterA, true);
-	    send(channelNameToID(config.options.channels.announceB), strings.announcements.gotn.afterB, true);
-	    setMood("norm", function(result) {
-	        if (!result)
-	            send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
-	    });
+        send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.afterA, true);
+        send(channelNameToID(config.options.channels.announceB), strings.announcements.gotn.afterB, true);
+        setMood("norm", function(result) {
+            if (!result)
+                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+        });
 
-	    config.options.channels.nowplaying.forEach(function(n, i) {
-	        if (nptoggles[channelNameToID(n)] != undefined)
-	            delete nptoggles[channelNameToID(n)];
-	    });
-	    fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
-	}
-	else {
-	    send(data.channelID, strings.commands.stop.error, false);
-	}
+        config.options.channels.nowplaying.forEach(function(n, i) {
+            if (nptoggles[channelNameToID(n)] != undefined)
+                delete nptoggles[channelNameToID(n)];
+        });
+        fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
+    }
+    else {
+        send(data.channelID, strings.commands.stop.error, false);
+    }
 };
 
 // Command: !send
@@ -1494,7 +1645,7 @@ comm.purge = function(data) {
                     });
 
                     saveAllBrains();
-            		blitzorws.close();
+                    blitzorws.close();
 
                     setTimeout(function() {
                         console.log(strings.debug.stopped);
@@ -2216,27 +2367,27 @@ comm.stream = function(data) {
 
 // Command: !ann
 comm.ann = function(data) {
-	var parts = data.message.split("\n");
+    var parts = data.message.split("\n");
     var state = parts[0].replace(config.options.commandsymbol + data.command + " ", "");
     if (state == "" || state == config.options.commandsymbol + data.command) {
         send(data.channelID, strings.commands.ann.errorA, true);
     }
     else {
         if (state == "on") {
-        	annStatus.enabled = true;
-        	annStatus.message = "";
+            annStatus.enabled = true;
+            annStatus.message = "";
             fs.writeFileSync(config.ann.path, JSON.stringify(annStatus), "utf-8");
             send(data.channelID, strings.commands.ann.messageB, true);
         }
         else if (state == "off") {
-        	if (parts[1] != undefined && parts[1] != "" && parts[1] != " ") {
-	        	annStatus.enabled = false;
-	        	annStatus.message = parts[1];
-	            fs.writeFileSync(config.ann.path, JSON.stringify(annStatus), "utf-8");
-            	send(data.channelID, strings.commands.ann.messageA, true);
-        	}
-        	else
-            	send(data.channelID, strings.commands.ann.errorB, true);
+            if (parts[1] != undefined && parts[1] != "" && parts[1] != " ") {
+                annStatus.enabled = false;
+                annStatus.message = parts[1];
+                fs.writeFileSync(config.ann.path, JSON.stringify(annStatus), "utf-8");
+                send(data.channelID, strings.commands.ann.messageA, true);
+            }
+            else
+                send(data.channelID, strings.commands.ann.errorB, true);
         }
         else
             send(data.channelID, strings.commands.ann.errorA, true);
@@ -2251,32 +2402,32 @@ comm.chase = function(data) {
     }
     else {
         if (state == "start") {
-			if (!isChasing) {
-				isChasing = true;
+            if (!isChasing) {
+                isChasing = true;
 
-				connectChase(false);
-	            send(data.channelID, strings.commands.chase.messageA, true);
-	        }
-	        else {
-            	send(data.channelID, strings.commands.chase.errorB, true);
-	        }
+                connectChase(false);
+                send(data.channelID, strings.commands.chase.messageA, true);
+            }
+            else {
+                send(data.channelID, strings.commands.chase.errorB, true);
+            }
         }
         else if (state == "stop") {
-			if (isChasing) {
-				isChasing = false;
-				
-				clearTimeout(chaseReconnect);
-			    chasews.close();
+            if (isChasing) {
+                isChasing = false;
+                
+                clearTimeout(chaseReconnect);
+                chasews.close();
 
-			    if (chaseRange > blitzor.range) {
-					chaseRange = blitzor.range;
-				    chaseNew = blitzor.range;
-			    }
-            	send(data.channelID, strings.commands.chase.messageB, true);
-			}
-			else {
-            	send(data.channelID, strings.commands.chase.errorC, true);
-			}
+                if (chaseRange > blitzor.range) {
+                    chaseRange = blitzor.range;
+                    chaseNew = blitzor.range;
+                }
+                send(data.channelID, strings.commands.chase.messageB, true);
+            }
+            else {
+                send(data.channelID, strings.commands.chase.errorC, true);
+            }
         }
         else
             send(data.channelID, strings.commands.chase.errorA, true);
@@ -2315,8 +2466,9 @@ comm.backup = function(data) {
     send(data.channelID, strings.commands.backup.messageA, false);
 
     var output = fs.createWriteStream(config.backup.output.path);
+    var _zlib = config.backup.compression;
     var archive = archiver("zip", {
-        "zlib": { "level": config.backup.compression }
+        "zlib": { "level": _zlib }
     });
 
     output.on('close', function() {
@@ -2369,7 +2521,7 @@ comm.system = function(data) {
         send(data.channelID, strings.commands.system.errorA, false);
     }
     else {
-    	var parts = command.split(" ");
+        var parts = command.split(" ");
         switch (parts[0]) {
 
             case "reboot":
@@ -2382,7 +2534,7 @@ comm.system = function(data) {
                 send(data.channelID, strings.commands.system.mreboot, false);
 
                 saveAllBrains();
-            	blitzorws.close();
+                blitzorws.close();
 
                 setTimeout(function() {
                     console.log(strings.debug.stopped);
@@ -2392,16 +2544,16 @@ comm.system = function(data) {
                 }, config.options.reboottime * 1000);
                 break;
             case "wake":
-            	if (parts[1] in mac) {
-	                send(data.channelID, util.format(
-	                	strings.commands.system.mwake,
-	                	parts[1]
-	                ), false);
-	                exec("sudo etherwake " + mac[parts[1]]);
-	            }
-	            else {
-	                send(data.channelID, strings.commands.system.ewake, false);
-	            }
+                if (parts[1] in mac) {
+                    send(data.channelID, util.format(
+                        strings.commands.system.mwake,
+                        parts[1]
+                    ), false);
+                    exec("sudo etherwake " + mac[parts[1]]);
+                }
+                else {
+                    send(data.channelID, strings.commands.system.ewake, false);
+                }
                 break;
 
             default:
@@ -2411,1332 +2563,15 @@ comm.system = function(data) {
     }
 };
 
-// Status Variables
-var jobsGOTN   = [];
-var jobsPhases = [];
-var phases     = [];
-var started    = false;
-var apifail    = false;
-var filefail   = false;
-var npstarted  = false;
-var isplushie  = false;
-var npradio    = {};
-var np         = {};
-var brains     = {};
-var brainProg  = 0;
-var messages   = {};
-var hTrack     = {};
-var hubRetry   = 0;
-
-var startTime;
-
-var phaseTimeout;
-
-var powerStatus = null;
-var powerTime;
-
-var eegValues;
-var eegValuesEMA;
-var eegValuesEMAPrev;
-
-var eegTable;
-var eegTableEMA;
-
-var eegInitial = true;
-var eegRecording = false;
-var eegConfig;
-
-var scheduleEntries = [];
-var scheduleJobs    = [];
-
-var rebooting = false;
-
-var purgeReady = false;
-var purgeBrain = "";
-var purgeStart = "";
-var purgeEnd   = "";
-
-var doseWasWarned = false;
-var vpTimeDose;
-var vpTimePressure;
-
-var pm025WasWarned = false;
-
-var isLive = false;
-
-var lightningRange = blitzor.range;
-var lightningNew   = blitzor.range;
-var lightningLat = 0;
-var lightningLng = 0;
-var lightningExpire;
-var lightningSpread;
-var lightningReconnect;
-
-var isChasing = false;
-var chaseRange = blitzor.range;
-var chaseNew   = blitzor.range;
-var chaseLat = 0;
-var chaseLng = 0;
-var chaseExpire;
-var chaseSpread;
-var chaseReconnect;
-var chaseThoriLat = 0.0;
-var chaseThoriLng = 0.0;
-
-var nightLightCount = 0;
-
-var annStatus;
-var waifuTimeout;
 
 
-var statusGlobal = {};
-
-var statusTimeoutLunaLocal;
-var statusTimeoutLunaPublic;
-
-var statusTimeoutChrysalisFileLocal;
-var statusTimeoutChrysalisFilePublic;
-var statusTimeoutChrysalisStreamLocal;
-var statusTimeoutChrysalisStreamPublic;
-var statusTimeoutChrysalisAnn;
-
-var statusTimeoutRarityLocal;
-var statusTimeoutRarityPublic;
-
-var statusTimeoutTantabusLocal;
-var statusTimeoutTantabusPublic;
-
-// Persistant Objects
-var bot;
-var hub;
-var devices;
-var lyrics;
-var artwork;
-var nptoggles;
-var blacklist;
-var ignore;
-var server;
-var blitzorws;
-var chasews;
-
-// Callback for downloading of files. 
-var download = function(uri, filename, callback) {
-    request.head(uri, function(err, res, body) {
-        console.log(util.format(
-            strings.debug.download.start,
-            uri
-        ));
-
-        request({
-            "method": "GET", 
-            "rejectUnauthorized": false, 
-            "url": uri,
-            "headers" : {"Content-Type": "application/json"},
-            function(err,data,body) {}
-        }).on("error", function(err) {
-	    	console.log(util.format(
-	            strings.debug.download.error,
-	            err
-	        ));
-	        download(uri, filename, callback);
-        }).pipe(fs.createWriteStream(filename)).on("close", callback);
-    });
-};
+/*******************************
+ * COMPONENT AND CONFIG LOADING
+ *******************************/
 
 /*
- * Formats a mention string.
- * @param  id  ID to mention.
- * @return     String usable by Discord as a mention.
+ * Starts the loading procedure.
  */
-function mention(id) {
-    return util.format(config.options.mention, id);
-}
-
-/*
- * Formats a role mention string.
- * @param  id  ID to mention.
- * @return     String usable by Discord as a mention.
- */
-function mentionRole(id) {
-    return util.format(config.options.mentionrole, id);
-}
-
-/*
- * Sends a large message to some chat using multiple messages. Used for lyrics.
- * @param  data     Data of the message.
- * @param  list     List to be sent.
- * @param  message  Initial message string.
- */
-function sendLargeMessage(data, list, message, format) {
-
-    var length = message.length;
-    var multi = [];
-
-    list.forEach(function(l, i) {
-        var line = l;
-        if (format && line.length > 0) {
-            while (line[line.length - 1] == " ")
-                line = line.slice(0, -1);
-            line = config.options.lyricformat + line + config.options.lyricformat;
-        }
-        line += "\n";
-
-        if (length + line.length >= config.options.maxlength) {
-            multi.push(message);
-            length = line.length;
-            message = line;
-        }
-        else {
-            length += line.length;
-            message += line;
-        }
-    });
-
-    if (message != "")
-        multi.push(message);
-
-    multi.forEach(function(m, i){
-        setTimeout(function() {
-            send(data.channelID, m, true);
-        }, i * 1000);           
-    });
-}
-
-/*
- * Uses regex to clean up a message.
- * @param  message  Message text to clean up.
- */
-function cleanMessage(message) {
-    return message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
-}
-
-/*
- * Reloads the configuration.
- */
-function reloadConfig() {  
-    token    = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
-    config   = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
-    commands = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
-    custom   = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
-    strings  = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
-    gotn     = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
-    mlp      = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
-    channels = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
-    varipass = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
-    printer  = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
-    dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
-    tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
-    schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
-    wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
-    httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
-    mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
-    blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
-    thori    = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
-
-	clearTimeout(lightningReconnect);
-    blitzorws.close();
-
-    if (lightningRange > blitzor.range) {
-		lightningRange = blitzor.range;
-	    lightningNew = blitzor.range;
-    }
-
-	connectBlitzortung(false);
-
-	if (isChasing) {
-		clearTimeout(chaseReconnect);
-	    chasews.close();
-
-	    if (chaseRange > blitzor.range) {
-			chaseRange = blitzor.range;
-		    chaseNew = blitzor.range;
-	    }
-
-		connectChase(false);
-	}
-};
-
-/*
- * Checks if a message has usable contents.
- * @param  message  Message text analyze.
- */
-function isMessageNotEmpty(message) {
-    return message != "" && message != " " && message != "\n";
-}
-
-function generateSock() {
-    if (Math.random() < 0.5) {
-    	// Single color
-    	return strings.misc.socks.single[Math.floor(Math.random() * strings.misc.socks.single.length)];
-    }
-    else {
-    	// Double color
-    	var colorA = strings.misc.socks.double[Math.floor(Math.random() * strings.misc.socks.double.length)];
-    	var colorB = "";
-    	do {
-    		colorB = strings.misc.socks.double[Math.floor(Math.random() * strings.misc.socks.double.length)];
-    	} while (colorB == colorA);
-    	return colorA + "-" + colorB;
-    }
-}
-
-function generateSocks(count) {
-	var sockList = [];
-	var socks = "";
-	var i;
-	for (i = 0; i < count; i++)
-		sockList.push(generateSock());
-    for (i = 0; i < count - 1; i++) {
-        socks += sockList[i];
-        if (i < count - 2) {
-            socks += config.separators.list;
-        }
-    }
-    socks += config.separators.lend + sockList[i];
-
-	return socks;
-}
-
-/*
- * Executes an interraction command on one person or more people.
- * @param  data  Data of the message.
- */
-function doInterraction(data) {
-    if (!isplushie) {
-        if (data.data.d.mentions[0] != null) {
-            if (isMentioned(bot.id, data.data) && data.data.d.mentions.length == 1) {
-                if (data.command == "unplushie") {
-                    send(data.channelID, strings.commands[data.command].error, true);
-                }
-                else {
-                    if (data.command == "plushie")
-                        isplushie = true;
-
-                    if (data.command == "socks") {
-                    	send(data.channelID, util.format(
-                    		strings.commands[data.command].self,
-                    		generateSock()
-                    	), true);
-                    }
-                    else {
-                    	send(data.channelID, strings.commands[data.command].self, true);
-                    }
-                }
-            }
-            else {
-                for (i = 0; i < data.data.d.mentions.length; i++)
-                    if (bot.id == data.data.d.mentions[i].id)
-                        data.data.d.mentions.splice(i, 1);
-
-                if (data.data.d.mentions.length <= 1) {
-                    if (data.command == "socks") {
-	                    send(data.channelID, util.format(
-	                        strings.commands[data.command].single,
-	                        mention(data.data.d.mentions[0].id),
-	                		generateSock()
-	                    ), true);                    	
-                    }
-                    else {
-	                    send(data.channelID, util.format(
-	                        strings.commands[data.command].single, 
-	                        mention(data.data.d.mentions[0].id)
-	                    ), true);
-	                }
-                }
-                else {
-                    var mentions = "";
-                    var i;
-                    for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-                        mentions += mention(data.data.d.mentions[i].id);
-                        if (i < data.data.d.mentions.length - 2) {
-                            mentions += config.separators.list;
-                        }
-                    }
-                    mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
-
-                    if (data.command == "socks") {
-	                    send(data.channelID, util.format(
-	                        strings.commands[data.command].multiple,
-	                        generateSocks(data.data.d.mentions.length),
-	                        mentions
-	                    ), true);
-                    }
-                    else {
-	                    send(data.channelID, util.format(
-	                        strings.commands[data.command].multiple,
-	                        mentions
-	                    ), true);
-		            }
-                }
-            }
-        }
-        else {
-            if (data.command == "socks") {
-	            send(data.channelID, util.format(
-	                strings.commands[data.command].single,
-	                mention(data.userID),
-	                generateSock()
-	            ), true);
-            }
-            else {
-	            send(data.channelID, util.format(
-	                strings.commands[data.command].single, 
-	                mention(data.userID)
-	            ), true);
-	        }
-        }
-    }
-    else {
-        if (data.command == "unplushie" && isMentioned(bot.id, data.data)) {
-            isplushie = false;
-            send(data.channelID, util.format(
-                strings.commands[data.command].self, 
-                mention(data.userID)
-            ), true);
-        }
-        else
-            send(data.channelID, strings.commands["plushie"].error, true);
-    }
-}
-
-/*
- * Executes a custom interraction command on one person or more people.
- * @param  data  Data of the message.
- * @param  index Index of the command.
- */
-function doInterractionCustom(data, index) {
-    if (!isplushie) {
-        if (data.data.d.mentions[0] != null) {
-            if (isMentioned(bot.id, data.data) && data.data.d.mentions.length == 1) {
-                send(data.channelID, custom.list[index].strings.self, true);
-            }
-            else {
-                for (i = 0; i < data.data.d.mentions.length; i++)
-                    if (bot.id == data.data.d.mentions[i].id)
-                        data.data.d.mentions.splice(i, 1);
-
-                if (data.data.d.mentions.length <= 1) {
-                    send(data.channelID, util.format(
-                        custom.list[index].strings.single, 
-                        mention(data.data.d.mentions[0].id)
-                    ), true);
-                }
-                else {
-                    var mentions = "";
-                    var i;
-                    for (i = 0; i < data.data.d.mentions.length - 1; i++) {
-                        mentions += mention(data.data.d.mentions[i].id);
-                        if (i < data.data.d.mentions.length - 2) {
-                            mentions += config.separators.list;
-                        }
-                    }
-                    mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
-
-                    send(data.channelID, util.format(
-                        custom.list[index].strings.multiple,
-                        mentions
-                    ), true);
-                }
-            }
-        }
-        else {
-            send(data.channelID, util.format(
-                custom.list[index].strings.single, 
-                mention(data.userID)
-            ), true);
-        }
-    }
-    else {
-        send(data.channelID, strings.commands["plushie"].error, true);
-    }
-}
-
-/*
- * Parses a given channel name to retrieve the correct ID.
- * @param  name  The input name to look for.
- * @return       ID of the channel.
- */
-function channelNameToID(name) {
-    var found = false;
-    var id = null;
-
-    channels.list.forEach(function(c) {
-        if (c.name == name && !found)
-            id = c.id;
-    });
-
-    return id;
-}
-
-/*
- * Parses a given channel ID to retrieve the correct name.
- * @param  id  The input ID to look for.
- * @return     Name of the channel.
- */
-function channelIDToName(id) {
-    var found = false;
-    var name = "unknown";
-
-    channels.list.forEach(function(c) {
-        if (c.id == id && !found)
-            name = c.name;
-    });
-
-    return name;
-}
-
-/*
- * Parses a given channel ID to retrieve the correct brain.
- * @param  id  The input ID to look for.
- * @return     Brain of the channel.
- */
-function channelIDToBrain(id) {
-    var found = false;
-    var brain = null;
-
-    channels.list.forEach(function(c) {
-        if (c.id == id && !found)
-            brain = c.brain;
-    });
-
-    if (brain == null)
-        brain = channels.default.brain;
-
-    return brain;
-}
-
-/*
- * Parses VariPass data to return a certain variable.
- * @param  data  VariPass data to search in.
- * @param  id    The ID of the variable to look for.
- * @return       The VariPass variable with all the data.
- */
-function findVariable(data, id) {
-    var found    = false;
-    var variable = null;
-
-    data.list.forEach(function(v) {
-        if (v.id == id && !found)
-            variable = v;
-    });
-
-    return variable;
-}
-
-/*
- * Converts a given date to a more readable format.
- * @param  date  The input date, this is not the JS Date object.
- * @return       Formatted string.
- */
-function getTimeString(date) {
-    var string = "";
-
-    if (date.days != null && date.days != 0) {
-        string += date.days + " day";
-        if (date.days > 1)
-            string += "s";
-    }
-
-    if ((date.days != null && date.days != 0) && (date.hours != null && date.hours != 0) && (date.minutes == null || date.minutes == 0))
-        string += " and ";
-    else if ((date.days != null && date.days != 0) && (date.hours != null && date.hours != 0) && (date.minutes != null && date.minutes != 0))
-        string += ", ";
-
-    if (date.hours != null && date.hours != 0) {
-        string += date.hours + " hour";
-        if (date.hours > 1)
-            string += "s";
-    }
-
-    if ((date.hours != null && date.hours != 0) && (date.minutes != null && date.minutes != 0))
-        string += " and ";
-    else if ((date.days != null && date.days != 0) && (date.hours == null || date.hours == 0) && (date.minutes != null && date.minutes != 0))
-        string += " and ";
-
-    if (date.minutes != null && date.minutes != 0) {
-        string += date.minutes + " minute";
-        if (date.minutes > 1)
-            string += "s";
-    }
-
-    if (string == "")
-        string = "0 minutes";
-
-    return string;
-}
-
-/*
- * Converts a given date to a simplified format.
- * @param  date  The input date, this is not the JS Date object.
- * @return       Formatted string.
- */
-function getTimeStringSimple(date) {
-    var string = "";
-
-    if (date.days != null && date.days != 0) {
-        string += date.days + "d ";
-    }
-
-    if (date.hours != null && date.hours != 0) {
-        string += date.hours + "h ";
-    }
-
-    if (date.minutes != null) {
-        string += date.minutes + "m ";
-    }
-
-    if (date.seconds != null) {
-        string += date.seconds + "s";
-    }
-
-    return string;
-}
-
-/*
- * Parses two given dates to return the time left and final time.
- * @param  start    Starting date.
- * @param  stop     Final date.
- * @param  timezone The timezone to calculate for.
- * @return          String of time left and final time.
- */
-function getTimeLeft(start, stop, timezone) {
-    var diff = (stop - start) / 60000;
-    var time = {};
-
-    time.minutes = Math.floor(diff % 60);
-    diff = Math.floor(diff / 60);
-    time.hours = Math.floor(diff % 24);
-    time.days = Math.floor(diff / 24);
-
-    var momentTime = moment.tz(stop, timezone);
-
-    return util.format(
-        strings.misc.left, 
-        getTimeString(time),  
-        momentTime.format("ddd MMM DD, YYYY"),
-        momentTime.format("HH:mm (z)")
-    );
-}
-
-/*
- * Parses the phase list to return a string compatible with Discord chat.
- * @param  name    Name of the Moon phse to look for.
- * @param  offset  Offset of the phase.
- * @return         String compatible with Discord chat.
- */
-function getPhaseString(name, offset) {
-    var id = 0;
-    config.phases.forEach(function(n, i) {
-        if (n.name == name)
-            id = i;
-    });
-
-    id += offset;
-    if (id >= config.phases.length)
-        id -= config.phases.length;
-    else if (id < 0)
-        id += config.phases.length;
-
-    return config.phases[id].name + " " + config.phases[id].icon;
-}
-
-function getWoWPrice(price) {
-    var c = Math.floor(price % 100);
-    price = Math.floor(price / 100);
-    var s = Math.floor(price % 100);
-    price = Math.floor(price / 100);
-    var g = "";
-    while (price >= 1000) {
-        g = config.separators.price + Math.floor(price % 1000) + g;
-        price = Math.floor(price / 1000);
-    }
-    g = price + g;
-
-    return util.format(
-        strings.misc.gold,
-        g,
-        s,
-        c
-    );
-}
-
-/*
- * h
- * @param  channelID h
- */
-function h(channelID) {
-    if (hTrack[channelID] == undefined) {       
-        hTrack[channelID] = moment();
-        setTimeout(function() {
-            send(channelID, strings.misc.h, true);
-        }, config.options.hmessage * 1000);
-    }
-    else if (moment() - hTrack[channelID] >= config.options.htimeout * 1000) {
-        hTrack[channelID] = moment();
-        setTimeout(function() {
-            send(channelID, strings.misc.h, true);
-        }, config.options.hmessage * 1000);
-    }
-    else {
-        hTrack[channelID] = moment();
-    }
-}
-
-/*
- * Sends a message to a channel on Discord.
- * @param  id       ID of the channel to send to.
- * @param  message  String message to send.
- * @param  typing   Whether the typing delay should be added.
- */
-function send(id, message, typing) {
-    var channel = channelIDToName(id);
-
-    var msg = {
-        "to": id,
-        "message": message
-    };
-
-    if (typing) {
-        bot.simulateTyping(id);
-        setTimeout(function() {
-            console.log(util.format(
-                strings.debug.message,
-                channel,
-                message
-            ));
-            bot.sendMessage(msg, function(err) {
-            	if (err != undefined) {
-	            	console.log(strings.debug.failedm);
-	            	send(id, message, typing);
-	            }
-            });
-        }, config.options.typetime * 1000); 
-    }
-    else {
-        console.log(util.format(
-            strings.debug.message,
-            channel,
-            message
-        ));
-        bot.sendMessage(msg, function(err) {
-        	if (err != undefined) {
-            	console.log(strings.debug.failedm);
-            	send(id, message, typing);
-            }
-        });
-    }
-}
-
-/*
- * Sends a message with image to a channel on Discord.
- * @param  id        ID of the channel to send to.
- * @param  message   String message to send.
- * @param  file      Path to the image file.
- * @param  filename  Name of the image as seeon on Discord.
- * @param  typing    Whether the typing delay should be added.
- * @param  del       Whether the file will be deleted after embedding.
- */
-function embed(id, message, file, filename, typing, del) {
-    var channel = channelIDToName(id);
-
-    var msg = {
-        "to": id,
-        "file": file,
-        "filename": filename,
-        "message": message
-    };
-
-    if (typing) {
-        setTimeout(function() {
-            console.log(util.format(
-                strings.debug.embed,
-                channel,
-                message,
-                msg.filename,
-                msg.file
-            ));
-            bot.uploadFile(msg);
-
-            if (del && fs.existsSync(file)) {
-                fs.unlinkSync(file);
-            }
-        }, config.options.typetime * 1000); 
-    }
-    else {
-        console.log(util.format(
-            strings.debug.embed,
-            channel,
-            message,
-            msg.filename,
-            msg.file
-        ));
-        bot.uploadFile(msg);
-
-        if (del && fs.existsSync(file)) {
-            fs.unlinkSync(file);
-        }   
-    }
-}
-
-/*
- * Adds a reaction to a message on Discord.
- * @param  channelID  ID of the channel.
- * @param  messageID  ID of the message.
- * @param  reaction   String of the react to use.
- */
-function react(channelID, messageID, reaction) {
-	var input = {
-		"channelID": channelID,
-		"messageID": messageID,
-		"reaction": reaction
-	};
-
-	bot.addReaction(input, function(err) {
-    	if (err != undefined) {
-        	console.log(strings.debug.failedr);
-        	react(channelID, messageID, reaction);
-        }
-    });
-}
-
-/*
- * Parses whether a certain ID was mentioned.
- * @param  id    ID to check the mentions of.
- * @param  data  Discord's event data.
- * @return       Boolean whether the ID was mentioned.
- */
-function isMentioned(id, data) {
-    var mentioned = false;
-    data.d.mentions.forEach(function(m) {
-        if (m.id == id)
-            mentioned = true;
-    });
-    return mentioned;
-}
-
-/*
- * Processes the channel whitelist and checks if the channel is whitelisted.
- * @param  channelID  ID of the channel to check whitelist of.
- * @return            Boolean whether the channel is whitelisted.
- */
-function processWhitelist(channelID) {
-    var okay = false;
-    channels.list.forEach(function(c) {
-        if (c.id == channelID && c.learn)
-            okay = true;
-    });
-    return okay;
-}
-
-function processBlacklist(userID) {
-    var okay = true;
-    if (blacklist[userID] != undefined) {
-        okay = false;
-    };
-    return okay;
-}
-
-function processIgnore(userID) {
-    var okay = true;
-    if (ignore[userID] != undefined) {
-        okay = false;
-    };
-    return okay;
-}
-
-function setMood(name, callback) {
-    tradfri.moods.forEach(function(m) { 
-        if (m.name == name) {
-            refreshTradfriDevices(function(result) {
-                if (result) {
-                    m.devices.forEach(function(d1) {
-                        devices.forEach(function(d2) {
-                            if (d1.name == d2.name) {
-                                setBulb(d1.config, d2.id);
-                            }
-                        });
-                    });
-                    callback(true);
-                }
-                else {
-                    callback(false);
-                }
-            });
-        }
-    }); 
-}
-
-function setBulb(bulb, id) {
-    var newBulb = normalize(bulb);  
-
-    hub.setDeviceState(id, newBulb).then((result) => {
-
-    }).catch((error) => {
-        console.log(strings.debug.tradfri.errorB);
-        setBulb(bulb, id);
-    });
-}
-
-function normalize(bulb) {  
-    var newBulb = Object.assign({}, bulb);
-    if (newBulb.colorX != undefined) {
-        newBulb.colorX = Math.round(newBulb.colorX * 65535);
-    }
-    if (newBulb.colorY != undefined) {
-        newBulb.colorY = Math.round(newBulb.colorY * 65535);
-    }
-    if (newBulb.brightness != undefined) {
-        newBulb.brightness = Math.round(newBulb.brightness * 254);
-    }
-    return newBulb;
-}
-
-function getLocationInfo(callback, lat, lng) {
-	var xhr = new XMLHttpRequest();
-
-    xhr.open("GET", util.format(
-    	config.options.geourl,
-    	lat,
-    	lng,
-    	blitzor.auth
-    ), true);
-
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var response = JSON.parse(xhr.responseText);
-
-            var locInfo = {};
-            locInfo.town = "Unknown";
-            locInfo.country = "Unknown";
-
-            if (response.error != undefined && response.error.code == "008") {
-            	if (response.suggestion != undefined) {
-            		var north = response.suggestion.north;
-            		var south = response.suggestion.south;
-
-            		if (south != undefined && north != undefined && south.distance != undefined && north.distance != undefined) {
-            			if (north.distance < south.distance) {
-            				if (north.city != undefined)
-            					locInfo.town = north.city;
-            				if (north.prov != undefined)
-            					locInfo.country = north.prov;
-            			}
-            			else {
-            				if (south.city != undefined)
-            					locInfo.town = south.city;
-            				if (south.prov != undefined)
-            					locInfo.country = south.prov;
-            			}
-            		}
-            		else if (north != undefined && north.city != undefined) {
-            			locInfo.town = north.city;
-        				if (north.prov != undefined)
-        					locInfo.country = north.prov;
-            		}
-            		else if (south != undefined && south.city != undefined) {
-            			locInfo.town = south.city;
-        				if (south.prov != undefined)
-        					locInfo.country = south.prov;
-            		}
-            	}
-            }
-            else {
-            	if (response.city != undefined)
-            		locInfo.town = response.city;
-            	if (response.prov != undefined)
-            		locInfo.country = response.prov;
-            }
-            var locs = locInfo.town.split(" / ");
-            if (locs.length > 1)
-            	locInfo.town = locs[1];
-            locInfo.town = toUpper(locInfo.town);
-
-            //console.log(response);
-
-            callback(locInfo);
-        }
-    }
-
-    xhr.send();
-}
-
-function degToRad(deg) {
-    return deg * (Math.PI/180);
-}
-
-function radToDeg(rad) {
-    return rad * (180/Math.PI);
-}
-
-function earthDistance(lat1, lon1, lat2, lon2) {
-	var R = 6371;
-	var dLat = degToRad(lat2-lat1);
-	var dLon = degToRad(lon2-lon1); 
-	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-			Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * 
-			Math.sin(dLon/2) * Math.sin(dLon/2); 
-	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-	var d = R * c;
-	return d;
-}
-
-function earthBearing(lat1, lon1, lat2, lon2) {
-    var dLon = degToRad(lon2-lon1);
-    var y = Math.sin(dLon) * Math.cos(degToRad(lat2));
-    var x = Math.cos(degToRad(lat1)) * Math.sin(degToRad(lat2)) -
-    		Math.sin(degToRad(lat1)) * Math.cos(degToRad(lat2)) * 
-    		Math.cos(dLon);
-    var brng = radToDeg(Math.atan2(y, x));
-    return ((brng + 360) % 360);
-}
-
-function connectBlitzortung(reconnect) {
-	var from = {};
-	from.latitude = blitzor.location.latitude + blitzor.expand;
-	from.longitude = blitzor.location.longitude - blitzor.expand;
-	var to = {};
-	to.latitude = blitzor.location.latitude - blitzor.expand;
-	to.longitude = blitzor.location.longitude + blitzor.expand;
-
-	if (reconnect && blitzor.debugconnect)
-    	console.log(util.format(
-    		strings.debug.blitzor.reconnect,
-    		from.latitude,
-    		to.latitude,
-    		from.longitude,
-    		to.longitude
-    	));
-	else if (!reconnect)
-    	console.log(util.format(
-    		strings.debug.blitzor.connect,
-    		from.latitude,
-    		to.latitude,
-    		from.longitude,
-    		to.longitude
-    	));
-
-	blitzorws = new blitzorapi.Client({
-	    make(address) {
-	        return new WebSocket(address);
-	    }
-	});
-
-	blitzorws.connect();
-	blitzorws.on("error", console.error);
-	blitzorws.on("connect", () => {
-	    blitzorws.setIncludeDetectors(false);
-	    blitzorws.setArea(from, to);
-	});
-	blitzorws.on("data", strike => {
-		var distance = earthDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
-
-		if (distance < lightningNew) {
-			lightningNew = distance;
-			lightningLat = strike.location.latitude;
-			lightningLng = strike.location.longitude;
-
-			if (!blitzor.debugstrikes)
-				console.log(util.format(
-		            strings.debug.blitzor.strike,
-		            distance,
-		            strike.location.latitude,
-		            strike.location.longitude                
-		        ));
-		}
-		if (blitzor.debugstrikes)
-			console.log(util.format(
-	            strings.debug.blitzor.strike,
-	            distance,
-	            strike.location.latitude,
-	            strike.location.longitude                
-	        ));
-	});
-
-	lightningReconnect = setTimeout(function() {
-    	blitzorws.close();
-		connectBlitzortung(true);
-	}, blitzor.reconnect * 1000);
-
-	if (reconnect && blitzor.debugconnect)
-    	console.log(strings.debug.blitzor.done);
-   	else if (!reconnect)
-    	console.log(strings.debug.blitzor.done);
-}
-
-function connectChase(reconnect) {
-
-    var payload = {
-            "key": varipass.main.key,
-            "action": "read",
-            "id": varipass.main.ids.location
-        };
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", config.options.varipassurl, true);
-    xhr.setRequestHeader("Content-type", "application/json");
-
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var vpData = JSON.parse(xhr.responseText);
-
-            var values = vpData.value.split("\\n");
-            chaseThoriLat = 0.0;
-            chaseThoriLng = 0.0;
-            values.forEach(function(v) {
-            	var parts = v.split(":");
-            	if (parts[0] == "lat")
-            		chaseThoriLat = parseFloat(parts[1]);
-            	else if (parts[0] == "lng")
-            		chaseThoriLng = parseFloat(parts[1]);
-            });
-
-			var from = {};
-			from.latitude = chaseThoriLat + blitzor.expand;
-			from.longitude = chaseThoriLng - blitzor.expand;
-			var to = {};
-			to.latitude = chaseThoriLat - blitzor.expand;
-			to.longitude = chaseThoriLng + blitzor.expand;
-
-			if (reconnect && blitzor.debugconnect)
-		    	console.log(util.format(
-		    		strings.debug.chase.reconnect,
-		    		from.latitude,
-		    		to.latitude,
-		    		from.longitude,
-		    		to.longitude
-		    	));
-			else if (!reconnect)
-		    	console.log(util.format(
-		    		strings.debug.chase.connect,
-		    		from.latitude,
-		    		to.latitude,
-		    		from.longitude,
-		    		to.longitude
-		    	));
-
-			chasews = new blitzorapi.Client({
-			    make(address) {
-			        return new WebSocket(address);
-			    }
-			});
-
-			chasews.connect();
-			chasews.on("error", console.error);
-			chasews.on("connect", () => {
-			    chasews.setIncludeDetectors(false);
-			    chasews.setArea(from, to);
-			});
-			chasews.on("data", strike => {
-				var distance = earthDistance(chaseThoriLat, chaseThoriLng, strike.location.latitude, strike.location.longitude);
-
-				if (distance < chaseNew) {
-					chaseNew = distance;
-					chaseLat = strike.location.latitude;
-					chaseLng = strike.location.longitude;
-
-					if (!blitzor.debugstrikes)
-						console.log(util.format(
-				            strings.debug.chase.strike,
-				            distance,
-				            strike.location.latitude,
-				            strike.location.longitude                
-				        ));
-				}
-				if (blitzor.debugstrikes)
-					console.log(util.format(
-			            strings.debug.chase.strike,
-			            distance,
-			            strike.location.latitude,
-			            strike.location.longitude                
-			        ));
-			});
-
-			chaseReconnect = setTimeout(function() {
-		    	chasews.close();
-				connectChase(true);
-			}, blitzor.chase * 1000);
-
-			if (reconnect && blitzor.debugconnect)
-		    	console.log(strings.debug.chase.done);
-		   	else if (!reconnect)
-		    	console.log(strings.debug.chase.done);	    
-        }
-    }
-    xhr.onerror = function(err) {
-		connectChase(true);
-        xhr.abort();
-    }
-    xhr.ontimeout = function() {
-		connectChase(true);
-        xhr.abort();
-    }
-
-    xhr.send(JSON.stringify(payload));
-}
-
-function saveEEG() {
-    var file;
-
-    if (eegTable.length > 0) {
-        file = fs.createWriteStream(config.eeg.basicpath);
-
-        file.on("error", function(err) {
-            console.log(util.format(
-                strings.debug.eegerror, 
-                err
-            ));
-            return;
-        });
-
-        file.write(strings.misc.eeg.basic.title, "utf-8");
-        eegTable.forEach(function(e) {
-            file.write(util.format(
-                strings.misc.eeg.basic.values,
-                e.time,
-                e.battery,
-                e.signal
-            ), "utf-8");
-        });
-
-        file.end();
-
-        var file = fs.createWriteStream(config.eeg.rawpath);
-
-        file.on("error", function(err) {
-            console.log(util.format(
-                strings.debug.eegerror, 
-                err
-            ));
-            return;
-        });
-
-        file.write(strings.misc.eeg.raw.title, "utf-8");
-        eegTable.forEach(function(e) {
-            file.write(util.format(
-                strings.misc.eeg.raw.values,
-                e.time,
-                e.attention,
-                e.meditation,
-                e.waves[0],
-                e.waves[1],
-                e.waves[2],
-                e.waves[3],
-                e.waves[4],
-                e.waves[5],
-                e.waves[6],
-                e.waves[7],
-                e.sumlow,
-                e.sumhigh
-            ), "utf-8");
-        });
-
-        file.end();
-    }
-
-    if (eegTableEMA.length > 0) {
-        var file = fs.createWriteStream(config.eeg.emapath);
-
-        file.on("error", function(err) {
-            console.log(util.format(
-                strings.debug.eegerror, 
-                err
-            ));
-            return;
-        });
-
-        file.write(strings.misc.eeg.ema.title, "utf-8");
-        eegTableEMA.forEach(function(e) {
-            file.write(util.format(
-                strings.misc.eeg.ema.values,
-                e.time,
-                e.attention,
-                e.meditation,
-                e.waves[0],
-                e.waves[1],
-                e.waves[2],
-                e.waves[3],
-                e.waves[4],
-                e.waves[5],
-                e.waves[6],
-                e.waves[7],
-                e.sumlow,
-                e.sumhigh
-            ), "utf-8");
-        });
-
-        file.end();
-    }
-}
-
-/*
- * Opens brain data from a file.
- * @param  name  Name of the brain.
- */
-function openBrain(name) {
-    var path = config.brain.path + name;
-
-    if (fs.existsSync(path)) {
-        readline.createInterface({
-            "input": fs.createReadStream(path),
-            "terminal": false
-        }).on("line", function(line) {
-            if (config.brain.cleanbrain) {
-                var newLine = cleanMessage(line);
-                if (isMessageNotEmpty(newLine)) {
-                    messages[name].push(newLine);
-                    brains[name].addMass(newLine);
-                }
-            }
-            else {
-                messages[name].push(line);
-                brains[name].addMass(line);
-            }
-        }).on("close", function() {
-            brains[name].loaded = true;
-        });
-    }
-}
-
-/*
- * Saves brain data to a file.
- * @param  name  Name of the brain.
- */
-function saveBrain(name) {
-    if (messages[name].length > config.brain.maxlines)
-        messages[name].splice(0, messages[name].length - config.brain.maxlines);
-
-    var path = config.brain.path + name;
-
-    var file = fs.createWriteStream(path + ".new");
-
-    file.on("error", function(err) {
-        console.log(util.format(
-            strings.debug.brain.error, 
-            err
-        ));
-    });
-
-    messages[name].forEach(function(m) {
-        file.write(m + "\n", "utf-8");
-    });
-
-    file.end();
-
-    setTimeout(function() {
-        fs.rename(path + ".new", path, function(e) {
-        });
-    }, 1000);       
-}
-
-/*
- * Saves all brain data.
- */
-function saveAllBrains() {
-    Object.keys(brains).forEach(function(b) {
-        saveBrain(b);
-    });
-}
-
 function startupProcedure() {
     startTime = new Date();
     console.log(strings.debug.started);
@@ -3789,10 +2624,10 @@ function loadAnnouncements() {
 
         var date = new Date(partsDate[0], parseInt(partsDate[1]) - 1, partsDate[2], partsTime[0], partsTime[1], 0, 0);
         if (config.options.debuggotn)
-	        console.log(util.format(
-	            strings.debug.announcements.item,
-	            date
-	        ));
+            console.log(util.format(
+                strings.debug.announcements.item,
+                date
+            ));
 
         // Long air-time announcement.
         var jobLong = new CronJob(new Date(date - long), function() {
@@ -3822,7 +2657,7 @@ function loadAnnouncements() {
 
         // Now air-time announcement.
         var jobNow = new CronJob(new Date(date), function() {
-        		isLive = true;
+                isLive = true;
 
                 send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.nowA, true);
                 send(channelNameToID(config.options.channels.announceB), util.format(
@@ -3851,197 +2686,9 @@ function loadAnnouncements() {
     });
 
     console.log(util.format(
-    	strings.debug.announcements.done,
-    	jobsGOTN.length
+        strings.debug.announcements.done,
+        jobsGOTN.length
     ));
-}
-
-/*
- * Processes the phase data for announcements.
- */
-function processPhases() {
-    phases.forEach(function(p) {
-        var date = new Date(p.date + " " + p.time);
-        var message;
-        if (config.options.debugphase)
-	        console.log(util.format(
-	            strings.debug.phases.item,
-	            date,
-	            p.phase
-	        ));
-
-        if (p.phase == config.options.fullmoon) {
-            message = util.format(
-                strings.announcements.phases.full, 
-                getPhaseString(p.phase, 0)
-            );
-        }
-        else {
-            message = util.format(
-                strings.announcements.phases.else, 
-                getPhaseString(p.phase, 0)
-            );
-        }
-
-        var job = new CronJob(date, function() {
-                send(channelNameToID(config.options.channels.phases), message, true);
-            }, function () {}, true);
-        jobsPhases.push(job);
-    });
-}
-
-/*
- * Called if phases were successfully loaded.
- */
-function phaseDone(done) {
-	clearTimeout(phaseTimeout);
-
-    if (done) {
-        fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
-        processPhases();
-        console.log(util.format(
-        	strings.debug.phases.done,
-    		jobsPhases.length
-        ));
-    }
-    else {
-        apifail = true;
-
-        if (fs.existsSync(config.options.phasepath)) {
-            console.log(strings.debug.phases.file);     
-            phases = JSON.parse(fs.readFileSync(config.options.phasepath, "utf8"));
-            processPhases();
-	        console.log(util.format(
-	        	strings.debug.phases.filed,
-	    		jobsPhases.length
-	        ));
-        }
-        else {
-            filefail = true;
-            console.log(strings.debug.phases.no);
-        }
-    }
-
-    loadBrain();
-}
-
-/*
- * Loads all moon phases from web.
- */
-function loadPhases() {
-    console.log(strings.debug.phases.load);
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", config.options.phaseurl, true);
-
-
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var response = JSON.parse(xhr.responseText);
-            phases = response.phasedata;
-
-            phaseDone(true);
-        }
-    }
-    xhr.onerror = function(err) {
-        console.log(util.format(
-            strings.debug.phases.error,
-            err.target.status
-        ));
-
-        xhr.abort();
-        phaseDone(false);
-    }
-    xhr.ontimeout = function() {
-        console.log(strings.debug.phases.timeout);
-
-        xhr.abort();
-        phaseDone(false);
-    }
-
-    xhr.send();
-
-    phaseTimeout = setTimeout(function() {
-        console.log(strings.debug.phases.timeout);
-
-        xhr.abort();
-        phaseDone(false);
-    }, config.options.phasetimeout * 1000);
-}
-
-/*
- * Loads the brain data, or creates new.
- */
-function loadBrain() {
-    console.log(strings.debug.brain.start);
-
-    channels.list.forEach(function(c) {
-        if (brains[c.brain] == undefined) {
-            brains[c.brain] = new jsmegahal(config.brain.markov, config.brain.default, config.brain.maxloop);
-        }
-        if (messages[c.brain] == undefined) {
-            messages[c.brain] = [];
-        }
-    });
-    console.log(util.format(
-        strings.debug.brain.prog,
-        brainProg,
-        Object.keys(brains).length
-    ));
-
-    Object.keys(brains).forEach(function(b) {
-        if (fs.existsSync(config.brain.path + b)) {
-            if (config.brain.debug)
-                console.log(util.format(
-                    strings.debug.brain.old,
-                    b
-                ));
-            openBrain(b);
-            if (config.brain.debug)
-                console.log(util.format(
-                    strings.debug.brain.done,
-                    b
-                ));
-        }
-        else {
-            saveBrain(b);
-            console.log(util.format(
-                strings.debug.brain.new,
-                b
-            ));
-            b.loaded = true;
-
-        }
-    }); 
-
-    loadBrainWait();
-}
-
-function loadBrainWait() {
-    var counter = 0;
-    Object.keys(brains).forEach(function(b) {
-        if (brains[b].loaded)
-            counter++;
-    });
-
-    if (counter > brainProg) {
-        brainProg = counter;
-        console.log(util.format(
-            strings.debug.brain.prog,
-            brainProg,
-            Object.keys(brains).length
-        ));        
-    }
-
-    if (counter == Object.keys(brains).length) {
-        console.log(strings.debug.brain.end);
-        loadBot();
-    }
-    else {
-        setTimeout(function() {
-            loadBrainWait();
-        }, 100);
-    }
 }
 
 /*
@@ -4107,15 +2754,15 @@ function loadANN() {
         console.log(strings.debug.ann.done);
     }
     else {
-    	annStatus.enabled = true;
-    	annStatus.message = "";
+        annStatus.enabled = true;
+        annStatus.message = "";
         fs.writeFileSync(config.ann.path, JSON.stringify(annStatus), "utf-8");
         console.log(strings.debug.ann.new);
     }
 }
 
 /*
- * Loads the blacklist toggle data, or creates new.
+ * Loads the blacklist data, or creates new.
  */
 function loadBlacklist() {
     blacklist = {};
@@ -4132,7 +2779,7 @@ function loadBlacklist() {
 }
 
 /*
- * Loads the ignore toggle data, or creates new.
+ * Loads the ignore data, or creates new.
  */
 function loadIgnore() {
     ignore = {};
@@ -4174,6 +2821,308 @@ function loadEEG() {
 }
 
 /*
+ * Loads the timezone data.
+ */
+function loadTimezones() {
+    console.log(strings.debug.timezones.load);
+
+    var timezoneData = require("./node_modules/moment-timezone/data/packed/latest.json");
+    moment.tz.load(timezoneData);
+
+    console.log(strings.debug.timezones.done);
+}
+
+/*
+ * Initializes the Tradfri client.
+ */
+function loadTradfri() {
+    hub = tradfrilib.create({
+        "coapClientPath": config.options.coappath,
+        "identity":       dtls.identity,
+        "preSharedKey":   dtls.preSharedKey,
+        "hubIpAddress":   dtls.hubIpAddress
+    });
+}
+
+/*
+ * Starts the REST API server.
+ */
+function loadServer() {
+    server = http.createServer(processRequest).listen(config.options.serverport);
+}
+
+/*
+ * Loads all moon phases.
+ */
+function loadPhases() {
+    console.log(strings.debug.phases.load);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", config.options.phaseurl, true);
+
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+            phases = response.phasedata;
+
+            phaseDone(true);
+        }
+    }
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.phases.error,
+            err.target.status
+        ));
+
+        xhr.abort();
+        phaseDone(false);
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.phases.timeout);
+
+        xhr.abort();
+        phaseDone(false);
+    }
+
+    xhr.send();
+
+    phaseTimeout = setTimeout(function() {
+        console.log(strings.debug.phases.timeout);
+
+        xhr.abort();
+        phaseDone(false);
+    }, config.options.phasetimeout * 1000);
+}
+
+/*
+ * Called after phase loading was performed.
+ * @param  done  Whether the loading was successful.
+ */
+function phaseDone(done) {
+    clearTimeout(phaseTimeout);
+
+    if (done) {
+        fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
+        processPhases();
+        console.log(util.format(
+            strings.debug.phases.done,
+            jobsPhases.length
+        ));
+    }
+    else {
+        phaseApiFail = true;
+
+        if (fs.existsSync(config.options.phasepath)) {
+            console.log(strings.debug.phases.file);     
+            phases = JSON.parse(fs.readFileSync(config.options.phasepath, "utf8"));
+            processPhases();
+            console.log(util.format(
+                strings.debug.phases.filed,
+                jobsPhases.length
+            ));
+        }
+        else {
+            phaseFileFail = true;
+            console.log(strings.debug.phases.no);
+        }
+    }
+
+    loadBrain();
+}
+
+/*
+ * Processes the phase data for announcements.
+ */
+function processPhases() {
+    phases.forEach(function(p) {
+        var date = new Date(p.date + " " + p.time);
+        var message;
+        if (config.options.debugphase)
+            console.log(util.format(
+                strings.debug.phases.item,
+                date,
+                p.phase
+            ));
+
+        if (p.phase == config.options.fullmoon) {
+            message = util.format(
+                strings.announcements.phases.full, 
+                getPhaseString(p.phase, 0)
+            );
+        }
+        else {
+            message = util.format(
+                strings.announcements.phases.else, 
+                getPhaseString(p.phase, 0)
+            );
+        }
+
+        var job = new CronJob(date, function() {
+                send(channelNameToID(config.options.channels.phases), message, true);
+            }, function () {}, true);
+        jobsPhases.push(job);
+    });
+}
+
+/*
+ * Loads the brain data, or creates new.
+ */
+function loadBrain() {
+    console.log(strings.debug.brain.start);
+
+    channels.list.forEach(function(c) {
+        if (brains[c.brain] == undefined) {
+            brains[c.brain] = new jsmegahal(config.brain.markov, config.brain.default, config.brain.maxloop);
+        }
+        if (messages[c.brain] == undefined) {
+            messages[c.brain] = [];
+        }
+    });
+    console.log(util.format(
+        strings.debug.brain.prog,
+        brainProg,
+        Object.keys(brains).length
+    ));
+
+    Object.keys(brains).forEach(function(b) {
+        if (fs.existsSync(config.brain.path + b)) {
+            if (config.brain.debug)
+                console.log(util.format(
+                    strings.debug.brain.old,
+                    b
+                ));
+            openBrain(b);
+            if (config.brain.debug)
+                console.log(util.format(
+                    strings.debug.brain.done,
+                    b
+                ));
+        }
+        else {
+            saveBrain(b);
+            console.log(util.format(
+                strings.debug.brain.new,
+                b
+            ));
+            b.loaded = true;
+
+        }
+    }); 
+
+    loadBrainWait();
+}
+
+/*
+ * Waits until all the brains were loaded.
+ */
+function loadBrainWait() {
+    var counter = 0;
+    Object.keys(brains).forEach(function(b) {
+        if (brains[b].loaded)
+            counter++;
+    });
+
+    if (counter > brainProg) {
+        brainProg = counter;
+        console.log(util.format(
+            strings.debug.brain.prog,
+            brainProg,
+            Object.keys(brains).length
+        ));        
+    }
+
+    if (counter == Object.keys(brains).length) {
+        console.log(strings.debug.brain.end);
+        loadBot();
+    }
+    else {
+        setTimeout(function() {
+            loadBrainWait();
+        }, 100);
+    }
+}
+
+/*
+ * Opens brain data from a file.
+ * @param  name  Name of the brain.
+ */
+function openBrain(name) {
+    var path = config.brain.path + name;
+
+    if (fs.existsSync(path)) {
+        readline.createInterface({
+            "input": fs.createReadStream(path),
+            "terminal": false
+        }).on("line", function(line) {
+            if (config.brain.cleanbrain) {
+                var newLine = cleanMessage(line);
+                if (isMessageNotEmpty(newLine)) {
+                    messages[name].push(newLine);
+                    brains[name].addMass(newLine);
+                }
+            }
+            else {
+                messages[name].push(line);
+                brains[name].addMass(line);
+            }
+        }).on("close", function() {
+            brains[name].loaded = true;
+        });
+    }
+}
+
+/*
+ * Loops to continuously save brain data.
+ */
+function loopBrainSave() {
+    if (!rebooting)
+        saveAllBrains();
+
+    setTimeout(loopBrainSave, config.brain.saveloop * 1000);
+}
+
+/*
+ * Saves all brain data.
+ */
+function saveAllBrains() {
+    Object.keys(brains).forEach(function(b) {
+        saveBrain(b);
+    });
+}
+
+/*
+ * Saves brain data to a file.
+ * @param  name  Name of the brain.
+ */
+function saveBrain(name) {
+    if (messages[name].length > config.brain.maxlines)
+        messages[name].splice(0, messages[name].length - config.brain.maxlines);
+
+    var path = config.brain.path + name;
+
+    var file = fs.createWriteStream(path + ".new");
+
+    file.on("error", function(err) {
+        console.log(util.format(
+            strings.debug.brain.error, 
+            err
+        ));
+    });
+
+    messages[name].forEach(function(m) {
+        file.write(m + "\n", "utf-8");
+    });
+
+    file.end();
+
+    setTimeout(function() {
+        fs.rename(path + ".new", path, function(e) {
+        });
+    }, 1000);       
+}
+
+/*
  * Loads the seizure data, or creates new and then cleans it up.
  */
 function loadSeizure() {
@@ -4197,76 +3146,65 @@ function loadSeizure() {
     fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
 }
 
-/*
- * Loads the timezone data.
- */
-function loadTimezones() {
-    console.log(strings.debug.timezones.load);
 
-    var timezoneData = require("./node_modules/moment-timezone/data/packed/latest.json");
-    moment.tz.load(timezoneData);
 
-    console.log(strings.debug.timezones.done);
-}
+/********************
+ * REST API REQUESTS
+ ********************/
 
 /*
- * Loads the Tradfri client.
+ * Catches and processes the REST API requests.
+ * @param  req  The request object, containing parameters.
+ * @param  res  The returned result. 
  */
-function loadTradfri() {
-    hub = tradfrilib.create({
-        "coapClientPath": config.options.coappath,
-        "identity":       dtls.identity,
-        "preSharedKey":   dtls.preSharedKey,
-        "hubIpAddress":   dtls.hubIpAddress
-    });
-}
+var processRequest = function(req, res) {
+    if (req.method == "GET") {
+        var query = url.parse(req.url, true).query;
+        if (query.key == httpkey.key)
+            switch (query.action) {
+                case "power":  processReqPower(query);  break;
+                case "motion": processReqMotion(query); break;
+                case "boot":   processReqBoot(query);   break;
+                case "eeg":    processReqEEG(query);    break;
+                case "celly":  processReqCelly(query);  break;
+                case "toggle": processReqToggle(query); break;
+                case "state":  processReqState(query);  break;
+                case "mood":   processReqMood(query);   break;
+                case "camera": processReqCamera(query); break;
+                case "stream": processReqStream(query); break;
+                case "reboot": processReqReboot(query); break;
+                case "reload": processReqReload(query); break;
+                case "waifu":  processReqWaifu(query);  break;
+            }       
+    }
 
-function refreshTradfriDevices(callback) {
-	if (tradfri.debug)
-    	console.log(strings.debug.tradfri.connect);
+    //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);
 
-    hub.getDevices().then((result) => {
-
-        devices = result.filter(function(d) {
-            return d.color != undefined;
-        });
-
-		if (tradfri.debug) {
-	        console.log(util.format(
-	            strings.debug.tradfri.done,
-	            devices.length
-	        ));
-
-            devices.forEach(function(d) {
-                console.log(util.format(
-                    strings.debug.tradfri.bulb,
-                    d.name,
-                    d.id,
-                    d.type,
-                    d.color,
-                    d.brightness,
-                    d.on
-                ));
-            });
+    if (query.key == httpkey.key) {
+        if (query.action == "ping") {
+            res.writeHead(200, [
+                ["Content-Type", "text/plain"], 
+                ["Content-Length", 4]
+                    ]);
+            res.write("pong");
         }
+        else {
+            res.writeHead(200, [
+                ["Content-Type", "text/plain"], 
+                ["Content-Length", 0]
+                    ]);
+            res.write("");
+        }
+    }
+    res.end();
+};
 
-        hubRetry = 0;
-        callback(true);
-
-    }).catch((error) => {
-        if (hubRetry >= tradfri.retries)
-        	console.log(util.format(
-        		strings.debug.tradfri.errorA,
-        		hubRetry
-        	));
-
-        hubRetry++;
-        callback(false);
-    });
-}
-
+/*
+ * Processes the "power" request.
+ * @param  data  Request parameters.
+ */
 function processReqPower(query) {
-	statusGlobal.sparkle = Math.floor((new Date()) / 1000);
+    statusGlobal.sparkle = Math.floor((new Date()) / 1000);
 
     if (query.power == "on") {
         if (powerStatus != null && powerStatus != 0)            
@@ -4291,6 +3229,10 @@ function processReqPower(query) {
     }
 }
 
+/*
+ * Processes the "motion" request.
+ * @param  data  Request parameters.
+ */
 function processReqMotion(query) {
     send(channelNameToID(config.options.channels.home), util.format(
             strings.announcements.motion,
@@ -4302,9 +3244,13 @@ function processReqMotion(query) {
         });
 }
 
+/*
+ * Processes the "boot" request.
+ * @param  data  Request parameters.
+ */
 function processReqBoot(query) {
     if (query.device != undefined) {
-    	var now = new Date();
+        var now = new Date();
         var momentTime = moment.tz(now, "UTC");
         send(channelNameToID(config.options.channels.debug), util.format(
                 strings.announcements.boot,
@@ -4315,8 +3261,12 @@ function processReqBoot(query) {
     }
 }
 
+/*
+ * Processes the "eeg" request.
+ * @param  data  Request parameters.
+ */
 function processReqEEG(query) {
-	statusGlobal.lulu = Math.floor((new Date()) / 1000);
+    statusGlobal.lulu = Math.floor((new Date()) / 1000);
 
     var w;
     var alpha = parseFloat(1.0 / eegConfig.ema);
@@ -4393,23 +3343,31 @@ function processReqEEG(query) {
     eegVaripassWrite();
 }
 
+/*
+ * Processes the "celly" request.
+ * @param  data  Request parameters.
+ */
 function processReqCelly(query) {
-	delete query.key;
-	delete query.action;
+    delete query.key;
+    delete query.action;
 
-	var message = strings.misc.celly.messageA;
-	Object.keys(query).forEach(function(q) {
-		message += util.format(
+    var message = strings.misc.celly.messageA;
+    Object.keys(query).forEach(function(q) {
+        message += util.format(
             strings.misc.celly.messageB,
             q,
             query[q]
         );
     });
-	message += strings.misc.celly.messageC;
+    message += strings.misc.celly.messageC;
 
-	send(channelNameToID(config.options.channels.debug), message, false);
+    send(channelNameToID(config.options.channels.debug), message, false);
 }
 
+/*
+ * Processes the "toggle" request.
+ * @param  data  Request parameters.
+ */
 function processReqToggle(query) {
     if (query.bulbs != undefined) { 
         refreshTradfriDevices(function(result) {
@@ -4438,10 +3396,14 @@ function processReqToggle(query) {
     }
 }
 
+/*
+ * Processes the "state" request.
+ * @param  data  Request parameters.
+ */
 function processReqState(query) {
     if (query.bulbs != undefined && query.state != undefined) {
         refreshTradfriDevices(function(result) {
-        	if (result) {
+            if (result) {
                 var found = false;
                 query.bulbs.split(",").forEach(function(b) {
                     devices.forEach(function(d) {  
@@ -4473,6 +3435,10 @@ function processReqState(query) {
     }
 }
 
+/*
+ * Processes the "mood" request.
+ * @param  data  Request parameters.
+ */
 function processReqMood(query) {
     if (query.mood != undefined) {
         var found = false;
@@ -4497,6 +3463,10 @@ function processReqMood(query) {
     }
 }
 
+/*
+ * Processes the "camera" request.
+ * @param  data  Request parameters.
+ */
 function processReqCamera(query) {
     if (query.state != undefined) {
         if (query.state == "on") {
@@ -4520,6 +3490,10 @@ function processReqCamera(query) {
     }
 }
 
+/*
+ * Processes the "strean" request.
+ * @param  data  Request parameters.
+ */
 function processReqStream(query) {
     if (query.state != undefined) {
         if (query.state == "start") {
@@ -4543,6 +3517,10 @@ function processReqStream(query) {
     }
 }
 
+/*
+ * Processes the "reboot" request.
+ * @param  data  Request parameters.
+ */
 function processReqReboot(query) {
     if (query.reboot != undefined) {
         if (query.reboot == httpkey.reboot) {
@@ -4567,11 +3545,19 @@ function processReqReboot(query) {
     }
 }
 
+/*
+ * Processes the "reload" request.
+ * @param  data  Request parameters.
+ */
 function processReqReload(query) {    
     reloadConfig();
     send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.reload.message, false);
 }
 
+/*
+ * Processes the "waifu" request.
+ * @param  data  Request parameters.
+ */
 function processReqWaifu(query) {
     if (query.url != undefined && query.channelid != undefined && query.userid != undefined && query.time != undefined && query.size != undefined) {
         send(query.channelid, util.format(
@@ -4590,7 +3576,7 @@ function processReqWaifu(query) {
         send(channelNameToID(config.options.channels.debug), util.format(
             strings.misc.ann.waifu.errorB,
             mention(config.options.adminid)
-        ), true);    	
+        ), true);       
     }
     else if (query.queue != undefined && query.channelid != undefined && query.userid != undefined) {
         send(query.channelid, util.format(
@@ -4601,203 +3587,17 @@ function processReqWaifu(query) {
     }
 }
 
-var processRequest = function(req, res) {
-    if (req.method == "GET") {
-        var query = url.parse(req.url, true).query;
-        if (query.key == httpkey.key)
-            switch (query.action) {
-                case "power":  processReqPower(query);  break;
-                case "motion": processReqMotion(query); break;
-                case "boot":   processReqBoot(query);   break;
-                case "eeg":    processReqEEG(query);    break;
-                case "celly":  processReqCelly(query);  break;
-                case "toggle": processReqToggle(query); break;
-                case "state":  processReqState(query);  break;
-                case "mood":   processReqMood(query);   break;
-                case "camera": processReqCamera(query); break;
-                case "stream": processReqStream(query); break;
-                case "reboot": processReqReboot(query); break;
-                case "reload": processReqReload(query); break;
-                case "waifu":  processReqWaifu(query);  break;
-            }       
-    }
 
-    //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);
 
-    if (query.key == httpkey.key) {
-    	if (query.action == "ping") {
-		    res.writeHead(200, [
-		        ["Content-Type", "text/plain"], 
-		        ["Content-Length", 4]
-		            ]);
-    		res.write("pong");
-    	}
-    	else {
-		    res.writeHead(200, [
-		        ["Content-Type", "text/plain"], 
-		        ["Content-Length", 0]
-		            ]);
-    		res.write("");
-    	}
-    }
-    res.end();
-};
-
-function eegVaripassWrite() {
-    var value;
-
-    if (eegConfig.type == "raw") {
-        switch (eegConfig.value) {
-            case "timestamp":  value = eegValues.time;       break;
-            case "battery":    value = eegValues.battery;    break;
-            case "signal":     value = eegValues.signal;     break;
-            case "attention":  value = eegValues.attention;  break;
-            case "meditation": value = eegValues.meditation; break;
-            case "wave0":      value = eegValues.waves[0];   break;
-            case "wave1":      value = eegValues.waves[1];   break;
-            case "wave2":      value = eegValues.waves[2];   break;
-            case "wave3":      value = eegValues.waves[3];   break;
-            case "wave4":      value = eegValues.waves[4];   break;
-            case "wave5":      value = eegValues.waves[5];   break;
-            case "wave6":      value = eegValues.waves[6];   break;
-            case "wave7":      value = eegValues.waves[7];   break;
-            case "sumlow":     value = eegValues.sumlow;     break;
-            case "sumhigh":    value = eegValues.sumhigh;    break;
-        }
-    }
-    else if (eegConfig.type == "ema") {
-        switch (eegConfig.value) {
-            case "timestamp":  value = eegValuesEMA.time;       break;
-            case "battery":    value = eegValuesEMA.battery;    break;
-            case "signal":     value = eegValuesEMA.signal;     break;
-            case "attention":  value = eegValuesEMA.attention;  break;
-            case "meditation": value = eegValuesEMA.meditation; break;
-            case "wave0":      value = eegValuesEMA.waves[0];   break;
-            case "wave1":      value = eegValuesEMA.waves[1];   break;
-            case "wave2":      value = eegValuesEMA.waves[2];   break;
-            case "wave3":      value = eegValuesEMA.waves[3];   break;
-            case "wave4":      value = eegValuesEMA.waves[4];   break;
-            case "wave5":      value = eegValuesEMA.waves[5];   break;
-            case "wave6":      value = eegValuesEMA.waves[6];   break;
-            case "wave7":      value = eegValuesEMA.waves[7];   break;
-            case "sumlow":     value = eegValuesEMA.sumlow;     break;
-            case "sumhigh":    value = eegValuesEMA.sumhigh;    break;
-        }
-    }
-
-    if (value != undefined) {
-        var payload = {
-                "key":    varipass.eeg.key,
-                "action": "write",
-                "id":     varipass.eeg.ids.eeg,
-                "value":  value
-            };
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", config.options.varipassurl, true);
-        xhr.setRequestHeader("Content-type", "application/json");
-
-        xhr.onerror = function(err) {
-            console.log(util.format(
-                strings.debug.varipass.error,
-                err.target.status
-            ));
-            xhr.abort();
-        }
-        xhr.ontimeout = function() {
-            console.log(strings.debug.varipass.timeout);
-            xhr.abort();
-        }
-
-        xhr.send(JSON.stringify(payload));
-    }
-}
-
-function eegVaripassEdit() {
-    var name = util.format(
-        strings.commands.eegset.varipassA,
-        eegConfig.type,
-        eegConfig.value
-    );
-
-    var description = strings.commands.eegset.varipassB;
-
-    if (eegConfig.type == "ema")
-        description += util.format(
-            strings.commands.eegset.varipassC,
-            eegConfig.ema
-        );
-
-    var payload = {
-            "key":    varipass.eeg.key,
-            "action": "edit",
-            "id":     varipass.eeg.ids.eeg,
-            "type":   "float",
-            "name":   name,
-            "description": description,
-            "unit":   "",
-            "graph":  true,
-            "perc":   false,
-            "max":    eegConfig.max,
-            "expire": eegConfig.expire
-        };
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", config.options.varipassurl, true);
-    xhr.setRequestHeader("Content-type", "application/json");
-
-    xhr.onerror = function(err) {
-        console.log(util.format(
-            strings.debug.varipass.error,
-            err.target.status
-        ));
-        xhr.abort();
-        eegVaripassEdit();
-    }
-    xhr.ontimeout = function() {
-        console.log(strings.debug.varipass.timeout);
-        xhr.abort();
-        eegVaripassEdit();
-    }
-
-    xhr.send(JSON.stringify(payload));
-}
-
-function seizureReboot(channelID, userID, message) {
-    rebooting = true;
-
-    Object.keys(nptoggles).forEach(function(n, i) {
-        if (nptoggles[n])
-            send(n, strings.announcements.npreboot, true);
-    });
-    send(channelNameToID(config.options.channels.debug), util.format(
-        strings.announcements.seizure.debug,
-        channelIDToName(channelID),
-        message
-    ), false);
-    send(channelID, util.format(
-        strings.announcements.seizure.reply,
-        mention(userID)
-    ), false);
-
-    var seizure = {};
-    seizure.channel = channelID;
-    seizure.user = userID;
-    fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
-
-    saveAllBrains();
-    blitzorws.close();
-
-    setTimeout(function() {
-        console.log(strings.debug.stopped);
-        process.exit();
-    }, config.options.reboottime * 1000);
-}
+/************************
+ * DISCORD FUNCTIONALITY
+ ************************/
 
 /*
- * Loads the discord bot.
+ * Loads the Discord bot.
  */
 function loadBot() {
+
     bot = new Discord.Client({
         "token": token.value,
         "autorun": true
@@ -4816,12 +3616,12 @@ function loadBot() {
         ));
         if (!started) {
             started = true;
-            if (apifail && filefail)
+            if (phaseApiFail && phaseFileFail)
                 send(channelNameToID(config.options.channels.debug), util.format(
                     strings.misc.filefail,
                     package.version
                 ), false);
-            else if (apifail)
+            else if (phaseApiFail)
                 send(channelNameToID(config.options.channels.debug), util.format(
                     strings.misc.apifail,
                     package.version
@@ -4874,10 +3674,10 @@ function loadBot() {
 
     bot.on("message", function(user, userID, channelID, message, data) {
 
-    	config.autoreact.channels.forEach(function(c, i) {
-    		if (c == channelID)
-    			react(channelID, data.d.id, config.autoreact.reacts[i]);
-    	});
+        config.autoreact.channels.forEach(function(c, i) {
+            if (c == channelID)
+                react(channelID, data.d.id, config.autoreact.reacts[i]);
+        });
 
         if (message[0] == config.options.commandsymbol) {
 
@@ -5062,165 +3862,1864 @@ function loadBot() {
     });
 }
 
-function loadServer() {
-    server = http.createServer(processRequest).listen(config.options.serverport);
+/*
+ * Sends a message to a channel on Discord.
+ * @param  id       ID of the channel to send to.
+ * @param  message  String message to send.
+ * @param  typing   Whether the typing delay should be added.
+ */
+function send(id, message, typing) {
+    var channel = channelIDToName(id);
+
+    var msg = {
+        "to": id,
+        "message": message
+    };
+
+    if (typing) {
+        bot.simulateTyping(id);
+        setTimeout(function() {
+            console.log(util.format(
+                strings.debug.message,
+                channel,
+                message
+            ));
+            bot.sendMessage(msg, function(err) {
+                if (err != undefined) {
+                    console.log(strings.debug.failedm);
+                    send(id, message, typing);
+                }
+            });
+        }, config.options.typetime * 1000); 
+    }
+    else {
+        console.log(util.format(
+            strings.debug.message,
+            channel,
+            message
+        ));
+        bot.sendMessage(msg, function(err) {
+            if (err != undefined) {
+                console.log(strings.debug.failedm);
+                send(id, message, typing);
+            }
+        });
+    }
+};
+
+/*
+ * Sends a large message to some chat using multiple messages. Used for lyrics and lists.
+ * @param  data     Data of the message.
+ * @param  list     List to be sent.
+ * @param  message  Initial message string.
+ * @param  format   Whether lyrics formatting should be used.
+ */
+function sendLarge(data, list, message, format) {
+
+    var length = message.length;
+    var multi = [];
+
+    list.forEach(function(l, i) {
+        var line = l;
+        if (format && line.length > 0) {
+            while (line[line.length - 1] == " ")
+                line = line.slice(0, -1);
+            line = config.options.lyricformat + line + config.options.lyricformat;
+        }
+        line += "\n";
+
+        if (length + line.length >= config.options.maxlength) {
+            multi.push(message);
+            length = line.length;
+            message = line;
+        }
+        else {
+            length += line.length;
+            message += line;
+        }
+    });
+
+    if (message != "")
+        multi.push(message);
+
+    multi.forEach(function(m, i){
+        setTimeout(function() {
+            send(data.channelID, m, true);
+        }, i * 1000);           
+    });
+};
+
+/*
+ * Sends a message with image to a channel on Discord.
+ * @param  id        ID of the channel to send to.
+ * @param  message   String message to send.
+ * @param  file      Path to the image file.
+ * @param  filename  Name of the image as seeon on Discord.
+ * @param  typing    Whether the typing delay should be added.
+ * @param  del       Whether the file will be deleted after embedding.
+ */
+function embed(id, message, file, filename, typing, del) {
+    var channel = channelIDToName(id);
+
+    var msg = {
+        "to": id,
+        "file": file,
+        "filename": filename,
+        "message": message
+    };
+
+    if (typing) {
+        setTimeout(function() {
+            console.log(util.format(
+                strings.debug.embed,
+                channel,
+                message,
+                msg.filename,
+                msg.file
+            ));
+            bot.uploadFile(msg);
+
+            if (del && fs.existsSync(file)) {
+                fs.unlinkSync(file);
+            }
+        }, config.options.typetime * 1000); 
+    }
+    else {
+        console.log(util.format(
+            strings.debug.embed,
+            channel,
+            message,
+            msg.filename,
+            msg.file
+        ));
+        bot.uploadFile(msg);
+
+        if (del && fs.existsSync(file)) {
+            fs.unlinkSync(file);
+        }   
+    }
+};
+
+/*
+ * Adds a reaction to a message on Discord.
+ * @param  channelID  ID of the channel.
+ * @param  messageID  ID of the message.
+ * @param  reaction   String of the react to use.
+ */
+function react(channelID, messageID, reaction) {
+    var input = {
+        "channelID": channelID,
+        "messageID": messageID,
+        "reaction": reaction
+    };
+
+    bot.addReaction(input, function(err) {
+        if (err != undefined) {
+            console.log(strings.debug.failedr);
+            react(channelID, messageID, reaction);
+        }
+    });
+};
+
+/*
+ * Executes an interraction command on one person or more people.
+ * @param  data  Data of the message.
+ */
+function doInterraction(data) {
+    if (!isplushie) {
+        if (data.data.d.mentions[0] != null) {
+            if (isMentioned(bot.id, data.data) && data.data.d.mentions.length == 1) {
+                if (data.command == "unplushie") {
+                    send(data.channelID, strings.commands[data.command].error, true);
+                }
+                else {
+                    if (data.command == "plushie")
+                        isplushie = true;
+
+                    if (data.command == "socks") {
+                        send(data.channelID, util.format(
+                            strings.commands[data.command].self,
+                            generateSock()
+                        ), true);
+                    }
+                    else {
+                        send(data.channelID, strings.commands[data.command].self, true);
+                    }
+                }
+            }
+            else {
+                for (i = 0; i < data.data.d.mentions.length; i++)
+                    if (bot.id == data.data.d.mentions[i].id)
+                        data.data.d.mentions.splice(i, 1);
+
+                if (data.data.d.mentions.length <= 1) {
+                    if (data.command == "socks") {
+                        send(data.channelID, util.format(
+                            strings.commands[data.command].single,
+                            mention(data.data.d.mentions[0].id),
+                            generateSock()
+                        ), true);                       
+                    }
+                    else {
+                        send(data.channelID, util.format(
+                            strings.commands[data.command].single, 
+                            mention(data.data.d.mentions[0].id)
+                        ), true);
+                    }
+                }
+                else {
+                    var mentions = "";
+                    var i;
+                    for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+                        mentions += mention(data.data.d.mentions[i].id);
+                        if (i < data.data.d.mentions.length - 2) {
+                            mentions += config.separators.list;
+                        }
+                    }
+                    mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
+
+                    if (data.command == "socks") {
+                        send(data.channelID, util.format(
+                            strings.commands[data.command].multiple,
+                            generateSocks(data.data.d.mentions.length),
+                            mentions
+                        ), true);
+                    }
+                    else {
+                        send(data.channelID, util.format(
+                            strings.commands[data.command].multiple,
+                            mentions
+                        ), true);
+                    }
+                }
+            }
+        }
+        else {
+            if (data.command == "socks") {
+                send(data.channelID, util.format(
+                    strings.commands[data.command].single,
+                    mention(data.userID),
+                    generateSock()
+                ), true);
+            }
+            else {
+                send(data.channelID, util.format(
+                    strings.commands[data.command].single, 
+                    mention(data.userID)
+                ), true);
+            }
+        }
+    }
+    else {
+        if (data.command == "unplushie" && isMentioned(bot.id, data.data)) {
+            isplushie = false;
+            send(data.channelID, util.format(
+                strings.commands[data.command].self, 
+                mention(data.userID)
+            ), true);
+        }
+        else
+            send(data.channelID, strings.commands["plushie"].error, true);
+    }
+};
+
+/*
+ * Executes a custom interraction command on one person or more people.
+ * @param  data  Data of the message.
+ * @param  index Index of the command.
+ */
+function doInterractionCustom(data, index) {
+    if (!isplushie) {
+        if (data.data.d.mentions[0] != null) {
+            if (isMentioned(bot.id, data.data) && data.data.d.mentions.length == 1) {
+                send(data.channelID, custom.list[index].strings.self, true);
+            }
+            else {
+                for (i = 0; i < data.data.d.mentions.length; i++)
+                    if (bot.id == data.data.d.mentions[i].id)
+                        data.data.d.mentions.splice(i, 1);
+
+                if (data.data.d.mentions.length <= 1) {
+                    send(data.channelID, util.format(
+                        custom.list[index].strings.single, 
+                        mention(data.data.d.mentions[0].id)
+                    ), true);
+                }
+                else {
+                    var mentions = "";
+                    var i;
+                    for (i = 0; i < data.data.d.mentions.length - 1; i++) {
+                        mentions += mention(data.data.d.mentions[i].id);
+                        if (i < data.data.d.mentions.length - 2) {
+                            mentions += config.separators.list;
+                        }
+                    }
+                    mentions += config.separators.lend + mention(data.data.d.mentions[i].id);
+
+                    send(data.channelID, util.format(
+                        custom.list[index].strings.multiple,
+                        mentions
+                    ), true);
+                }
+            }
+        }
+        else {
+            send(data.channelID, util.format(
+                custom.list[index].strings.single, 
+                mention(data.userID)
+            ), true);
+        }
+    }
+    else {
+        send(data.channelID, strings.commands["plushie"].error, true);
+    }
+};
+
+
+
+/*************************
+ * VARIPASS FUNCTIONALITY
+ *************************/
+
+/*
+ * Pulls all data from VariPass and does adequate processing.
+ */
+function statusVariPass() {
+    var payload = {
+            "key": varipass.main.key,
+            "action": "all"
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            statusGlobal.varipass = Math.floor((new Date()) / 1000);
+
+            var vpData = JSON.parse(xhr.responseText);
+
+            var timeOffset = Math.floor((new Date()) / 1000) - vpData.current;
+            statusGlobal.celly    = findVariable(vpData, varipass.main.ids.temperature).history[0].time + timeOffset;
+            statusGlobal.chryssy  = findVariable(vpData, varipass.main.ids.counts     ).history[0].time + timeOffset;
+            statusGlobal.dashie   = findVariable(vpData, varipass.main.ids.pm010      ).history[0].time + timeOffset;
+            statusGlobal.twilight = findVariable(vpData, varipass.main.ids.location   ).history[0].time + timeOffset;
+            
+            // Geiger Calculation
+            var vpDose = findVariable(vpData, varipass.main.ids.dose).history;
+            var vpDoseEMA = findVariable(vpData, varipass.main.ids.doseema).history;
+
+            if (!(vpTimeDose != undefined && vpDose[0].time <= vpTimeDose)) {
+                vpTimeDose = vpDose[0].time;
+
+                var alpha = parseFloat(1.0 / config.varipass.geiger.samples);
+                var value = alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value;
+                sendDoseEMA(value);
+
+                if (value <= config.varipass.geiger.okay) {
+                    if (doseWasWarned) {
+                        doseWasWarned = false;
+                        send(channelNameToID(config.options.channels.home), util.format(
+                            strings.announcements.varipass.doseokay,
+                            value.toFixed(4),
+                            config.varipass.geiger.okay
+                        ), false);
+                    }
+                }
+                else if (value >= config.varipass.geiger.warning) {
+                    if (!doseWasWarned) {
+                        doseWasWarned = true;
+                        send(channelNameToID(config.options.channels.home), util.format(
+                            strings.announcements.varipass.dosewarning,
+                            config.varipass.geiger.warning,
+                            value.toFixed(4)
+                        ), false);
+                    }
+                }
+            }
+
+            // Pressure Alerts
+            var vpPressure = findVariable(vpData, varipass.main.ids.pressure).history;
+
+            if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure)) {
+                vpTimePressure = vpPressure[0].time;
+
+                if (vpPressure[1].value != undefined) {
+                    if (vpPressure[0].time - vpPressure[1].time <= config.varipass.pressure.pause) {
+                        var value = vpPressure[0].value - vpPressure[1].value;
+                        if (Math.abs(value) >= config.varipass.pressure.warning) {
+                            send(channelNameToID(config.options.channels.home), util.format(
+                                strings.announcements.varipass.pressure,
+                                value.toFixed(2)
+                            ), false);
+                        }
+                    }
+                }
+            }
+
+            // Particle Alerts
+            var vpPM025 = findVariable(vpData, varipass.main.ids.pm025).history[0].value;
+
+            if (vpPM025 <= config.varipass.pm025.okay) {
+                if (pm025WasWarned) {
+                    pm025WasWarned = false;
+                    send(channelNameToID(config.options.channels.debug), util.format(
+                        strings.announcements.varipass.pm025okay,
+                        mention(config.options.adminid),
+                        strings.announcements.varipass.pm025okayname,
+                        vpPM025.toFixed(2)
+                    ), false);
+                }
+            }
+            else if (vpPM025 >= config.varipass.pm025.warning) {
+                if (!pm025WasWarned) {
+                    pm025WasWarned = true;
+                    send(channelNameToID(config.options.channels.debug), util.format(
+                        strings.announcements.varipass.pm025warning,
+                        mention(config.options.adminid),
+                        strings.announcements.varipass.pm025warningname,
+                        vpPM025.toFixed(2)
+                    ), false);
+                }
+            }
+
+            // Light Control Features
+            var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
+
+            refreshTradfriDevices(function(result) {
+                if (result) {
+                    statusGlobal.tradfri = Math.floor((new Date()) / 1000);
+
+                    // Day Lamp Off
+                    if (vpLight >= config.varipass.daylight.threshold) {
+                        config.varipass.daylight.bulbs.forEach(function(b) {
+                            devices.forEach(function(d) {  
+                                if (d.name == b && d.on == true) {
+                                    hub.toggleDevice(d.id);
+                                    send(channelNameToID(config.options.channels.debug), util.format(
+                                        strings.announcements.varipass.daylightoff,
+                                        mention(config.options.adminid),
+                                        b
+                                    ), false);
+                                }
+                            });
+                        });
+                    }
+
+                    // Night Lamp Off
+                    var controlOn = false;
+                    devices.forEach(function(d) {  
+                        if (d.name == config.varipass.nightlight.control && d.on == true) {
+                            controlOn = true;
+                        }
+                    });                 
+                    if (vpLight > config.varipass.nightlight.rangemin && vpLight < config.varipass.nightlight.rangemax && !controlOn) {
+                        nightLightCount++;
+
+                        if (nightLightCount >= config.varipass.nightlight.count)
+                            config.varipass.nightlight.bulbs.forEach(function(b) {
+                                devices.forEach(function(d) {  
+                                    if (d.name == b && d.on == true) {
+                                        hub.toggleDevice(d.id);
+                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                            strings.announcements.varipass.nightlightoff,
+                                            mention(config.options.adminid),
+                                            b
+                                        ), false);
+                                    }
+                                });
+                            });
+                    }
+                    else {
+                        nightLightCount = 0;
+                    }
+                }
+            });
+        }
+    }
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.varipass.error,
+            err.target.status
+        ));
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.varipass.timeout);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
 }
 
-function toUpper(str) {
-	return str.toLowerCase().replace(/^[a-zA-Z0-9À-ž]|[-\r\n\t\f\v ][a-zA-Z0-9À-ž]/g, function (letter) {
-		return letter.toUpperCase();
-	})
+/*
+ * Writes the radiation dose exponential moving average data to VariPass.
+ * @param  value  Dose value to write.
+ */
+function sendDoseEMA(value) {
+    var payload = {
+            "key": varipass.main.key,
+            "id": varipass.main.ids.doseema,
+            "action": "write",
+            "value": value.toFixed(4)
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+        }
+    }
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.varipass.error,
+            err.target.status
+        ));
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.varipass.timeout);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
 }
 
-function spreadLightning() {
-	var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
-	if (blitzor.debugstrikes)
-    	console.log(util.format(
-    		strings.debug.blitzor.spread,
-    		lightningRange,
-    		lightningRange + rangeSpread
-    	));
+/*
+ * Writes the EEG data to VariPass.
+ */
+function eegVaripassWrite() {
+    var value;
 
-	lightningRange = lightningRange + rangeSpread;
-	lightningNew   = lightningNew + rangeSpread;
+    if (eegConfig.type == "raw") {
+        switch (eegConfig.value) {
+            case "timestamp":  value = eegValues.time;       break;
+            case "battery":    value = eegValues.battery;    break;
+            case "signal":     value = eegValues.signal;     break;
+            case "attention":  value = eegValues.attention;  break;
+            case "meditation": value = eegValues.meditation; break;
+            case "wave0":      value = eegValues.waves[0];   break;
+            case "wave1":      value = eegValues.waves[1];   break;
+            case "wave2":      value = eegValues.waves[2];   break;
+            case "wave3":      value = eegValues.waves[3];   break;
+            case "wave4":      value = eegValues.waves[4];   break;
+            case "wave5":      value = eegValues.waves[5];   break;
+            case "wave6":      value = eegValues.waves[6];   break;
+            case "wave7":      value = eegValues.waves[7];   break;
+            case "sumlow":     value = eegValues.sumlow;     break;
+            case "sumhigh":    value = eegValues.sumhigh;    break;
+        }
+    }
+    else if (eegConfig.type == "ema") {
+        switch (eegConfig.value) {
+            case "timestamp":  value = eegValuesEMA.time;       break;
+            case "battery":    value = eegValuesEMA.battery;    break;
+            case "signal":     value = eegValuesEMA.signal;     break;
+            case "attention":  value = eegValuesEMA.attention;  break;
+            case "meditation": value = eegValuesEMA.meditation; break;
+            case "wave0":      value = eegValuesEMA.waves[0];   break;
+            case "wave1":      value = eegValuesEMA.waves[1];   break;
+            case "wave2":      value = eegValuesEMA.waves[2];   break;
+            case "wave3":      value = eegValuesEMA.waves[3];   break;
+            case "wave4":      value = eegValuesEMA.waves[4];   break;
+            case "wave5":      value = eegValuesEMA.waves[5];   break;
+            case "wave6":      value = eegValuesEMA.waves[6];   break;
+            case "wave7":      value = eegValuesEMA.waves[7];   break;
+            case "sumlow":     value = eegValuesEMA.sumlow;     break;
+            case "sumhigh":    value = eegValuesEMA.sumhigh;    break;
+        }
+    }
 
-	if (lightningRange > blitzor.range) {
-		if (blitzor.debugstrikes)
-	    	console.log(util.format(
-	    		strings.debug.blitzor.max,
-	    		blitzor.range
-	    	));
-		lightningRange = blitzor.range;
-		lightningNew = blitzor.range;
-	}
-	else {
-		lightningSpread = setTimeout(spreadLightning, blitzor.spread * 1000);
-	}
+    if (value != undefined) {
+        var payload = {
+                "key":    varipass.eeg.key,
+                "action": "write",
+                "id":     varipass.eeg.ids.eeg,
+                "value":  value
+            };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", config.options.varipassurl, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+
+        xhr.onerror = function(err) {
+            console.log(util.format(
+                strings.debug.varipass.error,
+                err.target.status
+            ));
+            xhr.abort();
+        }
+        xhr.ontimeout = function() {
+            console.log(strings.debug.varipass.timeout);
+            xhr.abort();
+        }
+
+        xhr.send(JSON.stringify(payload));
+    }
 }
 
-function spreadChase() {
-	var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
-	if (blitzor.debugstrikes)
-    	console.log(util.format(
-    		strings.debug.chase.spread,
-    		chaseRange,
-    		chaseRange + rangeSpread
-    	));
+function eegVaripassEdit() {
+    var name = util.format(
+        strings.commands.eegset.varipassA,
+        eegConfig.type,
+        eegConfig.value
+    );
 
-	chaseRange = chaseRange + rangeSpread;
-	chaseNew   = chaseNew + rangeSpread;
+    var description = strings.commands.eegset.varipassB;
 
-	if (chaseRange > blitzor.range) {
-		if (blitzor.debugstrikes)
-	    	console.log(util.format(
-	    		strings.debug.chase.max,
-	    		blitzor.range
-	    	));
-		chaseRange = blitzor.range;
-		chaseNew = blitzor.range;
-	}
-	else {
-		chaseSpread = setTimeout(spreadChase, blitzor.spread * 1000);
-	}
+    if (eegConfig.type == "ema")
+        description += util.format(
+            strings.commands.eegset.varipassC,
+            eegConfig.ema
+        );
+
+    var payload = {
+            "key":    varipass.eeg.key,
+            "action": "edit",
+            "id":     varipass.eeg.ids.eeg,
+            "type":   "float",
+            "name":   name,
+            "description": description,
+            "unit":   "",
+            "graph":  true,
+            "perc":   false,
+            "max":    eegConfig.max,
+            "expire": eegConfig.expire
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.varipass.error,
+            err.target.status
+        ));
+        xhr.abort();
+        eegVaripassEdit();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.varipass.timeout);
+        xhr.abort();
+        eegVaripassEdit();
+    }
+
+    xhr.send(JSON.stringify(payload));
 }
 
+/*
+ * Parses VariPass data to return a certain variable.
+ * @param  data  VariPass data to search in.
+ * @param  id    The ID of the variable to look for.
+ * @return       The VariPass variable with all the data.
+ */
+function findVariable(data, id) {
+    var found    = false;
+    var variable = null;
+
+    data.list.forEach(function(v) {
+        if (v.id == id && !found)
+            variable = v;
+    });
+
+    return variable;
+}
+
+
+
+/****************************
+ * BLITZORTUNG FUNCTIONALITY
+ ****************************/
+
+/*
+ * Connects to the Blitzortung API.
+ * @param  reconnect  Whether this is an automatic reconnect.
+ */
+function connectBlitzortung(reconnect) {
+    var from = {};
+    from.latitude = blitzor.location.latitude + blitzor.expand;
+    from.longitude = blitzor.location.longitude - blitzor.expand;
+    var to = {};
+    to.latitude = blitzor.location.latitude - blitzor.expand;
+    to.longitude = blitzor.location.longitude + blitzor.expand;
+
+    if (reconnect && blitzor.debugconnect)
+        console.log(util.format(
+            strings.debug.blitzor.reconnect,
+            from.latitude,
+            to.latitude,
+            from.longitude,
+            to.longitude
+        ));
+    else if (!reconnect)
+        console.log(util.format(
+            strings.debug.blitzor.connect,
+            from.latitude,
+            to.latitude,
+            from.longitude,
+            to.longitude
+        ));
+
+    blitzorws = new blitzorapi.Client({
+        make(address) {
+            return new WebSocket(address);
+        }
+    });
+
+    blitzorws.connect();
+    blitzorws.on("error", console.error);
+    blitzorws.on("connect", () => {
+        blitzorws.setIncludeDetectors(false);
+        blitzorws.setArea(from, to);
+    });
+    blitzorws.on("data", strike => {
+        var distance = earthDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
+
+        if (distance < lightningNew) {
+            lightningNew = distance;
+            lightningLat = strike.location.latitude;
+            lightningLng = strike.location.longitude;
+
+            if (!blitzor.debugstrikes)
+                console.log(util.format(
+                    strings.debug.blitzor.strike,
+                    distance,
+                    strike.location.latitude,
+                    strike.location.longitude                
+                ));
+        }
+        if (blitzor.debugstrikes)
+            console.log(util.format(
+                strings.debug.blitzor.strike,
+                distance,
+                strike.location.latitude,
+                strike.location.longitude                
+            ));
+    });
+
+    lightningReconnect = setTimeout(function() {
+        blitzorws.close();
+        connectBlitzortung(true);
+    }, blitzor.reconnect * 1000);
+
+    if (reconnect && blitzor.debugconnect)
+        console.log(strings.debug.blitzor.done);
+    else if (!reconnect)
+        console.log(strings.debug.blitzor.done);
+}
+
+/*
+ * Connects to the Blitzortung API for storm chasing.
+ * @param  reconnect  Whether this is an automatic reconnect.
+ */
+function connectChase(reconnect) {
+
+    var payload = {
+            "key": varipass.main.key,
+            "action": "read",
+            "id": varipass.main.ids.location
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var vpData = JSON.parse(xhr.responseText);
+
+            var values = vpData.value.split("\\n");
+            chaseThoriLat = 0.0;
+            chaseThoriLng = 0.0;
+            values.forEach(function(v) {
+                var parts = v.split(":");
+                if (parts[0] == "lat")
+                    chaseThoriLat = parseFloat(parts[1]);
+                else if (parts[0] == "lng")
+                    chaseThoriLng = parseFloat(parts[1]);
+            });
+
+            var from = {};
+            from.latitude = chaseThoriLat + blitzor.expand;
+            from.longitude = chaseThoriLng - blitzor.expand;
+            var to = {};
+            to.latitude = chaseThoriLat - blitzor.expand;
+            to.longitude = chaseThoriLng + blitzor.expand;
+
+            if (reconnect && blitzor.debugconnect)
+                console.log(util.format(
+                    strings.debug.chase.reconnect,
+                    from.latitude,
+                    to.latitude,
+                    from.longitude,
+                    to.longitude
+                ));
+            else if (!reconnect)
+                console.log(util.format(
+                    strings.debug.chase.connect,
+                    from.latitude,
+                    to.latitude,
+                    from.longitude,
+                    to.longitude
+                ));
+
+            chasews = new blitzorapi.Client({
+                make(address) {
+                    return new WebSocket(address);
+                }
+            });
+
+            chasews.connect();
+            chasews.on("error", console.error);
+            chasews.on("connect", () => {
+                chasews.setIncludeDetectors(false);
+                chasews.setArea(from, to);
+            });
+            chasews.on("data", strike => {
+                var distance = earthDistance(chaseThoriLat, chaseThoriLng, strike.location.latitude, strike.location.longitude);
+
+                if (distance < chaseNew) {
+                    chaseNew = distance;
+                    chaseLat = strike.location.latitude;
+                    chaseLng = strike.location.longitude;
+
+                    if (!blitzor.debugstrikes)
+                        console.log(util.format(
+                            strings.debug.chase.strike,
+                            distance,
+                            strike.location.latitude,
+                            strike.location.longitude                
+                        ));
+                }
+                if (blitzor.debugstrikes)
+                    console.log(util.format(
+                        strings.debug.chase.strike,
+                        distance,
+                        strike.location.latitude,
+                        strike.location.longitude                
+                    ));
+            });
+
+            chaseReconnect = setTimeout(function() {
+                chasews.close();
+                connectChase(true);
+            }, blitzor.chase * 1000);
+
+            if (reconnect && blitzor.debugconnect)
+                console.log(strings.debug.chase.done);
+            else if (!reconnect)
+                console.log(strings.debug.chase.done);      
+        }
+    }
+    xhr.onerror = function(err) {
+        connectChase(true);
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        connectChase(true);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
+}
+
+/*
+ * Performs the lightning data checking in a loop.
+ */
 function loopLightning() {
-	if (lightningNew < lightningRange) {
-		lightningRange = lightningNew;
+    if (lightningNew < lightningRange) {
+        lightningRange = lightningNew;
 
-		clearTimeout(lightningSpread);
-		lightningSpread = setTimeout(spreadLightning, blitzor.spread * 1000);
+        clearTimeout(lightningSpread);
+        lightningSpread = setTimeout(spreadLightning, blitzor.spread * 1000);
 
-		clearTimeout(lightningExpire);
-		lightningExpire = setTimeout(function() {
-    		send(channelNameToID(config.options.channels.home), strings.announcements.blitzor.expire, false);
-		}, blitzor.expire * 1000);
-
-        var time = moment.tz(new Date(), "Europe/Zagreb").format("HH:mm:ss");
-		var rng = lightningRange;
-		var lat = lightningLat;
-		var lng = lightningLng;
-		var b  = earthBearing(blitzor.location.latitude, blitzor.location.longitude, lat, lng);
-
-		var bear = "N";
-			 if (b >  11.25 && b <  33.75) bear = "NNE";
-		else if (b >  33.75 && b <  56.25) bear = "NE";
-		else if (b >  56.25 && b <  78.75) bear = "ENE";
-		else if (b >  78.75 && b < 101.25) bear = "E";
-		else if (b > 101.25 && b < 123.75) bear = "ESE";
-		else if (b > 123.75 && b < 146.25) bear = "SE";
-		else if (b > 146.25 && b < 168.75) bear = "SSE";
-		else if (b > 168.75 && b < 191.25) bear = "S";
-		else if (b > 191.25 && b < 213.75) bear = "SSW";
-		else if (b > 213.75 && b < 236.25) bear = "SW";
-		else if (b > 236.25 && b < 258.75) bear = "WSW";
-		else if (b > 258.75 && b < 281.25) bear = "W";
-		else if (b > 281.25 && b < 303.75) bear = "WNW";
-		else if (b > 303.75 && b < 326.25) bear = "NW";
-		else if (b > 326.25 && b < 348.75) bear = "NNW";
-	    
-		getLocationInfo(function(locInfo) {
-	    	send(channelNameToID(config.options.channels.home), util.format(
-		        strings.announcements.blitzor.strike,
-		        rng.toFixed(2),
-		        bear,
-		        b.toFixed(2),
-		        locInfo.town,
-		        locInfo.country,
-		        time
-		    ), false);
-		}, lat, lng);
-	}
-
-	if (chaseNew < chaseRange) {
-		chaseRange = chaseNew;
-
-		clearTimeout(chaseSpread);
-		chaseSpread = setTimeout(spreadChase, blitzor.spread * 1000);
-
-		clearTimeout(chaseExpire);
-		chaseExpire = setTimeout(function() {
-    		send(config.options.adminid, strings.announcements.chase.expire, false);
-		}, blitzor.expire * 1000);
+        clearTimeout(lightningExpire);
+        lightningExpire = setTimeout(function() {
+            send(channelNameToID(config.options.channels.home), strings.announcements.blitzor.expire, false);
+        }, blitzor.expire * 1000);
 
         var time = moment.tz(new Date(), "Europe/Zagreb").format("HH:mm:ss");
-		var rng = chaseRange;
-		var lat = chaseLat;
-		var lng = chaseLng;
-		var b  = earthBearing(chaseThoriLat, chaseThoriLng, lat, lng);
+        var rng = lightningRange;
+        var lat = lightningLat;
+        var lng = lightningLng;
+        var b  = earthBearing(blitzor.location.latitude, blitzor.location.longitude, lat, lng);
 
-		var bear = "N";
-			 if (b >  11.25 && b <  33.75) bear = "NNE";
-		else if (b >  33.75 && b <  56.25) bear = "NE";
-		else if (b >  56.25 && b <  78.75) bear = "ENE";
-		else if (b >  78.75 && b < 101.25) bear = "E";
-		else if (b > 101.25 && b < 123.75) bear = "ESE";
-		else if (b > 123.75 && b < 146.25) bear = "SE";
-		else if (b > 146.25 && b < 168.75) bear = "SSE";
-		else if (b > 168.75 && b < 191.25) bear = "S";
-		else if (b > 191.25 && b < 213.75) bear = "SSW";
-		else if (b > 213.75 && b < 236.25) bear = "SW";
-		else if (b > 236.25 && b < 258.75) bear = "WSW";
-		else if (b > 258.75 && b < 281.25) bear = "W";
-		else if (b > 281.25 && b < 303.75) bear = "WNW";
-		else if (b > 303.75 && b < 326.25) bear = "NW";
-		else if (b > 326.25 && b < 348.75) bear = "NNW";
-	    
-		getLocationInfo(function(locInfo) {
-	    	send(config.options.adminid, util.format(
-		        strings.announcements.chase.strike,
-		        rng.toFixed(2),
-		        bear,
-		        b.toFixed(2),
-		        locInfo.town,
-		        locInfo.country,
-		        time
-		    ), false);
-		}, lat, lng);
-	}
+        var bear = "N";
+             if (b >  11.25 && b <  33.75) bear = "NNE";
+        else if (b >  33.75 && b <  56.25) bear = "NE";
+        else if (b >  56.25 && b <  78.75) bear = "ENE";
+        else if (b >  78.75 && b < 101.25) bear = "E";
+        else if (b > 101.25 && b < 123.75) bear = "ESE";
+        else if (b > 123.75 && b < 146.25) bear = "SE";
+        else if (b > 146.25 && b < 168.75) bear = "SSE";
+        else if (b > 168.75 && b < 191.25) bear = "S";
+        else if (b > 191.25 && b < 213.75) bear = "SSW";
+        else if (b > 213.75 && b < 236.25) bear = "SW";
+        else if (b > 236.25 && b < 258.75) bear = "WSW";
+        else if (b > 258.75 && b < 281.25) bear = "W";
+        else if (b > 281.25 && b < 303.75) bear = "WNW";
+        else if (b > 303.75 && b < 326.25) bear = "NW";
+        else if (b > 326.25 && b < 348.75) bear = "NNW";
+        
+        getLocationInfo(function(locInfo) {
+            send(channelNameToID(config.options.channels.home), util.format(
+                strings.announcements.blitzor.strike,
+                rng.toFixed(2),
+                bear,
+                b.toFixed(2),
+                locInfo.town,
+                locInfo.country,
+                time
+            ), false);
+        }, lat, lng);
+    }
+
+    if (chaseNew < chaseRange) {
+        chaseRange = chaseNew;
+
+        clearTimeout(chaseSpread);
+        chaseSpread = setTimeout(spreadChase, blitzor.spread * 1000);
+
+        clearTimeout(chaseExpire);
+        chaseExpire = setTimeout(function() {
+            send(config.options.adminid, strings.announcements.chase.expire, false);
+        }, blitzor.expire * 1000);
+
+        var time = moment.tz(new Date(), "Europe/Zagreb").format("HH:mm:ss");
+        var rng = chaseRange;
+        var lat = chaseLat;
+        var lng = chaseLng;
+        var b  = earthBearing(chaseThoriLat, chaseThoriLng, lat, lng);
+
+        var bear = "N";
+             if (b >  11.25 && b <  33.75) bear = "NNE";
+        else if (b >  33.75 && b <  56.25) bear = "NE";
+        else if (b >  56.25 && b <  78.75) bear = "ENE";
+        else if (b >  78.75 && b < 101.25) bear = "E";
+        else if (b > 101.25 && b < 123.75) bear = "ESE";
+        else if (b > 123.75 && b < 146.25) bear = "SE";
+        else if (b > 146.25 && b < 168.75) bear = "SSE";
+        else if (b > 168.75 && b < 191.25) bear = "S";
+        else if (b > 191.25 && b < 213.75) bear = "SSW";
+        else if (b > 213.75 && b < 236.25) bear = "SW";
+        else if (b > 236.25 && b < 258.75) bear = "WSW";
+        else if (b > 258.75 && b < 281.25) bear = "W";
+        else if (b > 281.25 && b < 303.75) bear = "WNW";
+        else if (b > 303.75 && b < 326.25) bear = "NW";
+        else if (b > 326.25 && b < 348.75) bear = "NNW";
+        
+        getLocationInfo(function(locInfo) {
+            send(config.options.adminid, util.format(
+                strings.announcements.chase.strike,
+                rng.toFixed(2),
+                bear,
+                b.toFixed(2),
+                locInfo.town,
+                locInfo.country,
+                time
+            ), false);
+        }, lat, lng);
+    }
 
     setTimeout(loopLightning, blitzor.loop * 1000);
 }
+
+/*
+ * Spread the lightning range when there is no new lightning.
+ */
+function spreadLightning() {
+    var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
+    if (blitzor.debugstrikes)
+        console.log(util.format(
+            strings.debug.blitzor.spread,
+            lightningRange,
+            lightningRange + rangeSpread
+        ));
+
+    lightningRange = lightningRange + rangeSpread;
+    lightningNew   = lightningNew + rangeSpread;
+
+    if (lightningRange > blitzor.range) {
+        if (blitzor.debugstrikes)
+            console.log(util.format(
+                strings.debug.blitzor.max,
+                blitzor.range
+            ));
+        lightningRange = blitzor.range;
+        lightningNew = blitzor.range;
+    }
+    else {
+        lightningSpread = setTimeout(spreadLightning, blitzor.spread * 1000);
+    }
+}
+
+/*
+ * Spread the lightning range when there is no new lightning, used when storm chasing.
+ */
+function spreadChase() {
+    var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
+    if (blitzor.debugstrikes)
+        console.log(util.format(
+            strings.debug.chase.spread,
+            chaseRange,
+            chaseRange + rangeSpread
+        ));
+
+    chaseRange = chaseRange + rangeSpread;
+    chaseNew   = chaseNew + rangeSpread;
+
+    if (chaseRange > blitzor.range) {
+        if (blitzor.debugstrikes)
+            console.log(util.format(
+                strings.debug.chase.max,
+                blitzor.range
+            ));
+        chaseRange = blitzor.range;
+        chaseNew = blitzor.range;
+    }
+    else {
+        chaseSpread = setTimeout(spreadChase, blitzor.spread * 1000);
+    }
+}
+
+
+
+/************************
+ * TRADFRI FUNCTIONALITY
+ ************************/
+
+/*
+ * Connects to the Tradfri hub and refreshes all devices.
+ * @param  callback  Function called once processing is done. Returns true if successful.
+ */
+function refreshTradfriDevices(callback) {
+    if (tradfri.debug)
+        console.log(strings.debug.tradfri.connect);
+
+    hub.getDevices().then((result) => {
+
+        devices = result.filter(function(d) {
+            return d.color != undefined;
+        });
+
+        if (tradfri.debug) {
+            console.log(util.format(
+                strings.debug.tradfri.done,
+                devices.length
+            ));
+
+            devices.forEach(function(d) {
+                console.log(util.format(
+                    strings.debug.tradfri.bulb,
+                    d.name,
+                    d.id,
+                    d.type,
+                    d.color,
+                    d.brightness,
+                    d.on
+                ));
+            });
+        }
+
+        hubRetry = 0;
+        callback(true);
+
+    }).catch((error) => {
+        if (hubRetry >= tradfri.retries)
+            console.log(util.format(
+                strings.debug.tradfri.errorA,
+                hubRetry
+            ));
+
+        hubRetry++;
+        callback(false);
+    });
+}
+
+/*
+ * Sets the mood of the lighting.
+ * @param  name  Name of the mood to use.
+ * @param  callback  Function called once processing is done. Returns true if successful.
+ */
+function setMood(name, callback) {
+    tradfri.moods.forEach(function(m) { 
+        if (m.name == name) {
+            refreshTradfriDevices(function(result) {
+                if (result) {
+                    m.devices.forEach(function(d1) {
+                        devices.forEach(function(d2) {
+                            if (d1.name == d2.name) {
+                                setBulb(d1.config, d2.id);
+                            }
+                        });
+                    });
+                    callback(true);
+                }
+                else {
+                    callback(false);
+                }
+            });
+        }
+    }); 
+}
+
+/*
+ * Sets the parameters of a specific bulb.
+ * @param  bulb  The bulb object.
+ * @param  id    ID of the bulb.
+ */
+function setBulb(bulb, id) {
+    var newBulb = normalize(bulb);  
+
+    hub.setDeviceState(id, newBulb).then((result) => {
+
+    }).catch((error) => {
+        console.log(strings.debug.tradfri.errorB);
+        setBulb(bulb, id);
+    });
+}
+
+/*
+ * Normalizes the colors of a bulb.
+ * @param  bulb  The bulb object.
+ * @return       New bulb object with normalized color.
+ */
+function normalize(bulb) {  
+    var newBulb = Object.assign({}, bulb);
+    if (newBulb.colorX != undefined) {
+        newBulb.colorX = Math.round(newBulb.colorX * 65535);
+    }
+    if (newBulb.colorY != undefined) {
+        newBulb.colorY = Math.round(newBulb.colorY * 65535);
+    }
+    if (newBulb.brightness != undefined) {
+        newBulb.brightness = Math.round(newBulb.brightness * 254);
+    }
+    return newBulb;
+}
+
+
+
+/*******************************
+ * CHANNEL AND DATA TRANSLATION
+ *******************************/
+
+/*
+ * Parses a given channel name to retrieve the correct ID.
+ * @param  name  The input name to look for.
+ * @return       ID of the channel.
+ */
+function channelNameToID(name) {
+    var found = false;
+    var id = null;
+
+    channels.list.forEach(function(c) {
+        if (c.name == name && !found)
+            id = c.id;
+    });
+
+    return id;
+};
+
+/*
+ * Parses a given channel ID to retrieve the correct name.
+ * @param  id  The input ID to look for.
+ * @return     Name of the channel.
+ */
+function channelIDToName(id) {
+    var found = false;
+    var name = "unknown";
+
+    channels.list.forEach(function(c) {
+        if (c.id == id && !found)
+            name = c.name;
+    });
+
+    return name;
+};
+
+/*
+ * Parses a given channel ID to retrieve the correct brain.
+ * @param  id  The input ID to look for.
+ * @return     Brain of the channel.
+ */
+function channelIDToBrain(id) {
+    var found = false;
+    var brain = null;
+
+    channels.list.forEach(function(c) {
+        if (c.id == id && !found)
+            brain = c.brain;
+    });
+
+    if (brain == null)
+        brain = channels.default.brain;
+
+    return brain;
+};
+
+/*
+ * Processes the channel whitelist and checks if the channel is whitelisted.
+ * @param  channelID  ID of the channel to check whitelist of.
+ * @return            Boolean whether the channel is whitelisted.
+ */
+function processWhitelist(channelID) {
+    var okay = false;
+    channels.list.forEach(function(c) {
+        if (c.id == channelID && c.learn)
+            okay = true;
+    });
+    return okay;
+}
+
+/*
+ * Processes the user blacklist and checks if the user is blacklisted.
+ * @param  userID  ID of the user to check blacklist of.
+ * @return         Boolean whether the user is NOT blacklisted.
+ */
+function processBlacklist(userID) {
+    var okay = true;
+    if (blacklist[userID] != undefined) {
+        okay = false;
+    };
+    return okay;
+}
+
+/*
+ * Processes the user ignore list and checks if the user is ignored.
+ * @param  userID  ID of the user to check ignore list for.
+ * @return         Boolean whether the user is NOT ignored.
+ */
+function processIgnore(userID) {
+    var okay = true;
+    if (ignore[userID] != undefined) {
+        okay = false;
+    };
+    return okay;
+}
+
+
+
+/*************************************
+ * STRING MANIPULATION AND GENERATION
+ *************************************/
+
+/*
+ * Formats a mention string.
+ * @param  id  ID to mention.
+ * @return     String usable by Discord as a mention.
+ */
+function mention(id) {
+    return util.format(config.options.mention, id);
+};
+
+/*
+ * Formats a role mention string.
+ * @param  id  ID to mention.
+ * @return     String usable by Discord as a mention.
+ */
+function mentionRole(id) {
+    return util.format(config.options.mentionrole, id);
+};
+
+/*
+ * Checks whether a certain ID was mentioned.
+ * @param  id    ID to check the mentions of.
+ * @param  data  Discord's event data.
+ * @return       Boolean whether the ID was mentioned.
+ */
+function isMentioned(id, data) {
+    var mentioned = false;
+    data.d.mentions.forEach(function(m) {
+        if (m.id == id)
+            mentioned = true;
+    });
+    return mentioned;
+};
+
+/*
+ * Uses regex to clean up a message.
+ * @param  message  Message text to clean up.
+ * @return          The cleaned up message.
+ */
+function cleanMessage(message) {
+    return message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
+}
+
+/*
+ * Checks if a message has usable contents.
+ * @param  message  Message text analyze.
+ * @return          Whether the message had contents.
+ */
+function isMessageNotEmpty(message) {
+    return message != "" && message != " " && message != "\n";
+}
+
+function toUpper(str) {
+    return str.toLowerCase().replace(/^[a-zA-Z0-9À-ž]|[-\r\n\t\f\v ][a-zA-Z0-9À-ž]/g, function (letter) {
+        return letter.toUpperCase();
+    })
+}
+
+/*
+ * Converts a given date to a more readable format.
+ * @param  date  The input date, this is not the JS Date object.
+ * @return       Formatted string.
+ */
+function getTimeString(date) {
+    var string = "";
+
+    if (date.days != null && date.days != 0) {
+        string += date.days + " day";
+        if (date.days > 1)
+            string += "s";
+    }
+
+    if ((date.days != null && date.days != 0) && (date.hours != null && date.hours != 0) && (date.minutes == null || date.minutes == 0))
+        string += " and ";
+    else if ((date.days != null && date.days != 0) && (date.hours != null && date.hours != 0) && (date.minutes != null && date.minutes != 0))
+        string += ", ";
+
+    if (date.hours != null && date.hours != 0) {
+        string += date.hours + " hour";
+        if (date.hours > 1)
+            string += "s";
+    }
+
+    if ((date.hours != null && date.hours != 0) && (date.minutes != null && date.minutes != 0))
+        string += " and ";
+    else if ((date.days != null && date.days != 0) && (date.hours == null || date.hours == 0) && (date.minutes != null && date.minutes != 0))
+        string += " and ";
+
+    if (date.minutes != null && date.minutes != 0) {
+        string += date.minutes + " minute";
+        if (date.minutes > 1)
+            string += "s";
+    }
+
+    if (string == "")
+        string = "0 minutes";
+
+    return string;
+}
+
+/*
+ * Converts a given date to a simplified format.
+ * @param  date  The input date, this is not the JS Date object.
+ * @return       Formatted string.
+ */
+function getTimeStringSimple(date) {
+    var string = "";
+
+    if (date.days != null && date.days != 0) {
+        string += date.days + "d ";
+    }
+
+    if (date.hours != null && date.hours != 0) {
+        string += date.hours + "h ";
+    }
+
+    if (date.minutes != null) {
+        string += date.minutes + "m ";
+    }
+
+    if (date.seconds != null) {
+        string += date.seconds + "s";
+    }
+
+    return string;
+}
+
+/*
+ * Parses two given dates to return the time left and final time.
+ * @param  start    Starting date.
+ * @param  stop     Final date.
+ * @param  timezone The timezone to calculate for.
+ * @return          String of time left and final time.
+ */
+function getTimeLeft(start, stop, timezone) {
+    var diff = (stop - start) / 60000;
+    var time = {};
+
+    time.minutes = Math.floor(diff % 60);
+    diff = Math.floor(diff / 60);
+    time.hours = Math.floor(diff % 24);
+    time.days = Math.floor(diff / 24);
+
+    var momentTime = moment.tz(stop, timezone);
+
+    return util.format(
+        strings.misc.left, 
+        getTimeString(time),  
+        momentTime.format("ddd MMM DD, YYYY"),
+        momentTime.format("HH:mm (z)")
+    );
+}
+
+/*
+ * Parses the phase list to return a string compatible with Discord chat.
+ * @param  name    Name of the Moon phse to look for.
+ * @param  offset  Offset of the phase.
+ * @return         Formatted string.
+ */
+function getPhaseString(name, offset) {
+    var id = 0;
+    config.phases.forEach(function(n, i) {
+        if (n.name == name)
+            id = i;
+    });
+
+    id += offset;
+    if (id >= config.phases.length)
+        id -= config.phases.length;
+    else if (id < 0)
+        id += config.phases.length;
+
+    return config.phases[id].name + " " + config.phases[id].icon;
+}
+
+/*
+ * Generates a random color string for a single sock.
+ * @return    Sock color string.
+ */
+function generateSock() {
+    if (Math.random() < 0.5) {
+        // Single color
+        return strings.misc.socks.single[Math.floor(Math.random() * strings.misc.socks.single.length)];
+    }
+    else {
+        // Double color
+        var colorA = strings.misc.socks.double[Math.floor(Math.random() * strings.misc.socks.double.length)];
+        var colorB = "";
+        do {
+            colorB = strings.misc.socks.double[Math.floor(Math.random() * strings.misc.socks.double.length)];
+        } while (colorB == colorA);
+        return colorA + "-" + colorB;
+    }
+}
+
+/*
+ * Generates a randomized string containing colors of multiple socks.
+ * @return    A string of multiple sock colors.
+ */
+function generateSocks(count) {
+    var sockList = [];
+    var socks = "";
+    var i;
+
+    for (i = 0; i < count; i++)
+        sockList.push(generateSock());
+
+    for (i = 0; i < count - 1; i++) {
+        socks += sockList[i];
+        if (i < count - 2) {
+            socks += config.separators.list;
+        }
+    }
+    socks += config.separators.lend + sockList[i];
+
+    return socks;
+}
+
+/*
+ * Formats a WoW currency string (gold/silver/copper).
+ * @param  price  The price in copper.
+ * @return        The formatted string.
+ */
+function getWoWPrice(price) {
+    var c = Math.floor(price % 100);
+    price = Math.floor(price / 100);
+    var s = Math.floor(price % 100);
+    price = Math.floor(price / 100);
+    var g = "";
+    while (price >= 1000) {
+        g = config.separators.price + Math.floor(price % 1000) + g;
+        price = Math.floor(price / 1000);
+    }
+    g = price + g;
+
+    return util.format(
+        strings.misc.gold,
+        g,
+        s,
+        c
+    );
+}
+
+
+
+/*****************************
+ * GEOGRAPHIC DATA PROCESSING
+ *****************************/
+
+/*
+ * Uses an API to fetch a translated geo location of coordinates.
+ * @param  callback  Callback function called once done.
+ * @param  lat       The latitude coordinate.
+ * @param  lng       The longitude coordinate.
+ */
+ function getLocationInfo(callback, lat, lng) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", util.format(
+        config.options.geourl,
+        lat,
+        lng,
+        blitzor.auth
+    ), true);
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            var locInfo = {};
+            locInfo.town = "Unknown";
+            locInfo.country = "Unknown";
+
+            if (response.error != undefined && response.error.code == "008") {
+                if (response.suggestion != undefined) {
+                    var north = response.suggestion.north;
+                    var south = response.suggestion.south;
+
+                    if (south != undefined && north != undefined && south.distance != undefined && north.distance != undefined) {
+                        if (north.distance < south.distance) {
+                            if (north.city != undefined)
+                                locInfo.town = north.city;
+                            if (north.prov != undefined)
+                                locInfo.country = north.prov;
+                        }
+                        else {
+                            if (south.city != undefined)
+                                locInfo.town = south.city;
+                            if (south.prov != undefined)
+                                locInfo.country = south.prov;
+                        }
+                    }
+                    else if (north != undefined && north.city != undefined) {
+                        locInfo.town = north.city;
+                        if (north.prov != undefined)
+                            locInfo.country = north.prov;
+                    }
+                    else if (south != undefined && south.city != undefined) {
+                        locInfo.town = south.city;
+                        if (south.prov != undefined)
+                            locInfo.country = south.prov;
+                    }
+                }
+            }
+            else {
+                if (response.city != undefined)
+                    locInfo.town = response.city;
+                if (response.prov != undefined)
+                    locInfo.country = response.prov;
+            }
+            var locs = locInfo.town.split(" / ");
+            if (locs.length > 1)
+                locInfo.town = locs[1];
+            locInfo.town = toUpper(locInfo.town);
+
+            //console.log(response);
+
+            callback(locInfo);
+        }
+    }
+
+    xhr.send();
+}
+
+/*
+ * Calculates a realistic surface distance between two coordinate points on Earth.
+ * @param  lat1  The starting latitude coordinate.
+ * @param  lng1  The starting longitude coordinate.
+ * @param  lat2  The ending latitude coordinate.
+ * @param  lng2  The ending longitude coordinate.
+ * @return       The distance in kilometers.
+ */
+function earthDistance(lat1, lng1, lat2, lng2) {
+    var R = 6371;
+    var dLat = degToRad(lat2-lat1);
+    var dLon = degToRad(lng2-lng1); 
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2); 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c;
+    return d;
+}
+
+/*
+ * Calculates a bearing towards a certain coordinate point on Earth.
+ * @param  lat1  The standing latitude coordinate.
+ * @param  lng1  The standing longitude coordinate.
+ * @param  lat2  The targeted latitude coordinate.
+ * @param  lng2  The targeted longitude coordinate.
+ * @return       The angle in degrees.
+ */
+function earthBearing(lat1, lng1, lat2, lng2) {
+    var dLon = degToRad(lng2-lng1);
+    var y = Math.sin(dLon) * Math.cos(degToRad(lat2));
+    var x = Math.cos(degToRad(lat1)) * Math.sin(degToRad(lat2)) -
+            Math.sin(degToRad(lat1)) * Math.cos(degToRad(lat2)) * 
+            Math.cos(dLon);
+    var brng = radToDeg(Math.atan2(y, x));
+    return ((brng + 360) % 360);
+}
+
+/*
+ * Converts degrees to radians.
+ * @param  deg  Degree value.
+ * @return      Radian value.
+ */
+function degToRad(deg) {
+    return deg * (Math.PI/180);
+}
+
+/*
+ * Converts radians to degrees.
+ * @param  rad  Radian value.
+ * @return      Degree value.
+ */
+function radToDeg(rad) {
+    return rad * (180/Math.PI);
+}
+
+
+
+/********************
+ * STATUS MONITORING
+ ********************/
+
+/*
+ * Periodically loops and checks status of various devices and components in the Lunar Infrastructure.
+ */
+function loopStatusPull() {
+    statusVariPass();
+    statusLuna();
+    statusChrysalis();
+    statusRarity();
+    statusTantabus();
+
+    setTimeout(loopStatusPull, config.options.statuspull * 1000);
+}
+
+/*
+ * Periodically loops and pushes status data to the status page.
+ */
+function loopStatusPush() {
+    var now =  Math.floor((new Date()) / 1000);
+
+    var data = "";
+
+    data += generateStatus("luna_local", statusGlobal.luna_local, now);
+    data += generateStatus("luna_public", statusGlobal.luna_public, now);
+    
+    data += generateStatus("chrysalis_file_local", statusGlobal.chrysalis_file_local, now);
+    data += generateStatus("chrysalis_file_public", statusGlobal.chrysalis_file_public, now);
+    data += generateStatus("chrysalis_stream_local", statusGlobal.chrysalis_stream_local, now);
+    data += generateStatus("chrysalis_stream_public", statusGlobal.chrysalis_stream_public, now);
+    data += generateStatus("chrysalis_ann", statusGlobal.chrysalis_ann, now);
+
+    data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
+    data += generateStatus("rarity_public", statusGlobal.rarity_public, now);
+
+    data += generateStatus("tantabus_local", statusGlobal.tantabus_local, now);
+    data += generateStatus("tantabus_public", statusGlobal.tantabus_public, now);
+
+    data += generateStatus("varipass", statusGlobal.varipass, now);
+    data += generateStatus("celly", statusGlobal.celly, now);
+    data += generateStatus("chryssy", statusGlobal.chryssy, now);
+    data += generateStatus("dashie", statusGlobal.dashie, now);
+    data += generateStatus("twilight", statusGlobal.twilight, now);
+
+    data += generateStatus("tradfri", statusGlobal.tradfri, now);
+    data += generateStatus("lulu", statusGlobal.lulu, now);
+    data += generateStatus("sparkle", statusGlobal.sparkle, now);
+
+    var payload = {
+            "key": httpkey.key,
+            "data": data
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.status.api, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4)
+            if (xhr.status != 200 && xhr.status != 503) {
+                console.log(util.format(
+                    strings.debug.status.error,
+                    xhr.status
+                ));
+            }
+    }
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.status.error,
+            err.target.status
+        ));
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.status.timeout);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
+
+    setTimeout(loopStatusPush, config.options.statuspush * 1000);
+}
+
+/*
+ * Checks the status of Pricness Luna's API.
+ */
+function statusLuna() {
+    var url = util.format(
+        config.status.urls.luna_local,
+        httpkey.key
+    );
+    getStatus(url, statusTimeoutLunaLocal, function(r, s) {
+        if (s == 200)
+            if (r == config.status.responses.luna_local)
+                statusGlobal.luna_local = Math.floor((new Date()) / 1000);
+    });
+
+    url = util.format(
+        config.status.urls.luna_public,
+        httpkey.port,
+        httpkey.key
+    );
+    getStatus(url, statusTimeoutLunaPublic, function(r, s) {
+        if (s == 200)
+            if (r == config.status.responses.luna_public)
+                statusGlobal.luna_public = Math.floor((new Date()) / 1000);
+    });
+}
+    
+/*
+ * Checks the status of Queen Chrysalis.
+ */
+function statusChrysalis() {
+    getStatus(config.status.urls.chrysalis_file_local, statusTimeoutChrysalisFileLocal, function(r, s) {
+        if (r == config.status.responses.chrysalis_file_local)
+            statusGlobal.chrysalis_file_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.chrysalis_file_public, statusTimeoutChrysalisFilePublic, function(r, s) {
+        if (r == config.status.responses.chrysalis_file_public)
+            statusGlobal.chrysalis_file_public = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.chrysalis_stream_local, statusTimeoutChrysalisStreamLocal, function(r, s) {
+        if (s == 200)
+            if (JSON.parse(r)[config.status.responses.chrysalis_stream_local] != undefined)
+                statusGlobal.chrysalis_stream_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.chrysalis_stream_public, statusTimeoutChrysalisStreamPublic, function(r, s) {
+        if (s == 200)
+            if (JSON.parse(r)[config.status.responses.chrysalis_stream_public] != undefined)
+                statusGlobal.chrysalis_stream_public = Math.floor((new Date()) / 1000);
+    });
+
+    var url = util.format(
+        config.status.urls.chrysalis_ann,
+        httpkey.key
+    );
+    getStatus(url, statusTimeoutChrysalisAnn, function(r, s) {
+        if (s == 200)
+            if (r == config.status.responses.chrysalis_ann)
+                statusGlobal.chrysalis_ann = Math.floor((new Date()) / 1000);
+    });
+}
+
+/*
+ * Checks the status of Nightmare Rarity.
+ */
+function statusRarity() {
+    getStatus(config.status.urls.rarity_local, statusTimeoutRarityLocal, function(r, s) {
+        if (r == config.status.responses.rarity_local)
+            statusGlobal.rarity_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.rarity_public, statusTimeoutRarityPublic, function(r, s) {
+        if (r == config.status.responses.rarity_public)
+            statusGlobal.rarity_public = Math.floor((new Date()) / 1000);
+    });
+}
+
+/*
+ * Checks the status of Tantabus.
+ */
+function statusTantabus() {
+    getStatus(config.status.urls.tantabus_local, statusTimeoutTantabusLocal, function(r, s) {
+        if (r == config.status.responses.tantabus_local)
+            statusGlobal.tantabus_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(config.status.urls.tantabus_public, statusTimeoutTantabusPublic, function(r, s) {
+        if (r == config.status.responses.tantabus_public)
+            statusGlobal.tantabus_public = Math.floor((new Date()) / 1000);
+    });
+}
+
+/*
+ * Fetches the status of a device using REST API.
+ * @param  url       URL to connect to.
+ * @param  timeout   The timeout object to use.
+ * @param  callback  Callback function called once processing is done.
+ */
+function getStatus(url, timeout, callback) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", url, true);
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4) {
+            callback(xhr.responseText, xhr.status);            
+            clearTimeout(timeout);
+        }
+    }
+    xhr.onerror = function(err) {
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        xhr.abort();
+    }
+
+    xhr.send();
+
+    timeout = setTimeout(function() {
+        xhr.abort();
+    }, config.status.timeout * 1000);
+}
+
+/*
+ * Generates a status value string.
+ * @param  key  Key of the status.
+ * @param  val  Response timestamp to use.
+ * @param  now  Current timestamp to use.
+ * @return      The formatted string.
+ */
+function generateStatus(key, val, now) {
+    var value;
+    if (val == undefined)
+        value = "undefined";
+    else
+        value = (now - val).toString();
+
+    return key + ":" + value + ",";
+}
+
+
+
+/**************************
+ * MISCELLANEOUS FUNCTIONS
+ **************************/
 
 /*
  * Loops to continuously retrieve now playing data.
@@ -5278,421 +5777,236 @@ function loopNowPlaying() {
     setTimeout(loopNowPlaying, config.nowplaying.timeout * 1000);
 }
 
-function sendDoseEMA(value) {
-	var payload = {
-            "key": varipass.main.key,
-            "id": varipass.main.ids.doseema,
-            "action": "write",
-            "value": value.toFixed(4)
-        };
+/*
+ * Reloads the configuration.
+ */
+function reloadConfig() {  
+    token    = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
+    config   = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
+    commands = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
+    custom   = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
+    strings  = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
+    gotn     = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
+    mlp      = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
+    channels = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
+    varipass = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
+    printer  = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
+    dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
+    tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
+    schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
+    wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
+    httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
+    mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
+    blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
+    thori    = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", config.options.varipassurl, true);
-    xhr.setRequestHeader("Content-type", "application/json");
+    clearTimeout(lightningReconnect);
+    blitzorws.close();
 
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4 && xhr.status == 200) {
+    if (lightningRange > blitzor.range) {
+        lightningRange = blitzor.range;
+        lightningNew = blitzor.range;
+    }
+
+    connectBlitzortung(false);
+
+    if (isChasing) {
+        clearTimeout(chaseReconnect);
+        chasews.close();
+
+        if (chaseRange > blitzor.range) {
+            chaseRange = blitzor.range;
+            chaseNew = blitzor.range;
         }
+
+        connectChase(false);
     }
-    xhr.onerror = function(err) {
-        console.log(util.format(
-            strings.debug.varipass.error,
-            err.target.status
-        ));
-        xhr.abort();
-    }
-    xhr.ontimeout = function() {
-        console.log(strings.debug.varipass.timeout);
-        xhr.abort();
-    }
-
-    xhr.send(JSON.stringify(payload));
-}
-
-function turnBulbsOff(bulbs, message) {
-	bulbs.forEach(function(b) {
-        devices.forEach(function(d) {  
-            if (d.name == b && d.on == true) {
-            	hub.toggleDevice(d.id);
-		    	send(channelNameToID(config.options.channels.debug), util.format(
-			        strings.announcements.varipass.daylightoff,
-        			mention(config.options.adminid),
-			        b
-			    ), false);
-            }
-        });
-    });
-}
-
-function statusVariPass() {
-	var payload = {
-            "key": varipass.main.key,
-            "action": "all"
-        };
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", config.options.varipassurl, true);
-    xhr.setRequestHeader("Content-type", "application/json");
-
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4 && xhr.status == 200) {
-			statusGlobal.varipass = Math.floor((new Date()) / 1000);
-
-			var vpData = JSON.parse(xhr.responseText);
-
-			var timeOffset = Math.floor((new Date()) / 1000) - vpData.current;
-			statusGlobal.celly    = findVariable(vpData, varipass.main.ids.temperature).history[0].time + timeOffset;
-			statusGlobal.chryssy  = findVariable(vpData, varipass.main.ids.counts     ).history[0].time + timeOffset;
-			statusGlobal.dashie   = findVariable(vpData, varipass.main.ids.pm010      ).history[0].time + timeOffset;
-			statusGlobal.twilight = findVariable(vpData, varipass.main.ids.location   ).history[0].time + timeOffset;
-            
-            // Geiger Calculation
-            var vpDose = findVariable(vpData, varipass.main.ids.dose).history;
-            var vpDoseEMA = findVariable(vpData, varipass.main.ids.doseema).history;
-
-            if (!(vpTimeDose != undefined && vpDose[0].time <= vpTimeDose)) {
-            	vpTimeDose = vpDose[0].time;
-
-		    	var alpha = parseFloat(1.0 / config.varipass.geiger.samples);
-		    	var value = alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value;
-		    	sendDoseEMA(value);
-
-		    	if (value <= config.varipass.geiger.okay) {
-			    	if (doseWasWarned) {
-			    		doseWasWarned = false;
-				    	send(channelNameToID(config.options.channels.home), util.format(
-					        strings.announcements.varipass.doseokay,
-					        value.toFixed(4),
-					        config.varipass.geiger.okay
-					    ), false);
-			    	}
-			    }
-			    else if (value >= config.varipass.geiger.warning) {
-			    	if (!doseWasWarned) {
-			    		doseWasWarned = true;
-				    	send(channelNameToID(config.options.channels.home), util.format(
-					        strings.announcements.varipass.dosewarning,
-					        config.varipass.geiger.warning,
-					        value.toFixed(4)
-					    ), false);
-				    }
-			    }
-            }
-
-            // Pressure Alerts
-            var vpPressure = findVariable(vpData, varipass.main.ids.pressure).history;
-
-            if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure)) {
-            	vpTimePressure = vpPressure[0].time;
-
-            	if (vpPressure[1].value != undefined) {
-            		if (vpPressure[0].time - vpPressure[1].time <= config.varipass.pressure.pause) {
-	            		var value = vpPressure[0].value - vpPressure[1].value;
-	            		if (Math.abs(value) >= config.varipass.pressure.warning) {
-	            			send(channelNameToID(config.options.channels.home), util.format(
-						        strings.announcements.varipass.pressure,
-						        value.toFixed(2)
-						    ), false);
-	            		}
-	            	}
-            	}
-            }
-
-            // Particle Alerts
-            var vpPM025 = findVariable(vpData, varipass.main.ids.pm025).history[0].value;
-
-		    if (vpPM025 <= config.varipass.pm025.okay) {
-		    	if (pm025WasWarned) {
-		    		pm025WasWarned = false;
-			    	send(channelNameToID(config.options.channels.debug), util.format(
-				        strings.announcements.varipass.pm025okay,
-            			mention(config.options.adminid),
-				        strings.announcements.varipass.pm025okayname,
-				        vpPM025.toFixed(2)
-				    ), false);
-			    }
-		    }
-            else if (vpPM025 >= config.varipass.pm025.warning) {
-		    	if (!pm025WasWarned) {
-		    		pm025WasWarned = true;
-			    	send(channelNameToID(config.options.channels.debug), util.format(
-				        strings.announcements.varipass.pm025warning,
-            			mention(config.options.adminid),
-				        strings.announcements.varipass.pm025warningname,
-				        vpPM025.toFixed(2)
-				    ), false);
-			    }
-		    }
-
-		    // Light Control Features
-		    var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
-
-		    refreshTradfriDevices(function(result) {
-		        if (result) {
-					statusGlobal.tradfri = Math.floor((new Date()) / 1000);
-
-		    		// Day Lamp Off
-		    		if (vpLight >= config.varipass.daylight.threshold) {
-						config.varipass.daylight.bulbs.forEach(function(b) {
-					        devices.forEach(function(d) {  
-					            if (d.name == b && d.on == true) {
-					            	hub.toggleDevice(d.id);
-							    	send(channelNameToID(config.options.channels.debug), util.format(
-								        strings.announcements.varipass.daylightoff,
-					        			mention(config.options.adminid),
-								        b
-								    ), false);
-					            }
-					        });
-					    });
-		    		}
-
-		            // Night Lamp Off
-		            var controlOn = false;
-		            devices.forEach(function(d) {  
-			            if (d.name == config.varipass.nightlight.control && d.on == true) {
-			            	controlOn = true;
-			            }
-			        });			        
-		    		if (vpLight > config.varipass.nightlight.rangemin && vpLight < config.varipass.nightlight.rangemax && !controlOn) {
-		    			nightLightCount++;
-
-		    			if (nightLightCount >= config.varipass.nightlight.count)
-							config.varipass.nightlight.bulbs.forEach(function(b) {
-						        devices.forEach(function(d) {  
-						            if (d.name == b && d.on == true) {
-						            	hub.toggleDevice(d.id);
-								    	send(channelNameToID(config.options.channels.debug), util.format(
-									        strings.announcements.varipass.nightlightoff,
-						        			mention(config.options.adminid),
-									        b
-									    ), false);
-						            }
-						        });
-						    });
-		    		}
-		    		else {
-		    			nightLightCount = 0;
-		    		}
-	            }
-	        });
-	    }
-	}
-    xhr.onerror = function(err) {
-        console.log(util.format(
-            strings.debug.varipass.error,
-            err.target.status
-        ));
-        xhr.abort();
-    }
-    xhr.ontimeout = function() {
-        console.log(strings.debug.varipass.timeout);
-        xhr.abort();
-    }
-
-    xhr.send(JSON.stringify(payload));
-}
-
-function getStatus(url, timeout, callback) {
-    var xhr = new XMLHttpRequest();
-
-    xhr.open("GET", url, true);
-
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4) {
-        	callback(xhr.responseText, xhr.status);            
-            clearTimeout(timeout);
-        }
-    }
-    xhr.onerror = function(err) {
-        xhr.abort();
-    }
-    xhr.ontimeout = function() {
-        xhr.abort();
-    }
-
-    xhr.send();
-
-    timeout = setTimeout(function() {
-        xhr.abort();
-    }, config.status.timeout * 1000);
-}
-
-function statusLuna() {
-    var url = util.format(
-        config.status.urls.luna_local,
-		httpkey.key
-    );
-    getStatus(url, statusTimeoutLunaLocal, function(r, s) {
-    	if (s == 200)
-    		if (r == config.status.responses.luna_local)
-    			statusGlobal.luna_local = Math.floor((new Date()) / 1000);
-    });
-
-    url = util.format(
-        config.status.urls.luna_public,
-        httpkey.port,
-		httpkey.key
-    );
-    getStatus(url, statusTimeoutLunaPublic, function(r, s) {
-    	if (s == 200)
-    		if (r == config.status.responses.luna_public)
-    			statusGlobal.luna_public = Math.floor((new Date()) / 1000);
-    });
-}
-
-function statusChrysalis() {
-    getStatus(config.status.urls.chrysalis_file_local, statusTimeoutChrysalisFileLocal, function(r, s) {
-		if (r == config.status.responses.chrysalis_file_local)
-			statusGlobal.chrysalis_file_local = Math.floor((new Date()) / 1000);
-    });
-
-    getStatus(config.status.urls.chrysalis_file_public, statusTimeoutChrysalisFilePublic, function(r, s) {
-		if (r == config.status.responses.chrysalis_file_public)
-			statusGlobal.chrysalis_file_public = Math.floor((new Date()) / 1000);
-    });
-
-    getStatus(config.status.urls.chrysalis_stream_local, statusTimeoutChrysalisStreamLocal, function(r, s) {
-    	if (s == 200)
-    		if (JSON.parse(r)[config.status.responses.chrysalis_stream_local] != undefined)
-    			statusGlobal.chrysalis_stream_local = Math.floor((new Date()) / 1000);
-    });
-
-    getStatus(config.status.urls.chrysalis_stream_public, statusTimeoutChrysalisStreamPublic, function(r, s) {
-    	if (s == 200)
-    		if (JSON.parse(r)[config.status.responses.chrysalis_stream_public] != undefined)
-    			statusGlobal.chrysalis_stream_public = Math.floor((new Date()) / 1000);
-    });
-
-    var url = util.format(
-        config.status.urls.chrysalis_ann,
-		httpkey.key
-    );
-    getStatus(url, statusTimeoutChrysalisAnn, function(r, s) {
-    	if (s == 200)
-    		if (r == config.status.responses.chrysalis_ann)
-    			statusGlobal.chrysalis_ann = Math.floor((new Date()) / 1000);
-    });
-}
-
-function statusRarity() {
-    getStatus(config.status.urls.rarity_local, statusTimeoutRarityLocal, function(r, s) {
-		if (r == config.status.responses.rarity_local)
-			statusGlobal.rarity_local = Math.floor((new Date()) / 1000);
-    });
-
-    getStatus(config.status.urls.rarity_public, statusTimeoutRarityPublic, function(r, s) {
-		if (r == config.status.responses.rarity_public)
-			statusGlobal.rarity_public = Math.floor((new Date()) / 1000);
-    });
-}
-
-function statusTantabus() {
-    getStatus(config.status.urls.tantabus_local, statusTimeoutTantabusLocal, function(r, s) {
-		if (r == config.status.responses.tantabus_local)
-			statusGlobal.tantabus_local = Math.floor((new Date()) / 1000);
-    });
-
-    getStatus(config.status.urls.tantabus_public, statusTimeoutTantabusPublic, function(r, s) {
-		if (r == config.status.responses.tantabus_public)
-			statusGlobal.tantabus_public = Math.floor((new Date()) / 1000);
-    });
-}
-
-function generateStatus(key, val, now) {
-	var value;
-	if (val == undefined)
-		value = "undefined";
-	else
-		value = (now - val).toString();
-
-	return key + ":" + value + ",";
-}
-
-function loopStatusPull() {
-	statusVariPass();
-	statusLuna();
-	statusChrysalis();
-	statusRarity();
-	statusTantabus();
-
-    setTimeout(loopStatusPull, config.options.statuspull * 1000);
-}
-
-function loopStatusPush() {
-	var now =  Math.floor((new Date()) / 1000);
-
-	var data = "";
-
-	data += generateStatus("luna_local", statusGlobal.luna_local, now);
-	data += generateStatus("luna_public", statusGlobal.luna_public, now);
-	
-	data += generateStatus("chrysalis_file_local", statusGlobal.chrysalis_file_local, now);
-	data += generateStatus("chrysalis_file_public", statusGlobal.chrysalis_file_public, now);
-	data += generateStatus("chrysalis_stream_local", statusGlobal.chrysalis_stream_local, now);
-	data += generateStatus("chrysalis_stream_public", statusGlobal.chrysalis_stream_public, now);
-	data += generateStatus("chrysalis_ann", statusGlobal.chrysalis_ann, now);
-
-	data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
-	data += generateStatus("rarity_public", statusGlobal.rarity_public, now);
-
-	data += generateStatus("tantabus_local", statusGlobal.tantabus_local, now);
-	data += generateStatus("tantabus_public", statusGlobal.tantabus_public, now);
-
-	data += generateStatus("varipass", statusGlobal.varipass, now);
-	data += generateStatus("celly", statusGlobal.celly, now);
-	data += generateStatus("chryssy", statusGlobal.chryssy, now);
-	data += generateStatus("dashie", statusGlobal.dashie, now);
-	data += generateStatus("twilight", statusGlobal.twilight, now);
-
-	data += generateStatus("tradfri", statusGlobal.tradfri, now);
-	data += generateStatus("lulu", statusGlobal.lulu, now);
-	data += generateStatus("sparkle", statusGlobal.sparkle, now);
-
-	var payload = {
-            "key": httpkey.key,
-            "data": data
-        };
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", config.status.api, true);
-    xhr.setRequestHeader("Content-type", "application/json");
-
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4)
-        	if (xhr.status != 200 && xhr.status != 503) {
-		        console.log(util.format(
-		            strings.debug.status.error,
-		            xhr.status
-		        ));
-	    	}
-	}
-    xhr.onerror = function(err) {
-        console.log(util.format(
-            strings.debug.status.error,
-            err.target.status
-        ));
-        xhr.abort();
-    }
-    xhr.ontimeout = function() {
-        console.log(strings.debug.status.timeout);
-        xhr.abort();
-    }
-
-    xhr.send(JSON.stringify(payload));
-
-    setTimeout(loopStatusPush, config.options.statuspush * 1000);
 }
 
 /*
- * Loops to continuously save brain data.
+ * Saves EEG data to a CSV file.
  */
-function loopBrainSave() {
-    if (!rebooting)
-        saveAllBrains();
+function saveEEG() {
+    var file;
 
-    setTimeout(loopBrainSave, config.brain.saveloop * 1000);
+    if (eegTable.length > 0) {
+        file = fs.createWriteStream(config.eeg.basicpath);
+
+        file.on("error", function(err) {
+            console.log(util.format(
+                strings.debug.eegerror, 
+                err
+            ));
+            return;
+        });
+
+        file.write(strings.misc.eeg.basic.title, "utf-8");
+        eegTable.forEach(function(e) {
+            file.write(util.format(
+                strings.misc.eeg.basic.values,
+                e.time,
+                e.battery,
+                e.signal
+            ), "utf-8");
+        });
+
+        file.end();
+
+        var file = fs.createWriteStream(config.eeg.rawpath);
+
+        file.on("error", function(err) {
+            console.log(util.format(
+                strings.debug.eegerror, 
+                err
+            ));
+            return;
+        });
+
+        file.write(strings.misc.eeg.raw.title, "utf-8");
+        eegTable.forEach(function(e) {
+            file.write(util.format(
+                strings.misc.eeg.raw.values,
+                e.time,
+                e.attention,
+                e.meditation,
+                e.waves[0],
+                e.waves[1],
+                e.waves[2],
+                e.waves[3],
+                e.waves[4],
+                e.waves[5],
+                e.waves[6],
+                e.waves[7],
+                e.sumlow,
+                e.sumhigh
+            ), "utf-8");
+        });
+
+        file.end();
+    }
+
+    if (eegTableEMA.length > 0) {
+        var file = fs.createWriteStream(config.eeg.emapath);
+
+        file.on("error", function(err) {
+            console.log(util.format(
+                strings.debug.eegerror, 
+                err
+            ));
+            return;
+        });
+
+        file.write(strings.misc.eeg.ema.title, "utf-8");
+        eegTableEMA.forEach(function(e) {
+            file.write(util.format(
+                strings.misc.eeg.ema.values,
+                e.time,
+                e.attention,
+                e.meditation,
+                e.waves[0],
+                e.waves[1],
+                e.waves[2],
+                e.waves[3],
+                e.waves[4],
+                e.waves[5],
+                e.waves[6],
+                e.waves[7],
+                e.sumlow,
+                e.sumhigh
+            ), "utf-8");
+        });
+
+        file.end();
+    }
 }
+
+/*
+ * Performs a seizure induced reboot.
+ * @param  channelID  Channel ID where the seizure happened.
+ * @param  userID     User ID who caused the seizure.
+ * @param  message    Message which caused the seizure.
+ */
+function seizureReboot(channelID, userID, message) {
+    rebooting = true;
+
+    Object.keys(nptoggles).forEach(function(n, i) {
+        if (nptoggles[n])
+            send(n, strings.announcements.npreboot, true);
+    });
+    send(channelNameToID(config.options.channels.debug), util.format(
+        strings.announcements.seizure.debug,
+        channelIDToName(channelID),
+        message
+    ), false);
+    send(channelID, util.format(
+        strings.announcements.seizure.reply,
+        mention(userID)
+    ), false);
+
+    var seizure = {};
+    seizure.channel = channelID;
+    seizure.user = userID;
+    fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
+
+    saveAllBrains();
+    blitzorws.close();
+
+    setTimeout(function() {
+        console.log(strings.debug.stopped);
+        process.exit();
+    }, config.options.reboottime * 1000);
+}
+
+/*
+ * h
+ * @param  channelID h
+ */
+function h(channelID) {
+    if (hTrack[channelID] == undefined) {       
+        hTrack[channelID] = moment();
+        setTimeout(function() {
+            send(channelID, strings.misc.h, true);
+        }, config.options.hmessage * 1000);
+    }
+    else if (moment() - hTrack[channelID] >= config.options.htimeout * 1000) {
+        hTrack[channelID] = moment();
+        setTimeout(function() {
+            send(channelID, strings.misc.h, true);
+        }, config.options.hmessage * 1000);
+    }
+    else {
+        hTrack[channelID] = moment();
+    }
+}
+
+/*
+ * Downloads a file from the web.
+ * @param  uri       URL to the file to download.
+ * @param  filename  Path to location where file will be saved.
+ * @param  callback  Callback function to call once done.
+ */
+var download = function(uri, filename, callback) {
+    request.head(uri, function(err, res, body) {
+        console.log(util.format(
+            strings.debug.download.start,
+            uri
+        ));
+
+        request({
+            "method": "GET", 
+            "rejectUnauthorized": false, 
+            "url": uri,
+            "headers" : {"Content-Type": "application/json"},
+            function(err,data,body) {}
+        }).on("error", function(err) {
+            console.log(util.format(
+                strings.debug.download.error,
+                err
+            ));
+            download(uri, filename, callback);
+        }).pipe(fs.createWriteStream(filename)).on("close", callback);
+    });
+};
 
 
 
