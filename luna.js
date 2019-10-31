@@ -3160,7 +3160,10 @@ function loadSeizure() {
 var processRequest = function(req, res) {
     if (req.method == "GET") {
         var query = url.parse(req.url, true).query;
-        if (query.key == httpkey.key)
+
+        //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);
+
+        if (query.key == httpkey.key) {
             switch (query.action) {
                 case "power":  processReqPower(query);  break;
                 case "motion": processReqMotion(query); break;
@@ -3175,27 +3178,25 @@ var processRequest = function(req, res) {
                 case "reboot": processReqReboot(query); break;
                 case "reload": processReqReload(query); break;
                 case "waifu":  processReqWaifu(query);  break;
-            }       
-    }
+            }
 
-    //console.log("Connection! " + res.socket.remoteAddress + " " + req.url);
-
-    if (query.key == httpkey.key) {
-        if (query.action == "ping") {
-            res.writeHead(200, [
-                ["Content-Type", "text/plain"], 
-                ["Content-Length", 4]
-                    ]);
-            res.write("pong");
-        }
-        else {
-            res.writeHead(200, [
-                ["Content-Type", "text/plain"], 
-                ["Content-Length", 0]
-                    ]);
-            res.write("");
+            if (query.action == "ping") {
+                res.writeHead(200, [
+                    ["Content-Type", "text/plain"], 
+                    ["Content-Length", 4]
+                        ]);
+                res.write("pong");
+                return;              
+            }
         }
     }
+
+    res.writeHead(200, [
+        ["Content-Type", "text/plain"], 
+        ["Content-Length", 0]
+            ]);
+    res.write("");
+    
     res.end();
 };
 
