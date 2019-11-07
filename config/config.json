@@ -104,8 +104,8 @@
 			]
 		},
 		"nightlight": {
-			"rangemin": 3.40,
-			"rangemax": 3.65,
+			"value":    4.2,
+			"delta":    0.2,
 			"count":    10,
 			"control": "bath",
 			"bulbs": [

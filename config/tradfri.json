@@ -5,7 +5,7 @@
 
 		{
 			"name": "norm",
-			"devices": [
+			"bulbs": [
 				{
 					"name": "desk",
 					"config": {
@@ -47,7 +47,7 @@
 
 		{
 			"name": "gotn",
-			"devices": [
+			"bulbs": [
 				{
 					"name": "desk",
 					"config": {
@@ -93,7 +93,7 @@
 
 		{
 			"name": "late",
-			"devices": [
+			"bulbs": [
 				{
 					"name": "desk",
 					"config": {
@@ -139,7 +139,7 @@
 
 		{
 			"name": "cold",
-			"devices": [
+			"bulbs": [
 				{
 					"name": "desk",
 					"config": {
@@ -181,7 +181,7 @@
 
 		{
 			"name": "off",
-			"devices": [
+			"bulbs": [
 				{
 					"name": "desk",
 					"config": {

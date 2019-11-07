@@ -329,7 +329,7 @@
 		},
 		"bulb": {
 			"messageA": "Thori, the bulbs I currently have access to are:",
-			"messageB": "\n• %s (#%s)",
+			"messageB": "\n:bulb: %s (#%s)",
 			"messageC": "Thori, I am setting the parameters now!",
 			"errorA":   "Thori, you need to specify the parameters. The parameters should be written as shown below:",
 			"errorB":   "\n```Color (HEX value)\nTransition Time (in seconds)```",
@@ -337,10 +337,13 @@
 			"errorD":   "Thori, I don't know of any bulb with that name."
 		},
 		"toggle": {
-			"messageA": "Thori, the bulbs I currently have access to are:",
-			"messageB": "\n• %s (%s)",
-			"messageC": "Thori, I am toggling the bulb now!",
-			"error":    "Thori, I don't know of any bulb with that name."
+			"messageA":    "Thori, the togglable devices I currently have access to are (bolded are **on**):",
+			"messageBon":  "\n%s **%s**",
+            "messageBoff": "\n%s %s",
+			"messageC":    "Thori, I am toggling the device now!",
+			"error":       "Thori, I don't know of any device with that name.",
+            "iconBulb":    ":bulb:",
+            "iconPlug":    ":electric_plug:"
 		},
 		"schedulestart": {
 			"messageA": "Thori, I have scheduled automatic bulb control for the next %s days. Here are all of the times I have scheduled:",
@@ -686,8 +689,10 @@
 			"connect": "Connecting to Tradfri hub...",
 			"errorA":  "Error connecting to Tradfri hub, retrying... (Attempt %s)",
 			"errorB":  "Unable to set the bulb, trying again...",
-			"done":    "  Done. Found bulb devices: %s",
-			"bulb":    "    %s\n  #%s\n    Type:   %s\n    Color:  #%s\n    Bright: %s\n    On:     %s"
+			"doneb":   "  Done. Found bulb devices: %s",
+            "doned":   "  Done. Found togglable devices: %s",
+			"bulb":    "    %s\n      #%s\n      Type:   %s\n      Color:  #%s\n      Bright: %s\n      On:     %s",
+            "device":  "    %s\n      #%s\n      Type:   %s\n      On:     %s"
 		},
 		"chase": {
 			"reconnect": "Storm Chasing! Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",

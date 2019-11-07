@@ -111,7 +111,8 @@ var eegConfig;
 
 // Tradfri
 var hub;
-var devices;
+var tBulbs;
+var tDevices;
 var hubRetry        = 0;
 var scheduleEntries = [];
 var scheduleJobs    = [];
@@ -1987,7 +1988,7 @@ comm.bulb = function(data) {
         refreshTradfriDevices(function(result) {
             if (result) {
                 var message = strings.commands.bulb.messageA;
-                devices.forEach(function(d) {
+                tBulbs.forEach(function(d) {
                     var color = d.color;
                     if (color == "0")
                         color = "custom";
@@ -2007,7 +2008,7 @@ comm.bulb = function(data) {
     else {
         var found = false;
         var id;
-        devices.forEach(function(d) {
+        tBulbs.forEach(function(d) {
             if (d.name == name) {               
                 found = true;
                 id = d.id;
@@ -2065,17 +2066,24 @@ comm.toggle = function(data) {
         refreshTradfriDevices(function(result) {
             if (result) {
                 var message = strings.commands.toggle.messageA;
-                devices.forEach(function(d) {
-                    var on = d.on;
-                    if (on == true)
-                        on = "on";
+                tDevices.forEach(function(d) {
+
+                    var type = strings.commands.toggle.iconPlug;
+                    if (d.color != undefined)
+                        type = strings.commands.toggle.iconBulb;
+
+                    if (d.on == true)
+                        message += util.format(
+                            strings.commands.toggle.messageBon,
+                            type,
+                            d.name
+                        );
                     else
-                        on = "off";
-                    message += util.format(
-                        strings.commands.toggle.messageB, 
-                        d.name,
-                        on
-                    );
+                        message += util.format(
+                            strings.commands.toggle.messageBoff,
+                            type,
+                            d.name
+                        );
                 });
                 send(data.channelID, message, false);
             }
@@ -2087,7 +2095,7 @@ comm.toggle = function(data) {
     else {      
         var found = false;
 
-        devices.forEach(function(d) {       
+        tDevices.forEach(function(d) {       
             if (d.name == name) {
                 found = true;   
                 send(data.channelID, strings.commands.toggle.messageC, false);
@@ -2161,7 +2169,7 @@ comm.schedulestart = function(data) {
                         if (result) {
                             var message = "";
                             e.bulbs.forEach(function(b) {
-                                devices.forEach(function(d) {
+                                tDevices.forEach(function(d) {
                                     if (b == d.name) {
                                         if (e.toggle == "off" && d.on) {
                                             hub.toggleDevice(d.id);
@@ -3375,7 +3383,7 @@ function processReqToggle(query) {
             if (result) {
                 var found = false;
                 query.bulbs.split(",").forEach(function(b) {
-                    devices.forEach(function(d) {       
+                    tDevices.forEach(function(d) {       
                         if (d.name == b) {
                             hub.toggleDevice(d.id);
                             found = true;
@@ -3407,7 +3415,7 @@ function processReqState(query) {
             if (result) {
                 var found = false;
                 query.bulbs.split(",").forEach(function(b) {
-                    devices.forEach(function(d) {  
+                    tDevices.forEach(function(d) {  
                         if (d.name == b) {
                             if (d.on == true && query.state == "off") {
                                 hub.toggleDevice(d.id);
@@ -4295,7 +4303,7 @@ function statusVariPass() {
                     // Day Lamp Off
                     if (vpLight >= config.varipass.daylight.threshold) {
                         config.varipass.daylight.bulbs.forEach(function(b) {
-                            devices.forEach(function(d) {  
+                            tDevices.forEach(function(d) {  
                                 if (d.name == b && d.on == true) {
                                     hub.toggleDevice(d.id);
                                     send(channelNameToID(config.options.channels.debug), util.format(
@@ -4310,17 +4318,19 @@ function statusVariPass() {
 
                     // Night Lamp Off
                     var controlOn = false;
-                    devices.forEach(function(d) {  
+                    tDevices.forEach(function(d) {  
                         if (d.name == config.varipass.nightlight.control && d.on == true) {
                             controlOn = true;
                         }
                     });                 
-                    if (vpLight > config.varipass.nightlight.rangemin && vpLight < config.varipass.nightlight.rangemax && !controlOn) {
+                    if (vpLight > config.varipass.nightlight.value - config.varipass.nightlight.delta &&
+                        vpLight < config.varipass.nightlight.value + config.varipass.nightlight.delta &&
+                        !controlOn) {
                         nightLightCount++;
 
                         if (nightLightCount >= config.varipass.nightlight.count)
                             config.varipass.nightlight.bulbs.forEach(function(b) {
-                                devices.forEach(function(d) {  
+                                tDevices.forEach(function(d) {  
                                     if (d.name == b && d.on == true) {
                                         hub.toggleDevice(d.id);
                                         send(channelNameToID(config.options.channels.debug), util.format(
@@ -4903,17 +4913,23 @@ function refreshTradfriDevices(callback) {
 
     hub.getDevices().then((result) => {
 
-        devices = result.filter(function(d) {
+        tBulbs = result.filter(function(d) {
             return d.color != undefined;
         });
+        tBulbs.sort((a, b) => (a.name > b.name) ? 1 : -1);
+
+        tDevices = result.filter(function(d) {
+            return d.color != undefined || d.type == "TRADFRI control outlet";
+        });        
+        tDevices.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
         if (tradfri.debug) {
             console.log(util.format(
-                strings.debug.tradfri.done,
-                devices.length
+                strings.debug.tradfri.doneb,
+                tBulbs.length
             ));
 
-            devices.forEach(function(d) {
+            tBulbs.forEach(function(d) {
                 console.log(util.format(
                     strings.debug.tradfri.bulb,
                     d.name,
@@ -4921,6 +4937,21 @@ function refreshTradfriDevices(callback) {
                     d.type,
                     d.color,
                     d.brightness,
+                    d.on
+                ));
+            });
+
+            console.log(util.format(
+                strings.debug.tradfri.doned,
+                tBulbs.length
+            ));
+
+            tDevices.forEach(function(d) {
+                console.log(util.format(
+                    strings.debug.tradfri.device,
+                    d.name,
+                    d.id,
+                    d.type,
                     d.on
                 ));
             });
@@ -4951,8 +4982,8 @@ function setMood(name, callback) {
         if (m.name == name) {
             refreshTradfriDevices(function(result) {
                 if (result) {
-                    m.devices.forEach(function(d1) {
-                        devices.forEach(function(d2) {
+                    m.bulbs.forEach(function(d1) {
+                        tBulbs.forEach(function(d2) {
                             if (d1.name == d2.name) {
                                 setBulb(d1.config, d2.id);
                             }
