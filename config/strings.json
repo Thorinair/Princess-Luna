@@ -29,7 +29,8 @@
 			"listA":    "%s, check your direct messages, I am sending you the full list there!",
 			"listB":     "Here are all the tracks I have an artwork for:\n\n",
 			"errorA":   "%s, I don't have an artwork for that track.",
-			"errorB":   "%s, I don't have an artwork for the track currently playing on PonyvilleFM."
+			"errorB":   "%s, I don't have an artwork for the track currently playing on PonyvilleFM.",
+            "errorC":   "%s, I was unable to load the artwork's URL."
 		},
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
@@ -38,7 +39,8 @@
 		},
 		"moon": {
 			"messageA": "%s, give me a moment...",
-			"messageB": "Here is how the Moon looks like right now."
+			"messageB": "Here is how the Moon looks like right now.",
+            "error":    "I was unable to download the image of the Moon at this time. Please try again later."
 		},
 		"room": {
 			"message":  "%s, here is the status of Thorinair's room. Radiation data was measured by Chryssy, particle data was measured by Dashie, and the rest of the data was measured by Celly.\n```\nCelly (%s ago):\n  Temperature:          %s °C\n  Humidity:             %s %\n  Pressure:             %s hPa\n  CO2 Concentration:    %s ppm\n  VOC Concentration:    %s ppb\n  Ambient Light:        %s\n  Magnetic Magnitude:   %s uT\n  Magnetic Inclination: %s °\n  Vibrations X:         %s\n  Vibrations Y:         %s\n  Vibrations Z:         %s\n  Gravity X:            %s m/s2\n  Gravity Y:            %s m/s2\n  Gravity Z:            %s m/s2\n```\n```Chryssy (%s ago):\n  Radiation Dose EMA: %s uSv/h\n  Geiger Counts:      %s CPM\n```\n```Dashie (%s ago):\n  PM1.0 Concentration:   %s ug/m3\n  PM2.5 Concentration:   %s ug/m3\n  PM10.0 Concentration:  %s ug/m3\n  Particles 0.3-0.5 um:  %s pcs/L\n  Particles 0.5-1.0 um:  %s pcs/L\n  Particles 1.0-2.5 um:  %s pcs/L\n  Particles 2.5-5.0 um:  %s pcs/L\n  Particles 5.0-10.0 um: %s pcs/L\n  Particles >10.0 um:    %s pcs/L```",
@@ -587,9 +589,10 @@
 		"join":         "Joined Discord. My name is \"%s\" with ID #%s.",
 		"eegerror":     "Error saving EEG data: %s",
 		"download": {
-			"start": "Downloading file: %s",
-			"error": "  Error while downloading: \"%s\". Retrying...",
-			"stop":  "  Finished downloading!"
+			"start":  "Downloading file: %s",
+			"error":  "  Error while downloading: \"%s\". Retrying...",
+			"stop":   "  Finished downloading!",
+            "cancel": "  Download cancelled."
 		},
 		"announcements": {
 			"load":    "Loading: GOTN dates...",

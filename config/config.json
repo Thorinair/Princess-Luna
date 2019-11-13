@@ -44,6 +44,7 @@
 		"statuspush":    1,
 		"debugphase":    false,
 		"debuggotn":     false,
+        "downloadtry":   4,
 		"channels": {
 			"debug":     "debug",
 			"home":      "home_luna",
@@ -137,7 +138,7 @@
 		"maxloop":    100,
 		"saveloop":   1800,
 		"maxlines":   32768,
-		"cleanbrain": false,
+		"cleanbrain": true,
 		"debug":      false
 	},
 	"backup": {

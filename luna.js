@@ -427,7 +427,10 @@ comm.moon = function(data) {
     download(config.options.moonurl, config.options.moonimg, function() {
         console.log(strings.debug.download.stop);
         embed(data.channelID, strings.commands.moon.messageB, config.options.moonimg, "Moon " + (new Date()) + ".png", true, true);
-    });
+    }, function() {
+        console.log(strings.debug.download.cancel);
+        send(data.channelID, strings.commands.moon.error, true);
+    }, 0);
 };
 
 // Command: !room
@@ -663,7 +666,12 @@ comm.printer = function(data) {
         }
 
         xhr.send();
-    });
+
+    }, function() {
+
+        send(data.channelID, strings.commands.printer.error, true);
+        
+    }, 0);
 };
 
 // Command: !token
@@ -1399,7 +1407,9 @@ comm.artwork = function(data) {
             download(artwork[np.nowplaying], config.options.artimg, function() {
                 console.log(strings.debug.download.stop);
                 embed(data.channelID, strings.commands.artwork.radio, config.options.artimg, np.nowplaying + ".png", true, true);
-            });
+            }, function() {
+                send(data.channelID, strings.commands.artwork.errorC, true);
+            }, 0);
 
         }
         else {
@@ -1433,7 +1443,9 @@ comm.artwork = function(data) {
         download(artwork[param], config.options.artimg, function() {
             console.log(strings.debug.download.stop);
             embed(data.channelID, strings.commands.artwork.message, config.options.artimg, param + ".png", true, true);
-        });
+        }, function() {
+            send(data.channelID, strings.commands.artwork.errorC, true);
+        }, 0);
 
     }
     else {
@@ -3248,9 +3260,11 @@ function processReqMotion(query) {
             query.camera
         ), false);
     download(query.snapshot, config.options.motionimg, function() {
-            console.log(strings.debug.download.stop);
-            embed(channelNameToID(config.options.channels.home), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, true);
-        });
+        console.log(strings.debug.download.stop);
+        embed(channelNameToID(config.options.channels.home), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, true);
+    }, function() {
+        console.log(strings.debug.download.cancel);
+    }, 0);
 }
 
 /*
@@ -5179,7 +5193,7 @@ function isMentioned(id, data) {
  * @return          The cleaned up message.
  */
 function cleanMessage(message) {
-    return message.replace(/<.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
+    return message.replace(/<@.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
 }
 
 /*
@@ -6017,27 +6031,33 @@ function h(channelID) {
  * @param  filename  Path to location where file will be saved.
  * @param  callback  Callback function to call once done.
  */
-var download = function(uri, filename, callback) {
-    request.head(uri, function(err, res, body) {
-        console.log(util.format(
-            strings.debug.download.start,
-            uri
-        ));
-
-        request({
-            "method": "GET", 
-            "rejectUnauthorized": false, 
-            "url": uri,
-            "headers" : {"Content-Type": "application/json"},
-            function(err,data,body) {}
-        }).on("error", function(err) {
+var download = function(uri, filename, callbackDone, callbackErr, count) {
+    if (count < config.options.downloadtry) {
+        request.head(uri, function(err, res, body) {
             console.log(util.format(
-                strings.debug.download.error,
-                err
+                strings.debug.download.start,
+                uri
             ));
-            download(uri, filename, callback);
-        }).pipe(fs.createWriteStream(filename)).on("close", callback);
-    });
+
+            request({
+                "method": "GET", 
+                "rejectUnauthorized": false, 
+                "url": uri,
+                "headers" : {"Content-Type": "application/json"},
+                function(err,data,body) {}
+            }).on("error", function(err) {
+                count++;
+                console.log(util.format(
+                    strings.debug.download.error,
+                    err
+                ));
+                download(uri, filename, callbackDone, callbackErr, count);
+            }).pipe(fs.createWriteStream(filename)).on("close", callbackDone);
+        });
+    }
+    else {
+        callbackErr();
+    }
 };
 
 
