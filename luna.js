@@ -3025,8 +3025,6 @@ function loadBrain() {
                 strings.debug.brain.new,
                 b
             ));
-            b.loaded = true;
-
         }
     }); 
 
@@ -3136,10 +3134,12 @@ function saveBrain(name) {
 
     file.end();
 
+    brains[name].loaded = true;
+
     setTimeout(function() {
         fs.rename(path + ".new", path, function(e) {
-        });
-    }, 1000);       
+        });        
+    }, 1000);    
 }
 
 /*
