@@ -5262,6 +5262,15 @@ function completeRoleplay(message) {
     else if (doSAst)
         newMessage = "*" + newMessage;
 
+    if (newMessage[0] == "*" && newMessage[1] == " ")
+        newMessage = "*" + newMessage.substring(2, newMessage.length);
+    if (newMessage[0] == "_" && newMessage[1] == " ")
+        newMessage = "_" + newMessage.substring(2, newMessage.length);
+    if (newMessage[newMessage.length - 1] == "*" && newMessage[newMessage.length - 2] == " ")
+        newMessage = newMessage.substring(0, newMessage.length - 2) + "*";
+    if (newMessage[newMessage.length - 1] == "_" && newMessage[newMessage.length - 2] == " ")
+        newMessage = newMessage.substring(0, newMessage.length - 2) + "_";
+
     return newMessage;
 }
 
