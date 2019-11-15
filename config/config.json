@@ -139,7 +139,8 @@
 		"saveloop":   1800,
 		"maxlines":   32768,
 		"cleanbrain": true,
-		"debug":      false
+		"debug":      false,
+        "debugrp":    false
 	},
 	"backup": {
 		"output": {

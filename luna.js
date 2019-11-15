@@ -5194,7 +5194,7 @@ function isMentioned(id, data) {
  * @return          The cleaned up message.
  */
 function cleanMessage(message) {
-    return message.replace(/<@.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
+    return message.replace(/\*\*/g, "").replace(/<@.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
 }
 
 /*
@@ -5233,6 +5233,11 @@ function completeRoleplay(message) {
         doSUnd = true;
     if (startAst == -1 && endAst > -1)
         doSAst = true;
+
+    if (config.brain.debugrp) {
+        console.log(message);
+        console.log("Ast Und - Ast Und: " + doSUnd + " " + doSAst + " " + doEUnd + " " + doEAst);        
+    }
 
     var newMessage = message;
     if (doEUnd && doEAst) {
