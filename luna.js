@@ -5203,7 +5203,18 @@ function cleanMessage(message) {
  * @return          The completed RP message.
  */
 function completeRoleplay(message) {
-    var words = message.split(" ");
+    var newMessage = message;
+
+    if (newMessage[0] == "*" && newMessage[1] == " ")
+        newMessage = "*" + newMessage.substring(2, newMessage.length);
+    if (newMessage[0] == "_" && newMessage[1] == " ")
+        newMessage = "_" + newMessage.substring(2, newMessage.length);
+    if (newMessage[newMessage.length - 1] == "*" && newMessage[newMessage.length - 2] == " ")
+        newMessage = newMessage.substring(0, newMessage.length - 2) + "*";
+    if (newMessage[newMessage.length - 1] == "_" && newMessage[newMessage.length - 2] == " ")
+        newMessage = newMessage.substring(0, newMessage.length - 2) + "_";
+
+    var words = newMessage.split(" ");
 
     var startUnd = -1;
     var startAst = -1;
@@ -5235,11 +5246,10 @@ function completeRoleplay(message) {
         doSAst = true;
 
     if (config.brain.debugrp) {
-        console.log(message);
+        console.log(newMessage);
         console.log("Ast Und - Ast Und: " + doSUnd + " " + doSAst + " " + doEUnd + " " + doEAst);        
     }
 
-    var newMessage = message;
     if (doEUnd && doEAst) {
         if (startUnd < startAst)
             newMessage = newMessage + "*_";
@@ -5261,16 +5271,6 @@ function completeRoleplay(message) {
         newMessage = "_" + newMessage;
     else if (doSAst)
         newMessage = "*" + newMessage;
-
-    if (newMessage[0] == "*" && newMessage[1] == " ")
-        newMessage = "*" + newMessage.substring(2, newMessage.length);
-    if (newMessage[0] == "_" && newMessage[1] == " ")
-        newMessage = "_" + newMessage.substring(2, newMessage.length);
-    if (newMessage[newMessage.length - 1] == "*" && newMessage[newMessage.length - 2] == " ")
-        newMessage = newMessage.substring(0, newMessage.length - 2) + "*";
-    if (newMessage[newMessage.length - 1] == "_" && newMessage[newMessage.length - 2] == " ")
-        newMessage = newMessage.substring(0, newMessage.length - 2) + "_";
-
     return newMessage;
 }
 
