@@ -3844,7 +3844,8 @@ function loadBot() {
                 if (config.seizure.debug && newMessage == config.seizure.force)
                     while (true) {}
 
-                send(channelID, mention(userID) + " " + brains[channelIDToBrain(channelID)].getReplyFromSentence(newMessage), true);
+                var genMessage = completeRoleplay(brains[channelIDToBrain(channelID)].getReplyFromSentence(newMessage));
+                send(channelID, mention(userID) + " " + genMessage, true);
 
                 if (config.seizure.enabled) {
                     tripwire.clearTripwire();
@@ -5194,6 +5195,69 @@ function isMentioned(id, data) {
  */
 function cleanMessage(message) {
     return message.replace(/<@.*>/g, "").replace(/\|\|.*\|\|/g, "").replace(/http(|s):\/\/(\S+)*/g, "");
+}
+
+/*
+ * Analyzes the message and completes it with _ or * for an RP action if needed.
+ * @param  message  Message text to analyze.
+ * @return          The completed RP message.
+ */
+function completeRoleplay(message) {
+    var words = message.split(" ");
+
+    var startUnd = -1;
+    var startAst = -1;
+    var endUnd   = -1;
+    var endAst   = -1;
+    var doSUnd   = false;
+    var doSAst   = false;
+    var doEUnd   = false;
+    var doEAst   = false;
+
+    words.forEach(function (w, i) {
+        if (w[0] == "_")
+            startUnd = i;
+        if (w[0] == "*")
+            startAst = i;
+        if (w[w.length - 1] == "_")
+            endUnd = i;
+        if (w[w.length - 1] == "*")
+            endAst = i;
+    });
+
+    if (startUnd > -1 && endUnd == -1)
+        doEUnd = true;
+    if (startAst > -1 && endAst == -1)
+        doEAst = true;
+    if (startUnd == -1 && endUnd > -1)
+        doSUnd = true;
+    if (startAst == -1 && endAst > -1)
+        doSAst = true;
+
+    var newMessage = message;
+    if (doEUnd && doEAst) {
+        if (startUnd < startAst)
+            newMessage = newMessage + "*_";
+        else
+            newMessage = newMessage + "_*";
+    }
+    else if (doEUnd)
+        newMessage = newMessage + "_";
+    else if (doEAst)
+        newMessage = newMessage + "*";
+
+    if (doSUnd && doSAst) {
+        if (endUnd < endAst)
+            newMessage = "*_" + newMessage;
+        else
+            newMessage = "_*" + newMessage;
+    }
+    else if (doSUnd)
+        newMessage = "_" + newMessage;
+    else if (doSAst)
+        newMessage = "*" + newMessage;
+
+    return newMessage;
 }
 
 /*
