@@ -508,6 +508,7 @@
 		"noperm":       "I am sorry %s, but only PonyvilleFM DJs and admins are allowed to use this command.",
 		"noadmin":      "I am sorry %s, but only Thorinair is allowed to use this command.",
 		"tradfrierror": "Thori, I am having trouble connecting to the Tradfri hub. Please try again later.",
+        "toolong":      "I won't even bother writing a reply to that.",
 		"left":         "%s on %s at %s",
 		"gold":         "%sg %ss %sc",
 		"voicetag":     "`[voice]` ",

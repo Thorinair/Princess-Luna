@@ -3893,16 +3893,31 @@ function loadBot() {
  * @param  typing   Whether the typing delay should be added.
  */
 function send(id, message, typing) {
-    var channel = channelIDToName(id);
+    if (message.length <= config.options.maxlength) {
 
-    var msg = {
-        "to": id,
-        "message": message
-    };
+        var channel = channelIDToName(id);
+        var msg = {
+            "to": id,
+            "message": message
+        };
 
-    if (typing) {
-        bot.simulateTyping(id);
-        setTimeout(function() {
+        if (typing) {
+            bot.simulateTyping(id);
+            setTimeout(function() {
+                console.log(util.format(
+                    strings.debug.message,
+                    channel,
+                    message
+                ));
+                bot.sendMessage(msg, function(err) {
+                    if (err != undefined) {
+                        console.log(strings.debug.failedm);
+                        send(id, message, typing);
+                    }
+                });
+            }, config.options.typetime * 1000); 
+        }
+        else {
             console.log(util.format(
                 strings.debug.message,
                 channel,
@@ -3914,20 +3929,10 @@ function send(id, message, typing) {
                     send(id, message, typing);
                 }
             });
-        }, config.options.typetime * 1000); 
+        }
     }
     else {
-        console.log(util.format(
-            strings.debug.message,
-            channel,
-            message
-        ));
-        bot.sendMessage(msg, function(err) {
-            if (err != undefined) {
-                console.log(strings.debug.failedm);
-                send(id, message, typing);
-            }
-        });
+        send(id, strings.misc.toolong, typing);
     }
 };
 
