@@ -1188,6 +1188,33 @@ comm.thori = function(data) {
     }
 };
 
+// Command: !temp
+comm.temp = function(data) {
+    exec("sudo /home/luna/temp.sh", (error, stdout, stderr) => {
+        if (error) {
+            console.log(error);
+            send(data.channelID, util.format(
+                strings.commands.temp.error,
+                mention(data.userID)
+            ), true);
+            return;
+        }
+
+        var lines = stdout.split("\n");
+        var cpu = parseFloat(lines[0].split("=")[1].split("'")[0]);
+        var gpu = parseFloat(lines[1].split("=")[1].split("'")[0]);
+        var body = ((cpu + gpu) / 2).toFixed(2);
+
+        send(data.channelID, util.format(
+            strings.commands.temp.message,
+            mention(data.userID),
+            body,
+            cpu,
+            gpu
+        ), true);
+    });
+};
+
 // Command: !stats
 comm.stats = function(data) {
     var dateNow = new Date();

@@ -116,6 +116,10 @@
 			"messageB": "Thorinair is currently located at **%s, %s** at the altitude of **%s m**. Last update was %s and %s seconds ago.\nYou can view his location on the following link: %s",
 			"error":    "%s, you need to be whitelisted by Thorinair in order to this command. Maybe he will if you ask him nicely."
 		},
+        "temp": {
+            "message":  "%s, my body temperature is currently %s °C (CPU at %s °C and GPU at %s °C).",
+            "error":    "%s, I was unable to measure my current body temperature."
+        },
 		"stats": {
 			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
 			"learnyes": "I am able to normally learn everything from this specific chatroom.",

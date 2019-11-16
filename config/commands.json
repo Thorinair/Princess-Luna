@@ -85,6 +85,11 @@
 			"help":    "Ask me about Thorinair's current location. You may only use this if Thorinair whitelists you.",
 			"type":    "public"
 		},
+        {
+            "command": "temp",
+            "help":    "Ask me to measure my body temperature.",
+            "type":    "public"
+        },
 		{
 			"command": "stats",
 			"help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
