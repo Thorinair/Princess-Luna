@@ -62,9 +62,10 @@
 			"messageC": "Nightmare Rarity is currently printing a file called `%s`, and the print is %s% done. It is estimated that the printing time will take around %s more. You can view the printing area on the webcam image below.",
 			"error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
 		},
-		"token": {
-			"message":  "The current price of the [WoW Token] is %s. Last update was %s ago.",
-			"error":    "I was unable to look up information about the [WoW Token] price..."
+		"assault": {
+            "messageA": "%s, there is already a Faction Assault in progress in %s region, ending in %s.\nNext assault begins begins in %s.",
+			"messageB": "%s, next Faction Assault in %s region begins in %s.",
+			"error":    "%s, that is not a valid region. You may use NA, EU or OC."
 		},
 		"blacklist": {
 			"messageA": "%s, I am sad to hear that you no longer wish me to remember your messages. From this point on, I will not remember anything you say in any channel. If you ever change your mind, just use this command again.",
@@ -495,6 +496,9 @@
 			"strike": "**BOOM!** Lightning activity detected near your location!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
 			"expire": "Thori, I have not detected any lightning activity near you in a while."
 		},
+        "wow": {
+            "assault": "@everyone, a new Faction Assault has begun! Next assault begins in %s."
+        },
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
 		"schedule":   "As scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
@@ -650,6 +654,11 @@
 			"load":    "Loading: Timezone data...",
 			"done":    "  Done."
 		},
+        "assaults": {
+            "load":    "Loading: Faction Assault announcements...",
+            "date":    "  Added: %s",
+            "done":    "  Done."
+        },
 		"phases": {
 			"load":    "Loading: Online Phase data...",
 			"item":    "  - Loading phase date: %s - %s",

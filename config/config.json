@@ -125,11 +125,15 @@
 		"timeout": 5
 	},
 	"wow": {
-		"url": "https://eu.api.battle.net/",
-		"token": {
-			"url":     "data/wow/token/?namespace=dynamic-eu&locale=en_GB&access_token=%s",
-			"timeout": 60
-		}
+        "assault": {
+            "duration": 25200,
+            "interval": 68400,
+            "regions": {
+                "NA": 1574571600,
+                "EU": 1574539200,
+                "OC": 1574571600
+            }
+        }
 	},
 	"brain": {
 		"path":       "/var/www/node/data/brains/brain_",

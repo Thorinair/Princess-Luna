@@ -674,57 +674,40 @@ comm.printer = function(data) {
     }, 0);
 };
 
-// Command: !token
-comm.token = function(data) {
+// Command: !assault
+comm.assault = function(data) {
+    var region = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (region == "" || region == config.options.commandsymbol + data.command)
+        region = "EU";
 
-    var url = config.wow.url + util.format(
-        config.wow.token.url,
-        wow.access_token
-    );
+    if (region == "NA" || region == "EU" || region == "OC") {
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
+        var dueTime = getAssault(region);
+        var dateNow = new Date();
 
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var response = JSON.parse(xhr.responseText);
+        var ending = dueTime - config.wow.assault.interval*1000 + config.wow.assault.duration*1000;
 
-            if (response.price != undefined) {
-
-                var now = new Date();
-
-                var diff = (now - response.last_updated_timestamp) / 1000;
-                var time = {};
-
-                time.seconds = Math.floor(diff % 60);
-                diff = Math.floor(diff / 60);
-                time.minutes = Math.floor(diff % 60);
-                diff = Math.floor(diff / 60);
-                time.hours = Math.floor(diff % 24);
-                time.days = Math.floor(diff / 24);
-
-                send(data.channelID, util.format(
-                    strings.commands.token.message,
-                    getWoWPrice(response.price),
-                    getTimeString(time)
-                ), true);
-            }
-            else {
-                send(data.channelID, strings.commands.token.error, true);
-            }
+        if (ending > dateNow) {
+            send(data.channelID, util.format(
+                strings.commands.assault.messageA, 
+                mention(data.userID),
+                region,
+                getTimeLeft(dateNow, ending, "CET"),
+                getTimeLeft(dateNow, dueTime, "CET")
+            ), true);
+        }
+        else {
+            send(data.channelID, util.format(
+                strings.commands.assault.messageB, 
+                mention(data.userID),
+                region,
+                getTimeLeft(dateNow, dueTime, "CET")
+            ), true);
         }
     }
-
-    xhr.onerror = function(err) {
-        send(data.channelID, strings.commands.token.error, true);
-        xhr.abort();
+    else {
+        send(data.channelID, strings.commands.assault.error, true);
     }
-    xhr.ontimeout = function() {
-        send(data.channelID, strings.commands.token.error, true);
-        xhr.abort();
-    }
-
-    xhr.send();
 };
 
 // Command: !blacklist
@@ -2638,6 +2621,7 @@ function startupProcedure() {
     loadTimezones();
     loadTradfri();
     loadServer();
+    loadAssaults();
     loadPhases();
 }
 
@@ -2896,6 +2880,17 @@ function loadTradfri() {
  */
 function loadServer() {
     server = http.createServer(processRequest).listen(config.options.serverport);
+}
+
+/*
+ * Loads the WoW Faction Assault announcements.
+ */
+function loadAssaults() {
+    console.log(strings.debug.assaults.load);
+
+    prepareAssaultAnnounce();
+
+    console.log(strings.debug.assaults.done);
 }
 
 /*
@@ -6133,6 +6128,44 @@ function h(channelID) {
     else {
         hTrack[channelID] = moment();
     }
+}
+
+/* 
+ * Generates time for upcoming Faction Assault.
+ * @param  region  Region to return the assault time for.
+ * @return         Time of the assault, as moment.
+ */
+function getAssault(region) {
+    var countDownDate = moment(1000 * config.wow.assault.regions[region]);
+    for (var o = moment(), n = countDownDate - o, r = countDownDate; n < 0;) {
+        //console.log((r + 0) / 1000;
+        n = (r = r.clone().add(19, "hours")) - o;
+    }
+    return r.clone();
+}
+
+/* 
+ * Prepares an assult announcement.
+ */
+function prepareAssaultAnnounce() {
+    var dueTime = new Date(getAssault("EU"));
+
+    var job = new CronJob(new Date(getAssault("EU")), function() {
+        setTimeout(function() {
+            send(channelNameToID(config.options.channels.home), util.format(
+                strings.announcements.wow.assault,
+                getTimeLeft((new Date()) - 2000, new Date(getAssault("EU")), "CET")
+            ), true);
+
+            prepareAssaultAnnounce();
+        }, 1000);
+
+    }, function () {}, true);
+
+    console.log(util.format(
+        strings.debug.assaults.date,
+        dueTime
+    ));  
 }
 
 /*

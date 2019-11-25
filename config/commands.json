@@ -51,8 +51,8 @@
 			"type":    "public"
 		},
 		{
-			"command": "token",
-			"help":    "Ask me about the current price of the [WoW Token].",
+			"command": "assault",
+			"help":    "Ask me in how long will the next Faction Assault in WoW begin. Defaults to EU, but you may specify a region after the command: NA, EU, OC",
 			"type":    "public"
 		},
 		{
