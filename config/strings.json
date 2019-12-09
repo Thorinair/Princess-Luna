@@ -62,6 +62,11 @@
 			"messageC": "Nightmare Rarity is currently printing a file called `%s`, and the print is %s% done. It is estimated that the printing time will take around %s more. You can view the printing area on the webcam image below.",
 			"error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
 		},
+        "devices": {
+            "messageA": "%s, below is a list of all the devices which are part of Thorinair's Lunar Infrastructure. Repeat this command with a device name as parameter to get a photo and more detailed explanation.",
+            "messageB": "\n• **%s** - *%s*",
+            "error":    "%s, I don't know of any device with such a name."
+        },
 		"assault": {
             "messageA": "%s, there is already a Faction Assault in progress in %s region, ending in %s.\nNext assault begins begins in %s.",
 			"messageB": "%s, next Faction Assault in %s region begins in %s.",

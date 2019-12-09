@@ -1,0 +1,65 @@
+{
+	"folder":    "/home/luna/devices/",
+    "list": [
+        {
+            "name": "Princess Luna",
+            "description": "Myself! The brain of the whole Lunar Infrastructure.",
+            "details": "%s, oh, it's me! :flushed: I am a Raspberry Pi 3B and the brain of the whole infrastructure. I control all of Thorinair's smarthome devices, I monitor the atmospheric and geologic data to give warnings and I let you use tons of commands and can chat with you. Finally, I help Thorinair with his Glory of The Night radio show on his server!",
+            "picture": "luna.jpg"
+        },
+        {
+            "name": "Queen Chrysalis",
+            "description": "File hosting, ANN computing and Minecraft servers.",
+            "details": "%s, Queen Chrysalis is an important complement to me. She hosts a lot of different files so others can have access to them, and she also does some neural network computing for me on her GTX 1070 GPU. Other than that, she also hosts a large number of Minecraft servers just because she can!",
+            "picture": "chrysalis.jpg"
+        },
+        {
+            "name": "Tantabus",
+            "description": "Camera surveillance.",
+            "details": "%s, Tantabus is a Raspberry Pi 3B used to monitor Thorinair's home with webcams. Oof, dusty! It is able to detect motion on the live feeds and tell me to alert Thorinair in case of intruders.",
+            "picture": "tantabus.jpg"
+        },
+        {
+            "name": "Nightmare Rarity",
+            "description": "3D printing.",
+            "details": "%s, Nightmare Rarity is Thorinair's home made 3D printer which runs off a Raspberry Pi 3B. Thorinair uses her to print all sorts of stuff, but usually only using PLA filament. He even takes orders! You can have me show you what is being printed by calling the `!printer` command.",
+            "picture": "rarity.jpg"
+        },
+        {
+            "name": "Celly",
+            "description": "Atmospheric and geologic sensor system.",
+            "details": "%s, Celly is a custom designed ESP8266 powered sensor system which gathers a wide variety of data. From atmospheric conditions like temperature and pressure to info about the Earth's magnetic field and gravitational pull. All of this data is sent to <https://varipass.org/> for storage and processing. You can get the full listing of her data using the command `!room`.",
+            "picture": "celly.jpg"
+        },
+        {
+            "name": "Chryssy",
+            "description": "Portable Geiger counter.",
+            "details": "%s, Chryssy is a custom designed ESP8266 powered portable Geiger counter. She measures the counts per minute (CPM) of the environment and converts them to the micro Sieverts per hour (uSv/h) unit. Big advantage of her is that she is highly portable and all the data is sent to <https://varipass.org/> for storage and processing. You can get the full listing of her data using the command `!room`.",
+            "picture": "chryssy.jpg"
+        },
+        {
+            "name": "Dashie",
+            "description": "Particle concentration sensor.",
+            "details": "%s, Dashie is a custom designed ESP8266 powered atmospheric particle concentration sensor. She measures concentrations of various sizes of particles, but primarily gives PM1.0, PM2.5 and PM10 values, which are an international standard. All of this data is sent to <https://varipass.org/> for storage and processing. You can get the full listing of her data using the command `!room`.",
+            "picture": "dashie.jpg"
+        },
+        {
+            "name": "Sparkle",
+            "description": "Power outage monitor.",
+            "details": "%s, Sparkle is a custom designed ESP8266 powered power outage monitor. She is a rather simple device, consisting only of the microcontroller and a battery. In case of a power outage, she loses her charging power and notifies me, so I may further warn Thorinair when the power is out.",
+            "picture": "sparkle.jpg"
+        },
+        {
+            "name": "Lulu",
+            "description": "Portable EEG system.",
+            "details": "%s, Lulu (yeah, I don't know whats with that name either, ask Thorinair) is a custom designed ESP8266 powered portable EEG system. She uses a hacked Mindflex EEG headset to read Thorinair's brainwaves and then sends the data directly to me. Thorinair is then able to use commands to have me log his brainwave data during certain activities, for instance sleeping. You can read the latest brainwave data using the `!eeg˛` command.",
+            "picture": "lulu.jpg"
+        },
+        {
+            "name": "Tradfri Hub",
+            "description": "Ikea's smarthome system.",
+            "details": "%s, not something Thorinair has made himself, but the Ikea Tradfri hub is an important part of the system, as it grants me access to all of Thorinair's smartbulbs and smart outlets around the home. Thorinair is able to give me commands on what I should toggle, and I can also control them independently for his convenience.",
+            "picture": "tradfri.jpg"
+        }
+    ]
+}

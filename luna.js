@@ -41,6 +41,7 @@ var httpkey  = require("./config/httpkey.json");
 var mac      = require("./config/mac.json");
 var blitzor  = require("./config/blitzor.json");
 var thori    = require("./config/thori.json");
+var devices  = require("./config/devices.json");
 
 /************************************
  * Princess Luna's functions are divided in multiple categories
@@ -672,6 +673,44 @@ comm.printer = function(data) {
         send(data.channelID, strings.commands.printer.error, true);
         
     }, 0);
+};
+
+// Command: !devices
+comm.devices = function(data) {
+    var name = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (name == "" || name == config.options.commandsymbol + data.command) {
+        var message = util.format(
+            strings.commands.devices.messageA,
+            mention(data.userID)
+        );
+        devices.list.forEach(function(d) {
+            message += util.format(
+                strings.commands.devices.messageB,
+                d.name,
+                d.description
+            );
+        });
+        send(data.channelID, message, true);
+    }
+    else {      
+        var found = false;
+
+        devices.list.forEach(function(d) {       
+            if (d.name == name) {
+                found = true;
+                embed(data.channelID, util.format(
+                    d.details,
+                    mention(data.userID)
+                ), devices.folder + d.picture, d.name + ".jpg", true, false);
+            }
+        });
+
+        if (!found)
+            send(data.channelID, util.format(
+                strings.commands.devices.error,
+                mention(data.userID)
+            ), true);
+    }
 };
 
 // Command: !assault
@@ -5950,6 +5989,7 @@ function reloadConfig() {
     mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
     blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
     thori    = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
+    devices  = JSON.parse(fs.readFileSync(config.options.configpath + "devices.json", "utf8"));
 
     clearTimeout(lightningReconnect);
     blitzorws.close();

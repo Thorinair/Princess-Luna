@@ -50,6 +50,11 @@
 			"help":    "Ask me about the status of Thorinair's Nightmare Rarity 3D printer. I will also send a photo of the printer's webcam.",
 			"type":    "public"
 		},
+        {
+            "command": "devices",
+            "help":    "Ask me about all the different devices which are part of Thorinair's Lunar Infrastructure. Use the command without parameters to get a list, and then with the device name as parameter to get more detailed info.",
+            "type":    "public"
+        },
 		{
 			"command": "assault",
 			"help":    "Ask me in how long will the next Faction Assault in WoW begin. Defaults to EU, but you may specify a region after the command: NA, EU, OC",
