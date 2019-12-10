@@ -551,8 +551,9 @@
 		"ann": {
 			"waifu": {
 				"message": "%s, the processing is done and took a total of %s sec.\nYou can download the new image on the following link (**%s MB**): <%s>",
-				"errorA":  "%s, Queen Chrysalis tried to process the data, but she has reported an error. Please let Thorinair know.",
-				"errorB":  "%s, somepony tried to start a Waifu2x rescaling, but Queen Chrysalis has reported an error while processing. Please check what's up.",
+				"errorA":  "%s, Queen Chrysalis tried to process the data, but she has reported an unknwon error. Please let Thorinair know.",
+				"errorB":  "%s, somepony tried to start a Waifu2x rescaling, but Queen Chrysalis has reported an unknown error while processing. Please check what's up.",
+                "toobig":  "%s, it seems that last picture was too big for Queen Chrysalis to handle. Please try sending a smaller picture or using a smaller scale multiplier.",
 				"queue":   "%s, Queen Chrysalis says that there are already other requests being processed so she has put your request in a queue.\nThere are currently **%s** requests left."
 			}
 		},

@@ -3662,6 +3662,12 @@ function processReqWaifu(query) {
             mention(config.options.adminid)
         ), true);       
     }
+    else if (query.toobig != undefined && query.channelid != undefined && query.userid != undefined) {
+        send(query.channelid, util.format(
+            strings.misc.ann.waifu.toobig,
+            mention(query.userid)
+        ), true);     
+    }
     else if (query.queue != undefined && query.channelid != undefined && query.userid != undefined) {
         send(query.channelid, util.format(
             strings.misc.ann.waifu.queue,
