@@ -10,7 +10,7 @@
         {
             "name": "Queen Chrysalis",
             "description": "File hosting, ANN computing and Minecraft servers.",
-            "details": "%s, Queen Chrysalis is an important complement to me. She hosts a lot of different files so others can have access to them, and she also does some neural network computing for me on her GTX 1070 GPU. Other than that, she also hosts a large number of Minecraft servers just because she can!",
+            "details": "%s, Queen Chrysalis is an important complement to me. Her internal hardware is a Ryzen 5 1600 CPU, 24 GB of RAM and an Nvidia GTX 1070 GPU. She hosts a lot of different files so others can have access to them, and she also does neural network computing for me on her GPU. Other than that, she also hosts a large number of Minecraft servers just because she can!",
             "picture": "chrysalis.jpg"
         },
         {
