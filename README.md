@@ -47,6 +47,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Private commands for the admin:
     - `!stop` Stops the currently active Glory of The Night session and sends the relevant announcements.
     - `!send` Sends a message to a channel. Specify the channel name after the command, and message in the lines below.
+    - `!l` Posts the lyrics of currently playing track to all active Now Playing channels.
     - `!learn` Manually trains the bot using specified text. Specify the brain name in the same line as command, text in new lines. Retroactively teaching data from older chat logs? Please refer to the guide below on how to clean the data up.
     - `!purge` Purges data from a brain specified after the command. A starting and ending message should be specified below the command.
     - `!npstatus` Lists the current status of automatic Now Playing info announcing across channels.

@@ -240,7 +240,7 @@
             "message":  "%s, here are the lyrics of that track:\n\n",
             "radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM:\n\n",
             "listA":    "%s, check your direct messages, I am sending you the full list there!",
-            "listB":     "Here are all the tracks I know the lyrics of:\n\n",
+            "listB":    "Here are all the tracks I know the lyrics of:\n\n",
             "errorA":   "%s, I don't know the lyrics of that track.",
             "errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM."
         },
@@ -274,6 +274,11 @@
 			"errorA":   "Thori, you need to specify the channel for me to send to.",
 			"errorB":   "Thori, you need to specify the text for me to send."
 		},
+        "l": {
+            "messageA": "Thori, I'm posting the lyrics data...",
+            "messageB": "**Lyrics for the current track are:**\n\n",
+            "error":    "Thori, I don't know the lyrics of the track currently playing on PonyvilleFM."
+        },
 		"learn": {
 			"message":  "Thori, I've learned the text you gave me.",
 			"errorA":   "Thori, you need to specify the brain which I should learn with after the command.",

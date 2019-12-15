@@ -1398,7 +1398,7 @@ comm.lyrics = function(data) {
     if (param == "" || param == config.options.commandsymbol + data.command) {
         if (lyrics[np.nowplaying] != undefined) {
 
-            sendLarge(data, lyrics[np.nowplaying].split("\n"), util.format(
+            sendLarge(data.channelID, lyrics[np.nowplaying].split("\n"), util.format(
                 strings.commands.lyrics.radio,
                 mention(data.userID)
             ), true);
@@ -1420,14 +1420,13 @@ comm.lyrics = function(data) {
                 mention(data.userID)
             ), true);
 
-        data.channelID = data.userID;
-        sendLarge(data, Object.keys(lyrics).sort(), util.format(
+        sendLarge(data.userID, Object.keys(lyrics).sort(), util.format(
             strings.commands.lyrics.listB
         ), false);
     }
     else if (lyrics[param] != undefined) {
 
-        sendLarge(data, lyrics[param].split("\n"), util.format(
+        sendLarge(data.channelID, lyrics[param].split("\n"), util.format(
             strings.commands.lyrics.message,
             mention(data.userID)
         ), true);
@@ -1483,8 +1482,7 @@ comm.art = function(data) {
                 mention(data.userID)
             ), true);
 
-        data.channelID = data.userID;
-        sendLarge(data, Object.keys(art).sort(), util.format(
+        sendLarge(data.userID, Object.keys(art).sort(), util.format(
             strings.commands.art.listB
         ), false);
     }
@@ -1674,6 +1672,20 @@ comm.learn = function(data) {
         else {
             send(data.channelID, strings.commands.learn.errorB, false);
         }
+    }
+};
+
+// Command: !l
+comm.l = function(data) {
+    if (lyrics[np.nowplaying] != undefined) {
+        send(data.channelID, strings.commands.l.messageA, false);
+        Object.keys(nptoggles).forEach(function(n, i) {
+            if (nptoggles[n])
+                sendLarge(n, lyrics[np.nowplaying].split("\n"), strings.commands.l.messageB, true);
+        });
+    }
+    else {
+        send(data.channelID, strings.commands.l.error, false);
     }
 };
 
@@ -4017,12 +4029,12 @@ function send(id, message, typing) {
 
 /*
  * Sends a large message to some chat using multiple messages. Used for lyrics and lists.
- * @param  data     Data of the message.
+ * @param  id       Data of the message.
  * @param  list     List to be sent.
  * @param  message  Initial message string.
  * @param  format   Whether lyrics formatting should be used.
  */
-function sendLarge(data, list, message, format) {
+function sendLarge(id, list, message, format) {
 
     var length = message.length;
     var multi = [];
@@ -4052,7 +4064,7 @@ function sendLarge(data, list, message, format) {
 
     multi.forEach(function(m, i){
         setTimeout(function() {
-            send(data.channelID, m, true);
+            send(id, m, true);
         }, i * 1000);           
     });
 };

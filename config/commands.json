@@ -251,6 +251,11 @@
 			"help":    "",
 			"type":    "private"
 		},
+        {
+            "command": "l",
+            "help":    "",
+            "type":    "private"
+        },
 		{
 			"command": "learn",
 			"help":    "",
