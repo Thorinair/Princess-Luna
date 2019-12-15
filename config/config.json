@@ -15,10 +15,10 @@
 		"configpath":    "/var/www/node/config/",
 		"moonimg":       "/var/www/node/data/moon.png",
 		"motionimg":     "/var/www/node/data/motion.jpg",
-		"artimg":        "/var/www/node/data/art.png",
+		"artimg":        "/var/www/node/data/art_%s.%s",
 		"phasepath":     "/var/www/node/data/phase.json",
 		"lyricspath":    "/var/www/node/data/lyrics.json",
-		"artworkpath":   "/var/www/node/data/artwork.json",
+		"artpath":       "/var/www/node/data/art.json",
 		"nptogglespath": "/var/www/node/data/nptoggles.json",
 		"blacklistpath": "/var/www/node/data/blacklist.json",
 		"ignorepath":    "/var/www/node/data/ignore.json",
@@ -53,12 +53,14 @@
 			"announceC":     [
 				"466147926092283904",
 				"298642620849324035",
-				"453194204919627786"
+				"453194204919627786",
+                "566519014776504340",
+                "218542102143959042"
 			],
 			"welcome":   "general",
 			"phases":    "general",
 			"nowplaying":    [
-				"gotn",
+				"feed",
 				"pvfm_live-dj-chat"
 			]
 		},

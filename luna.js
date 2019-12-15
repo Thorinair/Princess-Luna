@@ -77,7 +77,7 @@ var started    = false;
 // Loaded
 var jobsGOTN = [];
 var lyrics;
-var artwork;
+var art;
 var nptoggles;
 var annStatus;
 var blacklist;
@@ -1441,30 +1441,36 @@ comm.lyrics = function(data) {
     }
 };
 
-// Command: !artwork
-comm.artwork = function(data) {
+// Command: !art
+comm.art = function(data) {
     var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
 
     if (param == "" || param == config.options.commandsymbol + data.command) {
-        if (artwork[np.nowplaying] != undefined) {
+        if (art[np.nowplaying] != undefined) {
 
             send(data.channelID, util.format(
-                strings.commands.artwork.load,
+                strings.commands.art.load,
                 mention(data.userID)
             ), true);
 
-            download(artwork[np.nowplaying], config.options.artimg, function() {
+            var parts = art[np.nowplaying].split(".");
+            var artimg = util.format(
+                config.options.artimg,
+                data.channelID,
+                parts[parts.length-1]
+            );
+            download(art[np.nowplaying], artimg, function() {
                 console.log(strings.debug.download.stop);
-                embed(data.channelID, strings.commands.artwork.radio, config.options.artimg, np.nowplaying + ".png", true, true);
+                embed(data.channelID, strings.commands.art.radio, artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
             }, function() {
-                send(data.channelID, strings.commands.artwork.errorC, true);
+                send(data.channelID, strings.commands.art.errorC, true);
             }, 0);
 
         }
         else {
 
             send(data.channelID, util.format(
-                strings.commands.artwork.errorB,
+                strings.commands.art.errorB,
                 mention(data.userID)
             ), true);
 
@@ -1473,44 +1479,50 @@ comm.artwork = function(data) {
     else if (param == "list") {
         if (bot.channels[data.channelID] != undefined)  
             send(data.channelID, util.format(
-                strings.commands.artwork.listA, 
+                strings.commands.art.listA, 
                 mention(data.userID)
             ), true);
 
         data.channelID = data.userID;
-        sendLarge(data, Object.keys(artwork).sort(), util.format(
-            strings.commands.artwork.listB
+        sendLarge(data, Object.keys(art).sort(), util.format(
+            strings.commands.art.listB
         ), false);
     }
-    else if (artwork[param] != undefined) {
+    else if (art[param] != undefined) {
 
         send(data.channelID, util.format(
-            strings.commands.artwork.load,
+            strings.commands.art.load,
             mention(data.userID)
         ), true);
 
-        download(artwork[param], config.options.artimg, function() {
+        var parts = art[param].split(".");
+        var artimg = util.format(
+            config.options.artimg,
+            data.channelID,
+            parts[parts.length-1]
+        );
+        download(art[param], artimg, function() {
             console.log(strings.debug.download.stop);
-            embed(data.channelID, strings.commands.artwork.message, config.options.artimg, param + ".png", true, true);
+            embed(data.channelID, strings.commands.art.message, artimg, param + "." + parts[parts.length-1], true, true);
         }, function() {
-            send(data.channelID, strings.commands.artwork.errorC, true);
+            send(data.channelID, strings.commands.art.errorC, true);
         }, 0);
 
     }
     else {
         send(data.channelID, util.format(
-            strings.commands.artwork.errorA,
+            strings.commands.art.errorA,
             mention(data.userID)
         ), true);
     }
 };
 
-// Command: !nptoggle
-comm.nptoggle = function(data) {
+// Command: !npt
+comm.npt = function(data) {
     if (nptoggles[data.channelID] == undefined) {
         nptoggles[data.channelID] = true;
         send(data.channelID, util.format(
-            strings.commands.nptoggle.messageA, 
+            strings.commands.npt.messageA, 
             mention(data.userID)
         ), true);
 
@@ -1533,7 +1545,7 @@ comm.nptoggle = function(data) {
     else {
         delete nptoggles[data.channelID];
         send(data.channelID, util.format(
-            strings.commands.nptoggle.messageB, 
+            strings.commands.npt.messageB, 
             mention(data.userID)
         ), true);
 
@@ -1547,18 +1559,18 @@ comm.nptoggle = function(data) {
     fs.writeFileSync(config.options.nptogglespath, JSON.stringify(nptoggles), "utf-8");
 };
 
-// Command: !npoverride
-comm.npoverride = function(data) {
+// Command: !npo
+comm.npo = function(data) {
     var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
     if (track == "" || track == config.options.commandsymbol + data.command) {
         send(data.channelID, util.format(
-            strings.commands.npoverride.error,
+            strings.commands.npo.error,
             mention(data.userID)
         ),  false);
     }
     else {
         send(data.channelID, util.format(
-            strings.commands.npoverride.message, 
+            strings.commands.npo.message, 
             mention(data.userID),
             track
         ), false);
@@ -1892,60 +1904,60 @@ comm.lyricsdel = function(data) {
     }
 };
 
-// Command: !artworkadd
-comm.artworkadd = function(data) {
+// Command: !artadd
+comm.artadd = function(data) {
     var lines = data.message.split("\n");
 
     var track = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
     if (track == "" || track == config.options.commandsymbol + data.command) {
-        send(data.channelID, strings.commands.artworkadd.errorA, false);
+        send(data.channelID, strings.commands.artadd.errorA, false);
     }
     else {
         if (lines[1] != undefined) {
             var url = lines[1];
 
-            if (artwork[track] == undefined) {              
-                artwork[track] = url;
-                fs.writeFileSync(config.options.artworkpath, JSON.stringify(artwork), "utf-8");
+            if (art[track] == undefined) {              
+                art[track] = url;
+                fs.writeFileSync(config.options.artpath, JSON.stringify(art), "utf-8");
                 send(data.channelID, util.format(
-                    strings.commands.artworkadd.messageA, 
+                    strings.commands.artadd.messageA, 
                     track
                 ), false);
             }
             else {
-                artwork[track] = url;
-                fs.writeFileSync(config.options.artworkpath, JSON.stringify(artwork), "utf-8");
+                art[track] = url;
+                fs.writeFileSync(config.options.artpath, JSON.stringify(art), "utf-8");
                 send(data.channelID, util.format(
-                    strings.commands.artworkadd.messageB, 
+                    strings.commands.artadd.messageB, 
                     track
                 ), false);
             }           
         }
         else {
-            send(data.channelID, strings.commands.artworkadd.errorB, false);
+            send(data.channelID, strings.commands.artadd.errorB, false);
         }
     }
 };
 
-// Command: !artworkdel
-comm.artworkdel = function(data) {
+// Command: !artdel
+comm.artdel = function(data) {
     var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
     if (track == "" || track == config.options.commandsymbol + data.command) {
-        send(data.channelID, strings.commands.artworkdel.errorA, false);
+        send(data.channelID, strings.commands.artdel.errorA, false);
     }
     else {
-        if (artwork[track] != undefined) {
-            delete artwork[track];
+        if (art[track] != undefined) {
+            delete art[track];
 
-            fs.writeFileSync(config.options.artworkpath, JSON.stringify(artwork), "utf-8");
+            fs.writeFileSync(config.options.artpath, JSON.stringify(art), "utf-8");
 
             send(data.channelID, util.format(
-                strings.commands.artworkdel.message, 
+                strings.commands.artdel.message, 
                 track
             ), false);
         }
         else {
-            send(data.channelID, strings.commands.artworkdel.errorB, false);
+            send(data.channelID, strings.commands.artdel.errorB, false);
         }
     }
 };
@@ -2651,7 +2663,7 @@ function startupProcedure() {
 
     loadAnnouncements();
     loadLyrics();
-    loadArtwork();
+    loadArt();
     loadNPToggles();
     loadANN();
     loadBlacklist();
@@ -2779,19 +2791,19 @@ function loadLyrics() {
 }
 
 /*
- * Loads the artwork data, or creates new.
+ * Loads the art data, or creates new.
  */
-function loadArtwork() {
-    artwork = {};
+function loadArt() {
+    art = {};
 
-    if (fs.existsSync(config.options.artworkpath)) {
-        console.log(strings.debug.artwork.old);
-        artwork = JSON.parse(fs.readFileSync(config.options.artworkpath, "utf8"));
-        console.log(strings.debug.artwork.done);
+    if (fs.existsSync(config.options.artpath)) {
+        console.log(strings.debug.art.old);
+        art = JSON.parse(fs.readFileSync(config.options.artpath, "utf8"));
+        console.log(strings.debug.art.done);
     }
     else {
-        fs.writeFileSync(config.options.artworkpath, JSON.stringify(artwork), "utf-8");
-        console.log(strings.debug.artwork.new);
+        fs.writeFileSync(config.options.artpath, JSON.stringify(art), "utf-8");
+        console.log(strings.debug.art.new);
     }
 }
 

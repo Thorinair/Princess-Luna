@@ -225,17 +225,17 @@
 			"type":    "dj"
 		},
 		{
-			"command": "artwork",
-			"help":    "Ask me to show the artwork of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I have an artwork for.",
+			"command": "art",
+			"help":    "Ask me to show the art of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I have an art for.",
 			"type":    "dj"
 		},
 		{
-			"command": "nptoggle",
+			"command": "npt",
 			"help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel.",
 			"type":    "dj"
 		},
 		{
-			"command": "npoverride",
+			"command": "npo",
 			"help":    "Ask me to manually update the info about the track currently playing.",
 			"type":    "dj"
 		},
@@ -282,12 +282,12 @@
 			"type":    "private"
 		},
 		{
-			"command": "artworkadd",
+			"command": "artadd",
 			"help":    "",
 			"type":    "private"
 		},
 		{
-			"command": "artworkdel",
+			"command": "artdel",
 			"help":    "",
 			"type":    "private"
 		},

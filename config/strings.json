@@ -14,24 +14,6 @@
 			"message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
 			"error":    "%s, I am unable to tell you which track is currently playing on PonyvilleFM."
 		},
-		"lyrics": {
-			"message":  "%s, here are the lyrics of that track:\n\n",
-			"radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM:\n\n",
-			"listA":    "%s, check your direct messages, I am sending you the full list there!",
-			"listB":     "Here are all the tracks I know the lyrics of:\n\n",
-			"errorA":   "%s, I don't know the lyrics of that track.",
-			"errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM."
-		},
-		"artwork": {
-			"load":     "%s, give me a moment...",
-			"message":  "Here is the artwork for that track:",
-			"radio":    "Here is the artwork for the track currently playing on PonyvilleFM:",
-			"listA":    "%s, check your direct messages, I am sending you the full list there!",
-			"listB":     "Here are all the tracks I have an artwork for:\n\n",
-			"errorA":   "%s, I don't have an artwork for that track.",
-			"errorB":   "%s, I don't have an artwork for the track currently playing on PonyvilleFM.",
-            "errorC":   "%s, I was unable to load the artwork's URL."
-		},
 		"phase": {
 			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
 			"messageB": "The next %s is in %s.",
@@ -254,11 +236,29 @@
 
 
 
-		"nptoggle": {
+        "lyrics": {
+            "message":  "%s, here are the lyrics of that track:\n\n",
+            "radio":    "%s, here are the lyrics of the track currently playing on PonyvilleFM:\n\n",
+            "listA":    "%s, check your direct messages, I am sending you the full list there!",
+            "listB":     "Here are all the tracks I know the lyrics of:\n\n",
+            "errorA":   "%s, I don't know the lyrics of that track.",
+            "errorB":   "%s, I don't know the lyrics of the track currently playing on PonyvilleFM."
+        },
+        "art": {
+            "load":     "%s, give me a moment...",
+            "message":  "Here is the art for that track:",
+            "radio":    "Here is the art for the track currently playing on PonyvilleFM:",
+            "listA":    "%s, check your direct messages, I am sending you the full list there!",
+            "listB":     "Here are all the tracks I have an art for:\n\n",
+            "errorA":   "%s, I don't have an art for that track.",
+            "errorB":   "%s, I don't have an art for the track currently playing on PonyvilleFM.",
+            "errorC":   "%s, I was unable to load the art's URL."
+        },
+		"npt": {
 			"messageA":  "%s, I will now be posting new track names as they appear to this chat.",
 			"messageB":  "%s, I will no longer be posting new track names."
 		},
-		"npoverride": {
+		"npo": {
 			"message":  "%s, I'm overriding the Now Playing info with the new track!\nIt is now: **%s**",
 			"error":    "%s, you need to specify the track name after the command."
 		},
@@ -312,14 +312,14 @@
 			"errorA":   "Thori, you need to specify the track name.",
 			"errorB":   "Thori, I don't know of any track with that name."
 		},
-		"artworkadd": {
-			"messageA":  "Thori, I've added artwork for the track \"%s\".",
-			"messageB":  "Thori, I've replaced artwork for the track \"%s\".",
+		"artadd": {
+			"messageA":  "Thori, I've added art for the track \"%s\".",
+			"messageB":  "Thori, I've replaced art for the track \"%s\".",
 			"errorA":   "Thori, you need to specify the track name.",
-			"errorB":   "Thori, you need to specify the artwork URL as well."
+			"errorB":   "Thori, you need to specify the art URL as well."
 		},
-		"artworkdel": {
-			"message":  "Thori, I've removed artwork for the track \"%s\".",
+		"artdel": {
+			"message":  "Thori, I've removed art for the track \"%s\".",
 			"errorA":   "Thori, you need to specify the track name.",
 			"errorB":   "Thori, I don't know of any track with that name."
 		},
@@ -553,7 +553,7 @@
 				"message": "%s, the processing is done and took a total of %s sec.\nYou can download the new image on the following link (**%s MB**): <%s>",
 				"errorA":  "%s, Queen Chrysalis tried to process the data, but she has reported an unknwon error. Please let Thorinair know.",
 				"errorB":  "%s, somepony tried to start a Waifu2x rescaling, but Queen Chrysalis has reported an unknown error while processing. Please check what's up.",
-                "toobig":  "%s, it seems that last picture was too big for Queen Chrysalis to handle. Please try sending a smaller picture or using a smaller scale multiplier.",
+                "toobig":  "%s, it seems that last picture was too big for Queen Chrysalis to handle. Please try sending a smaller picture or using a smaller scale factor.",
 				"queue":   "%s, Queen Chrysalis says that there are already other requests being processed so she has put your request in a queue.\nThere are currently **%s** requests left."
 			}
 		},
@@ -619,9 +619,9 @@
 			"new":     "Created: Lyrics file.",
 			"done":    "  Done."
 		},
-		"artwork": {
-			"old":     "Loading: Artworks file...",
-			"new":     "Created: Artworks file.",
+		"art": {
+			"old":     "Loading: Art file...",
+			"new":     "Created: Art file.",
 			"done":    "  Done."
 		},
 		"nptoggles": {

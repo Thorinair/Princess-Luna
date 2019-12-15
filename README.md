@@ -41,9 +41,9 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - The bot can interract with people. Mention someone or multiple people after the command to interract with them. Supported commands: `!hug`, `!kiss`, `!boop`, `!glomp`, `!snuggle`, `!nuzzle`, `!wings`, `!snack`, `!floof`, `!nom`, `!preen`, `!blep`, `!pet`, `!groom`, `!tickle`, `!rawr`, `!eee`, `!socks`, `!plushie`, `!unplushie`.
 * Commands usable by DJs (set roles):
     - `!lyrics` Lists lyrics of a specified track. Can also list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
-    - `!artwork` Shows artwork for a specified track. Functions similar like previous command to show artwork for tracks on PonyvilleFM. Use "list" parameter to list all known artworks.
-    - `!nptoggle` Manually toggles the automatic listing of Now Playing info for a specific channel. Only usable if given a role or in private messages.
-    - `!npoverride` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
+    - `!art` Shows art for a specified track. Functions similar like previous command to show art for tracks on PonyvilleFM. Use "list" parameter to list all known art.
+    - `!npt` Manually toggles the automatic listing of Now Playing info for a specific channel. Only usable if given a role or in private messages.
+    - `!npo` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
 * Private commands for the admin:
     - `!stop` Stops the currently active Glory of The Night session and sends the relevant announcements.
     - `!send` Sends a message to a channel. Specify the channel name after the command, and message in the lines below.
@@ -53,8 +53,8 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!nppurge` Disables the automatic Now Playing info announcing for all channels.
     - `!lyricsadd` Adds lyrics to the database. Specify a track name after the command, and lyrics in the lines below. If the lyrics are longer than 2000 characters, call the command multiple times for more parts.
     - `!lyricsdel` Removes lyrics from the database. Specify a track name after the command.
-    - `!artworkadd` Adds an artwork to the database. Specify a track name after the command, and the artwork URL in the line below.
-    - `!artworkdel` Removes an artwork from the database. Specify a track name after the command.
+    - `!artadd` Adds an art to the database. Specify a track name after the command, and the art URL in the line below.
+    - `!artdel` Removes an art from the database. Specify a track name after the command.
     - `!h` Lists the current status of any h chains.
     - `!ignore` Forcefully adds a user ID to a learning ignore list.
     - `!mood` Changes the mood of a larger group of the Ikea Tradfri bulbs to one of the preset configurations available. Use without a mood name to list all available ones.
