@@ -254,6 +254,14 @@
             "errorB":   "%s, I don't have an art for the track currently playing on PonyvilleFM.",
             "errorC":   "%s, I was unable to load the art's URL."
         },
+        "story": {
+            "message":  "%s, here is the story of that track:\n\n%s",
+            "radio":    "%s, here is the story of the track currently playing on PonyvilleFM:\n\n%s",
+            "listA":    "%s, check your direct messages, I am sending you the full list there!",
+            "listB":    "Here are all the tracks I know the story of:\n\n",
+            "errorA":   "%s, I don't know the story of that track.",
+            "errorB":   "%s, I don't know the story of the track currently playing on PonyvilleFM."
+        },
 		"npt": {
 			"messageA":  "%s, I will now be posting new track names as they appear to this chat.",
 			"messageB":  "%s, I will no longer be posting new track names."
@@ -328,6 +336,16 @@
 			"errorA":   "Thori, you need to specify the track name.",
 			"errorB":   "Thori, I don't know of any track with that name."
 		},
+        "storyadd": {
+            "message":  "Thori, I've added the story of the track \"%s\".",
+            "errorA":   "Thori, you need to specify the track name.",
+            "errorB":   "Thori, you need to specify the story as well."
+        },
+        "storydel": {
+            "message":  "Thori, I've removed the story of the track \"%s\".",
+            "errorA":   "Thori, you need to specify the track name.",
+            "errorB":   "Thori, I don't know of any track with that name."
+        },
 		"h": {
 			"messageA": "Thori, here are all the channels where I am tracking an h chain, along with the last seen h:",
 			"messageB": "\n• #%s - %s - **%s**",
@@ -629,6 +647,11 @@
 			"new":     "Created: Art file.",
 			"done":    "  Done."
 		},
+        "story": {
+            "old":     "Loading: Story file...",
+            "new":     "Created: Story file.",
+            "done":    "  Done."
+        },
 		"nptoggles": {
 			"old":     "Loading: Now Playing file...",
 			"new":     "Created: Now Playing file.",

@@ -19,6 +19,7 @@
 		"phasepath":     "/var/www/node/data/phase.json",
 		"lyricspath":    "/var/www/node/data/lyrics.json",
 		"artpath":       "/var/www/node/data/art.json",
+        "storypath":     "/var/www/node/data/story.json",
 		"nptogglespath": "/var/www/node/data/nptoggles.json",
 		"blacklistpath": "/var/www/node/data/blacklist.json",
 		"ignorepath":    "/var/www/node/data/ignore.json",

@@ -42,6 +42,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Commands usable by DJs (set roles):
     - `!lyrics` Lists lyrics of a specified track. Can also list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
     - `!art` Shows art for a specified track. Functions similar like previous command to show art for tracks on PonyvilleFM. Use "list" parameter to list all known art.
+    - `!story` Writes the story of a specified track. Can also list stories of tracks on PonyvilleFM. Use "list" parameter to list all known stories.
     - `!npt` Manually toggles the automatic listing of Now Playing info for a specific channel. Only usable if given a role or in private messages.
     - `!npo` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
 * Private commands for the admin:
@@ -56,6 +57,8 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!lyricsdel` Removes lyrics from the database. Specify a track name after the command.
     - `!artadd` Adds an art to the database. Specify a track name after the command, and the art URL in the line below.
     - `!artdel` Removes an art from the database. Specify a track name after the command.
+    - `!storyadd` Adds a story to the database. Specify a track name after the command, and the story text in the lines below.
+    - `!storydel` Removes a story from the database. Specify a track name after the command.
     - `!h` Lists the current status of any h chains.
     - `!ignore` Forcefully adds a user ID to a learning ignore list.
     - `!mood` Changes the mood of a larger group of the Ikea Tradfri bulbs to one of the preset configurations available. Use without a mood name to list all available ones.

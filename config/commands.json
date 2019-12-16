@@ -229,6 +229,11 @@
 			"help":    "Ask me to show the art of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I have an art for.",
 			"type":    "dj"
 		},
+        {
+            "command": "story",
+            "help":    "Ask me to write the story of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I have an art for.",
+            "type":    "dj"
+        },
 		{
 			"command": "npt",
 			"help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel.",
@@ -296,6 +301,16 @@
 			"help":    "",
 			"type":    "private"
 		},
+        {
+            "command": "storyadd",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "storydel",
+            "help":    "",
+            "type":    "private"
+        },
 		{
 			"command": "h",
 			"help":    "",

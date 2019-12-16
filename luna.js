@@ -78,6 +78,7 @@ var started    = false;
 var jobsGOTN = [];
 var lyrics;
 var art;
+var story;
 var nptoggles;
 var annStatus;
 var blacklist;
@@ -1515,6 +1516,57 @@ comm.art = function(data) {
     }
 };
 
+// Command: !story
+comm.story = function(data) {
+    var param = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+
+    if (param == "" || param == config.options.commandsymbol + data.command) {
+        if (story[np.nowplaying] != undefined) {
+
+            send(data.channelID, util.format(
+                strings.commands.story.radio,
+                mention(data.userID),
+                story[np.nowplaying]
+            ), true);
+
+        }
+        else {
+
+            send(data.channelID, util.format(
+                strings.commands.story.errorB,
+                mention(data.userID)
+            ), true);
+
+        }
+    }
+    else if (param == "list") {
+        if (bot.channels[data.channelID] != undefined)  
+            send(data.channelID, util.format(
+                strings.commands.story.listA, 
+                mention(data.userID)
+            ), true);
+
+        sendLarge(data.userID, Object.keys(story).sort(), util.format(
+            strings.commands.story.listB
+        ), false);
+    }
+    else if (story[param] != undefined) {
+
+        send(data.channelID, util.format(
+            strings.commands.story.message,
+            mention(data.userID),
+            story[param]
+        ), true);
+
+    }
+    else {
+        send(data.channelID, util.format(
+            strings.commands.story.errorA,
+            mention(data.userID)
+        ), true);
+    }
+};
+
 // Command: !npt
 comm.npt = function(data) {
     if (nptoggles[data.channelID] == undefined) {
@@ -1970,6 +2022,65 @@ comm.artdel = function(data) {
         }
         else {
             send(data.channelID, strings.commands.artdel.errorB, false);
+        }
+    }
+};
+
+// Command: !storyadd
+comm.storyadd = function(data) {
+    var lines = data.message.split("\n");
+
+    var track = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
+    if (track == "" || track == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.storyadd.errorA, false);
+    }
+    else {
+        var storylines = "";
+        lines.forEach(function(l, i) {
+            if (i != 0) {
+                storylines += l + "\n"; 
+            }
+        });
+
+        if (storylines != "") {
+
+            if (story[track] == undefined)
+                story[track] = storylines;
+            else
+                story[track] += storylines;
+
+            fs.writeFileSync(config.options.storypath, JSON.stringify(story), "utf-8");
+
+            send(data.channelID, util.format(
+                strings.commands.storyadd.message, 
+                track
+            ), false);
+        }
+        else {
+            send(data.channelID, strings.commands.storyadd.errorB, false);
+        }
+    }
+};
+
+// Command: !storydel
+comm.storydel = function(data) {
+    var track = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (track == "" || track == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.storydel.errorA, false);
+    }
+    else {
+        if (story[track] != undefined) {
+            delete story[track];
+
+            fs.writeFileSync(config.options.storypath, JSON.stringify(story), "utf-8");
+
+            send(data.channelID, util.format(
+                strings.commands.storydel.message, 
+                track
+            ), false);
+        }
+        else {
+            send(data.channelID, strings.commands.storydel.errorB, false);
         }
     }
 };
@@ -2676,6 +2787,7 @@ function startupProcedure() {
     loadAnnouncements();
     loadLyrics();
     loadArt();
+    loadStory();
     loadNPToggles();
     loadANN();
     loadBlacklist();
@@ -2816,6 +2928,23 @@ function loadArt() {
     else {
         fs.writeFileSync(config.options.artpath, JSON.stringify(art), "utf-8");
         console.log(strings.debug.art.new);
+    }
+}
+
+/*
+ * Loads the story data, or creates new.
+ */
+function loadStory() {
+    story = {};
+
+    if (fs.existsSync(config.options.storypath)) {
+        console.log(strings.debug.story.old);
+        story = JSON.parse(fs.readFileSync(config.options.storypath, "utf8"));
+        console.log(strings.debug.story.done);
+    }
+    else {
+        fs.writeFileSync(config.options.storypath, JSON.stringify(story), "utf-8");
+        console.log(strings.debug.story.new);
     }
 }
 
