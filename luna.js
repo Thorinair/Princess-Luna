@@ -1583,11 +1583,38 @@ comm.npt = function(data) {
         ));
 
         setTimeout(function() {
-            if (np.nowplaying != undefined)
+            if (np.nowplaying != undefined) {
+
+                // Post track name
                 send(data.channelID, util.format(
                     strings.announcements.nowplaying,
                     np.nowplaying
                 ), true);
+
+                // Post story
+                if (story[np.nowplaying] != undefined) {
+                    setTimeout(function() {
+                        send(data.channelID, story[np.nowplaying], true);
+                    }, config.options.nptdelaystory * 1000);
+                }
+
+                // Post art
+                if (art[np.nowplaying] != undefined) {
+                    setTimeout(function() {
+                        var parts = art[np.nowplaying].split(".");
+                        var artimg = util.format(
+                            config.options.artimg,
+                            data.channelID,
+                            parts[parts.length-1]
+                        );
+                        download(art[np.nowplaying], artimg, function() {
+                            console.log(strings.debug.download.stop);
+                            embed(data.channelID, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                        }, function() {
+                        }, 0);
+                    }, config.options.nptdelayart * 1000);
+                }
+            }
             else
                 send(data.channelID, strings.announcements.nperror, true);
         }, 1000);       
@@ -1629,11 +1656,38 @@ comm.npo = function(data) {
 
         Object.keys(nptoggles).forEach(function(n, i) {
             if (nptoggles[n])
-                if (np.nowplaying != undefined)
+                if (np.nowplaying != undefined) {
+
+                    // Post track name
                     send(n, util.format(
                         strings.announcements.nowplaying,
                         np.nowplaying
                     ), true);
+
+                    // Post story
+                    if (story[np.nowplaying] != undefined) {
+                        setTimeout(function() {
+                            send(n, story[np.nowplaying], true);
+                        }, config.options.nptdelaystory * 1000);
+                    }
+
+                    // Post art
+                    if (art[np.nowplaying] != undefined) {
+                        setTimeout(function() {
+                            var parts = art[np.nowplaying].split(".");
+                            var artimg = util.format(
+                                config.options.artimg,
+                                n,
+                                parts[parts.length-1]
+                            );
+                            download(art[np.nowplaying], artimg, function() {
+                                console.log(strings.debug.download.stop);
+                                embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                            }, function() {
+                            }, 0);
+                        }, config.options.nptdelayart * 1000);
+                    }
+                }
                 else
                     send(n, strings.announcements.nperror, true);
         });     
@@ -6107,11 +6161,38 @@ function loopNowPlaying() {
                     if (npstarted)
                         Object.keys(nptoggles).forEach(function(n, i) {
                             if (nptoggles[n])
-                                if (np.nowplaying != undefined)
+                                if (np.nowplaying != undefined) {
+
+                                    // Post track name
                                     send(n, util.format(
                                         strings.announcements.nowplaying,
                                         np.nowplaying
                                     ), true);
+
+                                    // Post story
+                                    if (story[np.nowplaying] != undefined) {
+                                        setTimeout(function() {
+                                            send(n, story[np.nowplaying], true);
+                                        }, config.options.nptdelaystory * 1000);
+                                    }
+
+                                    // Post art
+                                    if (art[np.nowplaying] != undefined) {
+                                        setTimeout(function() {
+                                            var parts = art[np.nowplaying].split(".");
+                                            var artimg = util.format(
+                                                config.options.artimg,
+                                                n,
+                                                parts[parts.length-1]
+                                            );
+                                            download(art[np.nowplaying], artimg, function() {
+                                                console.log(strings.debug.download.stop);
+                                                embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                                            }, function() {
+                                            }, 0);
+                                        }, config.options.nptdelayart * 1000);
+                                    }
+                                }
                                 else
                                     send(n, strings.announcements.nperror, true);
                         });

@@ -46,6 +46,8 @@
 		"debugphase":    false,
 		"debuggotn":     false,
         "downloadtry":   4,
+        "nptdelaystory": 5,
+        "nptdelayart":   6,
 		"channels": {
 			"debug":     "debug",
 			"home":      "home_luna",
