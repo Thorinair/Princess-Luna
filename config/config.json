@@ -63,7 +63,7 @@
 			"welcome":   "general",
 			"phases":    "general",
 			"nowplaying":    [
-				"feed",
+				"live",
 				"pvfm_live-dj-chat"
 			]
 		},
