@@ -1591,29 +1591,6 @@ comm.npt = function(data) {
                     np.nowplaying
                 ), true);
 
-                // Post story
-                if (story[np.nowplaying] != undefined) {
-                    setTimeout(function() {
-                        send(data.channelID, story[np.nowplaying], true);
-                    }, config.options.nptdelaystory * 1000);
-                }
-
-                // Post art
-                if (art[np.nowplaying] != undefined) {
-                    setTimeout(function() {
-                        var parts = art[np.nowplaying].split(".");
-                        var artimg = util.format(
-                            config.options.artimg,
-                            data.channelID,
-                            parts[parts.length-1]
-                        );
-                        download(art[np.nowplaying], artimg, function() {
-                            console.log(strings.debug.download.stop);
-                            embed(data.channelID, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
-                        }, function() {
-                        }, 0);
-                    }, config.options.nptdelayart * 1000);
-                }
             }
             else
                 send(data.channelID, strings.announcements.nperror, true);
@@ -1658,34 +1635,62 @@ comm.npo = function(data) {
             if (nptoggles[n])
                 if (np.nowplaying != undefined) {
 
-                    // Post track name
-                    send(n, util.format(
-                        strings.announcements.nowplaying,
-                        np.nowplaying
-                    ), true);
-
-                    // Post story
                     if (story[np.nowplaying] != undefined) {
-                        setTimeout(function() {
-                            send(n, story[np.nowplaying], true);
-                        }, config.options.nptdelaystory * 1000);
-                    }
 
-                    // Post art
-                    if (art[np.nowplaying] != undefined) {
+                        // Post story
+                        send(n, story[np.nowplaying], true);
+
+                        // Post art
+                        if (art[np.nowplaying] != undefined) {
+                            setTimeout(function() {
+                                var parts = art[np.nowplaying].split(".");
+                                var artimg = util.format(
+                                    config.options.artimg,
+                                    n,
+                                    parts[parts.length-1]
+                                );
+                                download(art[np.nowplaying], artimg, function() {
+                                    console.log(strings.debug.download.stop);
+                                    embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                                }, function() {
+                                }, 0);
+                            }, config.options.nptstoryart * 1000);
+                        }
+
+                        // Post track name with delay
                         setTimeout(function() {
-                            var parts = art[np.nowplaying].split(".");
-                            var artimg = util.format(
-                                config.options.artimg,
-                                n,
-                                parts[parts.length-1]
-                            );
-                            download(art[np.nowplaying], artimg, function() {
-                                console.log(strings.debug.download.stop);
-                                embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
-                            }, function() {
-                            }, 0);
-                        }, config.options.nptdelayart * 1000);
+                            send(n, util.format(
+                                strings.announcements.nowplaying,
+                                np.nowplaying
+                            ), true);
+                        }, config.options.nptstorytrack * 1000);
+
+                    }
+                    else {
+
+                        // Post track name normally
+                        send(n, util.format(
+                            strings.announcements.nowplaying,
+                            np.nowplaying
+                        ), true);
+
+                        // Post art
+                        if (art[np.nowplaying] != undefined) {
+                            setTimeout(function() {
+                                var parts = art[np.nowplaying].split(".");
+                                var artimg = util.format(
+                                    config.options.artimg,
+                                    n,
+                                    parts[parts.length-1]
+                                );
+                                download(art[np.nowplaying], artimg, function() {
+                                    console.log(strings.debug.download.stop);
+                                    embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                                }, function() {
+                                }, 0);
+                            }, config.options.nptstoryart * 1000);
+                        }
+
                     }
                 }
                 else
@@ -6163,35 +6168,64 @@ function loopNowPlaying() {
                             if (nptoggles[n])
                                 if (np.nowplaying != undefined) {
 
-                                    // Post track name
-                                    send(n, util.format(
-                                        strings.announcements.nowplaying,
-                                        np.nowplaying
-                                    ), true);
-
-                                    // Post story
                                     if (story[np.nowplaying] != undefined) {
+
+                                        // Post story
+                                        send(n, story[np.nowplaying], true);
+
+                                        // Post art
+                                        if (art[np.nowplaying] != undefined) {
+                                            setTimeout(function() {
+                                                var parts = art[np.nowplaying].split(".");
+                                                var artimg = util.format(
+                                                    config.options.artimg,
+                                                    n,
+                                                    parts[parts.length-1]
+                                                );
+                                                download(art[np.nowplaying], artimg, function() {
+                                                    console.log(strings.debug.download.stop);
+                                                    embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                                                }, function() {
+                                                }, 0);
+                                            }, config.options.nptstoryart * 1000);
+                                        }
+
+                                        // Post track name with delay
                                         setTimeout(function() {
-                                            send(n, story[np.nowplaying], true);
-                                        }, config.options.nptdelaystory * 1000);
+                                            send(n, util.format(
+                                                strings.announcements.nowplaying,
+                                                np.nowplaying
+                                            ), true);
+                                        }, config.options.nptstorytrack * 1000);
+
+                                    }
+                                    else {
+
+                                        // Post track name normally
+                                        send(n, util.format(
+                                            strings.announcements.nowplaying,
+                                            np.nowplaying
+                                        ), true);
+
+                                        // Post art
+                                        if (art[np.nowplaying] != undefined) {
+                                            setTimeout(function() {
+                                                var parts = art[np.nowplaying].split(".");
+                                                var artimg = util.format(
+                                                    config.options.artimg,
+                                                    n,
+                                                    parts[parts.length-1]
+                                                );
+                                                download(art[np.nowplaying], artimg, function() {
+                                                    console.log(strings.debug.download.stop);
+                                                    embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                                                }, function() {
+                                                }, 0);
+                                            }, config.options.nptstoryart * 1000);
+                                        }
+
                                     }
 
-                                    // Post art
-                                    if (art[np.nowplaying] != undefined) {
-                                        setTimeout(function() {
-                                            var parts = art[np.nowplaying].split(".");
-                                            var artimg = util.format(
-                                                config.options.artimg,
-                                                n,
-                                                parts[parts.length-1]
-                                            );
-                                            download(art[np.nowplaying], artimg, function() {
-                                                console.log(strings.debug.download.stop);
-                                                embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
-                                            }, function() {
-                                            }, 0);
-                                        }, config.options.nptdelayart * 1000);
-                                    }
                                 }
                                 else
                                     send(n, strings.announcements.nperror, true);
