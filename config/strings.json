@@ -305,6 +305,10 @@
 			"errorF":   "Thori, a purge is already prepared, please write `!purge yes` or `!purge no`.",
 			"errorG":   "Thori, there was an error while purging the brain."
 		},
+        "nppause": {
+            "messageA": "Thori, the automatic fetching of Now Playing info from PonyvilleFM is now **paused**.",
+            "messageB": "Thori, I am **resuming** the automatic fetching of Now Playing info from PonyvilleFM."
+        },
 		"npstatus": {
 			"messageA": "Thori, here are all the channels where I am currently posting the Now Playing announcements:",
 			"messageB": "\n• #%s - %s",
@@ -620,6 +624,7 @@
 		"startedtime":  "Started at %s.",
 		"disconnected": "Disconnected from Discord... Reconnecting.",
 		"failedm":      "Error sending message. Retrying...",
+        "failgiveup":   "Max retries exceeded.",
 		"failedr":      "Error reacting. Retrying...",
 		"chatting":     "<= @%s, #%s: \"%s\"",
 		"welcome":      "@%s has joined GOTN server! Assigning Children of The Night role.",

@@ -251,16 +251,16 @@
 			"help":    "",
 			"type":    "private"
 		},
-		{
-			"command": "send",
-			"help":    "",
-			"type":    "private"
-		},
         {
             "command": "l",
             "help":    "",
             "type":    "private"
         },
+		{
+			"command": "send",
+			"help":    "",
+			"type":    "private"
+		},
 		{
 			"command": "learn",
 			"help":    "",
@@ -271,6 +271,11 @@
 			"help":    "",
 			"type":    "private"
 		},
+        {
+            "command": "nppause",
+            "help":    "",
+            "type":    "private"
+        },
 		{
 			"command": "npstatus",
 			"help":    "",

@@ -35,6 +35,7 @@
 		"serverport":    80,
 		"maxlength":     2000,
 		"typetime":      2,
+        "sendretry":     5,
 		"reboottime":    10,
 		"starttime":     60,
 		"reconnecttime": 10,
@@ -64,6 +65,7 @@
 			"phases":    "general",
 			"nowplaying":    [
 				"live",
+                "gotn",
 				"pvfm_live-dj-chat"
 			]
 		},
