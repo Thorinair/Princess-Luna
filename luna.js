@@ -79,6 +79,7 @@ var jobsGOTN = [];
 var lyrics;
 var art;
 var story;
+var spool;
 var nptoggles;
 var annStatus;
 var blacklist;
@@ -1056,6 +1057,32 @@ comm.waifu = function(data) {
     else {
         send(data.channelID, util.format(
             strings.commands.waifu.errorF, 
+            mention(data.userID)
+        ), true);
+    }
+};
+
+// Command: !spools
+comm.spools = function(data) {
+    if (Object.keys(spool).length > 0) {
+        var spools = [];
+
+        Object.keys(spool).sort().forEach(function(s) {
+            spools.push(util.format(
+                strings.commands.spools.messageB,
+                s,
+                spool[s]
+            ));
+        });
+
+        sendLarge(data.channelID, spools, util.format(
+            strings.commands.spools.messageA,
+            mention(data.userID)
+        ), false);
+    }
+    else {
+        send(data.channelID, util.format(
+            strings.commands.spools.error, 
             mention(data.userID)
         ), true);
     }
@@ -2158,6 +2185,62 @@ comm.storydel = function(data) {
     }
 };
 
+// Command: !spooladd
+comm.spooladd = function(data) {
+    var lines = data.message.split("\n");
+
+    var name = lines[0].replace(config.options.commandsymbol + data.command + " ", "");
+    if (name == "" || name == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.spooladd.errorA, false);
+    }
+    else {
+        var weight = lines[1];
+
+        if (weight != "" && weight != undefined) {
+
+            if (spool[name] == undefined)
+                send(data.channelID, util.format(
+                    strings.commands.spooladd.messageA, 
+                    name
+                ), false);
+            else
+                send(data.channelID, util.format(
+                    strings.commands.spooladd.messageB, 
+                    name
+                ), false);
+
+            spool[name] = parseInt(weight);
+            fs.writeFileSync(config.options.spoolpath, JSON.stringify(spool), "utf-8");
+        }
+        else {
+            send(data.channelID, strings.commands.spooladd.errorB, false);
+        }
+    }
+};
+
+// Command: !spooldel
+comm.spooldel = function(data) {
+    var name = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (name == "" || name == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.spooldel.errorA, false);
+    }
+    else {
+        if (spool[name] != undefined) {
+            delete spool[name];
+
+            fs.writeFileSync(config.options.spoolpath, JSON.stringify(spool), "utf-8");
+
+            send(data.channelID, util.format(
+                strings.commands.spooldel.message, 
+                name
+            ), false);
+        }
+        else {
+            send(data.channelID, strings.commands.spooldel.errorB, false);
+        }
+    }
+};
+
 // Command: !h
 comm.h = function(data) {
     if (Object.keys(hTrack).length == 0)
@@ -2861,6 +2944,7 @@ function startupProcedure() {
     loadLyrics();
     loadArt();
     loadStory();
+    loadSpool();
     loadNPToggles();
     loadANN();
     loadBlacklist();
@@ -3018,6 +3102,23 @@ function loadStory() {
     else {
         fs.writeFileSync(config.options.storypath, JSON.stringify(story), "utf-8");
         console.log(strings.debug.story.new);
+    }
+}
+
+/*
+ * Loads the spool data, or creates new.
+ */
+function loadSpool() {
+    spool = {};
+
+    if (fs.existsSync(config.options.spoolpath)) {
+        console.log(strings.debug.spool.old);
+        spool = JSON.parse(fs.readFileSync(config.options.spoolpath, "utf8"));
+        console.log(strings.debug.spool.done);
+    }
+    else {
+        fs.writeFileSync(config.options.spoolpath, JSON.stringify(spool), "utf-8");
+        console.log(strings.debug.spool.new);
     }
 }
 
@@ -3485,15 +3586,9 @@ var processRequest = function(req, res) {
                 case "reboot": processReqReboot(query); break;
                 case "reload": processReqReload(query); break;
                 case "waifu":  processReqWaifu(query);  break;
-            }
 
-            if (query.action == "ping") {
-                res.writeHead(200, [
-                    ["Content-Type", "text/plain"], 
-                    ["Content-Length", 4]
-                        ]);
-                res.write("pong");
-                return;              
+                case "ping":   processResPing(res);   return; break;
+                case "spools": processResSpools(res); return; break;
             }
         }
     }
@@ -3901,6 +3996,36 @@ function processReqWaifu(query) {
             query.queue
         ), true);
     }
+}
+
+/*
+ * Responds to the "ping" request.
+ * @param  res  The response object.
+ */
+function processResPing(res) {
+    res.writeHead(200, [
+        ["Content-Type", "text/plain"], 
+        ["Content-Length", 4]
+            ]);
+    res.write("pong");
+}
+
+/*
+ * Responds to the "spools" request.
+ * @param  res  The response object.
+ */
+function processResSpools(res) {
+    var spools = Object.keys(spool).length.toString();
+
+    Object.keys(spool).sort().forEach(function(s) {
+        spools += "|" + s + "|" + spool[s];
+    });
+
+    res.writeHead(200, [
+        ["Content-Type", "text/plain"], 
+        ["Content-Length", spools.length]
+            ]);
+    res.write(spools);
 }
 
 

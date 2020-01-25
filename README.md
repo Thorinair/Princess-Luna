@@ -33,6 +33,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!coin` Flips a coin which may land either heads or tails.
     - `!minesweeper` Creates a minesweeper grid using Discord spoiler tags. Set the difficulty by adding a number 1, 2 or 3 after the command.
     - `!waifu` Performs the Waifu2x ANN scaling algorithm on the image given as attachment. You can specify the noise level and scale using parameters `nX` and `sX` respectively. This command makes use of the [Queen Chrysalis](https://github.com/Thorinair/Queen-Chrysalis) extension running on a separate server.
+    - `!spools` Lists the weights of all added empty filament spools.
     - `!custom` Lists all available custom interractions for a server or channel.
     - `!thori` Sends Thorinair's location info, pulled from VariPass. Users need to be whitelisted in order to use this command.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
@@ -60,6 +61,8 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!artdel` Removes an art from the database. Specify a track name after the command.
     - `!storyadd` Adds a story to the database. Specify a track name after the command, and the story text in the lines below.
     - `!storydel` Removes a story from the database. Specify a track name after the command.
+    - `!spooladd` Adds an empty filament spool weight to the database. Specify the spool name after the command, and the weight in the line below. The command will automatically remove the unit from the weight if you added it. It is suggested to add the net weight as last word to the name of the spool as well, so RariTUSH can properly display the data once loaded.
+    - `!spooldel` Removes a filament spool weight from the database. Specify a spool name after the command.
     - `!h` Lists the current status of any h chains.
     - `!ignore` Forcefully adds a user ID to a learning ignore list.
     - `!mood` Changes the mood of a larger group of the Ikea Tradfri bulbs to one of the preset configurations available. Use without a mood name to list all available ones.

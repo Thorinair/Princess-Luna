@@ -20,6 +20,7 @@
 		"lyricspath":    "/var/www/node/data/lyrics.json",
 		"artpath":       "/var/www/node/data/art.json",
         "storypath":     "/var/www/node/data/story.json",
+        "spoolpath":     "/var/www/node/data/spool.json",
 		"nptogglespath": "/var/www/node/data/nptoggles.json",
 		"blacklistpath": "/var/www/node/data/blacklist.json",
 		"ignorepath":    "/var/www/node/data/ignore.json",
@@ -148,7 +149,7 @@
 		"markov":     2,
 		"maxloop":    100,
 		"saveloop":   1800,
-		"maxlines":   32768,
+		"maxlines":   20000,
 		"cleanbrain": true,
 		"debug":      false,
         "debugrp":    false

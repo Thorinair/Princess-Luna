@@ -93,6 +93,11 @@
 			"errorK":   "%s, setting parameters like this would not do anything to the image (no noise reduction and no scaling).",
 			"paused":   "%s, it appears that Thorinair has temporarily paused the usage of Queen Chrysalis' neural network features. Here is the message he has left:\n> %s"
 		},
+        "spools": {
+            "messageA": "%s, here is a list of all the empty filament spools I know about:\n",
+            "messageB": "• **%s:** %sg",
+            "error":    "%s, no filament spool weights have been added yet."
+        },
 		"custom": {
 			"messageA": "%s, the following custom interractions are defined for this server: %s ",
 			"messageB": "%s, the following custom interractions are defined for this channel: %s ",
@@ -349,6 +354,17 @@
             "message":  "Thori, I've removed the story of the track \"%s\".",
             "errorA":   "Thori, you need to specify the track name.",
             "errorB":   "Thori, I don't know of any track with that name."
+        },
+        "spooladd": {
+            "messageA": "Thori, I've added the weight of the spool \"%s\".",
+            "messageB": "Thori, I've updated weight of the spool \"%s\".",
+            "errorA":   "Thori, you need to specify the spool name.",
+            "errorB":   "Thori, you need to specify the spool weight below as well."
+        },
+        "spooldel": {
+            "message":  "Thori, I've removed the spool \"%s\".",
+            "errorA":   "Thori, you need to specify the spool name.",
+            "errorB":   "Thori, I don't know of any spool with that name."
         },
 		"h": {
 			"messageA": "Thori, here are all the channels where I am tracking an h chain, along with the last seen h:",
@@ -655,6 +671,11 @@
         "story": {
             "old":     "Loading: Story file...",
             "new":     "Created: Story file.",
+            "done":    "  Done."
+        },
+        "spool": {
+            "old":     "Loading: Spool file...",
+            "new":     "Created: Spool file.",
             "done":    "  Done."
         },
 		"nptoggles": {
