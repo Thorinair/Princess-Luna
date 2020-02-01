@@ -82,6 +82,27 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!backup` Creates a backup of the data and config directories and sends it as a file through Discord.
     - `!system` Performs a system-level command on the host operating system. Currently available commands: `reboot`, `wake <device>`
 
+## REST API
+Princess Luna provides access to a REST API in order for various devices to request certain actions to be done or request data retrieval. Below is a full list of all actions she can perform:
+
+* Requests for bot actions:
+    - `power` Tells Luna the current status of the power grid. Used for warnings when the power goes out. This action should be called every few minutes in order for the feature to be effective.
+    - `motion` Called by the Tantabus surveillance system when a motion is detected on one of the cameras. This will allow Luna to post photo from the camera the motion was detected on and warn the users.
+    - `boot` Called by most devices which are part of the Lunar Infrastructure in order for Luna to post that a certain device has booted up.
+    - `eeg` Called by the Lulu EEG system to submit brainwave data to Luna for further processing.
+    - `celly` Called by the [Celly](https://github.com/Thorinair/Celly) device to perform a data dump for debug purposes.
+    - `toggle` Requests a toggle of one or more Ikea Tradfri devices.
+    - `state` Requests an explicit "on" or "off" of a one or more Ikea Tradfri devices.
+    - `mood` Requests a specific mood to be set to the Ikea Tradfri light bulbs.
+    - `camera` Turns the camera attached to Luna on or off.
+    - `stream` Starts or stops routing the camera's data to a public URL.
+    - `reboot` Requests a reboot of the bot itself.
+    - `reload` Requests the config to be reloaded.
+    - `waifu` Called by [Queen Chrysalis](https://github.com/Thorinair/Queen-Chrysalis) while processing the `!waifu` command. May be called multiple times for various needs.
+* Requests for data:
+    - `ping` Called by Luna on herself to verify her API works.
+    - `spools` Called by RariTUSH to update her filament spool list.
+
 ## Cleaning Up Chatlogs For Training
 You can use a software like Sublime Text in order to clean up previous chatlogs copied from Discord in order to use them for training. The examples below show various regex formulas you can use to clean up different unwanted data from copy pasted Discord chatwindow:
 
@@ -95,4 +116,4 @@ You can use a software like Sublime Text in order to clean up previous chatlogs 
 
 
 ## Privacy & Data Collection
-This bot stores message history in plain text files and uses them as training data upon startup. The files are not avilable to anyone using the bot other than the admin who has access to the file system the bot is running on. The messages are stored anonymously (no user names are saved) and the messages are kept either indefinitely or until too many messages have accumulated for a certain brain (see the config.json file). Message history can also be manually deleted. Plain text storage allows for later editing in case the data needs to be modified (cleanup and such). The messages are stored only in the channels where learning has been enabled. Please use the `!stats` command to verify whether any data collection will take place in the specific channel. In case a user wants to completely prevent their messages from being gathered anywhere, they can simply use the `!blacklist` command.
+This bot stores message history in plain text files and uses them as training data upon startup. The files are not available to anyone using the bot other than the admin who has access to the file system the bot is running on. The messages are stored anonymously (no user names are saved) and the messages are kept either indefinitely or until too many messages have accumulated for a certain brain (see the config.json file). Message history can also be manually deleted. Plain text storage allows for later editing in case the data needs to be modified (cleanup and such). The messages are stored only in the channels where learning has been enabled. Please use the `!stats` command to verify whether any data collection will take place in the specific channel. In case a user wants to completely prevent their messages from being gathered anywhere, they can simply use the `!blacklist` command.
