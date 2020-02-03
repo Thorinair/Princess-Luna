@@ -3011,7 +3011,6 @@ function startupProcedure() {
     loadEEG();
     loadTimezones();
     loadTradfri();
-    loadServer();
     loadAssaults();
     loadPhases();
 }
@@ -4079,63 +4078,12 @@ function processReqTush(query) {
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         var response = JSON.parse(xhr.responseText);
 
-                        console.log(response.state.text);
-                        if (response.state.text == "Printing" && response.temperature.tool0.actual >= config.printer.constraints.temperature) {
-                            if (tushStep >= config.printer.constraints.startstep) {
+                        if (response.state.text == "Printing" && 
+                            response.temperature.tool0.target > config.printer.constraints.tempmin && 
+                            response.temperature.tool0.actual > response.temperature.tool0.target - config.printer.constraints.tempdiff) {
+                            if (tushStep >= config.printer.constraints.rampup) {
 
-                                // Spool Stop
-                                // Warn
-                                if (tushEncL + tushEncR > config.printer.detections.spoolstop.threshold_count) {
-                                    if (tempEncL + tempEncR <= config.printer.detections.spoolstop.threshold_count) {
-                                        send(channelNameToID(config.options.channels.debug), util.format(
-                                            strings.announcements.tush.spoolstop.warn,
-                                            mention(config.options.adminid),
-                                            tempEncL + tempEncR,
-                                            config.printer.interval
-                                        ), true);
-
-                                        setMood("warn", function(result) {
-                                            if (!result)
-                                                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
-                                        });
-                                    }
-                                }
-
-                                if (tushEncL + tushEncR <= config.printer.detections.spoolstop.threshold_count) {
-
-                                    // Stop
-                                    if (tempEncL + tempEncR <= config.printer.detections.spoolstop.threshold_count) {
-                                        if (!tushPaused) {
-
-                                            // PERFORM PAUSE
-                                            console.log("PAUSING!!!");
-                                            tushPaused = true;
-
-                                            send(channelNameToID(config.options.channels.debug), util.format(
-                                                strings.announcements.tush.spoolstop.stop,
-                                                mention(config.options.adminid)
-                                            ), true);
-                                        }
-                                    }
-                                    // Okay
-                                    else {
-                                        tushPaused = false;
-
-                                        send(channelNameToID(config.options.channels.debug), util.format(
-                                            strings.announcements.tush.spoolstop.okay,
-                                            mention(config.options.adminid),
-                                            tempEncL + tempEncR
-                                        ), true);
-
-                                        setMood("norm", function(result) {
-                                            if (!result)
-                                                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
-                                        });
-                                    }
-                                }
-
-                                // Spool Drop
-                                // Warn
+                                // Spool Drop - Warn
                                 if (tushRaw > config.printer.detections.spooldrop.threshold_weight) {
                                     if (tempRaw <= config.printer.detections.spooldrop.threshold_weight) {
                                         send(channelNameToID(config.options.channels.debug), util.format(
@@ -4150,17 +4098,68 @@ function processReqTush(query) {
                                                 send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
                                         });
                                     }
+
+                                    // Spool Stop - Warn
+                                    else if (tushEncL + tushEncR > config.printer.detections.spoolstop.threshold_count) {
+                                        if (tempEncL + tempEncR <= config.printer.detections.spoolstop.threshold_count) {
+                                            send(channelNameToID(config.options.channels.debug), util.format(
+                                                strings.announcements.tush.spoolstop.warn,
+                                                mention(config.options.adminid),
+                                                tempEncL + tempEncR,
+                                                config.printer.interval
+                                            ), true);
+
+                                            setMood("warn", function(result) {
+                                                if (!result)
+                                                    send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                            });
+                                        }
+                                    }
+
+                                    else if (tushEncL + tushEncR <= config.printer.detections.spoolstop.threshold_count) {
+
+                                        // Spool Stop - Stop
+                                        if (tempEncL + tempEncR <= config.printer.detections.spoolstop.threshold_count) {
+                                            if (!tushPaused) {
+                                                // PERFORM PAUSE
+                                                tushPaused = true;
+                                                console.log(strings.debug.printer.pause);
+                                                pausePrint(config.printer.pauseretry);
+
+                                                send(channelNameToID(config.options.channels.debug), util.format(
+                                                    strings.announcements.tush.spoolstop.stop,
+                                                    mention(config.options.adminid)
+                                                ), true);
+                                            }
+                                        }
+                                        // Spool Stop - Okay
+                                        else {
+                                            tushPaused = false;
+
+                                            send(channelNameToID(config.options.channels.debug), util.format(
+                                                strings.announcements.tush.spoolstop.okay,
+                                                mention(config.options.adminid),
+                                                tempEncL + tempEncR
+                                            ), true);
+
+                                            setMood("norm", function(result) {
+                                                if (!result)
+                                                    send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                            });
+                                        }
+                                    }  
                                 }
 
-                                if (tushRaw <= config.printer.detections.spooldrop.threshold_weight) {
+                                else if (tushRaw <= config.printer.detections.spooldrop.threshold_weight) {
 
-                                    // Stop
+                                    // Spool Drop - Stop
                                     if (tempRaw <= config.printer.detections.spooldrop.threshold_weight) {
                                         if (!tushPaused) {
 
                                             // PERFORM PAUSE
-                                            console.log("PAUSING!!!");
                                             tushPaused = true;
+                                            console.log(strings.debug.printer.pause);
+                                            pausePrint(config.printer.pauseretry);
 
                                             send(channelNameToID(config.options.channels.debug), util.format(
                                                 strings.announcements.tush.spooldrop.stop,
@@ -4168,7 +4167,7 @@ function processReqTush(query) {
                                             ), true);
                                         }
                                     }
-                                    // Okay
+                                    // Spool Drop - Okay
                                     else {
                                         tushPaused = false;
 
@@ -4183,26 +4182,44 @@ function processReqTush(query) {
                                                 send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
                                         });
                                     }
-                                }                       
+                                }               
                             }
                             else {
                                 tushStep++;
+                                if (tushStep >= config.printer.constraints.rampup)
+                                    console.log(util.format(
+                                        strings.debug.printer.rampB,
+                                        tushStep
+                                    ));
+                                else
+                                    console.log(util.format(
+                                        strings.debug.printer.rampA,
+                                        tushStep
+                                    ));
                             }
                         }
                         else {
-                            if (!tushPaused)
+                            if (!tushPaused) {
+                                if (tushStep > 0)
+                                    console.log(strings.debug.printer.rampC);
                                 tushStep = 0;
+                            }
                         }
                     }
 
                     if (xhr.readyState == 4) {
-                        if (xhr.status != 200 && !tushPaused)
+                        if (xhr.status != 200 && !tushPaused) {
+                            if (tushStep > 0)
+                                console.log(strings.debug.printer.rampC);
                             tushStep = 0;
+                        }
 
-                        tushEncL = tempEncL;
-                        tushEncR = tempEncR;
-                        tushWeight = tempWeight;
-                        tushRaw = tempRaw;
+                        if (!tushPaused) {
+                            tushEncL = tempEncL;
+                            tushEncR = tempEncR;
+                            tushWeight = tempWeight;
+                            tushRaw = tempRaw;
+                        }
 
                         spoolVaripassWrite();
                     }
@@ -4305,6 +4322,7 @@ function loadBot() {
                     send(n, strings.announcements.npback, true);
             });
 
+            loadServer();
             loadSeizure();
             connectBlitzortung(false);
 
@@ -6888,6 +6906,42 @@ function prepareAssaultAnnounce() {
         strings.debug.assaults.date,
         dueTime
     ));  
+}
+
+/*
+ * Pauses the Octoprint job.
+ * @param  retry  Number of times to retry the command if connection fails.
+ */
+function pausePrint(retry) {
+    if (retry > 0) {
+        var payload = {
+                "command": "pause",
+                "action":  "pause"
+            };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", printer.baseurl + config.printer.urls.job + printer.key, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onerror = function(err) {
+            console.log(util.format(
+                strings.debug.printer.error,
+                retry - 1
+            ));
+            xhr.abort();
+            pausePrint(retry - 1);
+        }
+        xhr.ontimeout = function() {
+            console.log(util.format(
+                strings.debug.printer.error,
+                retry - 1
+            ));
+            xhr.abort();
+            pausePrint(retry - 1);
+        }
+
+        xhr.send(JSON.stringify(payload));
+    }
 }
 
 /*

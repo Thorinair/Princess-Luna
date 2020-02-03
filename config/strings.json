@@ -557,9 +557,9 @@
         },
         "tush": {
             "spoolstop": {
-                "warn": "%s, **WARNING:** RariTUSH reports a **Spool STOP**. The encoders have done **%s detections**. If the spool shows no movement within next %s seconds, I am pausing the print.",
+                "warn": "%s, **WARNING:** RariTUSH reports a **Spool STOP**. The encoders have done **%s pulses**. If the spool shows no movement within next %s seconds, I am pausing the print.",
                 "stop": "%s, **WARNING:** RariTUSH reports another **Spool STOP**. I have paused the print.",
-                "okay": "%s, RariTUSH reports that the spool is spinning freely again. The encoders have done **%s detections**."
+                "okay": "%s, RariTUSH reports that the spool is spinning freely again. The encoders have done **%s pulses**."
             },
             "spooldrop": {
                 "warn": "%s, **WARNING:** RariTUSH reports a **Spool DROP**. The weight of the spool has dropped to **%s g (raw)**. If the spool is not restored within next %s seconds, I am pausing the print.",
@@ -802,6 +802,13 @@
 		"status": {
 			"error":   "Error sending status data: \"%s\"",
 			"timeout": "Loading status source timed out."
-		}
+		},
+        "printer": {
+            "rampA": "Ramping up print: %s",
+            "rampB": "Ramping up print: %s, Ready!",
+            "rampC": "Unramping print.",
+            "pause": "PAUSING PRINT!!!",
+            "error": "Error connecting to printer. Attempts left: %s"
+        }
 	}
 }

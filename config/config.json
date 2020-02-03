@@ -233,14 +233,15 @@
 	},
     "printer": {
         "urls": {
-            "job":     "api/job?apikey=",
-            "printer": "api/printer?apikey="
+            "printer": "api/printer?apikey=",
+            "job":     "api/job?apikey="
         },
         "webimg": "/var/www/node/data/printer.jpg",
         "interval": 30,
         "constraints": {
-            "startstep":   4,
-            "temperature": 190
+            "rampup":   4,
+            "tempmin":  150,
+            "tempdiff": 10
         },
         "detections": {
             "spoolstop": {
@@ -250,7 +251,7 @@
                 "threshold_weight": 50
             }
         },
-        "action": "pause"
+        "pauseretry": 4
     },
 	"status": {
 		"timeout": 10,
