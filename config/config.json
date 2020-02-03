@@ -230,6 +230,27 @@
 			"timeout": 10
 		}
 	},
+    "printer": {
+        "urls": {
+            "job":     "http://rarity.thorinair.net/api/job?apikey=",
+            "printer": "http://rarity.thorinair.net/api/printer?apikey="
+        },
+        "webimg": "/var/www/node/data/printer.jpg",
+        "interval": 30,
+        "constraints": {
+            "startstep":   4,
+            "temperature": 190
+        },
+        "detections": {
+            "spoolstop": {
+                "threshold_count": 0
+            },
+            "spooldrop": {
+                "threshold_weight": 50
+            }
+        },
+        "action": "pause"
+    },
 	"status": {
 		"timeout": 10,
 		"home": "https://status.thorinair.net/",

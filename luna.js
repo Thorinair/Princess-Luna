@@ -136,7 +136,6 @@ var purgeEnd   = "";
 
 // Power Monitoring
 var powerStatus = null;
-var powerTime;
 
 // Blitzortung
 var blitzorws;
@@ -160,6 +159,14 @@ var chaseSpread;
 var chaseReconnect;
 var chaseThoriLat = 0.0;
 var chaseThoriLng = 0.0;
+
+// RariTUSH Data
+var tushStep = 0;
+var tushEncL;
+var tushEncR;
+var tushWeight;
+var tushRaw;
+var tushPaused = false;
 
 // Status
 var statusGlobal = {};
@@ -538,7 +545,7 @@ comm.room = function(data) {
 // Command: !power
 comm.power = function(data) {
     var dateNow = new Date() / 1000;
-    var diff = dateNow - powerTime;
+    var diff = dateNow - statusGlobal.sparkle;
     var time = {};
 
     time.seconds = Math.floor(diff % 60);
@@ -626,14 +633,18 @@ comm.printer = function(data) {
         mention(data.userID)
     ), true);
 
-    download(printer.webcam, printer.printerimg, function() {
+    download(printer.webcam, config.printer.webimg, function() {
 
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", printer.api, true);
+        xhr.open("GET", config.printer.urls.job + printer.key, true);
 
         xhr.onreadystatechange = function () { 
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var response = JSON.parse(xhr.responseText);
+
+                var message = "";
+
+                // Nightmare Rarity
                 if (response.progress.completion != null && response.state == "Printing") {
 
                     var left = response.progress.printTimeLeft;
@@ -646,17 +657,51 @@ comm.printer = function(data) {
                     time.hours = Math.floor(left % 24);
                     time.days = Math.floor(left / 24);
 
-
-                    embed(data.channelID, util.format(
-                        strings.commands.printer.messageC, 
+                    message += util.format(
+                        strings.commands.printer.messageD, 
                         response.job.file.name,
                         response.progress.completion.toFixed(1),
                         getTimeString(time)
-                    ), printer.printerimg, "Nightmare Rarity Webcam.jpg", true, true);
+                    );
+                }
+                else if (response.state == "Paused") {
+                    message += util.format(
+                        strings.commands.printer.messageC, 
+                        response.job.file.name
+                    );
                 }
                 else {
-                    embed(data.channelID, strings.commands.printer.messageB, printer.printerimg, "Nightmare Rarity Webcam.jpg", true, true);
+                    message += strings.commands.printer.messageB;
                 }
+
+                // RariTUSH
+                if (tushEncL != undefined && tushEncR != undefined && tushWeight != undefined && tushRaw != undefined) {
+                    var age = Math.floor((new Date()) / 1000) - statusGlobal.raritush;
+                    var time = {};
+
+                    time.seconds = Math.floor(age % 60);
+                    age = Math.floor(age / 60);
+                    time.minutes = Math.floor(age % 60);
+                    age = Math.floor(age / 60);
+                    time.hours = Math.floor(age % 24);
+                    time.days = Math.floor(age / 24);
+
+                    message += util.format(
+                        strings.commands.printer.messageF, 
+                        tushWeight.toFixed(1),
+                        tushEncL,
+                        tushEncR,
+                        getTimeString(time),
+                        time.seconds
+                    );
+                }
+                else {
+                    message += strings.commands.printer.messageE;
+                }
+
+                message += strings.commands.printer.messageG;
+
+                embed(data.channelID, message, config.printer.webimg, "Nightmare Rarity Webcam.jpg", true, true);
             }
         }
 
@@ -3573,6 +3618,7 @@ var processRequest = function(req, res) {
 
         if (query.key == httpkey.key) {
             switch (query.action) {
+                // Action requests
                 case "power":  processReqPower(query);  break;
                 case "motion": processReqMotion(query); break;
                 case "boot":   processReqBoot(query);   break;
@@ -3586,7 +3632,8 @@ var processRequest = function(req, res) {
                 case "reboot": processReqReboot(query); break;
                 case "reload": processReqReload(query); break;
                 case "waifu":  processReqWaifu(query);  break;
-
+                case "tush":   processReqTush(query);   break;
+                // Data requests
                 case "ping":   processResPing(res);   return; break;
                 case "spools": processResSpools(res); return; break;
             }
@@ -3613,7 +3660,6 @@ function processReqPower(query) {
         if (powerStatus != null && powerStatus != 0)            
             send(channelNameToID(config.options.channels.home), strings.announcements.power.on, false);
         powerStatus = 0;
-        powerTime = new Date() / 1000;
     }
     else if (query.power == "off") {
         if (powerStatus == null || powerStatus == 0) {
@@ -3628,7 +3674,6 @@ function processReqPower(query) {
             send(channelNameToID(config.options.channels.home), strings.announcements.power.off3, false);
             powerStatus = 3;
         }
-        powerTime = new Date() / 1000;
     }
 }
 
@@ -3995,6 +4040,174 @@ function processReqWaifu(query) {
             mention(query.userid),
             query.queue
         ), true);
+    }
+}
+
+/*
+ * Processes the "tush" request.
+ * @param  data  Request parameters.
+ */
+function processReqTush(query) {
+    if (query.tush != undefined) {
+        if (query.tush == httpkey.tush) {
+            if (query.encL != undefined && query.encR != undefined && query.weight != undefined && query.raw != undefined) {
+                statusGlobal.raritush = Math.floor((new Date()) / 1000);
+
+                var tempEncL = parseInt(query.encL);
+                var tempEncR = parseInt(query.encR);
+                var tempWeight = parseFloat(query.weight);
+                var tempRaw = parseFloat(query.raw);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", config.printer.urls.printer + printer.key, true);
+
+                xhr.onreadystatechange = function () { 
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var response = JSON.parse(xhr.responseText);
+
+                        console.log(response.state.text);
+                        if (response.state.text == "Printing" && response.temperature.tool0.actual >= config.printer.constraints.temperature) {
+                            if (tushStep >= config.printer.constraints.startstep) {
+
+                                // Spool Stop
+                                // Warn
+                                if (tushEncL + tushEncR > config.printer.detections.spoolstop.threshold_count) {
+                                    if (tempEncL + tempEncR <= config.printer.detections.spoolstop.threshold_count) {
+                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                            strings.announcements.tush.spoolstop.warn,
+                                            mention(config.options.adminid),
+                                            tempEncL + tempEncR,
+                                            config.printer.interval
+                                        ), true);
+
+                                        setMood("warn", function(result) {
+                                            if (!result)
+                                                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                        });
+                                    }
+                                }
+
+                                if (tushEncL + tushEncR <= config.printer.detections.spoolstop.threshold_count) {
+
+                                    // Stop
+                                    if (tempEncL + tempEncR <= config.printer.detections.spoolstop.threshold_count) {
+                                        if (!tushPaused) {
+
+                                            // PERFORM PAUSE
+                                            console.log("PAUSING!!!");
+                                            tushPaused = true;
+
+                                            send(channelNameToID(config.options.channels.debug), util.format(
+                                                strings.announcements.tush.spoolstop.stop,
+                                                mention(config.options.adminid)
+                                            ), true);
+                                        }
+                                    }
+                                    // Okay
+                                    else {
+                                        tushPaused = false;
+
+                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                            strings.announcements.tush.spoolstop.okay,
+                                            mention(config.options.adminid),
+                                            tempEncL + tempEncR
+                                        ), true);
+
+                                        setMood("norm", function(result) {
+                                            if (!result)
+                                                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                        });
+                                    }
+                                }
+
+                                // Spool Drop
+                                // Warn
+                                if (tushRaw > config.printer.detections.spooldrop.threshold_weight) {
+                                    if (tempRaw <= config.printer.detections.spooldrop.threshold_weight) {
+                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                            strings.announcements.tush.spooldrop.warn,
+                                            mention(config.options.adminid),
+                                            tempRaw,
+                                            config.printer.interval
+                                        ), true);
+
+                                        setMood("warn", function(result) {
+                                            if (!result)
+                                                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                        });
+                                    }
+                                }
+
+                                if (tushRaw <= config.printer.detections.spooldrop.threshold_weight) {
+
+                                    // Stop
+                                    if (tempRaw <= config.printer.detections.spooldrop.threshold_weight) {
+                                        if (!tushPaused) {
+
+                                            // PERFORM PAUSE
+                                            console.log("PAUSING!!!");
+                                            tushPaused = true;
+
+                                            send(channelNameToID(config.options.channels.debug), util.format(
+                                                strings.announcements.tush.spooldrop.stop,
+                                                mention(config.options.adminid)
+                                            ), true);
+                                        }
+                                    }
+                                    // Okay
+                                    else {
+                                        tushPaused = false;
+
+                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                            strings.announcements.tush.spooldrop.okay,
+                                            mention(config.options.adminid),
+                                            tempRaw
+                                        ), true);
+
+                                        setMood("norm", function(result) {
+                                            if (!result)
+                                                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                        });
+                                    }
+                                }                       
+                            }
+                            else {
+                                tushStep++;
+                            }
+                        }
+                        else {
+                            if (!tushPaused)
+                                tushStep = 0;
+                        }
+                    }
+
+                    if (xhr.readyState == 4) {
+                        if (xhr.status != 200 && !tushPaused)
+                            tushStep = 0;
+
+                        tushEncL = tempEncL;
+                        tushEncR = tempEncR;
+                        tushWeight = tempWeight;
+                        tushRaw = tempRaw;
+
+                        spoolVaripassWrite();
+                    }
+                }
+
+                xhr.onerror = function(err) {
+                    xhr.abort();
+                }
+                xhr.ontimeout = function() {
+                    xhr.abort();
+                }
+
+                xhr.send();
+
+
+
+
+            }
+        }
     }
 }
 
@@ -4983,6 +5196,38 @@ function findVariable(data, id) {
     });
 
     return variable;
+}
+
+/*
+ * Writes the spool weight data to VariPass.
+ */
+function spoolVaripassWrite() {
+    if (tushWeight != undefined) {
+        var payload = {
+                "key":    varipass.main.key,
+                "action": "write",
+                "id":     varipass.main.ids.spool,
+                "value":  tushWeight
+            };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", config.options.varipassurl, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+
+        xhr.onerror = function(err) {
+            console.log(util.format(
+                strings.debug.varipass.error,
+                err.target.status
+            ));
+            xhr.abort();
+        }
+        xhr.ontimeout = function() {
+            console.log(strings.debug.varipass.timeout);
+            xhr.abort();
+        }
+
+        xhr.send(JSON.stringify(payload));
+    }
 }
 
 
@@ -6079,6 +6324,7 @@ function loopStatusPush() {
 
     data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
     data += generateStatus("rarity_public", statusGlobal.rarity_public, now);
+    data += generateStatus("raritush", statusGlobal.raritush, now);
 
     data += generateStatus("tantabus_local", statusGlobal.tantabus_local, now);
     data += generateStatus("tantabus_public", statusGlobal.tantabus_public, now);

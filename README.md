@@ -99,6 +99,7 @@ Princess Luna provides access to a REST API in order for various devices to requ
     - `reboot` Requests a reboot of the bot itself.
     - `reload` Requests the config to be reloaded.
     - `waifu` Called by [Queen Chrysalis](https://github.com/Thorinair/Queen-Chrysalis) while processing the `!waifu` command. May be called multiple times for various needs.
+    - `tush` Called by RariTUSH to notify Luna about the spool's current weight and spinning data.
 * Requests for data:
     - `ping` Called by Luna on herself to verify her API works.
     - `spools` Called by RariTUSH to update her filament spool list.

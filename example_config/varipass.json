@@ -28,7 +28,8 @@
 			"particles025": "0000AAAA",
 			"particles050": "0000AAAA",
 			"particles100": "0000AAAA",
-			"location":     "0000AAAA"
+			"location":     "0000AAAA",
+            "spool":        "0000AAAA"
 		}
 	},
 	"eeg": {

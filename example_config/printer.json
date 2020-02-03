@@ -1,5 +1,4 @@
 {
-	"api":        "http://your.website.com/api/job?apikey=0000000000000000AAAAAAAAAAAAAAAA",
-	"webcam":     "http://your.website.com/webcam/?action=snapshot&0000000000000",
-	"printerimg": "/var/www/node/data/printer.jpg"
+    "key":        "0000000000000000AAAAAAAAAAAAAAAA",
+    "webcam":     "http://your.website.com/webcam/?action=snapshot&0000000000000"
 }

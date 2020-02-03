@@ -40,9 +40,13 @@
 		},
 		"printer": {
 			"messageA": "%s, give me a moment...",
-			"messageB": "Nightmare Rarity is currently not printing anything. You can view the printing area on the webcam image below.",
-			"messageC": "Nightmare Rarity is currently printing a file called `%s`, and the print is %s% done. It is estimated that the printing time will take around %s more. You can view the printing area on the webcam image below.",
-			"error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
+            "messageB": "Nightmare Rarity is currently not printing anything.\n",
+            "messageC": "Nightmare Rarity has a paused print job of the file called `%s`.\n",
+            "messageD": "Nightmare Rarity is currently printing a file called `%s`, and the print is **%s%** done. It is estimated that the printing time will take around **%s** more.\n",
+            "messageE": "RariTUSH hasn't reported any data yet.\n",
+			"messageF": "RariTUSH reports **%s g** of filament left with **%s left** and **%s right** encoder pulses. Last report was %s and %s seconds ago.\n",
+            "messageG": "You can view the printing area on the webcam image below.",
+            "error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
 		},
         "devices": {
             "messageA": "%s, below is a list of all the devices which are part of Thorinair's Lunar Infrastructure. Repeat this command with a device name as parameter to get a photo and more detailed explanation.",
@@ -546,6 +550,18 @@
 		},
         "wow": {
             "assault": "@everyone, a new Faction Assault has begun! Next assault begins in %s."
+        },
+        "tush": {
+            "spoolstop": {
+                "warn": "%s, **WARNING:** RariTUSH reports a **Spool STOP**. The encoders have done **%s detections**. If the spool shows no movement within next %s seconds, I am pausing the print.",
+                "stop": "%s, **WARNING:** RariTUSH reports another **Spool STOP**. I have paused the print.",
+                "okay": "%s, RariTUSH reports that the spool is spinning freely again. The encoders have done **%s detections**."
+            },
+            "spooldrop": {
+                "warn": "%s, **WARNING:** RariTUSH reports a **Spool DROP**. The weight of the spool has dropped to **%s g (raw)**. If the spool is not restored within next %s seconds, I am pausing the print.",
+                "stop": "%s, **WARNING:** RariTUSH reports another **Spool DROP**. I have paused the print.",
+                "okay": "%s, RariTUSH reports that the spool weight has been restored. It is now **%s g (raw)**."
+            }
         },
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
