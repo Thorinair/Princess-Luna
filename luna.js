@@ -1133,6 +1133,20 @@ comm.spools = function(data) {
     }
 };
 
+// Command: !pop
+comm.pop = function(data) {
+    var message = util.format(
+        strings.commands.pop.message,
+        mention(data.userID)
+    );
+
+    for (var i = 0; i < config.options.popcount; i++) {
+        message += strings.commands.pop.pop;
+    }
+
+    send(data.channelID, message, true);
+};
+
 // Command: !custom
 comm.custom = function(data) {
     var interractionCommands = ""

@@ -50,6 +50,7 @@
         "downloadtry":   4,
         "nptstoryart":   2,
         "nptstorytrack": 20,
+        "popcount":      96,
 		"channels": {
 			"debug":     "debug",
 			"home":      "home_luna",

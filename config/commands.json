@@ -85,6 +85,11 @@
             "help":    "Ask me to list the known weights of various empty filament spools.",
             "type":    "public"
         },
+        {
+            "command": "pop",
+            "help":    "Ask me to create a bubble wrap which you can pop.",
+            "type":    "public"
+        },
 		{
 			"command": "custom",
 			"help":    "Ask me which custom interractions are defined for a server or channel.",

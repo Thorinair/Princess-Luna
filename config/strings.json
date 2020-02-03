@@ -102,6 +102,10 @@
             "messageB": "• **%s:** %sg",
             "error":    "%s, no filament spool weights have been added yet."
         },
+        "pop": {
+            "message": "%s, here is your bubble wrap. Enjoy!\n",
+            "pop":     "||pop||"
+        },
 		"custom": {
 			"messageA": "%s, the following custom interractions are defined for this server: %s ",
 			"messageB": "%s, the following custom interractions are defined for this channel: %s ",
