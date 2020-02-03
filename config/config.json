@@ -232,8 +232,8 @@
 	},
     "printer": {
         "urls": {
-            "job":     "http://rarity.thorinair.net/api/job?apikey=",
-            "printer": "http://rarity.thorinair.net/api/printer?apikey="
+            "job":     "api/job?apikey=",
+            "printer": "api/printer?apikey="
         },
         "webimg": "/var/www/node/data/printer.jpg",
         "interval": 30,
@@ -266,7 +266,7 @@
 			"chrysalis_ann":           "http://chrysalis.local:20200/?key=%s&action=ping",
 
 			"rarity_local":  "http://rarity.local/api/job",
-			"rarity_public": "http://rarity.thorinair.net/api/job",
+			"rarity_public": "api/job",
 
 			"tantabus_local":  "http://tantabus.local/api",
 			"tantabus_public": "http://tantabus.thorinair.net/api"

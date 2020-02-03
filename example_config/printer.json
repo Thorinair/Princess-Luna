@@ -1,4 +1,5 @@
 {
     "key":        "0000000000000000AAAAAAAAAAAAAAAA",
-    "webcam":     "http://your.website.com/webcam/?action=snapshot&0000000000000"
+    "baseurl":    "http://your.website.com/",
+    "webcam":     "webcam/?action=snapshot&0000000000000"
 }

@@ -633,10 +633,10 @@ comm.printer = function(data) {
         mention(data.userID)
     ), true);
 
-    download(printer.webcam, config.printer.webimg, function() {
+    download(printer.baseurl + printer.webcam, config.printer.webimg, function() {
 
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", config.printer.urls.job + printer.key, true);
+        xhr.open("GET", printer.baseurl + config.printer.urls.job + printer.key, true);
 
         xhr.onreadystatechange = function () { 
             if (xhr.readyState == 4 && xhr.status == 200) {
@@ -4059,7 +4059,7 @@ function processReqTush(query) {
                 var tempRaw = parseFloat(query.raw);
 
                 var xhr = new XMLHttpRequest();
-                xhr.open("GET", config.printer.urls.printer + printer.key, true);
+                xhr.open("GET", printer.baseurl + config.printer.urls.printer + printer.key, true);
 
                 xhr.onreadystatechange = function () { 
                     if (xhr.readyState == 4 && xhr.status == 200) {
@@ -6446,7 +6446,7 @@ function statusRarity() {
             statusGlobal.rarity_local = Math.floor((new Date()) / 1000);
     });
 
-    getStatus(config.status.urls.rarity_public, statusTimeoutRarityPublic, function(r, s) {
+    getStatus(printer.baseurl + config.status.urls.rarity_public, statusTimeoutRarityPublic, function(r, s) {
         if (r == config.status.responses.rarity_public)
             statusGlobal.rarity_public = Math.floor((new Date()) / 1000);
     });
