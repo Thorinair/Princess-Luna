@@ -4221,7 +4221,7 @@ function processReqTush(query) {
                             tushRaw = tempRaw;
                         }
 
-                        spoolVaripassWrite();
+                        tushVaripassWrite();
                     }
                 }
 
@@ -5233,12 +5233,39 @@ function findVariable(data, id) {
 /*
  * Writes the spool weight data to VariPass.
  */
-function spoolVaripassWrite() {
+function tushVaripassWrite() {
+    if (tushEncL != undefined && tushEncR != undefined) {
+        var totalEnc = tushEncL + tushEncR;
+        var payload = {
+                "key":    varipass.main.key,
+                "action": "write",
+                "id":     varipass.main.ids.enc,
+                "value":  totalEnc
+            };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", config.options.varipassurl, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+
+        xhr.onerror = function(err) {
+            console.log(util.format(
+                strings.debug.varipass.error,
+                err.target.status
+            ));
+            xhr.abort();
+        }
+        xhr.ontimeout = function() {
+            console.log(strings.debug.varipass.timeout);
+            xhr.abort();
+        }
+
+        xhr.send(JSON.stringify(payload));
+    }
     if (tushWeight != undefined) {
         var payload = {
                 "key":    varipass.main.key,
                 "action": "write",
-                "id":     varipass.main.ids.spool,
+                "id":     varipass.main.ids.weight,
                 "value":  tushWeight
             };
 
