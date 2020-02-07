@@ -167,6 +167,7 @@ var tushEncR;
 var tushWeight;
 var tushRaw;
 var tushPaused = false;
+var tushStart;
 
 // Status
 var statusGlobal = {};
@@ -4185,6 +4186,10 @@ function processReqTush(query) {
                                 }               
                             }
                             else {
+                                if (tushStep == 0) {
+                                    tushStart = Math.floor((new Date()) / 1000);
+                                    send(channelNameToID(config.options.channels.debug), strings.announcements.tush.start, false);  
+                                }
                                 tushStep++;
                                 if (tushStep >= config.printer.constraints.rampup)
                                     console.log(util.format(
@@ -4201,8 +4206,8 @@ function processReqTush(query) {
                         else {
                             if (!tushPaused) {
                                 if (tushStep > 0)
-                                    console.log(strings.debug.printer.rampC);
-                                tushStep = 0;
+                                    finishPrint(); 
+                                tushStep = 0;                               
                             }
                         }
                     }
@@ -4210,7 +4215,7 @@ function processReqTush(query) {
                     if (xhr.readyState == 4) {
                         if (xhr.status != 200 && !tushPaused) {
                             if (tushStep > 0)
-                                console.log(strings.debug.printer.rampC);
+                                finishPrint();
                             tushStep = 0;
                         }
 
@@ -6969,6 +6974,31 @@ function pausePrint(retry) {
 
         xhr.send(JSON.stringify(payload));
     }
+}
+
+/*
+ * Called when print is detected as finished. May also be called on cancelled.
+ */
+function finishPrint() {  
+    console.log(strings.debug.printer.rampC);
+
+    var dateNow = Math.floor((new Date()) / 1000);
+    var diff = dateNow - tushStart;
+    var time = {};
+
+    time.seconds = Math.floor(diff % 60);
+    diff = Math.floor(diff / 60);
+    time.minutes = Math.floor(diff % 60);
+    diff = Math.floor(diff / 60);
+    time.hours = Math.floor(diff % 24);
+    time.days = Math.floor(diff / 24);
+
+    send(channelNameToID(config.options.channels.debug), util.format(
+        strings.announcements.tush.finish,
+        mention(config.options.adminid),
+        getTimeString(time),
+        time.seconds        
+    ), false);
 }
 
 /*

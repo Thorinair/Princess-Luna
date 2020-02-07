@@ -556,6 +556,8 @@
             "assault": "@everyone, a new Faction Assault has begun! Next assault begins in %s."
         },
         "tush": {
+            "start":  "A new print has started.",
+            "finish": "%s, the print has finished after %s and %s seconds.",
             "spoolstop": {
                 "warn": "%s, **WARNING:** RariTUSH reports a **Spool STOP**. The encoders have done **%s pulses**. If the spool shows no movement within next %s seconds, I am pausing the print.",
                 "stop": "%s, **WARNING:** RariTUSH reports another **Spool STOP**. I have paused the print.",
