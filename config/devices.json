@@ -26,6 +26,12 @@
             "picture": "rarity.jpg"
         },
         {
+            "name": "RariTUSH",
+            "description": "Filament spool health.",
+            "details": "%s, RariTUSH is an advanced \"smart\" filament spool holder. With a built in scale and rotary encoders, it is capable of measuring the remaining filament weight on the spool, along with checking whether the spool is spinning freely. I then use this information to pause the print if needed in order to save Nightmare Rarity in case of an emergency. RariTUSH data is also available through the `!printer` command.",
+            "picture": "raritush.jpg"
+        },
+        {
             "name": "Celly",
             "description": "Atmospheric and geologic sensor system.",
             "details": "%s, Celly is a custom designed ESP8266 powered sensor system which gathers a wide variety of data. From atmospheric conditions like temperature and pressure to info about the Earth's magnetic field and gravitational pull. All of this data is sent to <https://varipass.org/> for storage and processing. You can get the full listing of her data using the command `!room`.",
