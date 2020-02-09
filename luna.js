@@ -6999,6 +6999,12 @@ function finishPrint() {
         getTimeString(time),
         time.seconds        
     ), false);
+
+    download(printer.baseurl + printer.webcam, config.printer.webimg, function() {        
+        embed(channelNameToID(config.options.channels.debug), "", config.printer.webimg, "Nightmare Rarity Webcam.jpg", false, true);
+    }, function() {
+        send(channelNameToID(config.options.channels.debug), strings.announcements.tush.error, false);     
+    }, 0);
 }
 
 /*
