@@ -53,6 +53,7 @@
         "popcount":      96,
 		"channels": {
 			"debug":     "debug",
+            "printer":   "printer",
 			"home":      "home_luna",
 			"announceA": "announcements",
 			"announceB": "pvfm_live-dj-chat",
@@ -114,7 +115,7 @@
 			]
 		},
 		"nightlight": {
-			"value":    4.2,
+			"value":    6.48,
 			"delta":    0.2,
 			"count":    10,
 			"control": "bath",

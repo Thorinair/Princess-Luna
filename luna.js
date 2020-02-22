@@ -4087,7 +4087,7 @@ function processReqTush(query) {
                                 // Spool Drop - Warn
                                 if (tushRaw > config.printer.detections.spooldrop.threshold_weight) {
                                     if (tempRaw <= config.printer.detections.spooldrop.threshold_weight) {
-                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                        send(channelNameToID(config.options.channels.printer), util.format(
                                             strings.announcements.tush.spooldrop.warn,
                                             mention(config.options.adminid),
                                             tempRaw,
@@ -4096,14 +4096,14 @@ function processReqTush(query) {
 
                                         setMood("warn", function(result) {
                                             if (!result)
-                                                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                                send(channelNameToID(config.options.channels.printer), strings.misc.tradfrierror, false);    
                                         });
                                     }
 
                                     // Spool Stop - Warn
                                     else if (tushEncL + tushEncR > config.printer.detections.spoolstop.threshold_count) {
                                         if (tempEncL + tempEncR <= config.printer.detections.spoolstop.threshold_count) {
-                                            send(channelNameToID(config.options.channels.debug), util.format(
+                                            send(channelNameToID(config.options.channels.printer), util.format(
                                                 strings.announcements.tush.spoolstop.warn,
                                                 mention(config.options.adminid),
                                                 tempEncL + tempEncR,
@@ -4112,7 +4112,7 @@ function processReqTush(query) {
 
                                             setMood("warn", function(result) {
                                                 if (!result)
-                                                    send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                                    send(channelNameToID(config.options.channels.printer), strings.misc.tradfrierror, false);    
                                             });
                                         }
                                     }
@@ -4127,7 +4127,7 @@ function processReqTush(query) {
                                                 console.log(strings.debug.printer.pause);
                                                 pausePrint(config.printer.pauseretry);
 
-                                                send(channelNameToID(config.options.channels.debug), util.format(
+                                                send(channelNameToID(config.options.channels.printer), util.format(
                                                     strings.announcements.tush.spoolstop.stop,
                                                     mention(config.options.adminid)
                                                 ), true);
@@ -4137,7 +4137,7 @@ function processReqTush(query) {
                                         else {
                                             tushPaused = false;
 
-                                            send(channelNameToID(config.options.channels.debug), util.format(
+                                            send(channelNameToID(config.options.channels.printer), util.format(
                                                 strings.announcements.tush.spoolstop.okay,
                                                 mention(config.options.adminid),
                                                 tempEncL + tempEncR
@@ -4145,7 +4145,7 @@ function processReqTush(query) {
 
                                             setMood("norm", function(result) {
                                                 if (!result)
-                                                    send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                                    send(channelNameToID(config.options.channels.printer), strings.misc.tradfrierror, false);    
                                             });
                                         }
                                     }  
@@ -4162,7 +4162,7 @@ function processReqTush(query) {
                                             console.log(strings.debug.printer.pause);
                                             pausePrint(config.printer.pauseretry);
 
-                                            send(channelNameToID(config.options.channels.debug), util.format(
+                                            send(channelNameToID(config.options.channels.printer), util.format(
                                                 strings.announcements.tush.spooldrop.stop,
                                                 mention(config.options.adminid)
                                             ), true);
@@ -4172,7 +4172,7 @@ function processReqTush(query) {
                                     else {
                                         tushPaused = false;
 
-                                        send(channelNameToID(config.options.channels.debug), util.format(
+                                        send(channelNameToID(config.options.channels.printer), util.format(
                                             strings.announcements.tush.spooldrop.okay,
                                             mention(config.options.adminid),
                                             tempRaw
@@ -4180,7 +4180,7 @@ function processReqTush(query) {
 
                                         setMood("norm", function(result) {
                                             if (!result)
-                                                send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
+                                                send(channelNameToID(config.options.channels.printer), strings.misc.tradfrierror, false);    
                                         });
                                     }
                                 }               
@@ -4188,7 +4188,7 @@ function processReqTush(query) {
                             else {
                                 if (tushStep == 0) {
                                     tushStart = Math.floor((new Date()) / 1000);
-                                    send(channelNameToID(config.options.channels.debug), strings.announcements.tush.start, false);  
+                                    send(channelNameToID(config.options.channels.printer), strings.announcements.tush.start, false);  
                                 }
                                 tushStep++;
                                 if (tushStep >= config.printer.constraints.rampup)
@@ -6993,7 +6993,7 @@ function finishPrint() {
     time.hours = Math.floor(diff % 24);
     time.days = Math.floor(diff / 24);
 
-    send(channelNameToID(config.options.channels.debug), util.format(
+    send(channelNameToID(config.options.channels.printer), util.format(
         strings.announcements.tush.finish,
         mention(config.options.adminid),
         getTimeString(time),
@@ -7001,9 +7001,9 @@ function finishPrint() {
     ), false);
 
     download(printer.baseurl + printer.webcam, config.printer.webimg, function() {        
-        embed(channelNameToID(config.options.channels.debug), "", config.printer.webimg, "Nightmare Rarity Webcam.jpg", false, true);
+        embed(channelNameToID(config.options.channels.printer), "", config.printer.webimg, "Nightmare Rarity Webcam.jpg", false, true);
     }, function() {
-        send(channelNameToID(config.options.channels.debug), strings.announcements.tush.error, false);     
+        send(channelNameToID(config.options.channels.printer), strings.announcements.tush.error, false);     
     }, 0);
 }
 
