@@ -4409,23 +4409,6 @@ function loadBot() {
 
                         if (
                             !roleFound &&
-                            bot.channels[channelID] != undefined &&
-                            bot.servers[bot.channels[channelID].guild_id] != undefined &&
-                            bot.servers[bot.channels[channelID].guild_id].members[userID] != undefined
-                            ) {
-
-                            bot.servers[bot.channels[channelID].guild_id].members[userID].roles.forEach(function (r1, i) {
-                                config.options.djroles.forEach(function (r2, j) {
-                                    if (r1 == r2) {
-                                        roleFound = true;
-                                    }
-                                });
-                            });
-                        }
-
-                        if (
-                            !roleFound &&
-                            bot.channels[channelID] == undefined &&
                             bot.servers[config.options.ponyvillefmid] != undefined &&
                             bot.servers[config.options.ponyvillefmid].members[userID] != undefined
                             ) {

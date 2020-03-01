@@ -44,7 +44,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!lyrics` Lists lyrics of a specified track. Can also list lyrics of tracks on PonyvilleFM. Use "list" parameter to list all known lyrics.
     - `!art` Shows art for a specified track. Functions similar like previous command to show art for tracks on PonyvilleFM. Use "list" parameter to list all known art.
     - `!story` Writes the story of a specified track. Can also list stories of tracks on PonyvilleFM. Use "list" parameter to list all known stories.
-    - `!npt` Manually toggles the automatic listing of Now Playing info for a specific channel. Only usable if given a role or in private messages.
+    - `!npt` Manually toggles the automatic listing of Now Playing info for a specific channel.
     - `!npo` Overrides the Now Playing info shown for PonyvilleFM One with a new value.
 * Private commands for the admin:
     - `!stop` Stops the currently active Glory of The Night session and sends the relevant announcements.
