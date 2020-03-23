@@ -102,7 +102,7 @@
 		},
         {
             "command": "temp",
-            "help":    "Ask me to measure my body temperature.",
+            "help":    "Ask me about my and Thorinair's body temperatures.",
             "type":    "public"
         },
 		{

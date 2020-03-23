@@ -1305,7 +1305,7 @@ comm.temp = function(data) {
         if (error) {
             console.log(error);
             send(data.channelID, util.format(
-                strings.commands.temp.error,
+                strings.commands.temp.errorA,
                 mention(data.userID)
             ), true);
             return;
@@ -1314,15 +1314,69 @@ comm.temp = function(data) {
         var lines = stdout.split("\n");
         var cpu = parseFloat(lines[0].split("=")[1].split("'")[0]);
         var gpu = parseFloat(lines[1].split("=")[1].split("'")[0]);
-        var body = ((cpu + gpu) / 2).toFixed(2);
+        var raspi = ((cpu + gpu) / 2).toFixed(2);
 
-        send(data.channelID, util.format(
-            strings.commands.temp.message,
-            mention(data.userID),
-            body,
-            cpu,
-            gpu
-        ), true);
+
+        var payload = {
+                "key": varipass.main.key,
+                "id":  varipass.main.ids.body,
+                "action": "read"
+            };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", config.options.varipassurl, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+
+        xhr.onreadystatechange = function () { 
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var vpData = JSON.parse(xhr.responseText);
+                console.log(strings.debug.varipass.done);
+
+                var diff = vpData.current - vpData.time;
+                var time = {};
+
+                time.seconds = Math.floor(diff % 60);
+                diff = Math.floor(diff / 60);
+                time.minutes = Math.floor(diff % 60);
+                diff = Math.floor(diff / 60);
+                time.hours = Math.floor(diff % 24);
+                time.days = Math.floor(diff / 24);
+
+
+                send(data.channelID, util.format(
+                    strings.commands.temp.message,
+                    mention(data.userID),
+                    raspi,
+                    cpu,
+                    gpu,
+                    vpData.value.toFixed(2),
+                    getTimeString(time),
+                    time.seconds
+                ), true);
+
+            }
+        }
+        xhr.onerror = function(err) {
+            console.log(util.format(
+                strings.debug.varipass.error,
+                err.target.status
+            ));
+            xhr.abort();
+            send(data.channelID, util.format(
+                strings.commands.temp.errorB,
+                mention(data.userID)
+            ), true);
+        }
+        xhr.ontimeout = function() {
+            console.log(strings.debug.varipass.timeout);
+            xhr.abort();
+            send(data.channelID, util.format(
+                strings.commands.temp.errorB,
+                mention(data.userID)
+            ), true);
+        }
+
+        xhr.send(JSON.stringify(payload));
     });
 };
 

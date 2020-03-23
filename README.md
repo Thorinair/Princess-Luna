@@ -36,6 +36,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!spools` Lists the weights of all added empty filament spools.
     - `!custom` Lists all available custom interractions for a server or channel.
     - `!thori` Sends Thorinair's location info, pulled from VariPass. Users need to be whitelisted in order to use this command.
+    - `!temp` Lists the measured RaspberryPi CPU and GPU temperatures, along with Thorinair's body temperature.
     - `!stats` Lists the bot's current statistics for a channel. You may also specify the timezone after the command.
     - `!stats` Lists information about the bot and links the source code.
     - `!help` Lists all available commands.

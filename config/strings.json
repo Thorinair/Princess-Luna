@@ -118,8 +118,9 @@
 			"error":    "%s, you need to be whitelisted by Thorinair in order to this command. Maybe he will if you ask him nicely."
 		},
         "temp": {
-            "message":  "%s, my body temperature is currently %s °C (CPU at %s °C and GPU at %s °C).",
-            "error":    "%s, I was unable to measure my current body temperature."
+            "message":  "%s, **my** body temperature is currently **%s °C** *(CPU at %s °C and GPU at %s °C)*.\n**Thorinair's** body temperature is **%s °C**. Last update was %s and %s seconds ago.",
+            "errorA":   "%s, I was unable to measure my current body temperature.",
+            "errorB":   "%s, I was unable to retrieve Thorinair's body temperature."
         },
 		"stats": {
 			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",

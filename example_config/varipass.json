@@ -30,7 +30,8 @@
 			"particles100": "0000AAAA",
 			"location":     "0000AAAA",
             "enc":          "0000AAAA",
-            "weight":       "0000AAAA"
+            "weight":       "0000AAAA",
+            "body":         "0000AAAA"
 		}
 	},
 	"eeg": {
