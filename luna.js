@@ -36,7 +36,6 @@ var printer  = require("./config/printer.json");
 var dtls     = require("./config/dtls.json");
 var tradfri  = require("./config/tradfri.json");
 var schedule = require("./config/schedule.json");
-var wow      = require("./config/wow.json");
 var httpkey  = require("./config/httpkey.json");
 var mac      = require("./config/mac.json");
 var blitzor  = require("./config/blitzor.json");
@@ -6753,7 +6752,6 @@ function reloadConfig() {
     dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
     tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
     schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
-    wow      = JSON.parse(fs.readFileSync(config.options.configpath + "wow.json", "utf8"));
     httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
     mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
     blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
