@@ -33,6 +33,7 @@
 		"defstation":    "one",
 		"lyricformat":   "*",
 		"mytimezone":    "Europe/Zagreb",
+        "dailyavg":      "00:00",
 		"serverport":    80,
 		"maxlength":     2000,
 		"typetime":      2,

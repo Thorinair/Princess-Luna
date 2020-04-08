@@ -528,7 +528,7 @@ comm.room = function(data) {
     }
     xhr.onerror = function(err) {
         console.log(util.format(
-            strings.debug.varipass.error,
+            strings.debug.varipass.errorR,
             err.target.status
         ));
         xhr.abort();
@@ -1277,7 +1277,7 @@ comm.thori = function(data) {
         }
         xhr.onerror = function(err) {
             console.log(util.format(
-                strings.debug.varipass.error,
+                strings.debug.varipass.errorR,
                 err.target.status
             ));
             xhr.abort();
@@ -1357,7 +1357,7 @@ comm.temp = function(data) {
         }
         xhr.onerror = function(err) {
             console.log(util.format(
-                strings.debug.varipass.error,
+                strings.debug.varipass.errorR,
                 err.target.status
             ));
             xhr.abort();
@@ -3066,6 +3066,7 @@ function startupProcedure() {
     loadTimezones();
     loadTradfri();
     loadAssaults();
+    loadDailyAvg();
     loadPhases();
 }
 
@@ -3369,6 +3370,17 @@ function loadAssaults() {
     prepareAssaultAnnounce();
 
     console.log(strings.debug.assaults.done);
+}
+
+/*
+ * Loads the daily averaging procedures.
+ */
+function loadDailyAvg() {
+    console.log(strings.debug.dailyavg.load);
+
+    prepareDailyAvg();
+
+    console.log(strings.debug.dailyavg.done);
 }
 
 /*
@@ -4279,7 +4291,12 @@ function processReqTush(query) {
                             tushRaw = tempRaw;
                         }
 
-                        tushVaripassWrite();
+                        if (tushEncL != undefined && tushEncR != undefined) {
+                            writeVariPass(varipass.main.key, varipass.main.ids.enc, tushEncL + tushEncR);
+                        }
+                        if (tushWeight != undefined) {
+                            writeVariPass(varipass.main.key, varipass.main.ids.weight, tushWeight);
+                        }
                     }
                 }
 
@@ -4291,10 +4308,6 @@ function processReqTush(query) {
                 }
 
                 xhr.send();
-
-
-
-
             }
         }
     }
@@ -5082,7 +5095,7 @@ function statusVariPass() {
     }
     xhr.onerror = function(err) {
         console.log(util.format(
-            strings.debug.varipass.error,
+            strings.debug.varipass.errorR,
             err.target.status
         ));
         xhr.abort();
@@ -5117,7 +5130,7 @@ function sendDoseEMA(value) {
     }
     xhr.onerror = function(err) {
         console.log(util.format(
-            strings.debug.varipass.error,
+            strings.debug.varipass.errorW,
             err.target.status
         ));
         xhr.abort();
@@ -5189,7 +5202,7 @@ function eegVaripassWrite() {
 
         xhr.onerror = function(err) {
             console.log(util.format(
-                strings.debug.varipass.error,
+                strings.debug.varipass.errorW,
                 err.target.status
             ));
             xhr.abort();
@@ -5238,7 +5251,7 @@ function eegVaripassEdit() {
 
     xhr.onerror = function(err) {
         console.log(util.format(
-            strings.debug.varipass.error,
+            strings.debug.varipass.errorW,
             err.target.status
         ));
         xhr.abort();
@@ -5252,6 +5265,119 @@ function eegVaripassEdit() {
 
     xhr.send(JSON.stringify(payload));
 }
+
+/*
+ * Pulls all data from VariPass and does processes the average values. Pushes the data back once done.
+ */
+function avgVariPass() {
+    var payload = {
+            "key": varipass.main.key,
+            "action": "all"
+        };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {            
+            var vpData = JSON.parse(xhr.responseText);
+
+            var vpPressure    = findVariable(vpData, varipass.main.ids.pressure).history;
+            var vpMagnitude   = findVariable(vpData, varipass.main.ids.magnitude).history;
+            var vpInclination = findVariable(vpData, varipass.main.ids.inclination).history;
+            var vpDoseEMA     = findVariable(vpData, varipass.main.ids.doseema).history;
+
+            var avgPressure = 0.0;
+            vpPressure.forEach(function(v) {
+                avgPressure += v.value / vpPressure.length;
+            });
+
+            var avgMagnitude = 0.0;
+            vpMagnitude.forEach(function(v) {
+                avgMagnitude += v.value / vpMagnitude.length;
+            });
+
+            var avgInclination = 0.0;
+            vpInclination.forEach(function(v) {
+                avgInclination += v.value / vpInclination.length;
+            });
+            
+            var avgDoseEMA = 0.0;
+            vpDoseEMA.forEach(function(v) {
+                avgDoseEMA += v.value / vpDoseEMA.length;
+            });
+
+            send(channelNameToID(config.options.channels.debug), util.format(
+                strings.announcements.dailyavg,
+                avgPressure.toFixed(4),
+                avgMagnitude.toFixed(4),
+                avgInclination.toFixed(4),
+                avgDoseEMA.toFixed(4)
+            ), true);
+
+            writeVariPass(varipass.main.key, varipass.main.ids.avgPressure, avgPressure);
+            writeVariPass(varipass.main.key, varipass.main.ids.avgMagnitude, avgMagnitude);
+            writeVariPass(varipass.main.key, varipass.main.ids.avgInclination, avgInclination);
+            writeVariPass(varipass.main.key, varipass.main.ids.avgDoseEMA, avgDoseEMA);
+        }
+    }
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.varipass.errorR,
+            err.target.status
+        ));
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.varipass.timeout);
+        xhr.abort();
+    }
+
+    xhr.send(JSON.stringify(payload));
+}
+
+/*
+ * Writes a value to VariPass.
+ * @param  key  The key of the VariPass account.
+ * @param  id   The ID of the variable.
+ * @param  val  The value to write.
+ */
+function writeVariPass(key, id, val) {
+    var payload = {
+        "key":    key,
+        "action": "write",
+        "id":     id,
+        "value":  val
+    };
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", config.options.varipassurl, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.onreadystatechange = function () { 
+        if (xhr.readyState == 4 && xhr.status == 200) {            
+            var vpData = JSON.parse(xhr.responseText);
+
+            if (vpData.result != "success" && vpData.result != "error_cooldown") {
+                console.log(util.format(
+                    strings.debug.varipass.errorW,
+                    vpData.result
+                ));
+            }
+        }
+    }
+    xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.varipass.errorW,
+            err.target.status
+        ));
+        xhr.abort();
+    }
+    xhr.ontimeout = function() {
+        console.log(strings.debug.varipass.timeout);
+        xhr.abort();
+    }
+    xhr.send(JSON.stringify(payload));
+} 
 
 /*
  * Parses VariPass data to return a certain variable.
@@ -5269,66 +5395,7 @@ function findVariable(data, id) {
     });
 
     return variable;
-}
-
-/*
- * Writes the spool weight data to VariPass.
- */
-function tushVaripassWrite() {
-    if (tushEncL != undefined && tushEncR != undefined) {
-        var totalEnc = tushEncL + tushEncR;
-        var payload = {
-                "key":    varipass.main.key,
-                "action": "write",
-                "id":     varipass.main.ids.enc,
-                "value":  totalEnc
-            };
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", config.options.varipassurl, true);
-        xhr.setRequestHeader("Content-type", "application/json");
-
-        xhr.onerror = function(err) {
-            console.log(util.format(
-                strings.debug.varipass.error,
-                err.target.status
-            ));
-            xhr.abort();
-        }
-        xhr.ontimeout = function() {
-            console.log(strings.debug.varipass.timeout);
-            xhr.abort();
-        }
-
-        xhr.send(JSON.stringify(payload));
-    }
-    if (tushWeight != undefined) {
-        var payload = {
-                "key":    varipass.main.key,
-                "action": "write",
-                "id":     varipass.main.ids.weight,
-                "value":  tushWeight
-            };
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", config.options.varipassurl, true);
-        xhr.setRequestHeader("Content-type", "application/json");
-
-        xhr.onerror = function(err) {
-            console.log(util.format(
-                strings.debug.varipass.error,
-                err.target.status
-            ));
-            xhr.abort();
-        }
-        xhr.ontimeout = function() {
-            console.log(strings.debug.varipass.timeout);
-            xhr.abort();
-        }
-
-        xhr.send(JSON.stringify(payload));
-    }
-}
+}         
 
 
 
@@ -6945,7 +7012,7 @@ function h(channelID) {
 function getAssault(region) {
     var countDownDate = moment(1000 * config.wow.assault.regions[region]);
     for (var o = moment(), n = countDownDate - o, r = countDownDate; n < 0;) {
-        //console.log((r + 0) / 1000;
+        //console.log((r + 0) / 1000);
         n = (r = r.clone().add(19, "hours")) - o;
     }
     return r.clone();
@@ -6957,7 +7024,7 @@ function getAssault(region) {
 function prepareAssaultAnnounce() {
     var dueTime = new Date(getAssault("EU"));
 
-    var job = new CronJob(new Date(getAssault("EU")), function() {
+    var job = new CronJob(dueTime, function() {
         setTimeout(function() {
             send(channelNameToID(config.options.channels.home), util.format(
                 strings.announcements.wow.assault,
@@ -6971,6 +7038,46 @@ function prepareAssaultAnnounce() {
 
     console.log(util.format(
         strings.debug.assaults.date,
+        dueTime
+    ));  
+}
+
+/* 
+ * Generates time for upcoming daily average procedure.
+ * @return         Time of the procedure, as moment.
+ */
+function getDailyAvgTime() {
+    var partsTime = config.options.dailyavg.split(config.separators.time);
+
+    var parseDate = new Date();
+    parseDate.setHours(partsTime[0]);
+    parseDate.setMinutes(partsTime[1]);
+    parseDate.setSeconds(0);
+    parseDate.setMilliseconds(0);
+
+    var countDownDate = moment(parseDate);
+    for (var o = moment(), n = countDownDate - o, r = countDownDate; n < 0;) {
+        //console.log((r + 0) / 1000);
+        n = (r = r.clone().add(24, "hours")) - o;
+    }
+    return r.clone();
+}
+
+/* 
+ * Prepares a daily average procedure.
+ */
+function prepareDailyAvg() {
+    var dueTime = new Date(getDailyAvgTime());
+
+    var job = new CronJob(dueTime, function() {
+        avgVariPass();
+        setTimeout(function() {
+            prepareDailyAvg();
+        }, 1000);
+    }, function () {}, true);
+
+    console.log(util.format(
+        strings.debug.dailyavg.date,
         dueTime
     ));  
 }

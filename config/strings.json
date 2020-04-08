@@ -571,6 +571,7 @@
                 "okay": "%s, RariTUSH reports that the spool weight has been restored. It is now **%s g (raw)**."
             }
         },
+        "dailyavg":   "Thori, I have calculated and pushed the daily sensor values to VariPass. You can see the values below.\n```24h Pressure:         %s\n24h Mag. Magnitude:   %s\n24h Mag. Inclination: %s\n24h Radiation Dose:   %s```",
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
 		"schedule":   "As scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
@@ -743,6 +744,11 @@
             "date":    "  Added: %s",
             "done":    "  Done."
         },
+        "dailyavg": {
+            "load":    "Loading: Daily average checkpoints...",
+            "date":    "  Added: %s",
+            "done":    "  Done."
+        },
 		"phases": {
 			"load":    "Loading: Online Phase data...",
 			"item":    "  - Loading phase date: %s - %s",
@@ -783,7 +789,8 @@
 		"varipass": {
 			"load":    "I'm loading data from VariPass...",
 			"done":    "I've finished loading VariPass data!",
-			"error":   "I've encountered some problems loading the data. Here is more info: \"%s\"",
+			"errorR":  "I've encountered some problems loading the data. Here is more info: \"%s\"",
+            "errorW":  "I've encountered some problems writing the data. Here is more info: \"%s\"",
 			"timeout": "My attempt to load the data took too long."
 		},
 		"tradfri": {
