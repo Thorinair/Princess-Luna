@@ -117,7 +117,7 @@
 			]
 		},
 		"nightlight": {
-			"value":    6.48,
+			"value":    6.0583,
 			"delta":    0.2,
 			"count":    10,
 			"control": "bath",

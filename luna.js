@@ -42,6 +42,8 @@ var blitzor  = require("./config/blitzor.json");
 var thori    = require("./config/thori.json");
 var devices  = require("./config/devices.json");
 
+require("tls").DEFAULT_ECDH_CURVE = "auto"
+
 /************************************
  * Princess Luna's functions are divided in multiple categories
  * based on various functionality. In order to jump to a
@@ -3715,6 +3717,12 @@ var processRequest = function(req, res) {
                 // Data requests
                 case "ping":   processResPing(res);   return; break;
                 case "spools": processResSpools(res); return; break;
+                case "np":     processResNp(res);     return; break;
+            }
+        }
+        else {
+            switch (req.url) {
+                case "/np.html": processWebNp(res); return; break;
             }
         }
     }
@@ -4323,6 +4331,8 @@ function processResPing(res) {
         ["Content-Length", 4]
             ]);
     res.write("pong");
+    
+    res.end();
 }
 
 /*
@@ -4341,6 +4351,26 @@ function processResSpools(res) {
         ["Content-Length", spools.length]
             ]);
     res.write(spools);
+    
+    res.end();
+}
+
+/*
+ * Responds to the "np.html" web request.
+ */
+function processWebNp(res) {
+    var html = util.format(
+        strings.misc.html.np,
+        np.nowplaying
+    );
+
+    res.writeHead(200, [
+        ["Content-Type", "text/html; charset=UTF-8"], 
+        ["Content-Length", html.length]
+            ]);
+    res.write(html);
+    
+    res.end();
 }
 
 
@@ -6516,6 +6546,8 @@ function loopStatusPush() {
     xhr.setRequestHeader("Content-type", "application/json");
 
     xhr.onreadystatechange = function () { 
+
+        //console.log("status ready state: " + xhr.readyState + " status: " + xhr.status);
         if (xhr.readyState == 4)
             if (xhr.status != 200 && xhr.status != 503) {
                 console.log(util.format(
@@ -6647,14 +6679,21 @@ function getStatus(url, timeout, callback) {
 
     xhr.onreadystatechange = function () { 
         if (xhr.readyState == 4) {
+            //console.log("Url: " + url);
+            //console.log("   status: " + xhr.status + " text: " + xhr.responseText);
             callback(xhr.responseText, xhr.status);            
             clearTimeout(timeout);
         }
     }
     xhr.onerror = function(err) {
+        console.log(util.format(
+            strings.debug.status.error,
+            err.target.status
+        ));
         xhr.abort();
     }
     xhr.ontimeout = function() {
+        console.log(strings.debug.status.timeout);
         xhr.abort();
     }
 
