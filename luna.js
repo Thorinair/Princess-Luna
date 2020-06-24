@@ -3717,12 +3717,8 @@ var processRequest = function(req, res) {
                 // Data requests
                 case "ping":   processResPing(res);   return; break;
                 case "spools": processResSpools(res); return; break;
-                case "np":     processResNp(res);     return; break;
-            }
-        }
-        else {
-            switch (req.url) {
-                case "/np.html": processWebNp(res); return; break;
+                // JSON Rquests
+                case "np": processJsonNp(res); return; break;
             }
         }
     }
@@ -4356,19 +4352,18 @@ function processResSpools(res) {
 }
 
 /*
- * Responds to the "np.html" web request.
+ * Responds to the "np.json" request.
+ * @param  res  The response object.
  */
-function processWebNp(res) {
-    var html = util.format(
-        strings.misc.html.np,
-        np.nowplaying
-    );
+function processJsonNp(res) {
+    var json = JSON.stringify(np);
 
     res.writeHead(200, [
-        ["Content-Type", "text/html; charset=UTF-8"], 
-        ["Content-Length", html.length]
+        ["Access-Control-Allow-Origin", "*"],
+        ["Content-Type", "application/json; charset=UTF-8"],
+        ["Content-Length", json.length]
             ]);
-    res.write(html);
+    res.write(json);
     
     res.end();
 }

@@ -655,10 +655,7 @@
 				"gray",
 				"black"
 			]
-		},
-        "html": {
-            "np": "<meta http-equiv='refresh' content='1'><html><body><p><b>Now Playing:</b> %s</p></body></html>"
-        }
+		}
 	},
 	"debug": {
 		"message":      "=> #%s: \"%s\"",
