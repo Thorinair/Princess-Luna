@@ -510,11 +510,11 @@
 	},
 	"announcements": {
 		"gotn": {
-			"long":   "@everyone, a new episode of Glory of The Night starts in %s! Don't forget to tune in to PonyvilleFM! <https://ponyvillefm.com>",
-            "shortA": "Everypony @here, Glory of The Night begins in only %s! Tune in to PonyvilleFM now! I suggest using the Vorbis HQ (OGG) stream for best sound quality. https://ponyvillefm.com/player\nAlso, come watch Thorinair's live video stream here: <http://luna.thorinair.net/?action=stream>\n\nI will be posting live track announcements to <#655888278242852915>!",
+			"long":   "@everyone, a new episode of Glory of The Night starts in %s! Don't forget to tune in to PonyvilleFM or Twitch!\n<https://ponyvillefm.com>\n<https://www.twitch.tv/thorinair>",
+            "shortA": "Everypony @here, Glory of The Night begins in only %s! Tune in to PonyvilleFM or Twitch now! I suggest using the Vorbis HQ (OGG) stream for best sound quality on PonyvilleFM.\nhttps://ponyvillefm.com/player\nhttps://www.twitch.tv/thorinair\n\nI will be posting live track announcements to <#655888278242852915>!",
             "shortB": "**Thorinair's Glory of The Night begins in only %s! Tune in to PonyvilleFM now so you don't miss out!**",
-            "shortC": "**Thorinair's Glory of The Night radio show begins in only %s! Tune in to PonyvilleFM now so you don't miss out!**\nhttps://ponyvillefm.com/player",
-			"nowA":   "**Everypony @here, Glory of The Night is now live! Tune in to PonyvilleFM using the link above!**",
+            "shortC": "**Thorinair's Glory of The Night radio show begins in only %s! Tune in to PonyvilleFM or Thorinair's Twitch now so you don't miss out!**\n<https://ponyvillefm.com/player>\n<https://www.twitch.tv/thorinair>",
+			"nowA":   "**Everypony @here, Glory of The Night is now live! Tune in to PonyvilleFM or Twitch using the link above!**",
 			"nowB":   "**Thorinair's Glory of The Night has begun! %s, join us in the beautiful night!**",
 			"afterA": "Everypony @here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.",
 			"afterB": "The show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud."
