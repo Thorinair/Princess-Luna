@@ -294,6 +294,16 @@
 		}
 
 	},
+    "corona": {
+        "enabled": true,
+        "urls": {
+            "total":  "https://www.koronavirus.hr/json/?action=podaci",
+            "county": "https://www.koronavirus.hr/json/?action=po_danima_zupanijama"
+        },
+        "timeout": 60,
+        "path": "/var/www/node/data/corona.json",
+        "county": "Osječko-baranjska"
+    },
 	"autoreact": {
 		"channels": [
 			"566782458528268288"

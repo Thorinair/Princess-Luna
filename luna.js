@@ -196,6 +196,7 @@ var isLive    = false;
 var isplushie = false;
 
 var hTrack = {};
+var corona;
 
 
 
@@ -3064,6 +3065,7 @@ function startupProcedure() {
     loadANN();
     loadBlacklist();
     loadIgnore();
+    loadCorona();
     loadEEG();
     loadTimezones();
     loadTradfri();
@@ -3304,6 +3306,26 @@ function loadIgnore() {
     else {
         fs.writeFileSync(config.options.ignorepath, JSON.stringify(ignore), "utf-8");
         console.log(strings.debug.ignore.new);
+    }
+}
+
+/*
+ * Loads the corona data, or creates new and prepares it.
+ */
+function loadCorona() {
+    if (config.corona.enabled) {
+        if (fs.existsSync(config.corona.path)) {
+            console.log(strings.debug.corona.old);
+            corona = JSON.parse(fs.readFileSync(config.corona.path, "utf8"));
+            console.log(strings.debug.corona.done);
+        }
+        else {
+            corona = {};
+            corona.dateTotal  = "";
+            corona.dateCounty = "";
+            fs.writeFileSync(config.corona.path, JSON.stringify(corona), "utf-8");
+            console.log(strings.debug.corona.new);
+        }
     }
 }
 
@@ -3679,6 +3701,7 @@ function loadSeizure() {
     seizure = {};
     fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
 }
+
 
 
 
@@ -4424,6 +4447,7 @@ function loadBot() {
 
             loopLightning();
             loopNowPlaying();
+            loopCorona();
             loopStatusPull();
             loopStatusPush();
             setTimeout(loopBrainSave, config.brain.saveloop * 1000);
@@ -6834,6 +6858,96 @@ function loopNowPlaying() {
         xhr.send();
     }
     setTimeout(loopNowPlaying, config.nowplaying.timeout * 1000);
+}
+
+/*
+ * Loops to continuously retrieve corona data.
+ */
+function loopCorona() {
+    if (config.corona.enabled) {
+        var xhrTotal = new XMLHttpRequest();
+        xhrTotal.open("GET", config.corona.urls.total, true);
+
+        xhrTotal.onreadystatechange = function () { 
+            if (xhrTotal.readyState == 4 && xhrTotal.status == 200) {
+                var response;
+                try {
+                    response = JSON.parse(xhrTotal.responseText);
+                }
+                catch(error) {
+                }
+                if (response != undefined) {
+                    var dateNew = response[0].Datum;
+                    if (dateNew.trim() != corona.dateTotal.trim()) {
+                        corona.dateTotal = dateNew;
+                        fs.writeFileSync(config.corona.path, JSON.stringify(corona), "utf-8");
+
+                        send(channelNameToID(config.options.channels.home), util.format(
+                            strings.announcements.corona.total,
+                            response[0].Datum,
+                            response[0].SlucajeviHrvatska - response[1].SlucajeviHrvatska,
+                            response[0].IzlijeceniHrvatska - response[1].IzlijeceniHrvatska,
+                            response[0].UmrliHrvatska - response[1].UmrliHrvatska
+                        ), true);
+                    }
+                }
+            }
+        }
+
+        xhrTotal.send();
+
+
+        var xhrCounty = new XMLHttpRequest();
+        xhrCounty.open("GET", config.corona.urls.county, true);
+
+        xhrCounty.onreadystatechange = function () { 
+            if (xhrCounty.readyState == 4 && xhrCounty.status == 200) {
+                var response;
+                try {
+                    response = JSON.parse(xhrCounty.responseText);
+                }
+                catch(error) {
+                }
+                if (response != undefined) {
+                    var dateNew = response[0].Datum;
+                    if (dateNew.trim() != corona.dateCounty.trim()) {
+                        corona.dateCounty = dateNew;
+                        fs.writeFileSync(config.corona.path, JSON.stringify(corona), "utf-8");
+
+                        var infectedNew;
+                        var infectedOld;
+                        var diedNew;
+                        var diedOld;
+
+                        response[0].PodaciDetaljno.forEach(function (c) {
+                            if (c.Zupanija.trim() == config.corona.county.trim()) {
+                                infectedNew = c.broj_zarazenih;
+                                diedNew = c.broj_umrlih;
+                            }
+                        });
+
+                        response[1].PodaciDetaljno.forEach(function (c) {
+                            if (c.Zupanija.trim() == config.corona.county.trim()) {
+                                infectedOld = c.broj_zarazenih;
+                                diedOld = c.broj_umrlih;
+                            }
+                        });
+
+                        send(channelNameToID(config.options.channels.home), util.format(
+                            strings.announcements.corona.county,
+                            config.corona.county,
+                            response[0].Datum,
+                            infectedNew - infectedOld,
+                            diedNew - diedOld
+                        ), true);
+                    }
+                }
+            }
+        }
+
+        xhrCounty.send();
+    }
+    setTimeout(loopCorona, config.corona.timeout * 1000);
 }
 
 /*

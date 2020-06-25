@@ -571,6 +571,10 @@
                 "okay": "%s, RariTUSH reports that the spool weight has been restored. It is now **%s g (raw)**."
             }
         },
+        "corona": {
+            "total":  "**@everyone New Total Croatia COVID-19 Data** (%s):\nNewly infected: **%s**\nNewly healed: **%s**\nNewly died: **%s**",
+            "county": "**@everyone New COVID-19 Data for %s County** (%s):\nNewly infected: **%s**\nNewly died: **%s**"
+        },
         "dailyavg":   "Thori, I have calculated and pushed the daily sensor values to VariPass. You can see the values below.\n```24h Pressure:         %s\n24h Mag. Magnitude:   %s\n24h Mag. Inclination: %s\n24h Radiation Dose:   %s```",
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
@@ -730,6 +734,11 @@
 			"add":     "Adding @%s to the ignore.",
 			"remove":  "Removing @%s from the ignore."
 		},
+        "corona": {
+            "old":     "Loading: Corona file...",
+            "new":     "Created: Corona file.",
+            "done":    "  Done."
+        },
 		"eeg": {
 			"old":     "Loading: EEG file...",
 			"new":     "Created: EEG file.",
