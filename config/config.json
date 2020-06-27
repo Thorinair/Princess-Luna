@@ -24,6 +24,7 @@
 		"nptogglespath": "/var/www/node/data/nptoggles.json",
 		"blacklistpath": "/var/www/node/data/blacklist.json",
 		"ignorepath":    "/var/www/node/data/ignore.json",
+        "livepath":      "/var/www/node/data/live.json",
 		"seizurepath":   "/var/www/node/data/seizure.json",
 		"eegpath":       "/var/www/node/data/eeg.json",
 		"coappath":      "/home/luna/libcoap/examples/coap-client",

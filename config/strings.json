@@ -739,6 +739,11 @@
             "new":     "Created: Corona file.",
             "done":    "  Done."
         },
+        "live": {
+            "old":     "Loading: Live file...",
+            "new":     "Created: Live file.",
+            "done":    "  Done."
+        },
 		"eeg": {
 			"old":     "Loading: EEG file...",
 			"new":     "Created: EEG file.",

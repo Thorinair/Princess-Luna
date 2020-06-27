@@ -1850,6 +1850,10 @@ comm.npo = function(data) {
 comm.stop = function(data) {
     if (isLive) {
         isLive = false;
+        var livedata = {}
+        livedata.isLive = isLive;
+        fs.writeFileSync(config.options.livepath, JSON.stringify(livedata), "utf-8");
+
         send(data.channelID, strings.commands.stop.message, false);
 
         send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.afterA, true);
@@ -3066,6 +3070,7 @@ function startupProcedure() {
     loadBlacklist();
     loadIgnore();
     loadCorona();
+    loadLive();
     loadEEG();
     loadTimezones();
     loadTradfri();
@@ -3138,6 +3143,9 @@ function loadAnnouncements() {
         // Now air-time announcement.
         var jobNow = new CronJob(new Date(date), function() {
                 isLive = true;
+                var livedata = {}
+                livedata.isLive = isLive;
+                fs.writeFileSync(config.options.livepath, JSON.stringify(livedata), "utf-8");
 
                 send(channelNameToID(config.options.channels.announceA), strings.announcements.gotn.nowA, true);
                 send(channelNameToID(config.options.channels.announceB), util.format(
@@ -3326,6 +3334,24 @@ function loadCorona() {
             fs.writeFileSync(config.corona.path, JSON.stringify(corona), "utf-8");
             console.log(strings.debug.corona.new);
         }
+    }
+}
+
+/*
+ * Loads the live data, or creates new and prepares it.
+ */
+function loadLive() {
+    if (fs.existsSync(config.options.livepath)) {
+        console.log(strings.debug.live.old);
+        var livedata = JSON.parse(fs.readFileSync(config.options.livepath, "utf8"));
+        isLive = livedata.isLive;
+        console.log(strings.debug.live.done);
+    }
+    else {
+        var livedata = {}
+        livedata.isLive = isLive;
+        fs.writeFileSync(config.options.livepath, JSON.stringify(livedata), "utf-8");
+        console.log(strings.debug.live.new);
     }
 }
 
@@ -4382,8 +4408,7 @@ function processJsonNp(res) {
     var json = JSON.stringify(np);
 
     // Fix weird formating bug.
-    var l = np.nowplaying.length;
-    for (var i = 0; i < l; i++)
+    for (var i = 0; i < np.nowplaying.length; i++)
         json += " ";
 
     res.writeHead(200, [
