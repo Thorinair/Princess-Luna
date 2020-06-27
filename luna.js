@@ -4381,6 +4381,11 @@ function processResSpools(res) {
 function processJsonNp(res) {
     var json = JSON.stringify(np);
 
+    // Fix weird formating bug.
+    var l = np.nowplaying.length;
+    for (var i = 0; i < l; i++)
+        json += " ";
+
     res.writeHead(200, [
         ["Access-Control-Allow-Origin", "*"],
         ["Content-Type", "application/json; charset=UTF-8"],
