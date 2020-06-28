@@ -4408,7 +4408,7 @@ function processJsonNp(res) {
     var json = JSON.stringify(np);
 
     // Fix weird formating bug.
-    for (var i = 0; i < 128; i++)
+    for (var i = 0; i < np.nowplaying.length; i++)
         json += " ";
 
     res.writeHead(200, [
