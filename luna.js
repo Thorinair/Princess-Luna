@@ -4411,14 +4411,15 @@ function processResSpools(res) {
  */
 function processResL(res) {
     var response = "no_lyrics";
-    if (lyrics[np.nowplaying] != undefined)
+    if (lyrics[np.nowplaying] != undefined) {
         response = "success";
 
-    isShowingLyrics = true;
-    Object.keys(nptoggles).forEach(function(n, i) {
-        if (nptoggles[n])
-            sendLarge(n, lyrics[np.nowplaying].split("\n"), strings.commands.l.messageB, true);
-    });
+        isShowingLyrics = true;
+        Object.keys(nptoggles).forEach(function(n, i) {
+            if (nptoggles[n])
+                sendLarge(n, lyrics[np.nowplaying].split("\n"), strings.commands.l.messageB, true);
+        });
+    }
 
     res.writeHead(200, [
         ["Content-Type", "text/plain"], 
