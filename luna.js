@@ -191,9 +191,10 @@ var server;
 var startTime;
 var waifuTimeout;
 
-var rebooting = false;
-var isLive    = false;
-var isplushie = false;
+var rebooting       = false;
+var isLive          = false;
+var isplushie       = false;
+var isShowingLyrics = false;
 
 var hTrack = {};
 var corona;
@@ -1773,6 +1774,7 @@ comm.npo = function(data) {
             track
         ), false);
 
+        isShowingLyrics = false;
         np.nowplaying = track;
 
         Object.keys(nptoggles).forEach(function(n, i) {
@@ -1937,6 +1939,7 @@ comm.learn = function(data) {
 // Command: !l
 comm.l = function(data) {
     if (lyrics[np.nowplaying] != undefined) {
+        isShowingLyrics = true;
         send(data.channelID, strings.commands.l.messageA, false);
         Object.keys(nptoggles).forEach(function(n, i) {
             if (nptoggles[n])
@@ -3767,7 +3770,8 @@ var processRequest = function(req, res) {
                 case "ping":   processResPing(res);   return; break;
                 case "spools": processResSpools(res); return; break;
                 // JSON Rquests
-                case "np": processJsonNp(res); return; break;
+                case "np":     processJsonNp(res);     return; break;
+                case "lyrics": processJsonLyrics(res); return; break;
             }
         }
     }
@@ -4401,11 +4405,39 @@ function processResSpools(res) {
 }
 
 /*
- * Responds to the "np.json" request.
+ * Responds to the "np" request.
  * @param  res  The response object.
  */
 function processJsonNp(res) {
     var json = JSON.stringify(np);
+
+    res.writeHead(200, [
+        ["Access-Control-Allow-Origin", "*"],
+        ["Content-Type", "application/json; charset=UTF-8"],
+        ["Content-Length", Buffer.byteLength(json, "utf8")]
+            ]);
+    res.write(json);
+    
+    res.end();
+}
+
+/*
+ * Responds to the "lyrics" request.
+ * @param  res  The response object.
+ */
+function processJsonLyrics(res) {
+    var data = {}
+    if(isShowingLyrics) {
+        if (lyrics[np.nowplaying] != undefined)
+            data.lyrics = lyrics[np.nowplaying].split("\n");
+        else
+            data.lyrics = [];
+    }
+    else {
+        data.lyrics = [];
+    }
+
+    var json = JSON.stringify(data);
 
     res.writeHead(200, [
         ["Access-Control-Allow-Origin", "*"],
@@ -6795,6 +6827,8 @@ function loopNowPlaying() {
                     ) {
                     if (npradio == undefined || npradio.title != response.icestats.source.title || npradio.artist != response.icestats.source.artist) {             
                         npradio = JSON.parse(xhr.responseText).icestats.source;
+
+                        isShowingLyrics = false;
                         if (npradio.artist != undefined)
                             npradio.nowplaying = npradio.artist + config.separators.track + npradio.title;
                         else
