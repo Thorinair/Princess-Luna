@@ -4407,14 +4407,10 @@ function processResSpools(res) {
 function processJsonNp(res) {
     var json = JSON.stringify(np);
 
-    // Fix weird formating bug.
-    for (var i = 0; i < np.nowplaying.length; i++)
-        json += " ";
-
     res.writeHead(200, [
         ["Access-Control-Allow-Origin", "*"],
         ["Content-Type", "application/json; charset=UTF-8"],
-        ["Content-Length", json.length]
+        ["Content-Length", Buffer.byteLength(json, "utf8")]
             ]);
     res.write(json);
     
