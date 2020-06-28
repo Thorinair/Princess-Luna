@@ -104,6 +104,10 @@ Princess Luna provides access to a REST API in order for various devices to requ
 * Requests for data:
     - `ping` Called by Luna on herself to verify her API works.
     - `spools` Called by RariTUSH to update her filament spool list.
+    - `l` Called by [ExclamL](https://github.com/Thorinair/ExclamL) to make Luna post lyrics data.
+* JSON requests:
+    - `np` Called by [NP-Overlay](https://github.com/Thorinair/NP-Overlay) to get the Now Playing info of the current track.
+    - `lyrics` Called by [NP-Overlay](https://github.com/Thorinair/NP-Overlay) to fetch lyrics of the current track.
 
 ## Cleaning Up Chatlogs For Training
 You can use a software like Sublime Text in order to clean up previous chatlogs copied from Discord in order to use them for training. The examples below show various regex formulas you can use to clean up different unwanted data from copy pasted Discord chatwindow:

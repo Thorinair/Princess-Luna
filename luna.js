@@ -3769,6 +3769,7 @@ var processRequest = function(req, res) {
                 // Data requests
                 case "ping":   processResPing(res);   return; break;
                 case "spools": processResSpools(res); return; break;
+                case "l":      processResL(res);      return; break;
                 // JSON Rquests
                 case "np":     processJsonNp(res);     return; break;
                 case "lyrics": processJsonLyrics(res); return; break;
@@ -4400,6 +4401,30 @@ function processResSpools(res) {
         ["Content-Length", spools.length]
             ]);
     res.write(spools);
+    
+    res.end();
+}
+
+/*
+ * Responds to the "l" request.
+ * @param  res  The response object.
+ */
+function processResL(res) {
+    var response = "no_lyrics";
+    if (lyrics[np.nowplaying] != undefined)
+        response = "success";
+
+    isShowingLyrics = true;
+    Object.keys(nptoggles).forEach(function(n, i) {
+        if (nptoggles[n])
+            sendLarge(n, lyrics[np.nowplaying].split("\n"), strings.commands.l.messageB, true);
+    });
+
+    res.writeHead(200, [
+        ["Content-Type", "text/plain"], 
+        ["Content-Length", response.length]
+            ]);
+    res.write(response);
     
     res.end();
 }
