@@ -105,6 +105,7 @@ Princess Luna provides access to a REST API in order for various devices to requ
     - `ping` Called by Luna on herself to verify her API works.
     - `spools` Called by RariTUSH to update her filament spool list.
     - `l` Called by [ExclamL](https://github.com/Thorinair/ExclamL) to make Luna post lyrics data.
+    - `lq` Called by ExclamL to check if the current track has any lyrics.
 * JSON requests:
     - `np` Called by [NP-Overlay](https://github.com/Thorinair/NP-Overlay) to get the Now Playing info of the current track.
     - `lyrics` Called by [NP-Overlay](https://github.com/Thorinair/NP-Overlay) to fetch lyrics of the current track.

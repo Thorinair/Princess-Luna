@@ -3770,6 +3770,7 @@ var processRequest = function(req, res) {
                 case "ping":   processResPing(res);   return; break;
                 case "spools": processResSpools(res); return; break;
                 case "l":      processResL(res);      return; break;
+                case "lq":     processResLQ(res);     return; break;
                 // JSON Rquests
                 case "np":     processJsonNp(res);     return; break;
                 case "lyrics": processJsonLyrics(res); return; break;
@@ -4410,6 +4411,8 @@ function processResSpools(res) {
  * @param  res  The response object.
  */
 function processResL(res) {
+    statusGlobal.exclaml = Math.floor((new Date()) / 1000);
+
     var response = "no_lyrics";
     if (lyrics[np.nowplaying] != undefined) {
         response = "success";
@@ -4431,10 +4434,32 @@ function processResL(res) {
 }
 
 /*
+ * Responds to the "lq" request.
+ * @param  res  The response object.
+ */
+function processResLQ(res) {
+    statusGlobal.exclaml = Math.floor((new Date()) / 1000);
+
+    var response = "false";
+    if (lyrics[np.nowplaying] != undefined)
+        response = "true";
+
+    res.writeHead(200, [
+        ["Content-Type", "text/plain"], 
+        ["Content-Length", response.length]
+            ]);
+    res.write(response);
+    
+    res.end();
+}
+
+/*
  * Responds to the "np" request.
  * @param  res  The response object.
  */
 function processJsonNp(res) {
+    statusGlobal.obs = Math.floor((new Date()) / 1000);
+
     var json = JSON.stringify(np);
 
     res.writeHead(200, [
@@ -4452,6 +4477,8 @@ function processJsonNp(res) {
  * @param  res  The response object.
  */
 function processJsonLyrics(res) {
+    statusGlobal.obs = Math.floor((new Date()) / 1000);
+
     var data = {}
     if(isShowingLyrics) {
         if (lyrics[np.nowplaying] != undefined)
@@ -6638,6 +6665,8 @@ function loopStatusPush() {
     data += generateStatus("tradfri", statusGlobal.tradfri, now);
     data += generateStatus("lulu", statusGlobal.lulu, now);
     data += generateStatus("sparkle", statusGlobal.sparkle, now);
+    data += generateStatus("exclaml", statusGlobal.exclaml, now);
+    data += generateStatus("obs", statusGlobal.obs, now);
 
     var payload = {
             "key": httpkey.key,
