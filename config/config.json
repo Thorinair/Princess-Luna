@@ -266,11 +266,11 @@
 			"luna_local":  "http://luna.local/?key=%s&action=ping",
 			"luna_public": "http://luna.thorinair.net:%s/?key=%s&action=ping",
 
-			"chrysalis_file_local":    "http://chrysalis.local/ping/",
-			"chrysalis_file_public":   "https://chrysalis.thorinair.net/ping/",
-			"chrysalis_stream_local":  "http://chrysalis.local:8000/status-json.xsl",
-			"chrysalis_stream_public": "https://stream.thorinair.net/status-json.xsl",
-			"chrysalis_ann":           "http://chrysalis.local:20200/?key=%s&action=ping",
+			"chrysalis_file_local":     "http://chrysalis.local/ping/",
+			"chrysalis_file_public":    "https://chrysalis.thorinair.net/ping/",
+			"chrysalis_icecast_local":  "http://chrysalis.local:8000/status-json.xsl",
+			"chrysalis_icecast_public": "https://stream.thorinair.net/status-json.xsl",
+			"chrysalis_ann":            "http://chrysalis.local:20200/?key=%s&action=ping",
 
 			"rarity_local":  "http://rarity.local/api/job",
 			"rarity_public": "api/job",
@@ -284,8 +284,8 @@
 
 			"chrysalis_file_local":    "pong",
 			"chrysalis_file_public":   "pong",
-			"chrysalis_stream_local":  "icestats",
-			"chrysalis_stream_public": "icestats",
+			"chrysalis_icecast_local":  "icestats",
+			"chrysalis_icecast_public": "icestats",
 			"chrysalis_ann":           "pong",
 
 			"rarity_local":  "No API key provided",

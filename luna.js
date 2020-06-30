@@ -176,8 +176,8 @@ var statusTimeoutLunaLocal;
 var statusTimeoutLunaPublic;
 var statusTimeoutChrysalisFileLocal;
 var statusTimeoutChrysalisFilePublic;
-var statusTimeoutChrysalisStreamLocal;
-var statusTimeoutChrysalisStreamPublic;
+var statusTimeoutChrysalisIcecastLocal;
+var statusTimeoutChrysalisIcecastPublic;
 var statusTimeoutChrysalisAnn;
 var statusTimeoutRarityLocal;
 var statusTimeoutRarityPublic;
@@ -4458,7 +4458,7 @@ function processResLQ(res) {
  * @param  res  The response object.
  */
 function processJsonNp(res) {
-    statusGlobal.obs = Math.floor((new Date()) / 1000);
+    statusGlobal.overlay_np = Math.floor((new Date()) / 1000);
 
     var json = JSON.stringify(np);
 
@@ -4477,7 +4477,7 @@ function processJsonNp(res) {
  * @param  res  The response object.
  */
 function processJsonLyrics(res) {
-    statusGlobal.obs = Math.floor((new Date()) / 1000);
+    statusGlobal.overlay_lyrics = Math.floor((new Date()) / 1000);
 
     var data = {}
     if(isShowingLyrics) {
@@ -6645,9 +6645,14 @@ function loopStatusPush() {
     
     data += generateStatus("chrysalis_file_local", statusGlobal.chrysalis_file_local, now);
     data += generateStatus("chrysalis_file_public", statusGlobal.chrysalis_file_public, now);
-    data += generateStatus("chrysalis_stream_local", statusGlobal.chrysalis_stream_local, now);
-    data += generateStatus("chrysalis_stream_public", statusGlobal.chrysalis_stream_public, now);
+    data += generateStatus("chrysalis_icecast_local", statusGlobal.chrysalis_icecast_local, now);
+    data += generateStatus("chrysalis_icecast_public", statusGlobal.chrysalis_icecast_public, now);
     data += generateStatus("chrysalis_ann", statusGlobal.chrysalis_ann, now);
+
+    data += generateStatus("pvfm", statusGlobal.pvfm, now);
+    data += generateStatus("overlay_np", statusGlobal.overlay_np, now);
+    data += generateStatus("overlay_lyrics", statusGlobal.overlay_lyrics, now);
+    data += generateStatus("exclaml", statusGlobal.exclaml, now);
 
     data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
     data += generateStatus("rarity_public", statusGlobal.rarity_public, now);
@@ -6663,10 +6668,8 @@ function loopStatusPush() {
     data += generateStatus("twilight", statusGlobal.twilight, now);
 
     data += generateStatus("tradfri", statusGlobal.tradfri, now);
-    data += generateStatus("lulu", statusGlobal.lulu, now);
     data += generateStatus("sparkle", statusGlobal.sparkle, now);
-    data += generateStatus("exclaml", statusGlobal.exclaml, now);
-    data += generateStatus("obs", statusGlobal.obs, now);
+    data += generateStatus("lulu", statusGlobal.lulu, now);
 
     var payload = {
             "key": httpkey.key,
@@ -6745,16 +6748,16 @@ function statusChrysalis() {
             statusGlobal.chrysalis_file_public = Math.floor((new Date()) / 1000);
     });
 
-    getStatus(config.status.urls.chrysalis_stream_local, statusTimeoutChrysalisStreamLocal, function(r, s) {
+    getStatus(config.status.urls.chrysalis_icecast_local, statusTimeoutChrysalisIcecastLocal, function(r, s) {
         if (s == 200)
-            if (JSON.parse(r)[config.status.responses.chrysalis_stream_local] != undefined)
-                statusGlobal.chrysalis_stream_local = Math.floor((new Date()) / 1000);
+            if (JSON.parse(r)[config.status.responses.chrysalis_icecast_local] != undefined)
+                statusGlobal.chrysalis_icecast_local = Math.floor((new Date()) / 1000);
     });
 
-    getStatus(config.status.urls.chrysalis_stream_public, statusTimeoutChrysalisStreamPublic, function(r, s) {
+    getStatus(config.status.urls.chrysalis_icecast_public, statusTimeoutChrysalisIcecastPublic, function(r, s) {
         if (s == 200)
-            if (JSON.parse(r)[config.status.responses.chrysalis_stream_public] != undefined)
-                statusGlobal.chrysalis_stream_public = Math.floor((new Date()) / 1000);
+            if (JSON.parse(r)[config.status.responses.chrysalis_icecast_public] != undefined)
+                statusGlobal.chrysalis_icecast_public = Math.floor((new Date()) / 1000);
     });
 
     var url = util.format(
@@ -6875,6 +6878,7 @@ function loopNowPlaying() {
                 }
                 catch(error) {
                 }
+                statusGlobal.pvfm = Math.floor((new Date()) / 1000);
                 if (
                     response != undefined && 
                     response.icestats != undefined && 
