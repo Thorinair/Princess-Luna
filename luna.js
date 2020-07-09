@@ -4440,13 +4440,15 @@ function processResL(res) {
 function processResLQ(res) {
     statusGlobal.exclaml = Math.floor((new Date()) / 1000);
 
-    var response = "false";
+    var response = "false"
     if (lyrics[np.nowplaying] != undefined)
         response = "true";
 
+    response += "|" + np.nowplaying;
+
     res.writeHead(200, [
-        ["Content-Type", "text/plain"], 
-        ["Content-Length", response.length]
+        ["Content-Type", "text/plain charset=UTF-8"], 
+        ["Content-Length", Buffer.byteLength(response, "utf8")]
             ]);
     res.write(response);
     
