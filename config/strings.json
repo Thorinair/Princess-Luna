@@ -469,6 +469,11 @@
 			"errorB":   "Thori, the storm chasing mode is already active.",
 			"errorC":   "Thori, the storm chasing mode is currently not active."
 		},
+        "wake": {
+            "message": "Thori, I am waking **%s** up.",
+            "errorA":  "Thori, you need to specify the device name.",
+            "errorB":  "Thori, I do not know of a device with that name."
+        },
 		"reboot": {
 			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
 		},
@@ -484,9 +489,7 @@
 			"errorA":   "Thori, you need to specify the system command you wish to run.",
 			"errorB":   "Thori, I don't know of such a command.",
 			"errorC":   "Thori, I was unable to perform the system command. Here is more info: %s",
-			"mreboot":  "I'm going to perform a full system reboot. This might take a bit longer. See you in a bit, Thori!",
-			"mwake":    "Thori, I am waking **%s** up.",
-			"ewake":    "Thori, I do not know of a device with that name."
+			"mreboot":  "I'm going to perform a full system reboot. This might take a bit longer. See you in a bit, Thori!"
 		}
 	},
 	"voice": {

@@ -411,6 +411,11 @@
 			"help":    "",
 			"type":    "private"
 		},
+        {
+            "command": "wake",
+            "help":    "",
+            "type":    "private"
+        },
 
 		{
 			"command": "reboot",

@@ -2917,6 +2917,26 @@ comm.chase = function(data) {
     }
 };
 
+// Command: !wake
+comm.wake = function(data) {
+    var device = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (device == "" || device == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.wake.errorA, false);
+    }
+    else {
+        if (device in mac) {
+            send(data.channelID, util.format(
+                strings.commands.wake.message,
+                device
+            ), false);
+            exec("sudo etherwake " + mac[device]);
+        }
+        else {
+            send(data.channelID, strings.commands.wake.errorB, false);
+        }
+    }
+};
+
 
 // Command: !reboot
 comm.reboot = function(data) {  
@@ -3025,18 +3045,6 @@ comm.system = function(data) {
                     exec("sudo /sbin/reboot");
 
                 }, config.options.reboottime * 1000);
-                break;
-            case "wake":
-                if (parts[1] in mac) {
-                    send(data.channelID, util.format(
-                        strings.commands.system.mwake,
-                        parts[1]
-                    ), false);
-                    exec("sudo etherwake " + mac[parts[1]]);
-                }
-                else {
-                    send(data.channelID, strings.commands.system.ewake, false);
-                }
                 break;
 
             default:
