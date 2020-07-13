@@ -632,6 +632,11 @@
 				"queue":   "%s, Queen Chrysalis says that there are already other requests being processed so she has put your request in a queue.\nThere are currently **%s** requests left."
 			}
 		},
+        "reactrole": {
+            "add":    "%s, you have been given your role!",
+            "remove": "%s, your role has been removed!",
+            "error":  "%s, there was an error giving you the role. Please contact the server admins."
+        },
 		"socks": {
 			"single": [
 				"rainbow",
@@ -665,20 +670,21 @@
 		}
 	},
 	"debug": {
-		"message":      "=> #%s: \"%s\"",
-		"embed":        "=> #%s: \"%s\" with image \"%s\" and path \"%s\"",
-		"started":      "<STARTED>",
-		"stopped":      "<STOPPED>",
-		"startedtime":  "Started at %s.",
-		"disconnected": "Disconnected from Discord... Reconnecting.",
-		"failedm":      "Error sending message. Retrying...",
-        "failgiveup":   "Max retries exceeded.",
-		"failedr":      "Error reacting. Retrying...",
-		"chatting":     "<= @%s, #%s: \"%s\"",
-		"welcome":      "@%s has joined GOTN server! Assigning Children of The Night role.",
-		"welcomefail":  "Error assigning role: %s",
-		"join":         "Joined Discord. My name is \"%s\" with ID #%s.",
-		"eegerror":     "Error saving EEG data: %s",
+		"message":       "=> #%s: \"%s\"",
+		"embed":         "=> #%s: \"%s\" with image \"%s\" and path \"%s\"",
+		"started":       "<STARTED>",
+		"stopped":       "<STOPPED>",
+		"startedtime":   "Started at %s.",
+		"disconnected":  "Disconnected from Discord... Reconnecting.",
+		"failedm":       "Error sending message. Retrying...",
+        "failgiveup":    "Max retries exceeded.",
+		"failedr":       "Error reacting. Retrying...",
+		"chatting":      "<= @%s, #%s: \"%s\"",
+		"welcome":       "@%s has joined GOTN server! Assigning Children of The Night role.",
+		"welcomefail":   "Error assigning role: %s",
+        "reactrolefail": "Error adjusting role: %s on server: %s",
+		"join":          "Joined Discord. My name is \"%s\" with ID #%s.",
+		"eegerror":      "Error saving EEG data: %s",
 		"download": {
 			"start":  "Downloading file: %s",
 			"error":  "  Error while downloading: \"%s\". Retrying...",

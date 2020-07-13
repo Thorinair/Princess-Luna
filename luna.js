@@ -23,24 +23,25 @@ const blitzorapi     = require("@simonschick/blitzortungapi");
 const package  = require("./package.json");
 
 // Load file data
-var token    = require("./config/token.json");
-var config   = require("./config/config.json");
-var commands = require("./config/commands.json");
-var custom   = require("./config/custom.json");
-var strings  = require("./config/strings.json");
-var gotn     = require("./config/gotn.json");
-var mlp      = require("./config/mlp.json");
-var channels = require("./config/channels.json");
-var varipass = require("./config/varipass.json");
-var printer  = require("./config/printer.json");
-var dtls     = require("./config/dtls.json");
-var tradfri  = require("./config/tradfri.json");
-var schedule = require("./config/schedule.json");
-var httpkey  = require("./config/httpkey.json");
-var mac      = require("./config/mac.json");
-var blitzor  = require("./config/blitzor.json");
-var thori    = require("./config/thori.json");
-var devices  = require("./config/devices.json");
+var token     = require("./config/token.json");
+var config    = require("./config/config.json");
+var commands  = require("./config/commands.json");
+var custom    = require("./config/custom.json");
+var strings   = require("./config/strings.json");
+var gotn      = require("./config/gotn.json");
+var mlp       = require("./config/mlp.json");
+var channels  = require("./config/channels.json");
+var varipass  = require("./config/varipass.json");
+var printer   = require("./config/printer.json");
+var dtls      = require("./config/dtls.json");
+var tradfri   = require("./config/tradfri.json");
+var schedule  = require("./config/schedule.json");
+var httpkey   = require("./config/httpkey.json");
+var mac       = require("./config/mac.json");
+var blitzor   = require("./config/blitzor.json");
+var thori     = require("./config/thori.json");
+var devices   = require("./config/devices.json");
+var reactrole = require("./config/reactrole.json");
 
 require("tls").DEFAULT_ECDH_CURVE = "auto"
 
@@ -4572,6 +4573,8 @@ function loadBot() {
             loopStatusPull();
             loopStatusPush();
             setTimeout(loopBrainSave, config.brain.saveloop * 1000);
+
+            prepareReactroleMessages();
         }
     });
 
@@ -4764,6 +4767,86 @@ function loadBot() {
         }
     });
 
+    bot.on("messageReactionAdd", function(data) {
+        if (data.d.user_id != bot.id) {
+            reactrole.mapping.forEach(function(m) {
+                if (channelNameToID(m.channel) == data.d.channel_id && m.message == data.d.message_id) {
+                    Object.keys(m.map).forEach(function (r) {
+                        var clean = r.substring(2, r.length - 1);
+                        var parts = clean.split(":");
+                        if (parts[1] === "")
+                            parts[1] = null;
+                        if (data.d.emoji.name === parts[0] && data.d.emoji.id === parts[1]) {
+                            bot.addToRole( {
+                                "serverID": data.d.guild_id,
+                                "userID": data.d.user_id,
+                                "roleID": m.map[r]
+                            }, function(err, response) {
+                                if (err) {
+                                    console.error(util.format(
+                                        strings.debug.reactrolefail, 
+                                        m.map[r],
+                                        data.d.guild_id
+                                    ));
+                                    send(data.d.user_id, util.format(
+                                        strings.misc.reactrole.error,
+                                        mention(data.d.user_id)
+                                    ), false);
+                                }
+                                else {
+                                    send(data.d.user_id, util.format(
+                                        strings.misc.reactrole.add,
+                                        mention(data.d.user_id)
+                                    ), false);
+                                }
+                            });
+                        }
+                    });                
+                }
+            });
+        }
+    });
+
+    bot.on("messageReactionRemove", function(data) {
+        if (data.d.user_id != bot.id) {
+            reactrole.mapping.forEach(function(m) {
+                if (channelNameToID(m.channel) == data.d.channel_id && m.message == data.d.message_id) {
+                    Object.keys(m.map).forEach(function (r) {
+                        var clean = r.substring(2, r.length - 1);
+                        var parts = clean.split(":");
+                        if (parts[1] === "")
+                            parts[1] = null;
+                        if (data.d.emoji.name === parts[0] && data.d.emoji.id === parts[1]) {
+                            bot.removeFromRole( {
+                                "serverID": data.d.guild_id,
+                                "userID": data.d.user_id,
+                                "roleID": m.map[r]
+                            }, function(err, response) {
+                                if (err) {
+                                    console.error(util.format(
+                                        strings.debug.reactrolefail, 
+                                        m.map[r],
+                                        data.d.guild_id
+                                    ));
+                                    send(data.d.user_id, util.format(
+                                        strings.misc.reactrole.error,
+                                        mention(data.d.user_id)
+                                    ), false);
+                                }
+                                else {
+                                    send(data.d.user_id, util.format(
+                                        strings.misc.reactrole.remove,
+                                        mention(data.d.user_id)
+                                    ), false);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+
     bot.on("disconnect", function(erMsg, code) {
         console.error(strings.debug.disconnected);
         // Wait for reconnect to prevent spamming.
@@ -4925,15 +5008,19 @@ function embed(id, message, file, filename, typing, del) {
 
 /*
  * Adds a reaction to a message on Discord.
- * @param  channelID  ID of the channel.
- * @param  messageID  ID of the message.
- * @param  reaction   String of the react to use.
+ * @param  channelID   ID of the channel.
+ * @param  messageID   ID of the message.
+ * @param  reaction    String of the react to use.
+ * @param  useUnicode  Whether unicode emoji is to be used.
  */
 function react(channelID, messageID, reaction) {
+    var clean = reaction.substring(2, reaction.length - 1);
+    if (clean.split(":")[1] === "")
+        clean = reaction.substring(2, reaction.length - 2);
     var input = {
         "channelID": channelID,
         "messageID": messageID,
-        "reaction": reaction
+        "reaction": clean
     };
 
     bot.addReaction(input, function(err) {
@@ -5097,6 +5184,39 @@ function doInterractionCustom(data, index) {
         send(data.channelID, strings.commands["plushie"].error, true);
     }
 };
+
+/*
+ * Loads specific messages into cache.
+ */
+function prepareReactroleMessages() {
+    reactrole.mapping.forEach(function(m) {
+        var message = {};
+        message.channelID = channelNameToID(m.channel);
+        message.messageID = m.message;
+
+        bot.getMessage(message, function(err, msg) {
+            var i = 0;
+            Object.keys(m.map).forEach(function (r1) {
+                var clean = r1.substring(2, r1.length - 1);
+                var parts = clean.split(":");
+                if (parts[1] === "")
+                    parts[1] = null;
+                var found = false;
+                if (msg.reactions != undefined)
+                    msg.reactions.forEach(function (r2) {
+                        if (r2.emoji.name === parts[0] && r2.emoji.id === parts[1])
+                            found = true;
+                    });
+                if (!found) {
+                    setTimeout(function() {
+                        react(message.channelID, message.messageID, r1);
+                    }, i * 1000);
+                    i++;
+                }
+            });
+        });
+    });
+}
 
 
 
@@ -7083,24 +7203,25 @@ function loopCorona() {
  * Reloads the configuration.
  */
 function reloadConfig() {  
-    token    = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
-    config   = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
-    commands = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
-    custom   = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
-    strings  = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
-    gotn     = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
-    mlp      = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
-    channels = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
-    varipass = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
-    printer  = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
-    dtls     = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
-    tradfri  = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
-    schedule = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
-    httpkey  = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
-    mac      = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
-    blitzor  = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
-    thori    = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
-    devices  = JSON.parse(fs.readFileSync(config.options.configpath + "devices.json", "utf8"));
+    token     = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
+    config    = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
+    commands  = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
+    custom    = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
+    strings   = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
+    gotn      = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
+    mlp       = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
+    channels  = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
+    varipass  = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
+    printer   = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
+    dtls      = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
+    tradfri   = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
+    schedule  = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
+    httpkey   = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
+    mac       = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
+    blitzor   = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
+    thori     = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
+    devices   = JSON.parse(fs.readFileSync(config.options.configpath + "devices.json", "utf8"));
+    reactrole = JSON.parse(fs.readFileSync(config.options.configpath + "reactrole.json", "utf8"));
 
     clearTimeout(lightningReconnect);
     blitzorws.close();
@@ -7123,6 +7244,8 @@ function reloadConfig() {
 
         connectChase(false);
     }
+
+    prepareReactroleMessages();
 }
 
 /*
