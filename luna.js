@@ -4614,6 +4614,7 @@ function loadBot() {
             var nocommand = true;
             var command = message.split("\n")[0];
             command = command.split(" ")[0];
+            var lower = command.toLowerCase();
 
             var packed = {};
             packed.user      = user;
@@ -4624,7 +4625,7 @@ function loadBot() {
             packed.command   = command.replace(config.options.commandsymbol, "");
 
             commands.list.forEach(function(c) {
-                if (command == config.options.commandsymbol + c.command && nocommand) {
+                if (lower == config.options.commandsymbol + c.command && nocommand) {
                     // Private commands
                     if (c.type == "private") {
                         if (userID == config.options.adminid) {
@@ -4687,7 +4688,7 @@ function loadBot() {
 
             // Custom interractions
             custom.list.forEach(function(c, i) {
-                if (command == config.options.commandsymbol + c.command && nocommand) {
+                if (lower == config.options.commandsymbol + c.command && nocommand) {
                     // Server filtering
                     if (bot.channels[channelID] != undefined) {
                         c.servers.forEach(function(s) {
