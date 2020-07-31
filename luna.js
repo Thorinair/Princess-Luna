@@ -191,6 +191,7 @@ var server;
 
 var startTime;
 var waifuTimeout;
+var cameraTimeout;
 
 var rebooting       = false;
 var isLive          = false;
@@ -2811,21 +2812,78 @@ comm.leave = function(data) {
 
 // Command: !camera
 comm.camera = function(data) {
-    var state = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-    if (state == "" || state == config.options.commandsymbol + data.command) {
-        send(data.channelID, strings.commands.camera.error, true);
+    var params = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (params == "" || params == config.options.commandsymbol + data.command) {
+        send(data.channelID, strings.commands.camera.errorA, true);
     }
     else {
-        if (state == "on") {
-            exec("sudo /home/luna/mjpg-streamer_norm.sh start");
-            send(data.channelID, strings.commands.camera.messageA, true);
+        params = params.split(" ");
+        if (params[1] != undefined && (params[1] == "on" || params[1] == "off")) {
+            if (params[0] == "luna") {
+                if (params[1] == "on") {
+                    exec("sudo /home/luna/mjpg-streamer_norm.sh start");
+                    send(data.channelID, util.format(
+                        strings.commands.camera.messageA,
+                        "my",
+                    ), true);
+                }
+                else if (params[1] == "off") {
+                    exec("sudo /home/luna/mjpg-streamer_norm.sh stop");
+                    send(data.channelID, util.format(
+                        strings.commands.camera.messageB,
+                        "my",
+                    ), true);
+                }         
+            }
+            else if (params[0] == "chrysalis") {
+                send(data.channelID, util.format(
+                    strings.commands.camera.messageC,
+                    params[0]
+                ), false);
+
+                var url = util.format(
+                    config.ann.camera.request,
+                    httpkey.key,
+                    params[1]
+                );
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url, true);
+
+                xhr.onreadystatechange = function () { 
+                    if (xhr.readyState == 4) {
+                        if (xhr.status != 200)
+                            setTimeout(function() {
+                                send(data.channelID, strings.commands.camera.errorC, true);
+                            }, 2000);
+                        
+                        clearTimeout(cameraTimeout);
+                    }
+                }
+                xhr.onerror = function(err) {
+                    xhr.abort();
+                    send(data.channelID, strings.commands.camera.errorC, true);
+                }
+                xhr.ontimeout = function() {
+                    xhr.abort();
+                    send(data.channelID, strings.commands.camera.errorD, true);
+                }
+
+                xhr.send();
+
+                cameraTimeout = setTimeout(function() {
+                    xhr.abort();
+
+                    send(data.channelID, strings.commands.camera.errorD, true);
+                }, config.ann.camera.timeout * 1000);
+            }
+            else {                
+                send(data.channelID, strings.commands.camera.errorE, true);
+            }
         }
-        else if (state == "off") {
-            exec("sudo /home/luna/mjpg-streamer_norm.sh stop");
-            send(data.channelID, strings.commands.camera.messageB, true);
+        else {
+            send(data.channelID, strings.commands.camera.errorB, true);
         }
-        else
-            send(data.channelID, strings.commands.camera.error, true);
     }
 };
 
@@ -3833,12 +3891,12 @@ function processReqMotion(query) {
             strings.announcements.motion,
             query.camera
         ), false);
-    download(query.snapshot, config.options.motionimg, function() {
+    download(query.snapshot + "&_signature=" + query._signature, config.options.motionimg, function() {
         console.log(strings.debug.download.stop);
-        embed(channelNameToID(config.options.channels.home), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, true);
+        embed(channelNameToID(config.options.channels.home), "", config.options.motionimg, query.camera + " " + (new Date()) + ".jpg", false, false);
     }, function() {
         console.log(strings.debug.download.cancel);
-    }, 0);
+    }, 0, false);
 }
 
 /*
@@ -4084,6 +4142,15 @@ function processReqCamera(query) {
         }
         else
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.camera.error, false);
+    }
+    else if (query.device != undefined && query.response != undefined) {
+        if (query.response == "on" || query.response == "off") {
+            send(channelNameToID(config.options.channels.debug), util.format(
+                strings.announcements.camera,
+                query.device,
+                query.response
+            ), true);
+        }
     }
 }
 
@@ -7556,7 +7623,7 @@ function finishPrint() {
  * @param  filename  Path to location where file will be saved.
  * @param  callback  Callback function to call once done.
  */
-var download = function(uri, filename, callbackDone, callbackErr, count) {
+var download = function(uri, filename, callbackDone, callbackErr, count, useJson = true) {
     if (count < config.options.downloadtry) {
         request.head(uri, function(err, res, body) {
             console.log(util.format(
@@ -7564,20 +7631,35 @@ var download = function(uri, filename, callbackDone, callbackErr, count) {
                 uri
             ));
 
-            request({
-                "method": "GET", 
-                "rejectUnauthorized": false, 
-                "url": uri,
-                "headers" : {"Content-Type": "application/json"},
-                function(err,data,body) {}
-            }).on("error", function(err) {
-                count++;
-                console.log(util.format(
-                    strings.debug.download.error,
-                    err
-                ));
-                download(uri, filename, callbackDone, callbackErr, count);
-            }).pipe(fs.createWriteStream(filename)).on("close", callbackDone);
+            if (useJson)
+                request({
+                    "method": "GET", 
+                    "rejectUnauthorized": false, 
+                    "url": uri,
+                    "headers" : {"Content-Type": "application/json"},
+                    function(err,data,body) {}
+                }).on("error", function(err) {
+                    count++;
+                    console.log(util.format(
+                        strings.debug.download.error,
+                        err
+                    ));
+                    download(uri, filename, callbackDone, callbackErr, count);
+                }).pipe(fs.createWriteStream(filename)).on("close", callbackDone);
+            else
+                request({
+                    "method": "GET", 
+                    "rejectUnauthorized": false, 
+                    "url": uri,
+                    function(err,data,body) {}
+                }).on("error", function(err) {
+                    count++;
+                    console.log(util.format(
+                        strings.debug.download.error,
+                        err
+                    ));
+                    download(uri, filename, callbackDone, callbackErr, count);
+                }).pipe(fs.createWriteStream(filename)).on("close", callbackDone);
         });
     }
     else {

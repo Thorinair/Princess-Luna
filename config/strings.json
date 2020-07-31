@@ -447,9 +447,14 @@
 			"error":    "Thori, I am not a part of any server with that ID."
 		},
 		"camera": {
-			"messageA": "Thori, I have turned my camera **on**.",
-			"messageB": "Thori, I have turned my camera **off**.",
-			"error":    "Thori, you need to specify the `on` or `off` parameter after the command."
+			"messageA": "Thori, I have turned %s camera **on**.",
+			"messageB": "Thori, I have turned %s camera **off**.",
+            "messageC": "Thori, I am sending `%s` the camera instructions...",
+            "errorA":   "Thori, you need to specify the device name after the command.",
+			"errorB":   "Thori, you need to specify the `on` or `off` parameter after the device name.",
+            "errorC":   "Thori, there was an error while I was trying to send the request.",
+            "errorD":   "Thori, I was unable to contact the device, it may be offline right now.",
+            "errorE":   "Thori, I don't know of a device with that name."
 		},
 		"stream": {
 			"messageA": "Thori, I have **started** the live stream.",
@@ -578,6 +583,7 @@
             "total":  "**@everyone New Total Croatia COVID-19 Data** (%s):\nNewly infected: **%s**\nNewly healed: **%s**\nNewly died: **%s**",
             "county": "**@everyone New COVID-19 Data for %s County** (%s):\nNewly infected: **%s**\nNewly died: **%s**"
         },
+        "camera":     "Thori, the device `%s` reports that the camera is now set to **%s**.",
         "dailyavg":   "Thori, I have calculated and pushed the daily sensor values to VariPass. You can see the values below.\n```24h Pressure:         %s\n24h Mag. Magnitude:   %s\n24h Mag. Inclination: %s\n24h Radiation Dose:   %s```",
 		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
 		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
