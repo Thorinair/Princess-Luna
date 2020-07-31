@@ -5869,28 +5869,29 @@ function connectChase(reconnect) {
                     chaseThoriLng = parseFloat(parts[1]);
             });
 
-            var from = {};
-            from.latitude = chaseThoriLat + blitzor.expand;
-            from.longitude = chaseThoriLng - blitzor.expand;
-            var to = {};
-            to.latitude = chaseThoriLat - blitzor.expand;
-            to.longitude = chaseThoriLng + blitzor.expand;
+            var area = {};
+            area.from = {};
+            area.from.latitude = chaseThoriLat + blitzor.expand;
+            area.from.longitude = chaseThoriLng - blitzor.expand;
+            area.to = {};
+            area.to.latitude = chaseThoriLat - blitzor.expand;
+            area.to.longitude = chaseThoriLng + blitzor.expand;
 
             if (reconnect && blitzor.debugconnect)
                 console.log(util.format(
                     strings.debug.chase.reconnect,
-                    from.latitude,
-                    to.latitude,
-                    from.longitude,
-                    to.longitude
+                    area.from.latitude,
+                    area.to.latitude,
+                    area.from.longitude,
+                    area.to.longitude
                 ));
             else if (!reconnect)
                 console.log(util.format(
                     strings.debug.chase.connect,
-                    from.latitude,
-                    to.latitude,
-                    from.longitude,
-                    to.longitude
+                    area.from.latitude,
+                    area.to.latitude,
+                    area.from.longitude,
+                    area.to.longitude
                 ));
 
             chasews = new blitzorapi.Client({
@@ -5902,8 +5903,7 @@ function connectChase(reconnect) {
             chasews.connect();
             chasews.on("error", console.error);
             chasews.on("connect", () => {
-                chasews.setIncludeDetectors(false);
-                chasews.setArea(from, to);
+                chasews.setArea(area);
             });
             chasews.on("data", strike => {
                 var distance = earthDistance(chaseThoriLat, chaseThoriLng, strike.location.latitude, strike.location.longitude);
