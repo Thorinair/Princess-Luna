@@ -5766,28 +5766,29 @@ function findVariable(data, id) {
  * @param  reconnect  Whether this is an automatic reconnect.
  */
 function connectBlitzortung(reconnect) {
-    var from = {};
-    from.latitude = blitzor.location.latitude + blitzor.expand;
-    from.longitude = blitzor.location.longitude - blitzor.expand;
-    var to = {};
-    to.latitude = blitzor.location.latitude - blitzor.expand;
-    to.longitude = blitzor.location.longitude + blitzor.expand;
+    var area = {};    
+    area.from = {};
+    area.from.latitude = blitzor.location.latitude + blitzor.expand;
+    area.from.longitude = blitzor.location.longitude - blitzor.expand;
+    area.to = {};
+    area.to.latitude = blitzor.location.latitude - blitzor.expand;
+    area.to.longitude = blitzor.location.longitude + blitzor.expand;
 
     if (reconnect && blitzor.debugconnect)
         console.log(util.format(
             strings.debug.blitzor.reconnect,
-            from.latitude,
-            to.latitude,
-            from.longitude,
-            to.longitude
+            area.from.latitude,
+            area.to.latitude,
+            area.from.longitude,
+            area.to.longitude
         ));
     else if (!reconnect)
         console.log(util.format(
             strings.debug.blitzor.connect,
-            from.latitude,
-            to.latitude,
-            from.longitude,
-            to.longitude
+            area.from.latitude,
+            area.to.latitude,
+            area.from.longitude,
+            area.to.longitude
         ));
 
     blitzorws = new blitzorapi.Client({
@@ -5799,8 +5800,7 @@ function connectBlitzortung(reconnect) {
     blitzorws.connect();
     blitzorws.on("error", console.error);
     blitzorws.on("connect", () => {
-        blitzorws.setIncludeDetectors(false);
-        blitzorws.setArea(from, to);
+        blitzorws.setArea(area);
     });
     blitzorws.on("data", strike => {
         var distance = earthDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
