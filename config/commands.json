@@ -362,7 +362,7 @@
 			"type":    "private"
 		},
 		{
-			"command": "schedulestop",
+			"command": "schedulestart",
 			"help":    "",
 			"type":    "private"
 		},
