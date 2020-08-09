@@ -6739,6 +6739,7 @@ function owoTransform(input) {
                 .replace(/d(?!$)/gi, "w")
                 .replace(/o$/i, "ow")
                 .replace(/r([aeiou])/gi, (_, match) => `w${match}`)
+                .replace(/([aeiou])r/gi, (_, match) => `${match}w`)
                 .replace(/(?<=\w)([^AEIOUaeiou]+)ou/, (_, match) => `${"w".repeat(match.length)}ou`)
                 .replace(/eou/, "ewou")
         )
