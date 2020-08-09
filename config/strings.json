@@ -106,6 +106,10 @@
             "message": "%s, here is your bubble wrap. Enjoy!\n",
             "pop":     "||pop||"
         },
+        "owo": {
+            "message": "%s\n%s",
+            "error":   "%s, you need to specify a text after the command."
+        },
 		"custom": {
 			"messageA": "%s, the following custom interractions are defined for this server: %s ",
 			"messageB": "%s, the following custom interractions are defined for this channel: %s ",
@@ -673,7 +677,12 @@
 				"gray",
 				"black"
 			]
-		}
+		},
+        "faces": {
+            ".": ["uwu", "UvU", ";;w;;", ";;", ":3c", "=w='"],
+            "!": ["UwU", "OwO", "OwO;;", "ÒwÓ"],
+            "?": ["OwO;;", "? ^^;;", "? =w='", "? :<"]
+        }
 	},
 	"debug": {
 		"message":       "=> #%s: \"%s\"",

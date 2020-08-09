@@ -1153,6 +1153,27 @@ comm.pop = function(data) {
     send(data.channelID, message, true);
 };
 
+// Command: !owo
+// The OwO functionality was mostly taken from LonelessCodes' TrixieBot (https://github.com/LonelessCodes/trixiebot).
+// They have done an amazing job at fine tuning the text transformation so that it is as painful as cringy as possible.
+// All credits for the string transformation goes to them.
+comm.owo = function(data) {
+    var text = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (text == "" || text == config.options.commandsymbol + data.command) {
+        send(data.channelID, util.format(
+            strings.commands.owo.error,
+            mention(data.userID)
+        ), true);
+    }
+    else {
+        send(data.channelID, util.format(
+            strings.commands.owo.message,
+            mention(data.userID),
+            owoFaces(owoStutter(owoCasing(owoTransform(text))))
+        ), true);
+    }
+};
+
 // Command: !custom
 comm.custom = function(data) {
     var interractionCommands = ""
@@ -6647,6 +6668,81 @@ function generateSocks(count) {
     socks += config.separators.lend + sockList[i];
 
     return socks;
+}
+
+/*
+ * Returns a random element in array.
+ * @param  arr  The array to process.
+ * @return      The element.
+ */
+function random(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/*
+ * Inserts the OwO faces in a string.
+ * @param  input  The input string.
+ * @return        The output string.
+ */
+function owoFaces(input) {
+    return input
+        .replace(/(?<![.?!])$/, Math.random() > 0.7 ? " " + random(strings.misc.faces["."]) : "")
+        .replace(/(!+|\?+|((?<!\.)\.(?!\.)))/g, match => (match[0] in strings.misc.faces ? " " + random(strings.misc.faces[match[0]]) : match));
+}
+
+/*
+ * Adjusts the casing of a string.
+ * @param  input  The input string.
+ * @return        The output string.
+ */
+function owoCasing(input) {
+    return input
+        .split(/(?<=[!.?]\s*)/g)
+        .map(satz => satz[0].toUpperCase() + satz.slice(1).toLowerCase())
+        .join("");
+}
+
+/*
+ * Inserts stuttering to a string.
+ * @param  input  The input string.
+ * @return        The output string.
+ */
+function owoStutter(input) {
+    return input
+        .split(/\s+/)
+        .map(word => {
+            const r = Math.random();
+            if (r > 0.15 || word === "") return word;
+
+            return word[0] + ("-" + word[0]).repeat(r > 0.05 ? 1 : 2) + word.slice(1);
+        })
+        .join(" ");
+}
+
+/*
+ * Performs the main OwO transformation.
+ * @param  input  The input string.
+ * @return        The output string.
+ */
+function owoTransform(input) {
+    return input
+        .split(/\s+/g)
+        .map(word =>
+            word
+                .replace(/^you$/gi, "u")
+                .replace(/^your$/gi, "ur")
+                .replace(/^you're$/gi, "ur")
+                .replace(/l/gi, "w")
+                .replace(/v/gi, "w")
+                .replace(/th/gi, "t")
+                .replace(/^no/i, "nwo")
+                .replace(/d(?!$)/gi, "w")
+                .replace(/o$/i, "ow")
+                .replace(/r([aeiou])/gi, (_, match) => `w${match}`)
+                .replace(/(?<=\w)([^AEIOUaeiou]+)ou/, (_, match) => `${"w".repeat(match.length)}ou`)
+                .replace(/eou/, "ewou")
+        )
+        .join(" ");
 }
 
 /*
