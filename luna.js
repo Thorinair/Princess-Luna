@@ -5275,7 +5275,7 @@ function doInterractionCustom(data, index) {
 };
 
 /*
- * Loads specific messages into cache.
+ * Loads specific reactrole messages into cache.
  */
 function prepareReactroleMessages() {
     reactrole.mapping.forEach(function(m) {
@@ -5284,25 +5284,36 @@ function prepareReactroleMessages() {
         message.messageID = m.message;
 
         bot.getMessage(message, function(err, msg) {
-            var i = 0;
-            Object.keys(m.map).forEach(function (r1) {
-                var clean = r1.substring(2, r1.length - 1);
-                var parts = clean.split(":");
-                if (parts[1] === "")
-                    parts[1] = null;
-                var found = false;
-                if (msg.reactions != undefined)
-                    msg.reactions.forEach(function (r2) {
-                        if (r2.emoji.name === parts[0] && r2.emoji.id === parts[1])
-                            found = true;
-                    });
-                if (!found) {
-                    setTimeout(function() {
-                        react(message.channelID, message.messageID, r1);
-                    }, i * 1000);
-                    i++;
-                }
-            });
+            if (msg != undefined) {
+                var i = 0;
+                Object.keys(m.map).forEach(function (r1) {
+                    var clean = r1.substring(2, r1.length - 1);
+                    var parts = clean.split(":");
+                    if (parts[1] === "")
+                        parts[1] = null;
+                    var found = false;
+                    if (msg.reactions != undefined)
+                        msg.reactions.forEach(function (r2) {
+                            if (r2.emoji.name === parts[0] && r2.emoji.id === parts[1])
+                                found = true;
+                        });
+                    if (!found) {
+                        setTimeout(function() {
+                            react(message.channelID, message.messageID, r1);
+                        }, i * 1000);
+                        i++;
+                    }
+                });
+            }
+            else {
+                console.log(util.format(
+                    strings.debug.reactroleerr,
+                    m.channel
+                ));
+                setTimeout(function() {
+                    prepareReactroleMessages();
+                }, config.options.reactroleretr * 1000);
+            }
         });
     });
 }

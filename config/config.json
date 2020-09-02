@@ -53,6 +53,7 @@
         "nptstoryart":   2,
         "nptstorytrack": 20,
         "popcount":      96,
+        "reactroleretr": 1, 
 		"channels": {
 			"debug":     "debug",
             "printer":   "printer",

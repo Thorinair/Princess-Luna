@@ -698,6 +698,7 @@
 		"welcome":       "@%s has joined GOTN server! Assigning Children of The Night role.",
 		"welcomefail":   "Error assigning role: %s",
         "reactrolefail": "Error adjusting role: %s on server: %s",
+        "reactroleerr":  "Error reading react role message. No access to channel #%s or unknown message ID.",
 		"join":          "Joined Discord. My name is \"%s\" with ID #%s.",
 		"eegerror":      "Error saving EEG data: %s",
 		"download": {
