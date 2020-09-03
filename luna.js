@@ -6736,6 +6736,7 @@ function owoStutter(input) {
  * @return        The output string.
  */
 function owoTransform(input) {
+    input = cleanMessage(input);
     return input
         .split(/\s+/g)
         .map(word =>
