@@ -5125,6 +5125,7 @@ function react(channelID, messageID, reaction) {
  * @param  data  Data of the message.
  */
 function doInterraction(data) {
+    data.command = data.command.toLowerCase();
     if (!isplushie) {
         if (data.data.d.mentions[0] != null) {
             if (isMentioned(bot.id, data.data) && data.data.d.mentions.length == 1) {
