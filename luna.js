@@ -4735,19 +4735,22 @@ function loadBot() {
                         if (userID == config.options.adminid)
                             roleFound = true;
 
-                        if (
-                            !roleFound &&
-                            bot.servers[config.options.ponyvillefmid] != undefined &&
-                            bot.servers[config.options.ponyvillefmid].members[userID] != undefined
-                            ) {
-
-                            bot.servers[config.options.ponyvillefmid].members[userID].roles.forEach(function (r1, i) {
-                                config.options.djroles.forEach(function (r2, j) {
-                                    if (r1 == r2) {
-                                        roleFound = true;
-                                    }
-                                });
-                            });
+                        if (!roleFound && data.d != undefined) {
+                            if (data.d.member != undefined) {
+                                if (data.d.member.roles != undefined) {
+                                    data.d.member.roles.forEach(function (r1, i) {
+                                        config.options.djroles.forEach(function (r2, j) {
+                                            if (r1 == r2) {
+                                                roleFound = true;
+                                            }
+                                        });
+                                    });
+                                }
+                            }
+                            else {
+                                if (lower == config.options.commandsymbol + "npt")
+                                    roleFound = true;
+                            }
                         }
 
                         if (roleFound) {
