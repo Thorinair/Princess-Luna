@@ -603,7 +603,7 @@
 		"filefail":     "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
 		"apifail":      "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
 		"timezone":     "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
-		"noperm":       "I am sorry %s, but only PonyvilleFM DJs and admins are allowed to use this command.",
+		"noperm":       "I am sorry %s, but only approved roles are allowed to use this command.",
 		"noadmin":      "I am sorry %s, but only Thorinair is allowed to use this command.",
 		"tradfrierror": "Thori, I am having trouble connecting to the Tradfri hub. Please try again later.",
         "toolong":      "I won't even bother writing a reply to that.",
