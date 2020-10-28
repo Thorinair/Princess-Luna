@@ -3243,7 +3243,7 @@ function loadAnnouncements() {
                     strings.announcements.gotn.nowB,
                     mentionRole(config.options.squadid)
                 ), true);
-                setMood("gotn", function(result) {
+                setMood(gotn.mood, function(result) {
                     if (!result)
                         send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);    
                 });                
