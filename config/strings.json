@@ -600,8 +600,6 @@
 	"misc": {
 		"welcome":      "**My children, welcome %s to our beautiful night!**",
 		"load":         "Hey Thori, I'm back! My current version is v%s.",
-		"filefail":     "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I also don't seem to have a backup file to load from either.",
-		"apifail":      "Hey Thori, I'm back! My current version is v%s. I was having some trouble connecting to the US Navy API. If you reboot me, I will try again. I've loaded the data from the backup file for now.",
 		"timezone":     "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
 		"noperm":       "I am sorry %s, but only approved roles are allowed to use this command.",
 		"noadmin":      "I am sorry %s, but only Thorinair is allowed to use this command.",
@@ -789,14 +787,9 @@
             "done":    "  Done."
         },
 		"phases": {
-			"load":    "Loading: Online Phase data...",
+			"load":    "Loading: Moon phase announcements...",
 			"item":    "  - Loading phase date: %s - %s",
-			"done":    "  Done. Loaded: %s",
-			"error":   "  Error loading: \"%s\" ",
-			"timeout": "  Timed out. Loading backup...",
-			"file":    "  Loading: Backup Phase data...",
-			"filed":   "    Done. Loaded: %s",
-			"no":      "    No backup found. The command will not function."
+			"done":    "  Done. Loaded: %s"
 		},
 		"brain": {
 			"start":   "Loading: Brain data...",

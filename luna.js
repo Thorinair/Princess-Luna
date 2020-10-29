@@ -29,6 +29,7 @@ var commands  = require("./config/commands.json");
 var custom    = require("./config/custom.json");
 var strings   = require("./config/strings.json");
 var gotn      = require("./config/gotn.json");
+var phases    = require("./config/phases.json");
 var mlp       = require("./config/mlp.json");
 var channels  = require("./config/channels.json");
 var varipass  = require("./config/varipass.json");
@@ -88,10 +89,6 @@ var blacklist;
 var ignore;
 
 // Phase Data
-var phaseTimeout;
-var phaseApiFail  = false;
-var phaseFileFail = false;
-var phases        = [];
 var jobsPhases    = [];
 
 // Brain Data
@@ -3152,6 +3149,7 @@ function startupProcedure() {
     ));
 
     loadAnnouncements();
+    loadPhases();
     loadLyrics();
     loadArt();
     loadStory();
@@ -3167,7 +3165,7 @@ function startupProcedure() {
     loadTradfri();
     loadAssaults();
     loadDailyAvg();
-    loadPhases();
+    loadBrain();
 }
 
 /*
@@ -3525,89 +3523,11 @@ function loadDailyAvg() {
 }
 
 /*
- * Loads all moon phases.
+ * Processes the phase data for announcements.
  */
 function loadPhases() {
     console.log(strings.debug.phases.load);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", config.options.phaseurl, true);
-
-
-    xhr.onreadystatechange = function () { 
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var response = JSON.parse(xhr.responseText);
-            phases = response.phasedata;
-
-            phaseDone(true);
-        }
-    }
-    xhr.onerror = function(err) {
-        console.log(util.format(
-            strings.debug.phases.error,
-            err.target.status
-        ));
-
-        xhr.abort();
-        phaseDone(false);
-    }
-    xhr.ontimeout = function() {
-        console.log(strings.debug.phases.timeout);
-
-        xhr.abort();
-        phaseDone(false);
-    }
-
-    xhr.send();
-
-    phaseTimeout = setTimeout(function() {
-        console.log(strings.debug.phases.timeout);
-
-        xhr.abort();
-        phaseDone(false);
-    }, config.options.phasetimeout * 1000);
-}
-
-/*
- * Called after phase loading was performed.
- * @param  done  Whether the loading was successful.
- */
-function phaseDone(done) {
-    clearTimeout(phaseTimeout);
-
-    if (done) {
-        fs.writeFileSync(config.options.phasepath, JSON.stringify(phases), "utf-8");
-        processPhases();
-        console.log(util.format(
-            strings.debug.phases.done,
-            jobsPhases.length
-        ));
-    }
-    else {
-        phaseApiFail = true;
-
-        if (fs.existsSync(config.options.phasepath)) {
-            console.log(strings.debug.phases.file);     
-            phases = JSON.parse(fs.readFileSync(config.options.phasepath, "utf8"));
-            processPhases();
-            console.log(util.format(
-                strings.debug.phases.filed,
-                jobsPhases.length
-            ));
-        }
-        else {
-            phaseFileFail = true;
-            console.log(strings.debug.phases.no);
-        }
-    }
-
-    loadBrain();
-}
-
-/*
- * Processes the phase data for announcements.
- */
-function processPhases() {
     phases.forEach(function(p) {
         var date = new Date(p.date + " " + p.time);
         var message;
@@ -3636,6 +3556,11 @@ function processPhases() {
             }, function () {}, true);
         jobsPhases.push(job);
     });
+
+    console.log(util.format(
+        strings.debug.phases.done,
+        jobsPhases.length
+    ));
 }
 
 /*
@@ -4630,21 +4555,10 @@ function loadBot() {
         ));
         if (!started) {
             started = true;
-            if (phaseApiFail && phaseFileFail)
-                send(channelNameToID(config.options.channels.debug), util.format(
-                    strings.misc.filefail,
-                    package.version
-                ), false);
-            else if (phaseApiFail)
-                send(channelNameToID(config.options.channels.debug), util.format(
-                    strings.misc.apifail,
-                    package.version
-                ), false);
-            else    
-                send(channelNameToID(config.options.channels.debug), util.format(
-                    strings.misc.load,
-                    package.version
-                ), false);
+            send(channelNameToID(config.options.channels.debug), util.format(
+                strings.misc.load,
+                package.version
+            ), false);
 
             Object.keys(nptoggles).forEach(function(n, i) {
                 if (nptoggles[n])

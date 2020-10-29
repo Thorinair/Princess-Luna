@@ -8,7 +8,6 @@
 		"adminid":       "81244981343297536",
 		"squadid":       "342461533319725056",
 		"varipassurl":   "https://api.varipass.org/",
-		"phaseurl":      "https://api.usno.navy.mil/moon/phase?date=today&nump=50",
 		"moonurl":       "https://api.usno.navy.mil/imagery/moon.png?date=today&time=now",
 		"geourl":        "https://geocode.xyz/%s,%s?geoit=json&auth=%s",
 		"mapsurl":       "https://www.google.com/maps/search/?api=1&query=%s,%s",
