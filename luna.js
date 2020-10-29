@@ -433,18 +433,56 @@ comm.phase = function(data) {
 
 // Command: !moon
 comm.moon = function(data) {
-    send(data.channelID, util.format(
-        strings.commands.moon.messageA,
-        mention(data.userID)
-    ), true);
+    var dateNow = new Date();
+    var found = false;
 
-    download(config.options.moonurl, config.options.moonimg, function() {
-        console.log(strings.debug.download.stop);
-        embed(data.channelID, strings.commands.moon.messageB, config.options.moonimg, "Moon " + (new Date()) + ".png", true, true);
-    }, function() {
-        console.log(strings.debug.download.cancel);
-        send(data.channelID, strings.commands.moon.error, true);
-    }, 0);
+    phases.forEach(function(p, i) {
+        if (!found && i > 0) {
+            var datePhasePrev = new Date(phases[i-1].date + " " + phases[i-1].time);
+            var datePhaseNext = new Date(p.date + " " + p.time);
+
+            if (datePhaseNext > dateNow) {
+
+                var imagePh = "a";
+                if (phases[i-1].phase == config.phases[6].name)
+                    imagePh = "b";
+                else if (phases[i-1].phase == config.phases[0].name)
+                    imagePh = "c";
+                else if (phases[i-1].phase == config.phases[2].name)
+                    imagePh = "d";
+
+                var offset = ((dateNow - datePhasePrev.getTime()) / (datePhaseNext.getTime() - datePhasePrev.getTime())) * 8;
+                var imageId = Math.round(offset);
+                if (imageId == 8) {
+                    imageId = 0;
+                    switch (imagePh) {
+                        case "a": imagePh = "b"; break;
+                        case "b": imagePh = "c"; break;
+                        case "c": imagePh = "d"; break;
+                        case "d": imagePh = "a"; break;
+                    }
+                }
+
+                embed(data.channelID, util.format(
+                    strings.commands.moon.message,
+                    mention(data.userID)
+                ), util.format(
+                    config.options.moonimg,
+                    imagePh,
+                    imageId
+                ), "Moon " + (new Date()) + ".png", true, false);
+
+                found = true;
+            }
+        }
+    });
+
+    if (!found) {
+        send(data.channelID, util.format(
+            strings.commands.moon.error,
+            mention(data.userID)
+        ), true);
+    }
 };
 
 // Command: !room

@@ -1,0 +1,1 @@
+Image credit: NASA/Goddard Space Flight Center Scientific Visualization Studio

@@ -20,9 +20,8 @@
 			"error":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment..."
 		},
 		"moon": {
-			"messageA": "%s, give me a moment...",
-			"messageB": "Here is how the Moon looks like right now.",
-            "error":    "I was unable to download the image of the Moon at this time. Please try again later."
+			"message":  "%s, here is how the Moon looks like right now.",
+            "error":    "%s, I am unable to show the image of the Moon at this time..."
 		},
 		"room": {
 			"message":  "%s, here is the status of Thorinair's room. Radiation data was measured by Chryssy, particle data was measured by Dashie, and the rest of the data was measured by Celly.\n```\nCelly (%s ago):\n  Temperature:          %s °C\n  Humidity:             %s %\n  Pressure:             %s hPa\n  CO2 Concentration:    %s ppm\n  VOC Concentration:    %s ppb\n  Ambient Light:        %s\n  Magnetic Magnitude:   %s uT\n  Magnetic Inclination: %s °\n  Vibrations X:         %s\n  Vibrations Y:         %s\n  Vibrations Z:         %s\n  Gravity X:            %s m/s2\n  Gravity Y:            %s m/s2\n  Gravity Z:            %s m/s2\n```\n```Chryssy (%s ago):\n  Radiation Dose EMA: %s uSv/h\n  Geiger Counts:      %s CPM\n```\n```Dashie (%s ago):\n  PM1.0 Concentration:   %s ug/m3\n  PM2.5 Concentration:   %s ug/m3\n  PM10.0 Concentration:  %s ug/m3\n  Particles 0.3-0.5 um:  %s pcs/L\n  Particles 0.5-1.0 um:  %s pcs/L\n  Particles 1.0-2.5 um:  %s pcs/L\n  Particles 2.5-5.0 um:  %s pcs/L\n  Particles 5.0-10.0 um: %s pcs/L\n  Particles >10.0 um:    %s pcs/L```",
