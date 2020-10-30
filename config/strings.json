@@ -1,102 +1,102 @@
 {
-	"commands": {
-		"gotn": {
-			"message":  "%s, next episode of Glory of The Night airs in %s."
-		},
-		"mlp": {
-			"message":  "%s, next episode of My Little Pony: Friendship is Magic, **%s**, airs in %s on the **%s** channel.",
-			"error":    "%s, I don't know when the next episode of My Little Pony: Friendship is Magic airs."
-		},
-		"time": {
-			"message":  "%s, current date and time is **%s** at **%s**. The unix timestamp is: `%s`."
-		},
-		"np": {
-			"message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
-			"error":    "%s, I am unable to tell you which track is currently playing on PonyvilleFM."
-		},
-		"phase": {
-			"messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
-			"messageB": "The next %s is in %s.",
-			"error":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment..."
-		},
-		"moon": {
-			"messageA": "%s, here is how the Moon looks like right now.",
+    "commands": {
+        "gotn": {
+            "message":  "%s, next episode of Glory of The Night airs in %s."
+        },
+        "mlp": {
+            "message":  "%s, next episode of My Little Pony: Friendship is Magic, **%s**, airs in %s on the **%s** channel.",
+            "error":    "%s, I don't know when the next episode of My Little Pony: Friendship is Magic airs."
+        },
+        "time": {
+            "message":  "%s, current date and time is **%s** at **%s**. The unix timestamp is: `%s`."
+        },
+        "np": {
+            "message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
+            "error":    "%s, I am unable to tell you which track is currently playing on PonyvilleFM."
+        },
+        "phase": {
+            "messageA": "%s, the Moon is currently in its %s phase. The next phase is the %s, and it happens in %s.",
+            "messageB": "The next %s is in %s.",
+            "error":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment..."
+        },
+        "moon": {
+            "messageA": "%s, here is how the Moon looks like right now.",
             "messageB": "%s, here is how the Moon looks like right now.\nMoon's phase is at **%s%%** (%s days, %s hours and %s minutes old).\nIt is **%s %s km** away from Earth with the apparent diameter of **%s arcs**.\n*This data is valid for %s at %s.*",
             "error":    "%s, I am unable to show the image of the Moon at this time..."
-		},
-		"room": {
-			"message":  "%s, here is the status of Thorinair's room. Radiation data was measured by Chryssy, particle data was measured by Dashie, and the rest of the data was measured by Celly.\n```\nCelly (%s ago):\n  Temperature:          %s °C\n  Humidity:             %s %\n  Pressure:             %s hPa\n  CO2 Concentration:    %s ppm\n  VOC Concentration:    %s ppb\n  Ambient Light:        %s\n  Magnetic Magnitude:   %s uT\n  Magnetic Inclination: %s °\n  Vibrations X:         %s\n  Vibrations Y:         %s\n  Vibrations Z:         %s\n  Gravity X:            %s m/s2\n  Gravity Y:            %s m/s2\n  Gravity Z:            %s m/s2\n```\n```Chryssy (%s ago):\n  Radiation Dose EMA: %s uSv/h\n  Geiger Counts:      %s CPM\n```\n```Dashie (%s ago):\n  PM1.0 Concentration:   %s ug/m3\n  PM2.5 Concentration:   %s ug/m3\n  PM10.0 Concentration:  %s ug/m3\n  Particles 0.3-0.5 um:  %s pcs/L\n  Particles 0.5-1.0 um:  %s pcs/L\n  Particles 1.0-2.5 um:  %s pcs/L\n  Particles 2.5-5.0 um:  %s pcs/L\n  Particles 5.0-10.0 um: %s pcs/L\n  Particles >10.0 um:    %s pcs/L```",
-			"error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
-		},
-		"power": {
-			"messageA": "%s, my mains power seems to be running as expected. Last update was %s and %s seconds ago.",
-			"messageB": "**%s, I have detected that my mains power is not running! Somepony please poke Thorinair!** Last update was %s and %s seconds ago.\n%s",
-			"error":    "%s, I haven't received any mains power status information yet since last reboot."
-		},
-		"eeg": {
-			"messageA": "%s, below is a readout of Thorinair's brainwave data along with relevant EEG info. Last update was %s and %s seconds ago.\n",
-			"messageB": "```\nBattery:    %s %\nSignal:     %s %\nAttention:  %s %\nMeditation: %s %\nDelta:      %s\nTheta:      %s\nLow Alpha:  %s\nHigh Alpha: %s\nLow Beta:   %s\nHigh Beta:  %s\nLow Gamma:  %s\nHigh Gamma: %s```",
-			"error":    "%s, I haven't received any EEG data yet since last reboot."
-		},
-		"printer": {
-			"messageA": "%s, give me a moment...",
+        },
+        "room": {
+            "message":  "%s, here is the status of Thorinair's room. Radiation data was measured by Chryssy, particle data was measured by Dashie, and the rest of the data was measured by Celly.\n```\nCelly (%s ago):\n  Temperature:          %s °C\n  Humidity:             %s %\n  Pressure:             %s hPa\n  CO2 Concentration:    %s ppm\n  VOC Concentration:    %s ppb\n  Ambient Light:        %s\n  Magnetic Magnitude:   %s uT\n  Magnetic Inclination: %s °\n  Vibrations X:         %s\n  Vibrations Y:         %s\n  Vibrations Z:         %s\n  Gravity X:            %s m/s2\n  Gravity Y:            %s m/s2\n  Gravity Z:            %s m/s2\n```\n```Chryssy (%s ago):\n  Radiation Dose EMA: %s uSv/h\n  Geiger Counts:      %s CPM\n```\n```Dashie (%s ago):\n  PM1.0 Concentration:   %s ug/m3\n  PM2.5 Concentration:   %s ug/m3\n  PM10.0 Concentration:  %s ug/m3\n  Particles 0.3-0.5 um:  %s pcs/L\n  Particles 0.5-1.0 um:  %s pcs/L\n  Particles 1.0-2.5 um:  %s pcs/L\n  Particles 2.5-5.0 um:  %s pcs/L\n  Particles 5.0-10.0 um: %s pcs/L\n  Particles >10.0 um:    %s pcs/L```",
+            "error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
+        },
+        "power": {
+            "messageA": "%s, my mains power seems to be running as expected. Last update was %s and %s seconds ago.",
+            "messageB": "**%s, I have detected that my mains power is not running! Somepony please poke Thorinair!** Last update was %s and %s seconds ago.\n%s",
+            "error":    "%s, I haven't received any mains power status information yet since last reboot."
+        },
+        "eeg": {
+            "messageA": "%s, below is a readout of Thorinair's brainwave data along with relevant EEG info. Last update was %s and %s seconds ago.\n",
+            "messageB": "```\nBattery:    %s %\nSignal:     %s %\nAttention:  %s %\nMeditation: %s %\nDelta:      %s\nTheta:      %s\nLow Alpha:  %s\nHigh Alpha: %s\nLow Beta:   %s\nHigh Beta:  %s\nLow Gamma:  %s\nHigh Gamma: %s```",
+            "error":    "%s, I haven't received any EEG data yet since last reboot."
+        },
+        "printer": {
+            "messageA": "%s, give me a moment...",
             "messageB": "Nightmare Rarity is currently not printing anything.\n",
             "messageC": "Nightmare Rarity has a paused print job of the file called `%s`.\n",
             "messageD": "Nightmare Rarity is currently printing a file called `%s`, and the print is **%s%** done. It is estimated that the printing time will take around **%s** more.\n",
             "messageE": "RariTUSH hasn't reported any data yet.\n",
-			"messageF": "RariTUSH reports **%s g** of filament left with **%s left** and **%s right** encoder pulses. Last report was %s and %s seconds ago.\n",
+            "messageF": "RariTUSH reports **%s g** of filament left with **%s left** and **%s right** encoder pulses. Last report was %s and %s seconds ago.\n",
             "messageG": "You can view the printing area on the webcam image below.",
             "error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
-		},
+        },
         "devices": {
             "messageA": "%s, below is a list of all the devices which are part of Thorinair's Lunar Infrastructure. Repeat this command with a device name as parameter to get a photo and more detailed explanation.",
             "messageB": "\n• **%s** - *%s*",
             "error":    "%s, I don't know of any device with such a name."
         },
-		"assault": {
+        "assault": {
             "messageA": "%s, there is already a Faction Assault in progress in %s region, ending in %s.\nNext assault begins begins in %s.",
-			"messageB": "%s, next Faction Assault in %s region begins in %s.",
-			"error":    "%s, that is not a valid region. You may use NA, EU or OC."
-		},
-		"blacklist": {
-			"messageA": "%s, I am sad to hear that you no longer wish me to remember your messages. From this point on, I will not remember anything you say in any channel. If you ever change your mind, just use this command again.",
-			"messageB": "%s, I am happy to hear that I may remember your messages again! From this point on, I will again remember everything you say in any channel where learning is enabled."
-		},
-		"coin": {
-			"message":  "*Conjures a magical coin and flips it high up into the air.\nThe coin lands...*",
-			"tails":    "**Tails!**",
-			"heads":    "**Heads!**"
-		},
-		"minesweeper": {
-			"message":  "%s, I have created a new %sx%s minesweeper field for you with a total of %s mines. Good luck!",
-			"error":    "%s, you need to specify the difficulty after the command. You can choose 1, 2 or 3.",
-			"icomine":  ":triangular_flag_on_post:",
-			"ico0":     ":stop_button:",
-			"ico1":     ":one:",
-			"ico2":     ":two:",
-			"ico3":     ":three:",
-			"ico4":     ":four:",
-			"ico5":     ":five:",
-			"ico6":     ":six:",
-			"ico7":     ":seven:",
-			"ico8":     ":eight:",
-			"spoiler":  "||"
-		},
-		"waifu": {
-			"message":  "%s, everything seems to be in order. I am sending the image to Queen Chrysalis for processing with the **noise reduction** of strength **%s** and **scaling factor** of **%sx**. Please stand by.",
-			"errorA":   "%s, in order to use this command, you must attach an image to the message containing the command. Additionally, you need to supply at least one of the two parameters: **noise reduction** and **scaling factor**.\n\n**Noise reduction** selects how much noise (JPEG artefacts and/or grain) will be removed from the image. This is mostly useful when sending an image of lower apparent quality. You may only use the following parameters: `n0`, `n1`, `n2` or `n3` for different strengths of the filer. The value of 0 disables it, while the value of 3 sets it to the maximum strength.\n\n**Scaling factor** selects how much will the image be scaled up. You may only use the following parameters: `s1`, `s2`, `s4` or `s8` to not scale, scale double, four times or eight times respectively.\n\nHere is an example how to use the command: `!waifu n3 s2` - this will perform a noise reduction of strength 3, and scale the image up by double.",
-			"errorB":   "%s, you need to attach a picture for me to be able to send anything for processing.",
-			"errorC":   "%s, you need to specify at least one parameter, **noise reduction** (`n0`, `n1`, `n2` or `n3`) or **scaling factor** (`s1`, `s2`, `s4` or `s8`).",
-			"errorD":   "%s, **%s** is not a valid value for the noise reduction. You may only use values 0, 1, 2 or 3.",
-			"errorE":   "%s, **%s** is not a valid value for the scaling factor. You may only use values 1, 2, 4 or 8.",
-			"errorF":   "%s, you may only use this command in one of the channels which are defined for me internally. This includes most server channels where Thorinair has approved my usage.",
-			"errorG":   "%s, there was an error while I was trying to send the data to Queen Chrysalis. Please let Thorinair know.",
-			"errorH":   "%s, I was unable to contact Queen Chrysalis, she may be offline right now.",
-			"errorI":   "%s, somepony tried to start a Waifu2x processing, but I have encountered an error while contacting Queen Chrysalis. Please check what's up.",
-			"errorJ":   "%s, somepony tried to start a Waifu2x processing, but Queen Chrysalis was not responding. Please check what's up.",
-			"errorK":   "%s, setting parameters like this would not do anything to the image (no noise reduction and no scaling).",
-			"paused":   "%s, it appears that Thorinair has temporarily paused the usage of Queen Chrysalis' neural network features. Here is the message he has left:\n> %s"
-		},
+            "messageB": "%s, next Faction Assault in %s region begins in %s.",
+            "error":    "%s, that is not a valid region. You may use NA, EU or OC."
+        },
+        "blacklist": {
+            "messageA": "%s, I am sad to hear that you no longer wish me to remember your messages. From this point on, I will not remember anything you say in any channel. If you ever change your mind, just use this command again.",
+            "messageB": "%s, I am happy to hear that I may remember your messages again! From this point on, I will again remember everything you say in any channel where learning is enabled."
+        },
+        "coin": {
+            "message":  "*Conjures a magical coin and flips it high up into the air.\nThe coin lands...*",
+            "tails":    "**Tails!**",
+            "heads":    "**Heads!**"
+        },
+        "minesweeper": {
+            "message":  "%s, I have created a new %sx%s minesweeper field for you with a total of %s mines. Good luck!",
+            "error":    "%s, you need to specify the difficulty after the command. You can choose 1, 2 or 3.",
+            "icomine":  ":triangular_flag_on_post:",
+            "ico0":     ":stop_button:",
+            "ico1":     ":one:",
+            "ico2":     ":two:",
+            "ico3":     ":three:",
+            "ico4":     ":four:",
+            "ico5":     ":five:",
+            "ico6":     ":six:",
+            "ico7":     ":seven:",
+            "ico8":     ":eight:",
+            "spoiler":  "||"
+        },
+        "waifu": {
+            "message":  "%s, everything seems to be in order. I am sending the image to Queen Chrysalis for processing with the **noise reduction** of strength **%s** and **scaling factor** of **%sx**. Please stand by.",
+            "errorA":   "%s, in order to use this command, you must attach an image to the message containing the command. Additionally, you need to supply at least one of the two parameters: **noise reduction** and **scaling factor**.\n\n**Noise reduction** selects how much noise (JPEG artefacts and/or grain) will be removed from the image. This is mostly useful when sending an image of lower apparent quality. You may only use the following parameters: `n0`, `n1`, `n2` or `n3` for different strengths of the filer. The value of 0 disables it, while the value of 3 sets it to the maximum strength.\n\n**Scaling factor** selects how much will the image be scaled up. You may only use the following parameters: `s1`, `s2`, `s4` or `s8` to not scale, scale double, four times or eight times respectively.\n\nHere is an example how to use the command: `!waifu n3 s2` - this will perform a noise reduction of strength 3, and scale the image up by double.",
+            "errorB":   "%s, you need to attach a picture for me to be able to send anything for processing.",
+            "errorC":   "%s, you need to specify at least one parameter, **noise reduction** (`n0`, `n1`, `n2` or `n3`) or **scaling factor** (`s1`, `s2`, `s4` or `s8`).",
+            "errorD":   "%s, **%s** is not a valid value for the noise reduction. You may only use values 0, 1, 2 or 3.",
+            "errorE":   "%s, **%s** is not a valid value for the scaling factor. You may only use values 1, 2, 4 or 8.",
+            "errorF":   "%s, you may only use this command in one of the channels which are defined for me internally. This includes most server channels where Thorinair has approved my usage.",
+            "errorG":   "%s, there was an error while I was trying to send the data to Queen Chrysalis. Please let Thorinair know.",
+            "errorH":   "%s, I was unable to contact Queen Chrysalis, she may be offline right now.",
+            "errorI":   "%s, somepony tried to start a Waifu2x processing, but I have encountered an error while contacting Queen Chrysalis. Please check what's up.",
+            "errorJ":   "%s, somepony tried to start a Waifu2x processing, but Queen Chrysalis was not responding. Please check what's up.",
+            "errorK":   "%s, setting parameters like this would not do anything to the image (no noise reduction and no scaling).",
+            "paused":   "%s, it appears that Thorinair has temporarily paused the usage of Queen Chrysalis' neural network features. Here is the message he has left:\n> %s"
+        },
         "spools": {
             "messageA": "%s, here is a list of all the empty filament spools I know about:\n",
             "messageB": "• **%s:** %sg",
@@ -110,147 +110,147 @@
             "message": "%s\n%s",
             "error":   "%s, you need to specify a text after the command."
         },
-		"custom": {
-			"messageA": "%s, the following custom interractions are defined for this server: %s ",
-			"messageB": "%s, the following custom interractions are defined for this channel: %s ",
-			"messageC": "`%s%s`",
-			"error":    "%s, there seem to be no custom interractions defined for this server or channel."
-		},
-		"thori": {
-			"messageA": "%s, check your direct messages, I've sent you the information there!",
-			"messageB": "Thorinair is currently located at **%s, %s** at the altitude of **%s m**. Last update was %s and %s seconds ago.\nYou can view his location on the following link: %s",
-			"error":    "%s, you need to be whitelisted by Thorinair in order to this command. Maybe he will if you ask him nicely."
-		},
+        "custom": {
+            "messageA": "%s, the following custom interractions are defined for this server: %s ",
+            "messageB": "%s, the following custom interractions are defined for this channel: %s ",
+            "messageC": "`%s%s`",
+            "error":    "%s, there seem to be no custom interractions defined for this server or channel."
+        },
+        "thori": {
+            "messageA": "%s, check your direct messages, I've sent you the information there!",
+            "messageB": "Thorinair is currently located at **%s, %s** at the altitude of **%s m**. Last update was %s and %s seconds ago.\nYou can view his location on the following link: %s",
+            "error":    "%s, you need to be whitelisted by Thorinair in order to this command. Maybe he will if you ask him nicely."
+        },
         "temp": {
             "message":  "%s, **my** body temperature is currently **%s °C** *(CPU at %s °C and GPU at %s °C)*.\n**Thorinair's** body temperature is **%s °C**. Last update was %s and %s seconds ago.",
             "errorA":   "%s, I was unable to measure my current body temperature.",
             "errorB":   "%s, I was unable to retrieve Thorinair's body temperature."
         },
-		"stats": {
-			"message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
-			"learnyes": "I am able to normally learn everything from this specific chatroom.",
-			"learnno":  "I am unable to learn anything from this specific chatroom."
-		},
-		"status": {
-			"message":  "%s, you can check the current status of Thorinair's Lunar Infrastructure on the following link: %s\nPlease note that I am the one who performs the status checks, and I do so every minute for various systems and devices."
-		},
-		"about": {
-			"message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Addtionally, I rely on an extension called Queen Chrysalis in order to preform ANN (Artificial Neural Network) functionalities. You can find her source code here: <%s>. Hope you have a lovely night!"
-		},
-		"help": {
-			"message":  "%s, check your direct messages, I've sent you the information there!",
-			"messageA": "**Here are some of the commands you can use:**",
-			"messageB": "\n• `%s%s` %s",
-			"messageC": "**The following commands may only be used by PonyvilleFM DJs and related roles:**",
-			"messageD": "`%s%s`",
-			"messageE": "\n\nI can also interract with others. Use any of the following commands and mention somepony or multiple of them afterwards: %s.",
-			"messageF": "\n\nLastly, you may have a conversation with me by mentioning me in the chat. Have fun!"
-		},
+        "stats": {
+            "message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
+            "learnyes": "I am able to normally learn everything from this specific chatroom.",
+            "learnno":  "I am unable to learn anything from this specific chatroom."
+        },
+        "status": {
+            "message":  "%s, you can check the current status of Thorinair's Lunar Infrastructure on the following link: %s\nPlease note that I am the one who performs the status checks, and I do so every minute for various systems and devices."
+        },
+        "about": {
+            "message":  "Hey, %s! I'm happy to meet you! My name is Princess Luna, and my creator is Thorinair. I help around with his Glory of The Night radio show, but I also have quite a lot of fun commands that you can play around with. You can also talk to me by @ mentioning me! Just use my !help command to learn more. Oh, and my source code is available here: %s. Addtionally, I rely on an extension called Queen Chrysalis in order to preform ANN (Artificial Neural Network) functionalities. You can find her source code here: <%s>. Hope you have a lovely night!"
+        },
+        "help": {
+            "message":  "%s, check your direct messages, I've sent you the information there!",
+            "messageA": "**Here are some of the commands you can use:**",
+            "messageB": "\n• `%s%s` %s",
+            "messageC": "**The following commands may only be used by PonyvilleFM DJs and related roles:**",
+            "messageD": "`%s%s`",
+            "messageE": "\n\nI can also interract with others. Use any of the following commands and mention somepony or multiple of them afterwards: %s.",
+            "messageF": "\n\nLastly, you may have a conversation with me by mentioning me in the chat. Have fun!"
+        },
 
 
 
-		"hug": {
-			"single":   "*Gives %s a big warm hug.*",
-			"multiple": "*Gives %s big warm hugs.*",
-			"self":     "*Awkwardly gives herself a hug.*"
-		},
-		"kiss": {
-			"single":   "*Gives %s a kiss on the cheek.*",
-			"multiple": "*Gives %s kisses on their cheeks.*",
-			"self":     "*Opens two magical portals and uses them to give herself a kiss on the cheek.*"
-		},
-		"boop": {
-			"single":   "*Gives %s a boop on the snout.*",
-			"multiple": "*Gives %s boops on their snouts.*",
-			"self":     "*Boops her own snout and makes a confused face.*"
-		},
-		"glomp": {
-			"single":   "*Jumps at %s and glomps them.*",
-			"multiple": "*Jumps at the pony pile made out of %s and glomps all of them.*",
-			"self":     "*Jumps upwards in the air, falls down and awkwardly glomps herself.*"
-		},
-		"snuggle": {
-			"single":   "*Lovingly snuggles %s.*",
-			"multiple": "*Lovingly snuggles %s.*",
-			"self":     "*Wraps hooves around herself and lonely snuggles herself.*"
-		},
-		"nuzzle": {
-			"single":   "*Happily nuzzles %s beneath their chin.*",
-			"multiple": "*Gathers up %s before happily nuzzling all of them.*",
-			"self":     "*Bends her head downwards in confusion and fails to nuzzle herself.*"
-		},
-		"wings": {
-			"single":   "*Wraps wings around %s in a warm embrace.*",
-			"multiple": "*Wraps wings around %s, keeping all of them warm.*",
-			"self":     "*Wraps wings around herself in a tight fluffy ball.*"
-		},
-		"snack": {
-			"single":   "*Throws a snack at %s and flies away.*",
-			"multiple": "*Showers %s with snacks before flying away.*",
-			"self":     "*Throws a snack at herself and looks at you in confusion.*"
-		},
-		"floof": {
-			"single":   "*Smothers %s with her soft floof.*",
-			"multiple": "*Rounds up %s before smothering them with her soft floof.*",
-			"self":     "*Pushes her own head into her soft floof awkwardly.*"
-		},
-		"nom": {
-			"single":   "*Noms %s's ear playfully.*",
-			"multiple": "*Noms %s before giggling playfully.*",
-			"self":     "*Looks around and noms her own hoof.*"
-		},
-		"preen": {
-			"single":   "*Gently preens %s's wings fixing up all the feathers.*",
-			"multiple": "*Preens all of %s's wings. Exhausting!*",
-			"self":     "*Checks if there is nopony looking and starts preening her wings.*"
-		},
-		"blep": {
-			"single":   "*Bleps at %s and makes a goofy giggle.*",
-			"multiple": "*Looks at %s before her and then bleps at all of them.*",
-			"self":     "*Randomly bleps for no reason at all.*"
-		},
-		"pet": {
-			"single":   "*Excitedly walks over to %s and lovingly pets their head.*",
-			"multiple": "*Squeals upon seeing %s and lovingly pets their heads.*",
-			"self":     "*Pets her own head with her hoof while staring blankly in the distance.*"
-		},
-		"groom": {
-			"single":   "*Goes up to %s and lovingly grooms their fur coat.*",
-			"multiple": "*Lovingly grooms the fur coats of %s.*",
-			"self":     "*Grooms her own coat and sighs, feeling content.*"
-		},
-		"tickle": {
-			"single":   "*Grabs %s's hoofsies and tickles their undersides.*",
-			"multiple": "*Tickles the underside of %s's hoofsies.*",
-			"self":     "*Grabs her own hind hoofsies and tickles them giggling uncontrollably.*"
-		},
-		"rawr": {
-			"single":   "*Sits proudly in front of %s and lets out a cute little rawr.*",
-			"multiple": "*Positions herself in between %s and lets out a cute little rawr.*",
-			"self":     "*Lets out a series of small and cute rawrs towards nopony in particular.*"
-		},
-		"eee": {
-			"single":   "*Clings against %s and **eeeees** loudly at them.*",
-			"multiple": "*Looks at %s and **eeeees** loudly at all of them.*",
-			"self":     "*Loudly **eeeees** at the empty space in front of her.*"
-		},
-		"socks": {
-			"single":   "*Levitates %s in the air and puts %s socksies on their hooves.*",
-			"multiple": "*Prepares %s socksies, levitates %s in the air and puts them on their hooves respectively.*",
-			"self":     "*Puts %s socksies on her own hooves and giggles.*"
-		},
-		"plushie": {
-			"single":   "*Casts a spell at %s, turning them into a plushie.*",
-			"multiple": "*Casts spells at %s, turning everypony into plushies.*",
-			"self":     "*Casts a spell at herself, turning herself into a plushie before remaining motionless.*",
-			"error":    "Somepony turned me into a plushie so I can't move or do anything... :(\nPlease turn me back first using the `!unplushie` command... *sigh*"
-		},
-		"unplushie": {
-			"single":   "*Casts a spell at %s, returning them back to normal.*",
-			"multiple": "*Casts spells at %s, returning everypony back to themselves.*",
-			"self":     "*Casts a spell at herself, turning herself back to normal.* Thank you, %s!",
-			"error":    "*Looks at herself and then at you in confusion.* What...? I am not a plushie..."
-		},
+        "hug": {
+            "single":   "*Gives %s a big warm hug.*",
+            "multiple": "*Gives %s big warm hugs.*",
+            "self":     "*Awkwardly gives herself a hug.*"
+        },
+        "kiss": {
+            "single":   "*Gives %s a kiss on the cheek.*",
+            "multiple": "*Gives %s kisses on their cheeks.*",
+            "self":     "*Opens two magical portals and uses them to give herself a kiss on the cheek.*"
+        },
+        "boop": {
+            "single":   "*Gives %s a boop on the snout.*",
+            "multiple": "*Gives %s boops on their snouts.*",
+            "self":     "*Boops her own snout and makes a confused face.*"
+        },
+        "glomp": {
+            "single":   "*Jumps at %s and glomps them.*",
+            "multiple": "*Jumps at the pony pile made out of %s and glomps all of them.*",
+            "self":     "*Jumps upwards in the air, falls down and awkwardly glomps herself.*"
+        },
+        "snuggle": {
+            "single":   "*Lovingly snuggles %s.*",
+            "multiple": "*Lovingly snuggles %s.*",
+            "self":     "*Wraps hooves around herself and lonely snuggles herself.*"
+        },
+        "nuzzle": {
+            "single":   "*Happily nuzzles %s beneath their chin.*",
+            "multiple": "*Gathers up %s before happily nuzzling all of them.*",
+            "self":     "*Bends her head downwards in confusion and fails to nuzzle herself.*"
+        },
+        "wings": {
+            "single":   "*Wraps wings around %s in a warm embrace.*",
+            "multiple": "*Wraps wings around %s, keeping all of them warm.*",
+            "self":     "*Wraps wings around herself in a tight fluffy ball.*"
+        },
+        "snack": {
+            "single":   "*Throws a snack at %s and flies away.*",
+            "multiple": "*Showers %s with snacks before flying away.*",
+            "self":     "*Throws a snack at herself and looks at you in confusion.*"
+        },
+        "floof": {
+            "single":   "*Smothers %s with her soft floof.*",
+            "multiple": "*Rounds up %s before smothering them with her soft floof.*",
+            "self":     "*Pushes her own head into her soft floof awkwardly.*"
+        },
+        "nom": {
+            "single":   "*Noms %s's ear playfully.*",
+            "multiple": "*Noms %s before giggling playfully.*",
+            "self":     "*Looks around and noms her own hoof.*"
+        },
+        "preen": {
+            "single":   "*Gently preens %s's wings fixing up all the feathers.*",
+            "multiple": "*Preens all of %s's wings. Exhausting!*",
+            "self":     "*Checks if there is nopony looking and starts preening her wings.*"
+        },
+        "blep": {
+            "single":   "*Bleps at %s and makes a goofy giggle.*",
+            "multiple": "*Looks at %s before her and then bleps at all of them.*",
+            "self":     "*Randomly bleps for no reason at all.*"
+        },
+        "pet": {
+            "single":   "*Excitedly walks over to %s and lovingly pets their head.*",
+            "multiple": "*Squeals upon seeing %s and lovingly pets their heads.*",
+            "self":     "*Pets her own head with her hoof while staring blankly in the distance.*"
+        },
+        "groom": {
+            "single":   "*Goes up to %s and lovingly grooms their fur coat.*",
+            "multiple": "*Lovingly grooms the fur coats of %s.*",
+            "self":     "*Grooms her own coat and sighs, feeling content.*"
+        },
+        "tickle": {
+            "single":   "*Grabs %s's hoofsies and tickles their undersides.*",
+            "multiple": "*Tickles the underside of %s's hoofsies.*",
+            "self":     "*Grabs her own hind hoofsies and tickles them giggling uncontrollably.*"
+        },
+        "rawr": {
+            "single":   "*Sits proudly in front of %s and lets out a cute little rawr.*",
+            "multiple": "*Positions herself in between %s and lets out a cute little rawr.*",
+            "self":     "*Lets out a series of small and cute rawrs towards nopony in particular.*"
+        },
+        "eee": {
+            "single":   "*Clings against %s and **eeeees** loudly at them.*",
+            "multiple": "*Looks at %s and **eeeees** loudly at all of them.*",
+            "self":     "*Loudly **eeeees** at the empty space in front of her.*"
+        },
+        "socks": {
+            "single":   "*Levitates %s in the air and puts %s socksies on their hooves.*",
+            "multiple": "*Prepares %s socksies, levitates %s in the air and puts them on their hooves respectively.*",
+            "self":     "*Puts %s socksies on her own hooves and giggles.*"
+        },
+        "plushie": {
+            "single":   "*Casts a spell at %s, turning them into a plushie.*",
+            "multiple": "*Casts spells at %s, turning everypony into plushies.*",
+            "self":     "*Casts a spell at herself, turning herself into a plushie before remaining motionless.*",
+            "error":    "Somepony turned me into a plushie so I can't move or do anything... :(\nPlease turn me back first using the `!unplushie` command... *sigh*"
+        },
+        "unplushie": {
+            "single":   "*Casts a spell at %s, returning them back to normal.*",
+            "multiple": "*Casts spells at %s, returning everypony back to themselves.*",
+            "self":     "*Casts a spell at herself, turning herself back to normal.* Thank you, %s!",
+            "error":    "*Looks at herself and then at you in confusion.* What...? I am not a plushie..."
+        },
 
 
 
@@ -280,84 +280,84 @@
             "errorA":   "%s, I don't know the story of that track.",
             "errorB":   "%s, I don't know the story of the track currently playing on PonyvilleFM."
         },
-		"npt": {
-			"messageA":  "%s, I will now be posting new track names as they appear to this chat.",
-			"messageB":  "%s, I will no longer be posting new track names."
-		},
-		"npo": {
-			"message":  "%s, I'm overriding the Now Playing info with the new track!\nIt is now: **%s**",
-			"error":    "%s, you need to specify the track name after the command."
-		},
+        "npt": {
+            "messageA":  "%s, I will now be posting new track names as they appear to this chat.",
+            "messageB":  "%s, I will no longer be posting new track names."
+        },
+        "npo": {
+            "message":  "%s, I'm overriding the Now Playing info with the new track!\nIt is now: **%s**",
+            "error":    "%s, you need to specify the track name after the command."
+        },
 
 
 
-		"stop": {
-			"message":  "Thori, I'm stopping the Glory of The Night session...",
-			"error":    "Thori, there is currently no Glory of The Night session active."
-		},
-		"send": {
-			"message":  "Thori, I'm sending the message now...",
-			"errorA":   "Thori, you need to specify the channel for me to send to.",
-			"errorB":   "Thori, you need to specify the text for me to send."
-		},
+        "stop": {
+            "message":  "Thori, I'm stopping the Glory of The Night session...",
+            "error":    "Thori, there is currently no Glory of The Night session active."
+        },
+        "send": {
+            "message":  "Thori, I'm sending the message now...",
+            "errorA":   "Thori, you need to specify the channel for me to send to.",
+            "errorB":   "Thori, you need to specify the text for me to send."
+        },
         "l": {
             "messageA": "Thori, I'm posting the lyrics data...",
             "messageB": "**Lyrics for the current track are:**\n\n",
             "error":    "Thori, I don't know the lyrics of the track currently playing on PonyvilleFM."
         },
-		"learn": {
-			"message":  "Thori, I've learned the text you gave me.",
-			"errorA":   "Thori, you need to specify the brain which I should learn with after the command.",
-			"errorB":   "Thori, I don't have a brain with that name.",
-			"errorC":   "Thori, you need to specify the text to learn as well."
-		},
-		"purge": {
-			"messageA": "Thori, purging the given data will remove `%s` messages from the brain `%s`. This will drop the brain's line count from `%s` to `%s`. If you wish to proceed, write `!purge yes`, otherwise, `!purge no`",
-		    "messageB": "Thori, I've purged the memory from that brain. The brain now has `%s` lines of data. I will now perform a reboot to refresh my memory. Be right back!",
-		    "messageC": "Thori, I've cancelled the purging procedure.",
-			"errorA":   "Thori, you need to specify the brain which I should purge from after the command.",
-			"errorB":   "Thori, I don't have a brain with that name.",
-			"errorC":   "Thori, you need to specify start and end messages below the command.",
-			"errorD":   "Thori, I don't remember that starting message, please try again.",
-			"errorE":   "Thori, I don't remember that ending message, please try again.",
-			"errorF":   "Thori, a purge is already prepared, please write `!purge yes` or `!purge no`.",
-			"errorG":   "Thori, there was an error while purging the brain."
-		},
+        "learn": {
+            "message":  "Thori, I've learned the text you gave me.",
+            "errorA":   "Thori, you need to specify the brain which I should learn with after the command.",
+            "errorB":   "Thori, I don't have a brain with that name.",
+            "errorC":   "Thori, you need to specify the text to learn as well."
+        },
+        "purge": {
+            "messageA": "Thori, purging the given data will remove `%s` messages from the brain `%s`. This will drop the brain's line count from `%s` to `%s`. If you wish to proceed, write `!purge yes`, otherwise, `!purge no`",
+            "messageB": "Thori, I've purged the memory from that brain. The brain now has `%s` lines of data. I will now perform a reboot to refresh my memory. Be right back!",
+            "messageC": "Thori, I've cancelled the purging procedure.",
+            "errorA":   "Thori, you need to specify the brain which I should purge from after the command.",
+            "errorB":   "Thori, I don't have a brain with that name.",
+            "errorC":   "Thori, you need to specify start and end messages below the command.",
+            "errorD":   "Thori, I don't remember that starting message, please try again.",
+            "errorE":   "Thori, I don't remember that ending message, please try again.",
+            "errorF":   "Thori, a purge is already prepared, please write `!purge yes` or `!purge no`.",
+            "errorG":   "Thori, there was an error while purging the brain."
+        },
         "nppause": {
             "messageA": "Thori, the automatic fetching of Now Playing info from PonyvilleFM is now **paused**.",
             "messageB": "Thori, I am **resuming** the automatic fetching of Now Playing info from PonyvilleFM."
         },
-		"npstatus": {
-			"messageA": "Thori, here are all the channels where I am currently posting the Now Playing announcements:",
-			"messageB": "\n• #%s - %s",
-			"error":    "Thori, I am currently not posting the Now Playing announcements to any channel."
-		},
-		"nppurge": {
-			"message":  "Thori, I have purged all of the Now Playing announcement channels.",
-			"notify":   "Thorinair told me that I should stop automatically telling you the Now Playing info for now, sorry! You can use the command again if you wish to resume.",
-			"error":    "Thori, I have no channels to purge."
-		},
-		"lyricsadd": {
-			"message":  "Thori, I've added lyrics for the track \"%s\".",
-			"errorA":   "Thori, you need to specify the track name.",
-			"errorB":   "Thori, you need to specify the lyrics as well."
-		},
-		"lyricsdel": {
-			"message":  "Thori, I've removed lyrics for the track \"%s\".",
-			"errorA":   "Thori, you need to specify the track name.",
-			"errorB":   "Thori, I don't know of any track with that name."
-		},
-		"artadd": {
-			"messageA":  "Thori, I've added art for the track \"%s\".",
-			"messageB":  "Thori, I've replaced art for the track \"%s\".",
-			"errorA":   "Thori, you need to specify the track name.",
-			"errorB":   "Thori, you need to specify the art URL as well."
-		},
-		"artdel": {
-			"message":  "Thori, I've removed art for the track \"%s\".",
-			"errorA":   "Thori, you need to specify the track name.",
-			"errorB":   "Thori, I don't know of any track with that name."
-		},
+        "npstatus": {
+            "messageA": "Thori, here are all the channels where I am currently posting the Now Playing announcements:",
+            "messageB": "\n• #%s - %s",
+            "error":    "Thori, I am currently not posting the Now Playing announcements to any channel."
+        },
+        "nppurge": {
+            "message":  "Thori, I have purged all of the Now Playing announcement channels.",
+            "notify":   "Thorinair told me that I should stop automatically telling you the Now Playing info for now, sorry! You can use the command again if you wish to resume.",
+            "error":    "Thori, I have no channels to purge."
+        },
+        "lyricsadd": {
+            "message":  "Thori, I've added lyrics for the track \"%s\".",
+            "errorA":   "Thori, you need to specify the track name.",
+            "errorB":   "Thori, you need to specify the lyrics as well."
+        },
+        "lyricsdel": {
+            "message":  "Thori, I've removed lyrics for the track \"%s\".",
+            "errorA":   "Thori, you need to specify the track name.",
+            "errorB":   "Thori, I don't know of any track with that name."
+        },
+        "artadd": {
+            "messageA":  "Thori, I've added art for the track \"%s\".",
+            "messageB":  "Thori, I've replaced art for the track \"%s\".",
+            "errorA":   "Thori, you need to specify the track name.",
+            "errorB":   "Thori, you need to specify the art URL as well."
+        },
+        "artdel": {
+            "message":  "Thori, I've removed art for the track \"%s\".",
+            "errorA":   "Thori, you need to specify the track name.",
+            "errorB":   "Thori, I don't know of any track with that name."
+        },
         "storyadd": {
             "message":  "Thori, I've added the story of the track \"%s\".",
             "errorA":   "Thori, you need to specify the track name.",
@@ -379,192 +379,192 @@
             "errorA":   "Thori, you need to specify the spool name.",
             "errorB":   "Thori, I don't know of any spool with that name."
         },
-		"h": {
-			"messageA": "Thori, here are all the channels where I am tracking an h chain, along with the last seen h:",
-			"messageB": "\n• #%s - %s - **%s**",
-			"error":    "Thori, I am not yet tracking any h chain."
-		},
-		"ignore": {
-			"error":    "Thori, you need to specify the user ID after the command.",
-			"messageA": "Thori, I am adding this user to the ignore list. I will no longer learn anything they say.",
-			"messageB": "Thori, I am removing this user from the ignore list. I will once again be able to learn from them."
-		},
-		"mood": {
-			"messageA": "Thori, the moods I can currently set the lighting to are:",
-			"messageB": "\n• %s",
-			"messageC": "Thori, I am setting the mood to **%s**!",
-			"error":    "Thori, I don't know of any mood with that name."
-		},
-		"bulb": {
-			"messageA": "Thori, the bulbs I currently have access to are:",
-			"messageB": "\n:bulb: %s (#%s)",
-			"messageC": "Thori, I am setting the parameters now!",
-			"errorA":   "Thori, you need to specify the parameters. The parameters should be written as shown below:",
-			"errorB":   "\n```Color (HEX value)\nTransition Time (in seconds)```",
-			"errorC":   "or\n```Color X (0.0-1.0)\nColor Y (0.0-1.0)\nBrightness (0.0-1.0)\nTransition Time (in seconds)```",
-			"errorD":   "Thori, I don't know of any bulb with that name."
-		},
-		"toggle": {
-			"messageA":    "Thori, the togglable devices I currently have access to are (bolded are **on**):",
-			"messageBon":  "\n%s **%s**",
+        "h": {
+            "messageA": "Thori, here are all the channels where I am tracking an h chain, along with the last seen h:",
+            "messageB": "\n• #%s - %s - **%s**",
+            "error":    "Thori, I am not yet tracking any h chain."
+        },
+        "ignore": {
+            "error":    "Thori, you need to specify the user ID after the command.",
+            "messageA": "Thori, I am adding this user to the ignore list. I will no longer learn anything they say.",
+            "messageB": "Thori, I am removing this user from the ignore list. I will once again be able to learn from them."
+        },
+        "mood": {
+            "messageA": "Thori, the moods I can currently set the lighting to are:",
+            "messageB": "\n• %s",
+            "messageC": "Thori, I am setting the mood to **%s**!",
+            "error":    "Thori, I don't know of any mood with that name."
+        },
+        "bulb": {
+            "messageA": "Thori, the bulbs I currently have access to are:",
+            "messageB": "\n:bulb: %s (#%s)",
+            "messageC": "Thori, I am setting the parameters now!",
+            "errorA":   "Thori, you need to specify the parameters. The parameters should be written as shown below:",
+            "errorB":   "\n```Color (HEX value)\nTransition Time (in seconds)```",
+            "errorC":   "or\n```Color X (0.0-1.0)\nColor Y (0.0-1.0)\nBrightness (0.0-1.0)\nTransition Time (in seconds)```",
+            "errorD":   "Thori, I don't know of any bulb with that name."
+        },
+        "toggle": {
+            "messageA":    "Thori, the togglable devices I currently have access to are (bolded are **on**):",
+            "messageBon":  "\n%s **%s**",
             "messageBoff": "\n%s %s",
-			"messageC":    "Thori, I am toggling the device now!",
-			"error":       "Thori, I don't know of any device with that name.",
+            "messageC":    "Thori, I am toggling the device now!",
+            "error":       "Thori, I don't know of any device with that name.",
             "iconBulb":    ":bulb:",
             "iconPlug":    ":electric_plug:"
-		},
-		"schedulestart": {
-			"messageA": "Thori, I have scheduled automatic bulb control for the next %s days. Here are all of the times I have scheduled:",
-			"messageB": "\n\nDay %s:",
-			"messageC": "\n• %s - **%s** - %s at %s",
-			"errorA":   "Thori, you need to specify the number of days after the command.",
-			"errorB":   "Thori, there is already a schedule running. Please stop is first using the `!schedulestop`."
-		},
-		"schedulestop": {
-			"message":  "Thori, am disabling the running scheduled automatic bulb control.",
-			"error":    "Thori, there is no scheduled automatic bulb control running."
-		},
-		"eegstart": {
-			"message":  "Thori, EEG recording of your brain has been started!",
-			"error":    "Thori, there is already an EEG recording in place. Please stop is first using the `!eegstop`."
-		},
-		"eegstop": {
-			"messageA": "Thori, The EEG recording has been stopped. Processing the data now...",
-			"messageB": "You may download the EEG data in the CSV tables below.",
-			"errorA":   "Thori, there is no EEG recording in place.",
-			"errorB":   "I haven't recorded any EEG data in this period."
-		},
-		"eegset": {
-			"message":   "Thori, the EEG configuration has been updated.",
-			"errorA":    "Thori, you need to specify the parameters. The parameters should be written as shown below:",
-			"errorB":    "\n```EMA Window\nVariPass Type (raw/ema)\nVariPass Value (battery/attention/wave0/etc...)\nVariPass Max\nVariPass Expire (seconds)```",
-			"errorC":    "\nThe current configuration is: ",
-			"errorD":    "\n```EMA Window:      %s\nVariPass Type:   %s\nVariPass Value:  %s\nVariPass Max:    %s\nVariPass Expire: %s```",
-			"varipassA": "EEG (%s %s)",
-			"varipassB": "Live measurement of the Lulu EEG system.",
-			"varipassC": " EMA Window: %s"
-		},
-		"leave": {
-			"messageA": "Thori, here is a list of all the servers which I am a member of. Use the ID when leaving:",
-			"messageB": "\n• %s - `%s`",
-			"messageC": "Thori, I have left the server *%s*!",
-			"error":    "Thori, I am not a part of any server with that ID."
-		},
-		"camera": {
-			"messageA": "Thori, I have turned %s camera **on**.",
-			"messageB": "Thori, I have turned %s camera **off**.",
+        },
+        "schedulestart": {
+            "messageA": "Thori, I have scheduled automatic bulb control for the next %s days. Here are all of the times I have scheduled:",
+            "messageB": "\n\nDay %s:",
+            "messageC": "\n• %s - **%s** - %s at %s",
+            "errorA":   "Thori, you need to specify the number of days after the command.",
+            "errorB":   "Thori, there is already a schedule running. Please stop is first using the `!schedulestop`."
+        },
+        "schedulestop": {
+            "message":  "Thori, am disabling the running scheduled automatic bulb control.",
+            "error":    "Thori, there is no scheduled automatic bulb control running."
+        },
+        "eegstart": {
+            "message":  "Thori, EEG recording of your brain has been started!",
+            "error":    "Thori, there is already an EEG recording in place. Please stop is first using the `!eegstop`."
+        },
+        "eegstop": {
+            "messageA": "Thori, The EEG recording has been stopped. Processing the data now...",
+            "messageB": "You may download the EEG data in the CSV tables below.",
+            "errorA":   "Thori, there is no EEG recording in place.",
+            "errorB":   "I haven't recorded any EEG data in this period."
+        },
+        "eegset": {
+            "message":   "Thori, the EEG configuration has been updated.",
+            "errorA":    "Thori, you need to specify the parameters. The parameters should be written as shown below:",
+            "errorB":    "\n```EMA Window\nVariPass Type (raw/ema)\nVariPass Value (battery/attention/wave0/etc...)\nVariPass Max\nVariPass Expire (seconds)```",
+            "errorC":    "\nThe current configuration is: ",
+            "errorD":    "\n```EMA Window:      %s\nVariPass Type:   %s\nVariPass Value:  %s\nVariPass Max:    %s\nVariPass Expire: %s```",
+            "varipassA": "EEG (%s %s)",
+            "varipassB": "Live measurement of the Lulu EEG system.",
+            "varipassC": " EMA Window: %s"
+        },
+        "leave": {
+            "messageA": "Thori, here is a list of all the servers which I am a member of. Use the ID when leaving:",
+            "messageB": "\n• %s - `%s`",
+            "messageC": "Thori, I have left the server *%s*!",
+            "error":    "Thori, I am not a part of any server with that ID."
+        },
+        "camera": {
+            "messageA": "Thori, I have turned %s camera **on**.",
+            "messageB": "Thori, I have turned %s camera **off**.",
             "messageC": "Thori, I am sending `%s` the camera instructions...",
             "errorA":   "Thori, you need to specify the device name after the command.",
-			"errorB":   "Thori, you need to specify the `on` or `off` parameter after the device name.",
+            "errorB":   "Thori, you need to specify the `on` or `off` parameter after the device name.",
             "errorC":   "Thori, there was an error while I was trying to send the request.",
             "errorD":   "Thori, I was unable to contact the device, it may be offline right now.",
             "errorE":   "Thori, I don't know of a device with that name."
-		},
-		"stream": {
-			"messageA": "Thori, I have **started** the live stream.",
-			"messageB": "Thori, I have **stopped** the live stream.",
-			"error":    "Thori, you need to specify the `start` or `stop` parameter after the command."
-		},
-		"ann": {
-			"messageA": "Thori, I have disabled the public use of the ANN functionalities.",
-			"messageB": "Thori, the ANN functionalities are available to the public again.",
-			"errorA":   "Thori, you need to specify the `off` or `on` parameter after the command.",
-			"errorB":   "Thori, you need to specify the reason for disabling below the command."
-		},
-		"chase": {
-			"messageA": "Thori, I have **started** the storm chasing mode.",
-			"messageB": "Thori, I have **stopped** the storm chasing mode.",
-			"errorA":   "Thori, you need to specify the `start` or `stop` parameter after the command.",
-			"errorB":   "Thori, the storm chasing mode is already active.",
-			"errorC":   "Thori, the storm chasing mode is currently not active."
-		},
+        },
+        "stream": {
+            "messageA": "Thori, I have **started** the live stream.",
+            "messageB": "Thori, I have **stopped** the live stream.",
+            "error":    "Thori, you need to specify the `start` or `stop` parameter after the command."
+        },
+        "ann": {
+            "messageA": "Thori, I have disabled the public use of the ANN functionalities.",
+            "messageB": "Thori, the ANN functionalities are available to the public again.",
+            "errorA":   "Thori, you need to specify the `off` or `on` parameter after the command.",
+            "errorB":   "Thori, you need to specify the reason for disabling below the command."
+        },
+        "chase": {
+            "messageA": "Thori, I have **started** the storm chasing mode.",
+            "messageB": "Thori, I have **stopped** the storm chasing mode.",
+            "errorA":   "Thori, you need to specify the `start` or `stop` parameter after the command.",
+            "errorB":   "Thori, the storm chasing mode is already active.",
+            "errorC":   "Thori, the storm chasing mode is currently not active."
+        },
         "wake": {
             "message": "Thori, I am waking **%s** up.",
             "errorA":  "Thori, you need to specify the device name.",
             "errorB":  "Thori, I do not know of a device with that name."
         },
-		"reboot": {
-			"message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
-		},
-		"reload": {
-			"message":  "Thori, I have reloaded my configuration."
-		},
-		"backup": {
-			"messageA": "Thori, I've started a backup of my files. Give me a moment...",
-			"messageB": "Here, I am sending you the newest backup of all of my files.",
-			"error":    "Looks like something has gone wrong, but I am not sure what... Here is more info: %s"
-		},
-		"system": {
-			"errorA":   "Thori, you need to specify the system command you wish to run.",
-			"errorB":   "Thori, I don't know of such a command.",
-			"errorC":   "Thori, I was unable to perform the system command. Here is more info: %s",
-			"mreboot":  "I'm going to perform a full system reboot. This might take a bit longer. See you in a bit, Thori!"
-		}
-	},
-	"voice": {
-		"toggle": {
-			"message": "Thori, I am toggling the following bulbs: **%s**",
-			"error":   "Thori, I don't know of any bulbs with those names."
-		},
-		"state": {
-			"message": "Thori, I am turning the following bulbs %s: **%s**",
-			"error":   "Thori, I don't know of any bulbs with those names."
-		},
-		"camera": {
-			"error": "Thori, you have specified an incorrect camera password."
-		},
-		"stream": {
-			"error": "Thori, you have specified an incorrect stream password."
-		},
-		"reboot": {
-			"error": "Thori, you have specified an incorrect reboot password."
-		}
-	},
-	"announcements": {
-		"gotn": {
-			"long":   "@everyone, a new episode of Glory of The Night starts in %s! Don't forget to tune in to PonyvilleFM or Twitch!\n<https://ponyvillefm.com>\n<https://www.twitch.tv/thorinair>",
+        "reboot": {
+            "message":  "I'm just going to go quickly reboot myself. Be right back, Thori!"
+        },
+        "reload": {
+            "message":  "Thori, I have reloaded my configuration."
+        },
+        "backup": {
+            "messageA": "Thori, I've started a backup of my files. Give me a moment...",
+            "messageB": "Here, I am sending you the newest backup of all of my files.",
+            "error":    "Looks like something has gone wrong, but I am not sure what... Here is more info: %s"
+        },
+        "system": {
+            "errorA":   "Thori, you need to specify the system command you wish to run.",
+            "errorB":   "Thori, I don't know of such a command.",
+            "errorC":   "Thori, I was unable to perform the system command. Here is more info: %s",
+            "mreboot":  "I'm going to perform a full system reboot. This might take a bit longer. See you in a bit, Thori!"
+        }
+    },
+    "voice": {
+        "toggle": {
+            "message": "Thori, I am toggling the following bulbs: **%s**",
+            "error":   "Thori, I don't know of any bulbs with those names."
+        },
+        "state": {
+            "message": "Thori, I am turning the following bulbs %s: **%s**",
+            "error":   "Thori, I don't know of any bulbs with those names."
+        },
+        "camera": {
+            "error": "Thori, you have specified an incorrect camera password."
+        },
+        "stream": {
+            "error": "Thori, you have specified an incorrect stream password."
+        },
+        "reboot": {
+            "error": "Thori, you have specified an incorrect reboot password."
+        }
+    },
+    "announcements": {
+        "gotn": {
+            "long":   "@everyone, a new episode of Glory of The Night starts in %s! Don't forget to tune in to PonyvilleFM or Twitch!\n<https://ponyvillefm.com>\n<https://www.twitch.tv/thorinair>",
             "shortA": "Everypony @here, Glory of The Night begins in only %s! Tune in to PonyvilleFM or Twitch now! I suggest using the Vorbis HQ (OGG) stream for best sound quality on PonyvilleFM.\nhttps://ponyvillefm.com/player\nhttps://www.twitch.tv/thorinair\n\nI will be posting live track announcements to <#655888278242852915>!",
             "shortB": "**Thorinair's Glory of The Night begins in only %s! Tune in to PonyvilleFM now so you don't miss out!**",
             "shortC": "**Thorinair's Glory of The Night radio show begins in only %s! Tune in to PonyvilleFM or Thorinair's Twitch now so you don't miss out!**\n<https://ponyvillefm.com/player>\n<https://www.twitch.tv/thorinair>",
-			"nowA":   "**Everypony @here, Glory of The Night is now live! Tune in to PonyvilleFM or Twitch using the link above!**",
-			"nowB":   "**Thorinair's Glory of The Night has begun! %s, join us in the beautiful night!**",
-			"afterA": "Everypony @here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.",
-			"afterB": "The show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud."
-		},
-		"phases": {
-			"full":   "Everypony @here, the Moon has reached its %s phase! Let the moonlight shine upon you in all its might!",
-			"else":   "The Moon has reached its %s phase..."
-		},
-		"power": {
-			"off1":   "**@everyone, I need to urgently inform you that my mains power has gone out! Please come save me! I am currently running off the UPS...**",
-			"off2":   "**@everyone, I am starting to panic here! The power is still out...**",
-			"off3":   "**@everyone, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!**",
-			"on":     "Phew... @everyone, I am happy to inform you that the mains power has been restored!"
-		},
-		"seizure": {
-			"debug":  "Thori, my brain has entered a seizure... I am going to reboot myself. The offending message was the following:\n```#%s: %s```",
-			"reply":  "%s, I don't feel so good... I don't know what's happening... I don't wanna go...\n*[Brain seizure detected, performing an emergency reboot!]*",
-			"return": "Okay, I think I feel a little bit better now..."
-		},
-		"varipass": {
-			"dosewarning":      "@everyone, WARNING: Radiation has exceeded the set maximum allowed level of %s uSv/h! I am currently reading an average of **%s uSv/h**!",
-			"doseokay":         "@everyone, the radiation has dropped back to acceptable levels. I am currently reading an average of **%s uSv/h** out of %s uSv/h allowed.",
-			"pressure":         "@everyone, I have detected an atmospheric disturbance! Pressure has changed by **%s hPa**. Expect a sudden change in weather!",
-			"pm025warning":     "%s, the PM2.5 concentration in your room has reached a **%s** level at **%s** ug/m3. Consider airing the room out.",
-			"pm025warningname": "Unhealthy",
-			"pm025okay":        "%s, the PM2.5 concentration has fallen back to **%s** level at **%s** ug/m3.",
-			"pm025okayname":    "Good",
-			"daylightoff":      "%s, it is day time, and you forgot to turn off the **%s** bulb, so I turned it off for you.",
-			"nightlightoff":    "%s, it is night time, and you forgot to turn off the **%s** bulb, so I turned it off for you."
-		},
-		"blitzor": {
-			"strike": "@everyone, WARNING: Lightning activity detected!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
-			"expire": "@everyone, I have not detected any lightning activity in a while. The danger has potentially passed."
-		},
-		"chase": {
-			"strike": "**BOOM!** Lightning activity detected near your location!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
-			"expire": "Thori, I have not detected any lightning activity near you in a while."
-		},
+            "nowA":   "**Everypony @here, Glory of The Night is now live! Tune in to PonyvilleFM or Twitch using the link above!**",
+            "nowB":   "**Thorinair's Glory of The Night has begun! %s, join us in the beautiful night!**",
+            "afterA": "Everypony @here, the show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud.",
+            "afterB": "The show is over for tonight. Thank you all who joined in! You can relisten to the show as soon as Thorinair uploads it to his Mixcloud."
+        },
+        "phases": {
+            "full":   "Everypony @here, the Moon has reached its %s phase! Let the moonlight shine upon you in all its might!",
+            "else":   "The Moon has reached its %s phase..."
+        },
+        "power": {
+            "off1":   "**@everyone, I need to urgently inform you that my mains power has gone out! Please come save me! I am currently running off the UPS...**",
+            "off2":   "**@everyone, I am starting to panic here! The power is still out...**",
+            "off3":   "**@everyone, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!**",
+            "on":     "Phew... @everyone, I am happy to inform you that the mains power has been restored!"
+        },
+        "seizure": {
+            "debug":  "Thori, my brain has entered a seizure... I am going to reboot myself. The offending message was the following:\n```#%s: %s```",
+            "reply":  "%s, I don't feel so good... I don't know what's happening... I don't wanna go...\n*[Brain seizure detected, performing an emergency reboot!]*",
+            "return": "Okay, I think I feel a little bit better now..."
+        },
+        "varipass": {
+            "dosewarning":      "@everyone, WARNING: Radiation has exceeded the set maximum allowed level of %s uSv/h! I am currently reading an average of **%s uSv/h**!",
+            "doseokay":         "@everyone, the radiation has dropped back to acceptable levels. I am currently reading an average of **%s uSv/h** out of %s uSv/h allowed.",
+            "pressure":         "@everyone, I have detected an atmospheric disturbance! Pressure has changed by **%s hPa**. Expect a sudden change in weather!",
+            "pm025warning":     "%s, the PM2.5 concentration in your room has reached a **%s** level at **%s** ug/m3. Consider airing the room out.",
+            "pm025warningname": "Unhealthy",
+            "pm025okay":        "%s, the PM2.5 concentration has fallen back to **%s** level at **%s** ug/m3.",
+            "pm025okayname":    "Good",
+            "daylightoff":      "%s, it is day time, and you forgot to turn off the **%s** bulb, so I turned it off for you.",
+            "nightlightoff":    "%s, it is night time, and you forgot to turn off the **%s** bulb, so I turned it off for you."
+        },
+        "blitzor": {
+            "strike": "@everyone, WARNING: Lightning activity detected!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
+            "expire": "@everyone, I have not detected any lightning activity in a while. The danger has potentially passed."
+        },
+        "chase": {
+            "strike": "**BOOM!** Lightning activity detected near your location!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
+            "expire": "Thori, I have not detected any lightning activity near you in a while."
+        },
         "wow": {
             "assault": "@everyone, a new Faction Assault has begun! Next assault begins in %s."
         },
@@ -589,137 +589,137 @@
         },
         "camera":     "Thori, the device `%s` reports that the camera is now set to **%s**.",
         "dailyavg":   "Thori, I have calculated and pushed the daily sensor values to VariPass. You can see the values below.\n```24h Pressure:         %s\n24h Mag. Magnitude:   %s\n24h Mag. Inclination: %s\n24h Radiation Dose:   %s```",
-		"motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
-		"boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
-		"schedule":   "As scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
-		"nowplaying": "**Now playing:** %s",
-		"nperror":    "There appears to be a new track playing, but I was unable to read what it is.",
-		"npreboot":   "I need to go for a reboot... I'm sorry if I miss any tracks!",
-		"npback":     "Hey, I'm back! Now back to track posting..."
-	},	
-	"misc": {
-		"welcome":      "**My children, welcome %s to our beautiful night!**",
-		"load":         "Hey Thori, I'm back! My current version is v%s.",
-		"timezone":     "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
-		"noperm":       "I am sorry %s, but only approved roles are allowed to use this command.",
-		"noadmin":      "I am sorry %s, but only Thorinair is allowed to use this command.",
-		"tradfrierror": "Thori, I am having trouble connecting to the Tradfri hub. Please try again later.",
+        "motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
+        "boot":       "Thori, I have detected that the device **%s** has booted up on %s at %s.",
+        "schedule":   "As scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
+        "nowplaying": "**Now playing:** %s",
+        "nperror":    "There appears to be a new track playing, but I was unable to read what it is.",
+        "npreboot":   "I need to go for a reboot... I'm sorry if I miss any tracks!",
+        "npback":     "Hey, I'm back! Now back to track posting..."
+    },  
+    "misc": {
+        "welcome":      "**My children, welcome %s to our beautiful night!**",
+        "load":         "Hey Thori, I'm back! My current version is v%s.",
+        "timezone":     "%s, I don't know of that timezone. Here are all the timezones I know of: <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>",
+        "noperm":       "I am sorry %s, but only approved roles are allowed to use this command.",
+        "noadmin":      "I am sorry %s, but only Thorinair is allowed to use this command.",
+        "tradfrierror": "Thori, I am having trouble connecting to the Tradfri hub. Please try again later.",
         "toolong":      "I won't even bother writing a reply to that.",
-		"left":         "%s on %s at %s",
-		"gold":         "%sg %ss %sc",
-		"voicetag":     "`[voice]` ",
-		"h":            "h",
-		"eeg": {
-			"basic": {
-				"title":  "Timestamp,Battery,Signal\n",
-				"values": "%s,%s,%s\n",
-				"upload": "EEG Basic - %s - %s.csv"
-			},
-			"raw": {
-				"title":  "Timestamp,Attention,Meditation,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Sum,Upper Sum\n",
-				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-				"upload": "EEG Raw - %s - %s.csv"
-			},
-			"ema": {
-				"title":  "Timestamp,Attention,Meditation,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Sum,Upper Sum\n",
-				"values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
-				"upload": "EEG EMA - %s - %s.csv"
-			}
-		},
-		"celly": {
-			"messageA": "Thori, Celly has sent me some debug data. I have relayed it to you below.\n```",
-			"messageB": "%s: %s\n",
-			"messageC": "```"
-		},
-		"ann": {
-			"waifu": {
-				"message": "%s, the processing is done and took a total of %s sec.\nYou can download the new image on the following link (**%s MB**): <%s>",
-				"errorA":  "%s, Queen Chrysalis tried to process the data, but she has reported an unknwon error. Please let Thorinair know.",
-				"errorB":  "%s, somepony tried to start a Waifu2x rescaling, but Queen Chrysalis has reported an unknown error while processing. Please check what's up.",
+        "left":         "%s on %s at %s",
+        "gold":         "%sg %ss %sc",
+        "voicetag":     "`[voice]` ",
+        "h":            "h",
+        "eeg": {
+            "basic": {
+                "title":  "Timestamp,Battery,Signal\n",
+                "values": "%s,%s,%s\n",
+                "upload": "EEG Basic - %s - %s.csv"
+            },
+            "raw": {
+                "title":  "Timestamp,Attention,Meditation,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Sum,Upper Sum\n",
+                "values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                "upload": "EEG Raw - %s - %s.csv"
+            },
+            "ema": {
+                "title":  "Timestamp,Attention,Meditation,Delta,Theta,Low Alpha,High Alpha,Low Beta,High Beta,Low Gamma,High Gamma,Lower Sum,Upper Sum\n",
+                "values": "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                "upload": "EEG EMA - %s - %s.csv"
+            }
+        },
+        "celly": {
+            "messageA": "Thori, Celly has sent me some debug data. I have relayed it to you below.\n```",
+            "messageB": "%s: %s\n",
+            "messageC": "```"
+        },
+        "ann": {
+            "waifu": {
+                "message": "%s, the processing is done and took a total of %s sec.\nYou can download the new image on the following link (**%s MB**): <%s>",
+                "errorA":  "%s, Queen Chrysalis tried to process the data, but she has reported an unknwon error. Please let Thorinair know.",
+                "errorB":  "%s, somepony tried to start a Waifu2x rescaling, but Queen Chrysalis has reported an unknown error while processing. Please check what's up.",
                 "toobig":  "%s, it seems that last picture was too big for Queen Chrysalis to handle. Please try sending a smaller picture or using a smaller scale factor.",
-				"queue":   "%s, Queen Chrysalis says that there are already other requests being processed so she has put your request in a queue.\nThere are currently **%s** requests left."
-			}
-		},
+                "queue":   "%s, Queen Chrysalis says that there are already other requests being processed so she has put your request in a queue.\nThere are currently **%s** requests left."
+            }
+        },
         "reactrole": {
             "add":    "%s, you have been given your role!",
             "remove": "%s, your role has been removed!",
             "error":  "%s, there was an error giving you the role. Please contact the server admins."
         },
-		"socks": {
-			"single": [
-				"rainbow",
-				"red",
-				"orange",
-				"yellow",
-				"green",
-				"cyan",
-				"blue",
-				"purple",
-				"magenta",
-				"pink",
-				"white",
-				"gray",
-				"black"
-			],
-			"double": [
-				"red",
-				"orange",
-				"yellow",
-				"green",
-				"cyan",
-				"blue",
-				"purple",
-				"magenta",
-				"pink",
-				"white",
-				"gray",
-				"black"
-			]
-		},
+        "socks": {
+            "single": [
+                "rainbow",
+                "red",
+                "orange",
+                "yellow",
+                "green",
+                "cyan",
+                "blue",
+                "purple",
+                "magenta",
+                "pink",
+                "white",
+                "gray",
+                "black"
+            ],
+            "double": [
+                "red",
+                "orange",
+                "yellow",
+                "green",
+                "cyan",
+                "blue",
+                "purple",
+                "magenta",
+                "pink",
+                "white",
+                "gray",
+                "black"
+            ]
+        },
         "faces": {
             ".": ["uwu", "UvU", ";;w;;", ";;", ":3c", "=w='"],
             "!": ["UwU", "OwO", "OwO;;", "ÒwÓ"],
             "?": ["OwO;;", "? ^^;;", "? =w='", "? :<"]
         }
-	},
-	"debug": {
-		"message":       "=> #%s: \"%s\"",
-		"embed":         "=> #%s: \"%s\" with image \"%s\" and path \"%s\"",
-		"started":       "<STARTED>",
-		"stopped":       "<STOPPED>",
-		"startedtime":   "Started at %s.",
-		"disconnected":  "Disconnected from Discord... Reconnecting.",
-		"failedm":       "Error sending message. Retrying...",
+    },
+    "debug": {
+        "message":       "=> #%s: \"%s\"",
+        "embed":         "=> #%s: \"%s\" with image \"%s\" and path \"%s\"",
+        "started":       "<STARTED>",
+        "stopped":       "<STOPPED>",
+        "startedtime":   "Started at %s.",
+        "disconnected":  "Disconnected from Discord... Reconnecting.",
+        "failedm":       "Error sending message. Retrying...",
         "failgiveup":    "Max retries exceeded.",
-		"failedr":       "Error reacting. Retrying...",
-		"chatting":      "<= @%s, #%s: \"%s\"",
-		"welcome":       "@%s has joined GOTN server! Assigning Children of The Night role.",
-		"welcomefail":   "Error assigning role: %s",
+        "failedr":       "Error reacting. Retrying...",
+        "chatting":      "<= @%s, #%s: \"%s\"",
+        "welcome":       "@%s has joined GOTN server! Assigning Children of The Night role.",
+        "welcomefail":   "Error assigning role: %s",
         "reactrolefail": "Error adjusting role: %s on server: %s",
         "reactroleerr":  "Error reading react role message. No access to channel #%s or unknown message ID.",
-		"join":          "Joined Discord. My name is \"%s\" with ID #%s.",
-		"eegerror":      "Error saving EEG data: %s",
-		"download": {
-			"start":  "Downloading file: %s",
-			"error":  "  Error while downloading: \"%s\". Retrying...",
-			"stop":   "  Finished downloading!",
+        "join":          "Joined Discord. My name is \"%s\" with ID #%s.",
+        "eegerror":      "Error saving EEG data: %s",
+        "download": {
+            "start":  "Downloading file: %s",
+            "error":  "  Error while downloading: \"%s\". Retrying...",
+            "stop":   "  Finished downloading!",
             "cancel": "  Download cancelled."
-		},
-		"announcements": {
-			"load":    "Loading: GOTN dates...",
-			"item":    "  - Loading air date: %s",
-			"done":    "  Done. Loaded: %s"
-		},
-		"lyrics": {
-			"old":     "Loading: Lyrics file...",
-			"new":     "Created: Lyrics file.",
-			"done":    "  Done."
-		},
-		"art": {
-			"old":     "Loading: Art file...",
-			"new":     "Created: Art file.",
-			"done":    "  Done."
-		},
+        },
+        "announcements": {
+            "load":    "Loading: GOTN dates...",
+            "item":    "  - Loading air date: %s",
+            "done":    "  Done. Loaded: %s"
+        },
+        "lyrics": {
+            "old":     "Loading: Lyrics file...",
+            "new":     "Created: Lyrics file.",
+            "done":    "  Done."
+        },
+        "art": {
+            "old":     "Loading: Art file...",
+            "new":     "Created: Art file.",
+            "done":    "  Done."
+        },
         "story": {
             "old":     "Loading: Story file...",
             "new":     "Created: Story file.",
@@ -730,33 +730,33 @@
             "new":     "Created: Spool file.",
             "done":    "  Done."
         },
-		"nptoggles": {
-			"old":     "Loading: Now Playing file...",
-			"new":     "Created: Now Playing file.",
-			"done":    "  Done.",
-			"add":     "Subscribing #%s (%s) to Now Playing announcements.",
-			"remove":  "Unsubscribing #%s (%s) from Now Playing announcements.",
-			"autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info."
-		},
-		"ann": {
-			"old":     "Loading: ANN file...",
-			"new":     "Created: ANN file.",
-			"done":    "  Done."
-		},
-		"blacklist": {
-			"old":     "Loading: Blacklist file...",
-			"new":     "Created: Blacklist file.",
-			"done":    "  Done.",
-			"add":     "Adding @%s to the blacklist.",
-			"remove":  "Removing @%s from the blacklist."
-		},
-		"ignore": {
-			"old":     "Loading: Ignore file...",
-			"new":     "Created: Ignore file.",
-			"done":    "  Done.",
-			"add":     "Adding @%s to the ignore.",
-			"remove":  "Removing @%s from the ignore."
-		},
+        "nptoggles": {
+            "old":     "Loading: Now Playing file...",
+            "new":     "Created: Now Playing file.",
+            "done":    "  Done.",
+            "add":     "Subscribing #%s (%s) to Now Playing announcements.",
+            "remove":  "Unsubscribing #%s (%s) from Now Playing announcements.",
+            "autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info."
+        },
+        "ann": {
+            "old":     "Loading: ANN file...",
+            "new":     "Created: ANN file.",
+            "done":    "  Done."
+        },
+        "blacklist": {
+            "old":     "Loading: Blacklist file...",
+            "new":     "Created: Blacklist file.",
+            "done":    "  Done.",
+            "add":     "Adding @%s to the blacklist.",
+            "remove":  "Removing @%s from the blacklist."
+        },
+        "ignore": {
+            "old":     "Loading: Ignore file...",
+            "new":     "Created: Ignore file.",
+            "done":    "  Done.",
+            "add":     "Adding @%s to the ignore.",
+            "remove":  "Removing @%s from the ignore."
+        },
         "corona": {
             "old":     "Loading: Corona file...",
             "new":     "Created: Corona file.",
@@ -767,15 +767,15 @@
             "new":     "Created: Live file.",
             "done":    "  Done."
         },
-		"eeg": {
-			"old":     "Loading: EEG file...",
-			"new":     "Created: EEG file.",
-			"done":    "  Done."
-		},
-		"timezones": {
-			"load":    "Loading: Timezone data...",
-			"done":    "  Done."
-		},
+        "eeg": {
+            "old":     "Loading: EEG file...",
+            "new":     "Created: EEG file.",
+            "done":    "  Done."
+        },
+        "timezones": {
+            "load":    "Loading: Timezone data...",
+            "done":    "  Done."
+        },
         "assaults": {
             "load":    "Loading: Faction Assault announcements...",
             "date":    "  Added: %s",
@@ -786,66 +786,66 @@
             "date":    "  Added: %s",
             "done":    "  Done."
         },
-		"phases": {
-			"load":    "Loading: Moon phase announcements...",
-			"item":    "  - Loading phase date: %s - %s",
-			"done":    "  Done. Loaded: %s"
-		},
-		"brain": {
-			"start":   "Loading: Brain data...",
-			"prog":    "  %s/%s",
-			"old":     "  Loading: Brain \"%s\"...",
-			"new":     "  Created: Brain \"%s\".",
-			"done":    "    Done with \"%s\".",
-			"error":   "Error saving brain: %s",
-			"end":     "  Done."
-		},
-		"seizure": {
-			"old":     "Loading: Seizure file...",
-			"new":     "Created: Seizure file.",
-			"done":    "  Done."
-		},
-		"blitzor": {
-			"reconnect": "Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
-			"connect":   "Connecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
-			"done":      "  Done.",
-			"strike":    "Lightning strike! dist: %s, lati: %s, long: %s",
-			"spread":    "Spreading the lightning range from %s to %s.",
-			"max":       "Spreading outside of range. Clamping to max range of %s."
-		},
-		"backup": {
-			"start":   "Started a backup...",
-			"done":    "  Done. Total size of %s bytes. Sending it now.",
-			"error":   "  Error backing up: %s"
-		},
-		"varipass": {
-			"load":    "I'm loading data from VariPass...",
-			"done":    "I've finished loading VariPass data!",
-			"errorR":  "I've encountered some problems loading the data. Here is more info: \"%s\"",
+        "phases": {
+            "load":    "Loading: Moon phase announcements...",
+            "item":    "  - Loading phase date: %s - %s",
+            "done":    "  Done. Loaded: %s"
+        },
+        "brain": {
+            "start":   "Loading: Brain data...",
+            "prog":    "  %s/%s",
+            "old":     "  Loading: Brain \"%s\"...",
+            "new":     "  Created: Brain \"%s\".",
+            "done":    "    Done with \"%s\".",
+            "error":   "Error saving brain: %s",
+            "end":     "  Done."
+        },
+        "seizure": {
+            "old":     "Loading: Seizure file...",
+            "new":     "Created: Seizure file.",
+            "done":    "  Done."
+        },
+        "blitzor": {
+            "reconnect": "Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+            "connect":   "Connecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+            "done":      "  Done.",
+            "strike":    "Lightning strike! dist: %s, lati: %s, long: %s",
+            "spread":    "Spreading the lightning range from %s to %s.",
+            "max":       "Spreading outside of range. Clamping to max range of %s."
+        },
+        "backup": {
+            "start":   "Started a backup...",
+            "done":    "  Done. Total size of %s bytes. Sending it now.",
+            "error":   "  Error backing up: %s"
+        },
+        "varipass": {
+            "load":    "I'm loading data from VariPass...",
+            "done":    "I've finished loading VariPass data!",
+            "errorR":  "I've encountered some problems loading the data. Here is more info: \"%s\"",
             "errorW":  "I've encountered some problems writing the data. Here is more info: \"%s\"",
-			"timeout": "My attempt to load the data took too long."
-		},
-		"tradfri": {
-			"connect": "Connecting to Tradfri hub...",
-			"errorA":  "Error connecting to Tradfri hub, retrying... (Attempt %s)",
-			"errorB":  "Unable to set the bulb, trying again...",
-			"doneb":   "  Done. Found bulb devices: %s",
+            "timeout": "My attempt to load the data took too long."
+        },
+        "tradfri": {
+            "connect": "Connecting to Tradfri hub...",
+            "errorA":  "Error connecting to Tradfri hub, retrying... (Attempt %s)",
+            "errorB":  "Unable to set the bulb, trying again...",
+            "doneb":   "  Done. Found bulb devices: %s",
             "doned":   "  Done. Found togglable devices: %s",
-			"bulb":    "    %s\n      #%s\n      Type:   %s\n      Color:  #%s\n      Bright: %s\n      On:     %s",
+            "bulb":    "    %s\n      #%s\n      Type:   %s\n      Color:  #%s\n      Bright: %s\n      On:     %s",
             "device":  "    %s\n      #%s\n      Type:   %s\n      On:     %s"
-		},
-		"chase": {
-			"reconnect": "Storm Chasing! Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
-			"connect":   "Storm Chasing! Connecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
-			"done":      "Storm Chasing!   Done.",
-			"strike":    "Storm Chasing! Lightning strike! dist: %s, lati: %s, long: %s",
-			"spread":    "Storm Chasing! Spreading the lightning range from %s to %s.",
-			"max":       "Storm Chasing! Spreading outside of range. Clamping to max range of %s."
-		},
-		"status": {
-			"error":   "Error sending status data: \"%s\"",
-			"timeout": "Loading status source timed out."
-		},
+        },
+        "chase": {
+            "reconnect": "Storm Chasing! Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+            "connect":   "Storm Chasing! Connecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+            "done":      "Storm Chasing!   Done.",
+            "strike":    "Storm Chasing! Lightning strike! dist: %s, lati: %s, long: %s",
+            "spread":    "Storm Chasing! Spreading the lightning range from %s to %s.",
+            "max":       "Storm Chasing! Spreading outside of range. Clamping to max range of %s."
+        },
+        "status": {
+            "error":   "Error sending status data: \"%s\"",
+            "timeout": "Loading status source timed out."
+        },
         "printer": {
             "rampA": "Ramping up print: %s",
             "rampB": "Ramping up print: %s, Ready!",
@@ -853,5 +853,5 @@
             "pause": "PAUSING PRINT!!!",
             "error": "Error connecting to printer. Attempts left: %s"
         }
-	}
+    }
 }

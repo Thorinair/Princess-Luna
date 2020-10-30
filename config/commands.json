@@ -1,85 +1,85 @@
 {
-	"list": [
-		{
-			"command": "gotn",
-			"help":    "Ask me about the time left until the next Glory of The Night episode. You may also specify the timezone after the command.",
-			"type":    "public"
-		},
-		{
-			"command": "mlp",
-			"help":    "Ask me about the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.",
-			"type":    "public"
-		},
-		{
-			"command": "time",
-			"help":    "Ask me what the current date and time is. You may also specify the timezone after the command.",
-			"type":    "public"
-		},
-		{
-			"command": "np",
-			"help":    "Ask me which track is currently playing on PonyvilleFM.",
-			"type":    "public"
-		},
-		{
-			"command": "phase",
-			"help":    "Ask me about the status of the Moon's phase. You may also specify the timezone after the command.",
-			"type":    "public"
-		},
-		{
-			"command": "moon",
-			"help":    "Ask me to show how the Moon looks like right now, along with some additional info.",
-			"type":    "public"
-		},
-		{
-			"command": "room",
-			"help":    "Ask me about the physical status of Thorinair's real life room. Powered using the VariPass website.",
-			"type":    "public"
-		},
-		{
-			"command": "power",
-			"help":    "Ask me whether I am currently getting mains power. I will keep working for some time on a UPS if it goes out.",
-			"type":    "public"
-		},
-		{
-			"command": "eeg",
-			"help":    "Ask me to write out Thorinair's latest brainwave data. The data may be missing in case I was rebooted since last measurement.",
-			"type":    "public"
-		},
-		{
-			"command": "printer",
-			"help":    "Ask me about the status of Thorinair's Nightmare Rarity 3D printer. I will also send a photo of the printer's webcam.",
-			"type":    "public"
-		},
+    "list": [
+        {
+            "command": "gotn",
+            "help":    "Ask me about the time left until the next Glory of The Night episode. You may also specify the timezone after the command.",
+            "type":    "public"
+        },
+        {
+            "command": "mlp",
+            "help":    "Ask me about the time left until the next My Little Pony: Friendship is Magic episode. You may also specify the timezone after the command.",
+            "type":    "public"
+        },
+        {
+            "command": "time",
+            "help":    "Ask me what the current date and time is. You may also specify the timezone after the command.",
+            "type":    "public"
+        },
+        {
+            "command": "np",
+            "help":    "Ask me which track is currently playing on PonyvilleFM.",
+            "type":    "public"
+        },
+        {
+            "command": "phase",
+            "help":    "Ask me about the status of the Moon's phase. You may also specify the timezone after the command.",
+            "type":    "public"
+        },
+        {
+            "command": "moon",
+            "help":    "Ask me to show how the Moon looks like right now, along with some additional info.",
+            "type":    "public"
+        },
+        {
+            "command": "room",
+            "help":    "Ask me about the physical status of Thorinair's real life room. Powered using the VariPass website.",
+            "type":    "public"
+        },
+        {
+            "command": "power",
+            "help":    "Ask me whether I am currently getting mains power. I will keep working for some time on a UPS if it goes out.",
+            "type":    "public"
+        },
+        {
+            "command": "eeg",
+            "help":    "Ask me to write out Thorinair's latest brainwave data. The data may be missing in case I was rebooted since last measurement.",
+            "type":    "public"
+        },
+        {
+            "command": "printer",
+            "help":    "Ask me about the status of Thorinair's Nightmare Rarity 3D printer. I will also send a photo of the printer's webcam.",
+            "type":    "public"
+        },
         {
             "command": "devices",
             "help":    "Ask me about all the different devices which are part of Thorinair's Lunar Infrastructure. Use the command without parameters to get a list, and then with the device name as parameter to get more detailed info.",
             "type":    "public"
         },
-		{
-			"command": "assault",
-			"help":    "Ask me in how long will the next Faction Assault in WoW begin. Defaults to EU, but you may specify a region after the command: NA, EU, OC",
-			"type":    "public"
-		},
-		{
-			"command": "blacklist",
-			"help":    "Prevent me from remembering any of your future messages. You can use the command again to undo this.",
-			"type":    "public"
-		},
-		{
-			"command": "coin",
-			"help":    "Ask me to flip a coin for you if you need to decide on something.",
-			"type":    "public"
-		},
-		{
-			"command": "minesweeper",
-			"help":    "Ask me to create a new minesweeper field. Add the number 1, 2 or 3 after the command to set the difficulty. I suggest using desktop Discord and sending it through a direct message to have it displayed properly.",
-			"type":    "public"
-		},
-		{
-			"command": "waifu",
-			"help":    "Use this command to have me ask Queen Chrysalis to scale an image up for you or remove noise from it. The image needs to be sent as an attachment with the command. Use the command without any parameters for a detailed tutorial.",
-			"type":    "public"
-		},
+        {
+            "command": "assault",
+            "help":    "Ask me in how long will the next Faction Assault in WoW begin. Defaults to EU, but you may specify a region after the command: NA, EU, OC",
+            "type":    "public"
+        },
+        {
+            "command": "blacklist",
+            "help":    "Prevent me from remembering any of your future messages. You can use the command again to undo this.",
+            "type":    "public"
+        },
+        {
+            "command": "coin",
+            "help":    "Ask me to flip a coin for you if you need to decide on something.",
+            "type":    "public"
+        },
+        {
+            "command": "minesweeper",
+            "help":    "Ask me to create a new minesweeper field. Add the number 1, 2 or 3 after the command to set the difficulty. I suggest using desktop Discord and sending it through a direct message to have it displayed properly.",
+            "type":    "public"
+        },
+        {
+            "command": "waifu",
+            "help":    "Use this command to have me ask Queen Chrysalis to scale an image up for you or remove noise from it. The image needs to be sent as an attachment with the command. Use the command without any parameters for a detailed tutorial.",
+            "type":    "public"
+        },
         {
             "command": "spools",
             "help":    "Ask me to list the known weights of various empty filament spools.",
@@ -95,232 +95,232 @@
             "help":    "Make me OwO-fy a piece of text.",
             "type":    "public"
         },
-		{
-			"command": "custom",
-			"help":    "Ask me which custom interractions are defined for a server or channel.",
-			"type":    "public"
-		},
-		{
-			"command": "thori",
-			"help":    "Ask me about Thorinair's current location. You may only use this if Thorinair whitelists you.",
-			"type":    "public"
-		},
+        {
+            "command": "custom",
+            "help":    "Ask me which custom interractions are defined for a server or channel.",
+            "type":    "public"
+        },
+        {
+            "command": "thori",
+            "help":    "Ask me about Thorinair's current location. You may only use this if Thorinair whitelists you.",
+            "type":    "public"
+        },
         {
             "command": "temp",
             "help":    "Ask me about my and Thorinair's body temperatures.",
             "type":    "public"
         },
-		{
-			"command": "stats",
-			"help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
-			"type":    "public"
-		},
-		{
-			"command": "status",
-			"help":    "Ask me to link you a page where you can see the status of Thorinair's Lunar Infrastructure.",
-			"type":    "public"
-		},
-		{
-			"command": "about",
-			"help":    "Ask me to introduce myself and tell you where you can find my source code.",
-			"type":    "public"
-		},
-		{
-			"command": "help",
-			"help":    "Ask me to repeat this messsage.",
-			"type":    "public"
-		},
+        {
+            "command": "stats",
+            "help":    "Ask me about my current statistics for the channel. You may also specify the timezone after the command.",
+            "type":    "public"
+        },
+        {
+            "command": "status",
+            "help":    "Ask me to link you a page where you can see the status of Thorinair's Lunar Infrastructure.",
+            "type":    "public"
+        },
+        {
+            "command": "about",
+            "help":    "Ask me to introduce myself and tell you where you can find my source code.",
+            "type":    "public"
+        },
+        {
+            "command": "help",
+            "help":    "Ask me to repeat this messsage.",
+            "type":    "public"
+        },
 
 
-		{
-			"command": "hug",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "kiss",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "boop",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "glomp",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "snuggle",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "nuzzle",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "wings",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "snack",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "floof",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "nom",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "preen",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "blep",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "pet",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "groom",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "tickle",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "rawr",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "eee",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "socks",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "plushie",
-			"help":    "",
-			"type":    "interraction"
-		},
-		{
-			"command": "unplushie",
-			"help":    "",
-			"type":    "interraction"
-		},
+        {
+            "command": "hug",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "kiss",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "boop",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "glomp",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "snuggle",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "nuzzle",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "wings",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "snack",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "floof",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "nom",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "preen",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "blep",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "pet",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "groom",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "tickle",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "rawr",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "eee",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "socks",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "plushie",
+            "help":    "",
+            "type":    "interraction"
+        },
+        {
+            "command": "unplushie",
+            "help":    "",
+            "type":    "interraction"
+        },
 
 
-		{
-			"command": "lyrics",
-			"help":    "Ask me the lyrics of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I know.",
-			"type":    "dj"
-		},
-		{
-			"command": "art",
-			"help":    "Ask me to show the art of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I have an art for.",
-			"type":    "dj"
-		},
+        {
+            "command": "lyrics",
+            "help":    "Ask me the lyrics of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I know.",
+            "type":    "dj"
+        },
+        {
+            "command": "art",
+            "help":    "Ask me to show the art of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I have an art for.",
+            "type":    "dj"
+        },
         {
             "command": "story",
             "help":    "Ask me to write the story of the track currently playing on PonyvilleFM. Pass the track name for a specific track. Use the \"list\" parameter to see all the tracks I have an art for.",
             "type":    "dj"
         },
-		{
-			"command": "npt",
-			"help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel.",
-			"type":    "dj"
-		},
-		{
-			"command": "npo",
-			"help":    "Ask me to manually update the info about the track currently playing.",
-			"type":    "dj"
-		},
+        {
+            "command": "npt",
+            "help":    "Ask me to automatically list new tracks as they appear on PonyvilleFM to a channel.",
+            "type":    "dj"
+        },
+        {
+            "command": "npo",
+            "help":    "Ask me to manually update the info about the track currently playing.",
+            "type":    "dj"
+        },
 
 
-		{
-			"command": "stop",
-			"help":    "",
-			"type":    "private"
-		},
+        {
+            "command": "stop",
+            "help":    "",
+            "type":    "private"
+        },
         {
             "command": "l",
             "help":    "",
             "type":    "private"
         },
-		{
-			"command": "send",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "learn",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "purge",
-			"help":    "",
-			"type":    "private"
-		},
+        {
+            "command": "send",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "learn",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "purge",
+            "help":    "",
+            "type":    "private"
+        },
         {
             "command": "nppause",
             "help":    "",
             "type":    "private"
         },
-		{
-			"command": "npstatus",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "nppurge",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "lyricsadd",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "lyricsdel",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "artadd",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "artdel",
-			"help":    "",
-			"type":    "private"
-		},
+        {
+            "command": "npstatus",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "nppurge",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "lyricsadd",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "lyricsdel",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "artadd",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "artdel",
+            "help":    "",
+            "type":    "private"
+        },
         {
             "command": "storyadd",
             "help":    "",
@@ -341,106 +341,106 @@
             "help":    "",
             "type":    "private"
         },
-		{
-			"command": "h",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "ignore",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "mood",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "bulb",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "toggle",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "schedulestart",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "schedulestop",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "eegstart",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "eegstop",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "eegset",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "leave",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "camera",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "stream",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "ann",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "chase",
-			"help":    "",
-			"type":    "private"
-		},
+        {
+            "command": "h",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "ignore",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "mood",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "bulb",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "toggle",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "schedulestart",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "schedulestop",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "eegstart",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "eegstop",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "eegset",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "leave",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "camera",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "stream",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "ann",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "chase",
+            "help":    "",
+            "type":    "private"
+        },
         {
             "command": "wake",
             "help":    "",
             "type":    "private"
         },
 
-		{
-			"command": "reboot",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "reload",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "backup",
-			"help":    "",
-			"type":    "private"
-		},
-		{
-			"command": "system",
-			"help":    "",
-			"type":    "private"
-		}
-	]
+        {
+            "command": "reboot",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "reload",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "backup",
+            "help":    "",
+            "type":    "private"
+        },
+        {
+            "command": "system",
+            "help":    "",
+            "type":    "private"
+        }
+    ]
 }

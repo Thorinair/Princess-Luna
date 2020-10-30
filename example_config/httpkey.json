@@ -1,8 +1,8 @@
 {
-	"port":   "80",
-	"key":    "aaaaaaaaaaaaaaaa0000000000000000",
-	"reboot": "aaaaaaaaaaaaaaaa0000000000000000",
-	"camera": "aaaaaaaaaaaaaaaa0000000000000000",
-	"stream": "aaaaaaaaaaaaaaaa0000000000000000",
+    "port":   "80",
+    "key":    "aaaaaaaaaaaaaaaa0000000000000000",
+    "reboot": "aaaaaaaaaaaaaaaa0000000000000000",
+    "camera": "aaaaaaaaaaaaaaaa0000000000000000",
+    "stream": "aaaaaaaaaaaaaaaa0000000000000000",
     "tush":   "aaaaaaaaaaaaaaaa0000000000000000"
 }

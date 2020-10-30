@@ -1,40 +1,40 @@
 {
-	"channel": "Discovery Family",
-	"episodes": [
-		{
-			"name": "S08E01 - School Daze (Part 1)",
-			"date": "2018-03-24",
-			"time": "15:30"
-		},
-		{
-			"name": "S08E02 - School Daze (Part 2)",
-			"date": "2018-03-24",
-			"time": "16:00"
-		},
-		{
-			"name": "S08E03 - The Maud Couple",
-			"date": "2018-03-31",
-			"time": "15:30"
-		},
-		{
-			"name": "S08E04 - Fake It Til You Make It",
-			"date": "2018-04-07",
-			"time": "15:30"
-		},
-		{
-			"name": "S08E05 - Grannies Gone Wild",
-			"date": "2018-04-14",
-			"time": "15:30"
-		},
-		{
-			"name": "S08E06 - Surf and/or Turf",
-			"date": "2018-04-21",
-			"time": "15:30"
-		},
-		{
-			"name": "S08E07 - Horse Play",
-			"date": "2018-04-28",
-			"time": "15:30"
-		}
-	]
+    "channel": "Discovery Family",
+    "episodes": [
+        {
+            "name": "S08E01 - School Daze (Part 1)",
+            "date": "2018-03-24",
+            "time": "15:30"
+        },
+        {
+            "name": "S08E02 - School Daze (Part 2)",
+            "date": "2018-03-24",
+            "time": "16:00"
+        },
+        {
+            "name": "S08E03 - The Maud Couple",
+            "date": "2018-03-31",
+            "time": "15:30"
+        },
+        {
+            "name": "S08E04 - Fake It Til You Make It",
+            "date": "2018-04-07",
+            "time": "15:30"
+        },
+        {
+            "name": "S08E05 - Grannies Gone Wild",
+            "date": "2018-04-14",
+            "time": "15:30"
+        },
+        {
+            "name": "S08E06 - Surf and/or Turf",
+            "date": "2018-04-21",
+            "time": "15:30"
+        },
+        {
+            "name": "S08E07 - Horse Play",
+            "date": "2018-04-28",
+            "time": "15:30"
+        }
+    ]
 }

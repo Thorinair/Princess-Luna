@@ -1,32 +1,32 @@
 {
-	"default": {
-		"brain": "brain1",
-		"learn": false
-	},
-	"list": [
-		{
-			"name":  "channel1",
-			"id":    "000000000000000000",
-			"brain": "brain1",
-			"learn": true
-		},
-		{
-			"name":  "çhannel2",
-			"id":    "000000000000000000",
-			"brain": "brain1",
-			"learn": false
-		},
-		{
-			"name":  "channelA",
-			"id":    "000000000000000000",
-			"brain": "brain2",
-			"learn": true
-		},
-		{
-			"name":  "channelB",
-			"id":    "000000000000000000",
-			"brain": "brain2",
-			"learn": false
-		}
-	]
+    "default": {
+        "brain": "brain1",
+        "learn": false
+    },
+    "list": [
+        {
+            "name":  "channel1",
+            "id":    "000000000000000000",
+            "brain": "brain1",
+            "learn": true
+        },
+        {
+            "name":  "çhannel2",
+            "id":    "000000000000000000",
+            "brain": "brain1",
+            "learn": false
+        },
+        {
+            "name":  "channelA",
+            "id":    "000000000000000000",
+            "brain": "brain2",
+            "learn": true
+        },
+        {
+            "name":  "channelB",
+            "id":    "000000000000000000",
+            "brain": "brain2",
+            "learn": false
+        }
+    ]
 }

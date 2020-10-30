@@ -1,22 +1,22 @@
 {
-	"list": [
-		{
-			"command": "custominterraction",
-			"strings": {
-				"single":   "*Perform the custom interraction on %s.*",
-				"multiple": "*Perform custom interractions on %s.*",
-				"self":     "*Perform the custom interraction on herself.*"
-			},
-			"servers": [
-				000000000000000000,
-				111111111111111111,
-				222222222222222222				
-			],
-			"channels": [
-				"channel1",
-				"channel2",
-				"channel3"
-			]
-		}
-	]
+    "list": [
+        {
+            "command": "custominterraction",
+            "strings": {
+                "single":   "*Perform the custom interraction on %s.*",
+                "multiple": "*Perform custom interractions on %s.*",
+                "self":     "*Perform the custom interraction on herself.*"
+            },
+            "servers": [
+                000000000000000000,
+                111111111111111111,
+                222222222222222222              
+            ],
+            "channels": [
+                "channel1",
+                "channel2",
+                "channel3"
+            ]
+        }
+    ]
 }

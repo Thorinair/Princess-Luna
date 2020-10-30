@@ -1,225 +1,225 @@
 {
-	"debug":   false,
-	"retries": 1,
-	"moods": [
+    "debug":   false,
+    "retries": 1,
+    "moods": [
 
-		{
-			"name": "norm",
-			"bulbs": [
-				{
-					"name": "desk",
-					"config": {
-						"state":          "on",
-						"color":          "f5faf6",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "bed",
-					"config": {
-						"state":          "off",
-						"color":          "f1e0b5",
-						"brightness":     0.8,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topa",
-					"config": {
-						"state":          "off",
-						"color":          "f5faf6",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topb",
-					"config": {
-						"state":          "off",
-						"color":          "f5faf6",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				}
-			]
-		},
+        {
+            "name": "norm",
+            "bulbs": [
+                {
+                    "name": "desk",
+                    "config": {
+                        "state":          "on",
+                        "color":          "f5faf6",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "bed",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f1e0b5",
+                        "brightness":     0.8,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topa",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f5faf6",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topb",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f5faf6",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                }
+            ]
+        },
 
-		{
-			"name": "gotn",
-			"bulbs": [
-				{
-					"name": "desk",
-					"config": {
-						"state":          "on",
-						"colorX":         0.16,
-						"colorY":         0.02,
-						"brightness":     0.5,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "bed",
-					"config": {
-						"state":          "on",
-						"colorX":         0.15,
-						"colorY":         0.03,
-						"brightness":     0.5,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topa",
-					"config": {
-						"state":          "on",
-						"colorX":         0.15,
-						"colorY":         0.03,
-						"brightness":     0.5,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topb",
-					"config": {
-						"state":          "on",
-						"colorX":         0.16,
-						"colorY":         0.02,
-						"brightness":     0.5,
-						"transitionTime": 2
-					}
-				}
-			]
-		},
+        {
+            "name": "gotn",
+            "bulbs": [
+                {
+                    "name": "desk",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.16,
+                        "colorY":         0.02,
+                        "brightness":     0.5,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "bed",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.15,
+                        "colorY":         0.03,
+                        "brightness":     0.5,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topa",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.15,
+                        "colorY":         0.03,
+                        "brightness":     0.5,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topb",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.16,
+                        "colorY":         0.02,
+                        "brightness":     0.5,
+                        "transitionTime": 2
+                    }
+                }
+            ]
+        },
 
-		{
-			"name": "late",
-			"bulbs": [
-				{
-					"name": "desk",
-					"config": {
-						"state":          "on",
-						"colorX":         0.65,
-						"colorY":         0.325,
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "bed",
-					"config": {
-						"state":          "on",
-						"colorX":         0.65,
-						"colorY":         0.325,
-						"brightness":     0.8,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topa",
-					"config": {
-						"state":          "on",
-						"colorX":         0.65,
-						"colorY":         0.325,
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topb",
-					"config": {
-						"state":          "on",
-						"colorX":         0.65,
-						"colorY":         0.325,
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				}
-			]
-		},
+        {
+            "name": "late",
+            "bulbs": [
+                {
+                    "name": "desk",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.65,
+                        "colorY":         0.325,
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "bed",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.65,
+                        "colorY":         0.325,
+                        "brightness":     0.8,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topa",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.65,
+                        "colorY":         0.325,
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topb",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.65,
+                        "colorY":         0.325,
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                }
+            ]
+        },
 
-		{
-			"name": "cold",
-			"bulbs": [
-				{
-					"name": "desk",
-					"config": {
-						"state":          "on",
-						"color":          "6c83ba",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "bed",
-					"config": {
-						"state":          "off",
-						"color":          "f1e0b5",
-						"brightness":     0.8,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topa",
-					"config": {
-						"state":          "off",
-						"color":          "f5faf6",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topb",
-					"config": {
-						"state":          "off",
-						"color":          "f5faf6",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				}
-			]
-		},
+        {
+            "name": "cold",
+            "bulbs": [
+                {
+                    "name": "desk",
+                    "config": {
+                        "state":          "on",
+                        "color":          "6c83ba",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "bed",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f1e0b5",
+                        "brightness":     0.8,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topa",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f5faf6",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topb",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f5faf6",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                }
+            ]
+        },
 
-		{
-			"name": "off",
-			"bulbs": [
-				{
-					"name": "desk",
-					"config": {
-						"state":          "off",
-						"color":          "dcf0f8",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "bed",
-					"config": {
-						"state":          "off",
-						"color":          "f1e0b5",
-						"brightness":     0.8,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topa",
-					"config": {
-						"state":          "off",
-						"color":          "f5faf6",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				},
-				{
-					"name": "topb",
-					"config": {
-						"state":          "off",
-						"color":          "f5faf6",
-						"brightness":     1.0,
-						"transitionTime": 2
-					}
-				}
-			]
-		},
+        {
+            "name": "off",
+            "bulbs": [
+                {
+                    "name": "desk",
+                    "config": {
+                        "state":          "off",
+                        "color":          "dcf0f8",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "bed",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f1e0b5",
+                        "brightness":     0.8,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topa",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f5faf6",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topb",
+                    "config": {
+                        "state":          "off",
+                        "color":          "f5faf6",
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                }
+            ]
+        },
 
         {
             "name": "warn",
@@ -267,5 +267,5 @@
             ]
         }
 
-	]	
+    ]   
 }

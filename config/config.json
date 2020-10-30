@@ -1,143 +1,143 @@
 {
-	"options": {
-		"commandsymbol": "!",
-		"mention":       "<@!%s>",
-		"mentionrole":   "<@&%s>",
-		"roleid":        "277564526940127243",
-		"serverid":      "277563243050827776",
-		"adminid":       "81244981343297536",
-		"squadid":       "342461533319725056",
-		"varipassurl":   "https://api.varipass.org/",
-		"geourl":        "https://geocode.xyz/%s,%s?geoit=json&auth=%s",
-		"mapsurl":       "https://www.google.com/maps/search/?api=1&query=%s,%s",
-		"configpath":    "/var/www/node/config/",
-		"motionimg":     "/var/www/node/data/motion.jpg",
-		"artimg":        "/var/www/node/data/art_%s.%s",
-		"phasepath":     "/var/www/node/data/phase.json",
-		"lyricspath":    "/var/www/node/data/lyrics.json",
-		"artpath":       "/var/www/node/data/art.json",
+    "options": {
+        "commandsymbol": "!",
+        "mention":       "<@!%s>",
+        "mentionrole":   "<@&%s>",
+        "roleid":        "277564526940127243",
+        "serverid":      "277563243050827776",
+        "adminid":       "81244981343297536",
+        "squadid":       "342461533319725056",
+        "varipassurl":   "https://api.varipass.org/",
+        "geourl":        "https://geocode.xyz/%s,%s?geoit=json&auth=%s",
+        "mapsurl":       "https://www.google.com/maps/search/?api=1&query=%s,%s",
+        "configpath":    "/var/www/node/config/",
+        "motionimg":     "/var/www/node/data/motion.jpg",
+        "artimg":        "/var/www/node/data/art_%s.%s",
+        "phasepath":     "/var/www/node/data/phase.json",
+        "lyricspath":    "/var/www/node/data/lyrics.json",
+        "artpath":       "/var/www/node/data/art.json",
         "storypath":     "/var/www/node/data/story.json",
         "spoolpath":     "/var/www/node/data/spool.json",
-		"nptogglespath": "/var/www/node/data/nptoggles.json",
-		"blacklistpath": "/var/www/node/data/blacklist.json",
-		"ignorepath":    "/var/www/node/data/ignore.json",
+        "nptogglespath": "/var/www/node/data/nptoggles.json",
+        "blacklistpath": "/var/www/node/data/blacklist.json",
+        "ignorepath":    "/var/www/node/data/ignore.json",
         "livepath":      "/var/www/node/data/live.json",
-		"seizurepath":   "/var/www/node/data/seizure.json",
-		"eegpath":       "/var/www/node/data/eeg.json",
-		"coappath":      "/home/luna/libcoap/examples/coap-client",
-		"chrysalisgit":  "https://github.com/Thorinair/Queen-Chrysalis",
-		"game":          "with your dreams.",
-		"defstation":    "one",
-		"lyricformat":   "*",
-		"mytimezone":    "Europe/Zagreb",
+        "seizurepath":   "/var/www/node/data/seizure.json",
+        "eegpath":       "/var/www/node/data/eeg.json",
+        "coappath":      "/home/luna/libcoap/examples/coap-client",
+        "chrysalisgit":  "https://github.com/Thorinair/Queen-Chrysalis",
+        "game":          "with your dreams.",
+        "defstation":    "one",
+        "lyricformat":   "*",
+        "mytimezone":    "Europe/Zagreb",
         "dailyavg":      "00:00",
-		"serverport":    80,
-		"maxlength":     2000,
-		"typetime":      2,
+        "serverport":    80,
+        "maxlength":     2000,
+        "typetime":      2,
         "sendretry":     5,
-		"reboottime":    10,
-		"starttime":     60,
-		"reconnecttime": 10,
-		"htimeout":      1800,
-		"hmessage":      1,
-		"phasetimeout":  30,
-		"statuspull":    60,
-		"statuspush":    1,
-		"debugphase":    false,
-		"debuggotn":     false,
+        "reboottime":    10,
+        "starttime":     60,
+        "reconnecttime": 10,
+        "htimeout":      1800,
+        "hmessage":      1,
+        "phasetimeout":  30,
+        "statuspull":    60,
+        "statuspush":    1,
+        "debugphase":    false,
+        "debuggotn":     false,
         "downloadtry":   4,
         "nptstoryart":   2,
         "nptstorytrack": 20,
         "popcount":      96,
         "reactroleretr": 1, 
-		"channels": {
-			"debug":     "debug",
+        "channels": {
+            "debug":     "debug",
             "printer":   "printer",
-			"home":      "home_luna",
-			"announceA": "announcements",
-			"announceB": "pvfm_live-dj-chat",
-			"announceC":     [
-				"466147926092283904",
-				"298642620849324035",
-				"453194204919627786",
+            "home":      "home_luna",
+            "announceA": "announcements",
+            "announceB": "pvfm_live-dj-chat",
+            "announceC":     [
+                "466147926092283904",
+                "298642620849324035",
+                "453194204919627786",
                 "566752545209581581",
                 "218542102143959042",
                 "684883672448499747",
                 "709064936072151070",
                 "330438197739782145"
-			],
-			"welcome":   "general",
-			"phases":    "general",
-			"nowplaying":    [
-				"live",
+            ],
+            "welcome":   "general",
+            "phases":    "general",
+            "nowplaying":    [
+                "live",
                 "gotn",
-				"pvfm_live-dj-chat"
-			]
-		},
-		"djroles": [
-			"277564447336431618",
-			"188922496962002944",
-			"93256586314674176",
-			"191158755361161216",
-			"188397984550092801",
-			"188413680189308928",
+                "pvfm_live-dj-chat"
+            ]
+        },
+        "djroles": [
+            "277564447336431618",
+            "188922496962002944",
+            "93256586314674176",
+            "191158755361161216",
+            "188397984550092801",
+            "188413680189308928",
             "535023663280422912"
-		],
-		"ponyvillefmid": "93252527679639552"
-	},
-	"eeg": {
-		"basicpath": "/var/www/node/data/eegbasic.csv",
-		"rawpath":   "/var/www/node/data/eegraw.csv",
-		"emapath":   "/var/www/node/data/eegema.csv",
-		"ema":       30,
-		"varipass": {
-			"type":   "ema",
-			"value":  "attention",
-			"max":    100,
-			"expire": 180
-		}
-	},
-	"varipass": {
-		"geiger": {
-			"samples": 20,
-			"warning": 0.2,
-			"okay":    0.18
-		},
-		"pressure": {
-			"warning": 0.25,
-			"pause":   240
-		},
-		"pm025": {			
-			"warning": 55.5,
-			"okay":    12.0
-		},
-		"daylight": {
-			"threshold": 7,
-			"bulbs": [
-				"bed"
-			]
-		},
-		"nightlight": {
-			"value":    6.0583,
-			"delta":    0.2,
-			"count":    10,
-			"control": "bath",
-			"bulbs": [
-				"bed"
-			]
-		}
-	},
-	"seizure": {
-		"enabled": true,
-		"timeout": 10,
-		"force":   "FORCE_SEIZURE",
-		"debug":   false
-	},
-	"nowplaying": {
-		"url":     "http://dj.bronyradio.com:8000/status-json.xsl?mount=/pvfm1.ogg",
-		"timeout": 5
-	},
-	"wow": {
+        ],
+        "ponyvillefmid": "93252527679639552"
+    },
+    "eeg": {
+        "basicpath": "/var/www/node/data/eegbasic.csv",
+        "rawpath":   "/var/www/node/data/eegraw.csv",
+        "emapath":   "/var/www/node/data/eegema.csv",
+        "ema":       30,
+        "varipass": {
+            "type":   "ema",
+            "value":  "attention",
+            "max":    100,
+            "expire": 180
+        }
+    },
+    "varipass": {
+        "geiger": {
+            "samples": 20,
+            "warning": 0.2,
+            "okay":    0.18
+        },
+        "pressure": {
+            "warning": 0.25,
+            "pause":   240
+        },
+        "pm025": {          
+            "warning": 55.5,
+            "okay":    12.0
+        },
+        "daylight": {
+            "threshold": 7,
+            "bulbs": [
+                "bed"
+            ]
+        },
+        "nightlight": {
+            "value":    6.0583,
+            "delta":    0.2,
+            "count":    10,
+            "control": "bath",
+            "bulbs": [
+                "bed"
+            ]
+        }
+    },
+    "seizure": {
+        "enabled": true,
+        "timeout": 10,
+        "force":   "FORCE_SEIZURE",
+        "debug":   false
+    },
+    "nowplaying": {
+        "url":     "http://dj.bronyradio.com:8000/status-json.xsl?mount=/pvfm1.ogg",
+        "timeout": 5
+    },
+    "wow": {
         "assault": {
             "duration": 25200,
             "interval": 68400,
@@ -147,66 +147,66 @@
                 "OC": 1574571600
             }
         }
-	},
-	"brain": {
-		"path":       "/var/www/node/data/brains/brain_",
-		"default":    "I am The Night.",
-		"markov":     2,
-		"maxloop":    100,
-		"saveloop":   1800,
-		"maxlines":   20000,
-		"cleanbrain": true,
-		"debug":      false,
+    },
+    "brain": {
+        "path":       "/var/www/node/data/brains/brain_",
+        "default":    "I am The Night.",
+        "markov":     2,
+        "maxloop":    100,
+        "saveloop":   1800,
+        "maxlines":   20000,
+        "cleanbrain": true,
+        "debug":      false,
         "debugrp":    false
-	},
-	"backup": {
-		"output": {
-			"path": "/var/www/node/backup.zip",
-			"file": "luna_backup_%s.zip"
-		},
-		"input": {
-			"path": "/var/www/node/",
-			"entries": [
-				"config",
-				"data"
-			]
-		},
-		"compression": 9
-	},
-	"phases": [
-		{
-			"name": "New Moon",
-			"icon": ":new_moon:"
-		},
-		{
-			"name": "Waxing Crescent",
-			"icon": ":waxing_crescent_moon:"
-		},
-		{
-			"name": "First Quarter",
-			"icon": ":first_quarter_moon:"
-		},
-		{
-			"name": "Waxing Gibbous",
-			"icon": ":waxing_gibbous_moon:"
-		},
-		{
-			"name": "Full Moon",
-			"icon": ":full_moon:"
-		},
-		{
-			"name": "Waning Gibbous",
-			"icon": ":waning_gibbous_moon:"
-		},
-		{
-			"name": "Last Quarter",
-			"icon": ":last_quarter_moon:"
-		},
-		{
-			"name": "Waning Crescent",
-			"icon": ":waning_crescent_moon:"
-		}
-	],
+    },
+    "backup": {
+        "output": {
+            "path": "/var/www/node/backup.zip",
+            "file": "luna_backup_%s.zip"
+        },
+        "input": {
+            "path": "/var/www/node/",
+            "entries": [
+                "config",
+                "data"
+            ]
+        },
+        "compression": 9
+    },
+    "phases": [
+        {
+            "name": "New Moon",
+            "icon": ":new_moon:"
+        },
+        {
+            "name": "Waxing Crescent",
+            "icon": ":waxing_crescent_moon:"
+        },
+        {
+            "name": "First Quarter",
+            "icon": ":first_quarter_moon:"
+        },
+        {
+            "name": "Waxing Gibbous",
+            "icon": ":waxing_gibbous_moon:"
+        },
+        {
+            "name": "Full Moon",
+            "icon": ":full_moon:"
+        },
+        {
+            "name": "Waning Gibbous",
+            "icon": ":waning_gibbous_moon:"
+        },
+        {
+            "name": "Last Quarter",
+            "icon": ":last_quarter_moon:"
+        },
+        {
+            "name": "Waning Crescent",
+            "icon": ":waning_crescent_moon:"
+        }
+    ],
     "moon": {
         "lunamoon": {
             "enabled": true,
@@ -217,38 +217,38 @@
         "fullmoon": "Full Moon",
         "offseth": -11
     },
-	"minesweeper": {
-		"delay": 1000,
-		"difficulties": {
-			"1": {
-				"x": 8,
-				"y": 8,
-				"m": 10
-			},
-			"2": {
-				"x": 16,
-				"y": 16,
-				"m": 40
-			},
-			"3": {
-				"x": 24,
-				"y": 24,
-				"m": 100
-			}
-		}
-	},
-	"ann": {
-		"path":    "/var/www/node/data/ann.json",
-		"enabled": true,
-		"waifu": {
-			"request": "http://chrysalis.local:20200/?key=%s&action=waifu&url=%s&channelid=%s&userid=%s&n=%s&s=%s",
-			"timeout": 10
-		},
+    "minesweeper": {
+        "delay": 1000,
+        "difficulties": {
+            "1": {
+                "x": 8,
+                "y": 8,
+                "m": 10
+            },
+            "2": {
+                "x": 16,
+                "y": 16,
+                "m": 40
+            },
+            "3": {
+                "x": 24,
+                "y": 24,
+                "m": 100
+            }
+        }
+    },
+    "ann": {
+        "path":    "/var/www/node/data/ann.json",
+        "enabled": true,
+        "waifu": {
+            "request": "http://chrysalis.local:20200/?key=%s&action=waifu&url=%s&channelid=%s&userid=%s&n=%s&s=%s",
+            "timeout": 10
+        },
         "camera": {
             "request": "http://chrysalis.local:20200/?key=%s&action=camera&status=%s",
             "timeout": 10
         }
-	},
+    },
     "printer": {
         "urls": {
             "printer": "api/printer?apikey=",
@@ -271,44 +271,44 @@
         },
         "pauseretry": 4
     },
-	"status": {
-		"timeout": 10,
-		"home": "https://status.thorinair.net/",
-		"api": "https://status.thorinair.net/api/",
-		"urls": {
-			"luna_local":  "http://luna.local/?key=%s&action=ping",
-			"luna_public": "http://luna.thorinair.net:%s/?key=%s&action=ping",
+    "status": {
+        "timeout": 10,
+        "home": "https://status.thorinair.net/",
+        "api": "https://status.thorinair.net/api/",
+        "urls": {
+            "luna_local":  "http://luna.local/?key=%s&action=ping",
+            "luna_public": "http://luna.thorinair.net:%s/?key=%s&action=ping",
 
-			"chrysalis_file_local":     "http://chrysalis.local/ping/",
-			"chrysalis_file_public":    "https://chrysalis.thorinair.net/ping/",
-			"chrysalis_icecast_local":  "http://chrysalis.local:8000/status-json.xsl",
-			"chrysalis_icecast_public": "https://stream.thorinair.net/status-json.xsl",
-			"chrysalis_ann":            "http://chrysalis.local:20200/?key=%s&action=ping",
+            "chrysalis_file_local":     "http://chrysalis.local/ping/",
+            "chrysalis_file_public":    "https://chrysalis.thorinair.net/ping/",
+            "chrysalis_icecast_local":  "http://chrysalis.local:8000/status-json.xsl",
+            "chrysalis_icecast_public": "https://stream.thorinair.net/status-json.xsl",
+            "chrysalis_ann":            "http://chrysalis.local:20200/?key=%s&action=ping",
 
-			"rarity_local":  "http://rarity.local/api/job",
-			"rarity_public": "api/job",
+            "rarity_local":  "http://rarity.local/api/job",
+            "rarity_public": "api/job",
 
-			"tantabus_local":  "http://tantabus.local/api",
-			"tantabus_public": "http://tantabus.thorinair.net/api"
-		},
-		"responses": {
-			"luna_local":  "pong",
-			"luna_public": "pong",
+            "tantabus_local":  "http://tantabus.local/api",
+            "tantabus_public": "http://tantabus.thorinair.net/api"
+        },
+        "responses": {
+            "luna_local":  "pong",
+            "luna_public": "pong",
 
-			"chrysalis_file_local":    "pong",
-			"chrysalis_file_public":   "pong",
-			"chrysalis_icecast_local":  "icestats",
-			"chrysalis_icecast_public": "icestats",
-			"chrysalis_ann":           "pong",
+            "chrysalis_file_local":    "pong",
+            "chrysalis_file_public":   "pong",
+            "chrysalis_icecast_local":  "icestats",
+            "chrysalis_icecast_public": "icestats",
+            "chrysalis_ann":           "pong",
 
-			"rarity_local":  "No API key provided",
-			"rarity_public": "No API key provided",
+            "rarity_local":  "No API key provided",
+            "rarity_public": "No API key provided",
 
-			"tantabus_local":  "{\"error\": \"not found\"}",
-			"tantabus_public": "{\"error\": \"not found\"}"
-		}
+            "tantabus_local":  "{\"error\": \"not found\"}",
+            "tantabus_public": "{\"error\": \"not found\"}"
+        }
 
-	},
+    },
     "corona": {
         "enabled": true,
         "urls": {
@@ -319,20 +319,20 @@
         "path": "/var/www/node/data/corona.json",
         "county": "Osječko-baranjska"
     },
-	"autoreact": {
-		"channels": [
-			"566782458528268288"
-		],
-		"reacts": [
-			"<:glimboop_352:575477782922919936>"
-		]
-	},
-	"separators": {
-		"date":  "-",
-		"time":  ":",
-		"list":  ", ",
-		"lend":  " and ",
-		"track": " - ",
-		"price": ","
-	}
+    "autoreact": {
+        "channels": [
+            "566782458528268288"
+        ],
+        "reacts": [
+            "<:glimboop_352:575477782922919936>"
+        ]
+    },
+    "separators": {
+        "date":  "-",
+        "time":  ":",
+        "list":  ", ",
+        "lend":  " and ",
+        "track": " - ",
+        "price": ","
+    }
 }
