@@ -20,7 +20,8 @@
 			"error":    "%s, I'm sorry, but I can't tell you anything about the Moon phases at the moment..."
 		},
 		"moon": {
-			"message":  "%s, here is how the Moon looks like right now.",
+			"messageA": "%s, here is how the Moon looks like right now.",
+            "messageB": "%s, here is how the Moon looks like right now.\nMoon's phase is at **%s%%** (%s days, %s hours and %s minutes old).\nIt is **%s %s km** away from Earth with the apparent diameter of **%s arcs**.\n*This data is valid for %s at %s.*",
             "error":    "%s, I am unable to show the image of the Moon at this time..."
 		},
 		"room": {

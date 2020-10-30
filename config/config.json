@@ -11,7 +11,6 @@
 		"geourl":        "https://geocode.xyz/%s,%s?geoit=json&auth=%s",
 		"mapsurl":       "https://www.google.com/maps/search/?api=1&query=%s,%s",
 		"configpath":    "/var/www/node/config/",
-		"moonimg":       "/var/www/node/moon/moon-%s%s.png",
 		"motionimg":     "/var/www/node/data/motion.jpg",
 		"artimg":        "/var/www/node/data/art_%s.%s",
 		"phasepath":     "/var/www/node/data/phase.json",
@@ -27,7 +26,6 @@
 		"eegpath":       "/var/www/node/data/eeg.json",
 		"coappath":      "/home/luna/libcoap/examples/coap-client",
 		"chrysalisgit":  "https://github.com/Thorinair/Queen-Chrysalis",
-		"fullmoon":      "Full Moon",
 		"game":          "with your dreams.",
 		"defstation":    "one",
 		"lyricformat":   "*",
@@ -209,6 +207,16 @@
 			"icon": ":waning_crescent_moon:"
 		}
 	],
+    "moon": {
+        "lunamoon": {
+            "enabled": true,
+            "pathdata": "/home/luna/lunamoon/data/moon.json",
+            "pathmoon": "/home/luna/lunamoon/moon/moon.%s.png"
+        },
+        "moonimg":  "/var/www/node/moon/moon-%s%s.png",
+        "fullmoon": "Full Moon",
+        "offseth": -11
+    },
 	"minesweeper": {
 		"delay": 1000,
 		"difficulties": {

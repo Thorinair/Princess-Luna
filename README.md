@@ -23,7 +23,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!time` Lists the current date and time. You may also specify the timezone after the command.
     - `!np` Lists the currently playing track on PonyvilleFM.
     - `!phase` Lists info about the Moon phases. You may also specify the timezone after the command.
-    - `!moon` Sends an image of the Moon as it is right now.
+    - `!moon` Sends an image of the Moon as it is right now, along with additional info. Data is based on the [Luna Moon](https://github.com/Thorinair/Luna-Moon) dataset.
     - `!room` Lists the physical status of Thorinair's real life room. Powered using the [VariPass](https://varipass.org) website.
     - `!power` Lists the status of the mains power. The bot will keep running of a UPS if power goes out.
     - `!eeg` Writes out the latest brainwave data gathered using Thorinair's hacked MindFlex EEG headset.

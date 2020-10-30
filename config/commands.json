@@ -27,7 +27,7 @@
 		},
 		{
 			"command": "moon",
-			"help":    "Ask me to show how the Moon looks like right now.",
+			"help":    "Ask me to show how the Moon looks like right now, along with some additional info.",
 			"type":    "public"
 		},
 		{

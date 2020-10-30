@@ -44,6 +44,8 @@ var thori     = require("./config/thori.json");
 var devices   = require("./config/devices.json");
 var reactrole = require("./config/reactrole.json");
 
+var moon = require(config.moon.lunamoon.pathdata);
+
 require("tls").DEFAULT_ECDH_CURVE = "auto"
 
 /************************************
@@ -368,6 +370,8 @@ comm.phase = function(data) {
             if (!found) {
 
                 var datePhase = new Date(p.date + " " + p.time);
+                datePhase -= config.moon.offseth * 1000 * 60 * 60;
+
                 if (datePhase > dateNow) {
 
                     config.phases.forEach(function(n, i) {
@@ -390,17 +394,19 @@ comm.phase = function(data) {
 
         if (found) {
 
-            if (phaseNext != config.options.fullmoon) {
+            if (phaseNext != config.moon.fullmoon) {
                 found = false;
                 phases.forEach(function(p) {
                     if (!found) {
 
                         var datePhase = new Date(p.date + " " + p.time);
-                        if (datePhase > dateNow && p.phase == config.options.fullmoon) {
+                        datePhase -= config.moon.offseth * 1000 * 60 * 60;
+
+                        if (datePhase > dateNow && p.phase == config.moon.fullmoon) {
 
                             message += util.format(
                                 " " + strings.commands.phase.messageB,
-                                getPhaseString(config.options.fullmoon, 0),
+                                getPhaseString(config.moon.fullmoon, 0),
                                 getTimeLeft(dateNow, datePhase, timezone)
                             );
                             
@@ -436,46 +442,97 @@ comm.moon = function(data) {
     var dateNow = new Date();
     var found = false;
 
-    phases.forEach(function(p, i) {
-        if (!found && i > 0) {
-            var datePhasePrev = new Date(phases[i-1].date + " " + phases[i-1].time);
-            var datePhaseNext = new Date(p.date + " " + p.time);
+    if (config.moon.lunamoon.enabled) {
+        moon.forEach(function(m, i) {
+            if (!found) {
+                var dateMoonNext = new Date(m.time);
 
-            if (datePhaseNext > dateNow) {
+                if (dateMoonNext > dateNow) {
+                    var id = i-1;
+                    if (id < 0)
+                        id = moon.length-1;
+                    var p = moon[id];
+                    var diff;
+                    var age = {};
+                    var dist = {};
 
-                var imagePh = "a";
-                if (phases[i-1].phase == config.phases[6].name)
-                    imagePh = "b";
-                else if (phases[i-1].phase == config.phases[0].name)
-                    imagePh = "c";
-                else if (phases[i-1].phase == config.phases[2].name)
-                    imagePh = "d";
+                    p.moment = moment.tz(new Date(p.time), "UTC");
 
-                var offset = ((dateNow - datePhasePrev.getTime()) / (datePhaseNext.getTime() - datePhasePrev.getTime())) * 8;
-                var imageId = Math.round(offset);
-                if (imageId == 8) {
-                    imageId = 0;
-                    switch (imagePh) {
-                        case "a": imagePh = "b"; break;
-                        case "b": imagePh = "c"; break;
-                        case "c": imagePh = "d"; break;
-                        case "d": imagePh = "a"; break;
-                    }
+                    age.days = Math.floor(p.age);
+                    diff = (p.age - age.days) * 24;
+                    age.hours = Math.floor(diff);
+                    diff = (diff - age.hours) * 60;
+                    age.minutes = Math.floor(diff);
+
+                    dist.a = Math.floor(p.distance / 1000);
+                    dist.b = Math.floor(p.distance % 1000);
+                    
+                    embed(data.channelID, util.format(
+                        strings.commands.moon.messageB,
+                        mention(data.userID),
+                        p.phase,
+                        age.days,
+                        age.hours,
+                        age.minutes,
+                        dist.a,
+                        dist.b,
+                        p.diameter,
+                        p.moment.format("ddd MMM DD, YYYY"),
+                        p.moment.format("HH:mm (z)")
+                    ), util.format(
+                        config.moon.lunamoon.pathmoon,
+                        fillUpZeros(4, id)
+                    ), "Moon " + (new Date(p.time)) + ".png", true, false);
+
+                    found = true;
                 }
-
-                embed(data.channelID, util.format(
-                    strings.commands.moon.message,
-                    mention(data.userID)
-                ), util.format(
-                    config.options.moonimg,
-                    imagePh,
-                    imageId
-                ), "Moon " + (new Date()) + ".png", true, false);
-
-                found = true;
             }
-        }
-    });
+        });
+    }
+    else {
+        phases.forEach(function(p, i) {
+            if (!found && i > 0) {
+                var datePhasePrev = new Date(phases[i-1].date + " " + phases[i-1].time);
+                var datePhaseNext = new Date(p.date + " " + p.time);
+                datePhasePrev -= config.moon.offseth * 1000 * 60 * 60;
+                datePhaseNext -= config.moon.offseth * 1000 * 60 * 60;
+
+                if (datePhaseNext > dateNow) {
+
+                    var imagePh = "a";
+                    if (phases[i-1].phase == config.phases[6].name)
+                        imagePh = "b";
+                    else if (phases[i-1].phase == config.phases[0].name)
+                        imagePh = "c";
+                    else if (phases[i-1].phase == config.phases[2].name)
+                        imagePh = "d";
+
+                    var offset = ((dateNow - datePhasePrev) / (datePhaseNext - datePhasePrev)) * 8;
+                    var imageId = Math.round(offset);
+                    if (imageId == 8) {
+                        imageId = 0;
+                        switch (imagePh) {
+                            case "a": imagePh = "b"; break;
+                            case "b": imagePh = "c"; break;
+                            case "c": imagePh = "d"; break;
+                            case "d": imagePh = "a"; break;
+                        }
+                    }
+
+                    embed(data.channelID, util.format(
+                        strings.commands.moon.messageA,
+                        mention(data.userID)
+                    ), util.format(
+                        config.moon.moonimg,
+                        imagePh,
+                        imageId
+                    ), "Moon " + (new Date()) + ".png", true, false);
+
+                    found = true;
+                }
+            }
+        });
+    }
 
     if (!found) {
         send(data.channelID, util.format(
@@ -3576,7 +3633,7 @@ function loadPhases() {
                 p.phase
             ));
 
-        if (p.phase == config.options.fullmoon) {
+        if (p.phase == config.moon.fullmoon) {
             message = util.format(
                 strings.announcements.phases.full, 
                 getPhaseString(p.phase, 0)
@@ -6739,6 +6796,30 @@ function getWoWPrice(price) {
     );
 }
 
+/*
+ * Returns a string version of a number, with added zeros to start.
+ * @param  digits  Maximum number of digits.
+ * @param  number  The number to format for.
+ * @return        The formatted string.
+ */
+function fillUpZeros(digits, number) {
+    var i = 0;
+    var res = number;
+    do {
+        i++;
+        res = Math.floor(res / 10);
+    } while (res > 0);
+
+    var out = number.toString();
+
+    i = digits - i;
+    while (i > 0) {
+        out = "0" + out;
+    }
+
+    return out;
+}
+
 
 
 /*****************************
@@ -7355,6 +7436,8 @@ function reloadConfig() {
     thori     = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
     devices   = JSON.parse(fs.readFileSync(config.options.configpath + "devices.json", "utf8"));
     reactrole = JSON.parse(fs.readFileSync(config.options.configpath + "reactrole.json", "utf8"));
+
+    moon = JSON.parse(fs.readFileSync(config.moon.lunamoon.pathdata, "utf8"));
 
     clearTimeout(lightningReconnect);
     blitzorws.close();
