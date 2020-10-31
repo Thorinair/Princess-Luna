@@ -214,8 +214,7 @@
             "pathmoon": "/home/luna/lunamoon/moon/moon.%s.png"
         },
         "moonimg":  "/var/www/node/moon/moon-%s%s.png",
-        "fullmoon": "Full Moon",
-        "offseth": -11
+        "fullmoon": "Full Moon"
     },
     "minesweeper": {
         "delay": 1000,

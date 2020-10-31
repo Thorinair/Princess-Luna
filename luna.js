@@ -369,8 +369,7 @@ comm.phase = function(data) {
         phases.forEach(function(p) {
             if (!found) {
 
-                var datePhase = new Date(p.date + " " + p.time);
-                datePhase -= config.moon.offseth * 1000 * 60 * 60;
+                var datePhase = new Date(p.date);
 
                 if (datePhase > dateNow) {
 
@@ -399,8 +398,7 @@ comm.phase = function(data) {
                 phases.forEach(function(p) {
                     if (!found) {
 
-                        var datePhase = new Date(p.date + " " + p.time);
-                        datePhase -= config.moon.offseth * 1000 * 60 * 60;
+                        var datePhase = new Date(p.date);
 
                         if (datePhase > dateNow && p.phase == config.moon.fullmoon) {
 
@@ -482,7 +480,7 @@ comm.moon = function(data) {
                     ), util.format(
                         config.moon.lunamoon.pathmoon,
                         fillUpZeros(4, id)
-                    ), "Moon " + (new Date(p.time)) + ".png", true, false);
+                    ), "Moon " + (new Date(p.date)) + ".png", true, false);
 
                     found = true;
                 }
@@ -492,10 +490,8 @@ comm.moon = function(data) {
     else {
         phases.forEach(function(p, i) {
             if (!found && i > 0) {
-                var datePhasePrev = new Date(phases[i-1].date + " " + phases[i-1].time);
-                var datePhaseNext = new Date(p.date + " " + p.time);
-                datePhasePrev -= config.moon.offseth * 1000 * 60 * 60;
-                datePhaseNext -= config.moon.offseth * 1000 * 60 * 60;
+                var datePhasePrev = new Date(phases[i-1].date);
+                var datePhaseNext = new Date(p.date);
 
                 if (datePhaseNext > dateNow) {
 
@@ -3624,7 +3620,7 @@ function loadPhases() {
     console.log(strings.debug.phases.load);
 
     phases.forEach(function(p) {
-        var date = new Date(p.date + " " + p.time);
+        var date = new Date(p.date);
         var message;
         if (config.options.debugphase)
             console.log(util.format(
