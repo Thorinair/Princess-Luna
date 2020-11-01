@@ -463,7 +463,7 @@ comm.moon = function(data) {
                     age.minutes = Math.floor(diff);
 
                     dist.a = Math.floor(p.distance / 1000);
-                    dist.b = Math.floor(p.distance % 1000);
+                    dist.b = fillUpZeros(3, Math.floor(p.distance % 1000));
                     
                     embed(data.channelID, util.format(
                         strings.commands.moon.messageB,
@@ -6810,6 +6810,7 @@ function fillUpZeros(digits, number) {
 
     i = digits - i;
     while (i > 0) {
+        i--;
         out = "0" + out;
     }
 
