@@ -3595,11 +3595,13 @@ function loadServer() {
  * Loads the WoW Faction Assault announcements.
  */
 function loadAssaults() {
-    console.log(strings.debug.assaults.load);
+    if (config.wow.assault.enabled) {
+        console.log(strings.debug.assaults.load);
 
-    prepareAssaultAnnounce();
+        prepareAssaultAnnounce();
 
-    console.log(strings.debug.assaults.done);
+        console.log(strings.debug.assaults.done);
+    }
 }
 
 /*

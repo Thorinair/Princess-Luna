@@ -139,6 +139,7 @@
     },
     "wow": {
         "assault": {
+            "enabled": false,
             "duration": 25200,
             "interval": 68400,
             "regions": {
