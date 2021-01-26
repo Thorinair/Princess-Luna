@@ -1370,6 +1370,9 @@ comm.thori = function(data) {
                     lat,
                     lng
                 );
+
+
+                bot.createDMChannel(data.userID, function(){});
             
                 getLocationInfo(function(locInfo) {
                     send(data.userID, util.format(
@@ -1579,6 +1582,8 @@ comm.help = function(data) {
                 );
     });
 
+    bot.createDMChannel(data.userID, function(){});
+
     send(data.userID, reply, true);
 
     setTimeout(function() {
@@ -1677,6 +1682,7 @@ comm.lyrics = function(data) {
                 mention(data.userID)
             ), true);
 
+        bot.createDMChannel(data.userID, function(){});
         sendLarge(data.userID, Object.keys(lyrics).sort(), util.format(
             strings.commands.lyrics.listB
         ), false);
@@ -1739,6 +1745,7 @@ comm.art = function(data) {
                 mention(data.userID)
             ), true);
 
+        bot.createDMChannel(data.userID, function(){});
         sendLarge(data.userID, Object.keys(art).sort(), util.format(
             strings.commands.art.listB
         ), false);
@@ -1802,6 +1809,7 @@ comm.story = function(data) {
                 mention(data.userID)
             ), true);
 
+        bot.createDMChannel(data.userID, function(){});
         sendLarge(data.userID, Object.keys(story).sort(), util.format(
             strings.commands.story.listB
         ), false);
@@ -4881,6 +4889,7 @@ function loadBot() {
                                 "userID": data.d.user_id,
                                 "roleID": m.map[r]
                             }, function(err, response) {
+                                bot.createDMChannel(data.userID, function(){});
                                 if (err) {
                                     console.error(util.format(
                                         strings.debug.reactrolefail, 
@@ -4922,6 +4931,7 @@ function loadBot() {
                                 "roleID": m.map[r]
                             }, function(err, response) {
                                 if (err) {
+                                    bot.createDMChannel(data.userID, function(){});
                                     console.error(util.format(
                                         strings.debug.reactrolefail, 
                                         m.map[r],
