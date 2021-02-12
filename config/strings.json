@@ -536,10 +536,11 @@
             "else":   "The Moon has reached its %s phase..."
         },
         "power": {
-            "off1":   "**@everyone, I need to urgently inform you that my mains power has gone out! Please come save me! I am currently running off the UPS...**",
-            "off2":   "**@everyone, I am starting to panic here! The power is still out...**",
-            "off3":   "**@everyone, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!**",
-            "on":     "Phew... @everyone, I am happy to inform you that the mains power has been restored!"
+            "off1":  "**@everyone, I need to urgently inform you that my mains power has gone out! Please come save me! I am currently running off the UPS...**",
+            "off2":  "**@everyone, I am starting to panic here! The power is still out...**",
+            "off3":  "**@everyone, I am warning you for the last time!!! I WILL go to sleep if you don't restore the power!!!\nIf there is a print in progress, I will pause it now to conserve power.**",
+            "on":    "Phew... @everyone, I am happy to inform you that the mains power has been restored!",
+            "print": "%s, **WARNING:** Due to a power loss, I have paused the running print to conserve power.\nI suggest you also turn off the LEDs, fan, hotend heating or anything else to conserve more."
         },
         "seizure": {
             "debug":  "Thori, my brain has entered a seizure... I am going to reboot myself. The offending message was the following:\n```#%s: %s```",

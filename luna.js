@@ -3925,6 +3925,36 @@ function processReqPower(query) {
         else if (powerStatus == 2) {
             send(channelNameToID(config.options.channels.home), strings.announcements.power.off3, false);
             powerStatus = 3;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", printer.baseurl + config.printer.urls.job + printer.key, true);
+
+            xhr.onreadystatechange = function () { 
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.progress.completion != null && response.state == "Printing") {
+                        tushPaused = true;
+                        console.log(strings.debug.printer.pause);
+                        pausePrint(config.printer.pauseretry);
+
+                        send(channelNameToID(config.options.channels.printer), util.format(
+                            strings.announcements.power.print,
+                            mention(config.options.adminid)
+                        ), false);
+                    }
+                }
+            }
+
+            xhr.onerror = function(err) {
+                send(data.channelID, strings.commands.printer.error, true);
+                xhr.abort();
+            }
+            xhr.ontimeout = function() {
+                send(data.channelID, strings.commands.printer.error, true);
+                xhr.abort();
+            }
+
+            xhr.send();
         }
     }
 }
