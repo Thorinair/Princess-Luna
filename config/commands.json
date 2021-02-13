@@ -86,6 +86,11 @@
             "type":    "public"
         },
         {
+            "command": "seismo",
+            "help":    "Ask me to send the latest helicorder image recorded by Maud.",
+            "type":    "public"
+        },
+        {
             "command": "pop",
             "help":    "Ask me to create a bubble wrap which you can pop.",
             "type":    "public"

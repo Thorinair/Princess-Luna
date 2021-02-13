@@ -45,7 +45,7 @@
             "messageD": "Nightmare Rarity is currently printing a file called `%s`, and the print is **%s%** done. It is estimated that the printing time will take around **%s** more.\n",
             "messageE": "RariTUSH hasn't reported any data yet.\n",
             "messageF": "RariTUSH reports **%s g** of filament left with **%s left** and **%s right** encoder pulses. Last report was %s and %s seconds ago.\n",
-            "messageG": "You can view the printing area on the webcam image below.",
+            "messageG": "You can view the printing area on the webcam image below, unless the camera was turned off.",
             "error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
         },
         "devices": {
@@ -101,6 +101,11 @@
             "messageA": "%s, here is a list of all the empty filament spools I know about:\n",
             "messageB": "• **%s:** %sg",
             "error":    "%s, no filament spool weights have been added yet."
+        },
+        "seismo": {
+            "messageA": "%s, give me a moment...",
+            "messageB": "Here is the latest helicorder image recorded by Maud.",
+            "error":    "I was unable to fetch the latest helicorder image. Please try again later..."
         },
         "pop": {
             "message": "%s, here is your bubble wrap. Enjoy!\n",
@@ -707,104 +712,104 @@
             "cancel": "  Download cancelled."
         },
         "announcements": {
-            "load":    "Loading: GOTN dates...",
-            "item":    "  - Loading air date: %s",
-            "done":    "  Done. Loaded: %s"
+            "load": "Loading: GOTN dates...",
+            "item": "  - Loading air date: %s",
+            "done": "  Done. Loaded: %s"
         },
         "lyrics": {
-            "old":     "Loading: Lyrics file...",
-            "new":     "Created: Lyrics file.",
-            "done":    "  Done."
+            "old":  "Loading: Lyrics file...",
+            "new":  "Created: Lyrics file.",
+            "done": "  Done."
         },
         "art": {
-            "old":     "Loading: Art file...",
-            "new":     "Created: Art file.",
-            "done":    "  Done."
+            "old":  "Loading: Art file...",
+            "new":  "Created: Art file.",
+            "done": "  Done."
         },
         "story": {
-            "old":     "Loading: Story file...",
-            "new":     "Created: Story file.",
-            "done":    "  Done."
+            "old":  "Loading: Story file...",
+            "new":  "Created: Story file.",
+            "done": "  Done."
         },
         "spool": {
-            "old":     "Loading: Spool file...",
-            "new":     "Created: Spool file.",
-            "done":    "  Done."
+            "old":  "Loading: Spool file...",
+            "new":  "Created: Spool file.",
+            "done": "  Done."
         },
         "nptoggles": {
-            "old":     "Loading: Now Playing file...",
-            "new":     "Created: Now Playing file.",
-            "done":    "  Done.",
-            "add":     "Subscribing #%s (%s) to Now Playing announcements.",
-            "remove":  "Unsubscribing #%s (%s) from Now Playing announcements.",
-            "autoon":  "Thori, I am **enabling** the automatic posting of Now Playing info."
+            "old":    "Loading: Now Playing file...",
+            "new":    "Created: Now Playing file.",
+            "done":   "  Done.",
+            "add":    "Subscribing #%s (%s) to Now Playing announcements.",
+            "remove": "Unsubscribing #%s (%s) from Now Playing announcements.",
+            "autoon": "Thori, I am **enabling** the automatic posting of Now Playing info."
         },
         "ann": {
-            "old":     "Loading: ANN file...",
-            "new":     "Created: ANN file.",
-            "done":    "  Done."
+            "old":  "Loading: ANN file...",
+            "new":  "Created: ANN file.",
+            "done": "  Done."
         },
         "blacklist": {
-            "old":     "Loading: Blacklist file...",
-            "new":     "Created: Blacklist file.",
-            "done":    "  Done.",
-            "add":     "Adding @%s to the blacklist.",
-            "remove":  "Removing @%s from the blacklist."
+            "old":    "Loading: Blacklist file...",
+            "new":    "Created: Blacklist file.",
+            "done":   "  Done.",
+            "add":    "Adding @%s to the blacklist.",
+            "remove": "Removing @%s from the blacklist."
         },
         "ignore": {
-            "old":     "Loading: Ignore file...",
-            "new":     "Created: Ignore file.",
-            "done":    "  Done.",
-            "add":     "Adding @%s to the ignore.",
-            "remove":  "Removing @%s from the ignore."
+            "old":    "Loading: Ignore file...",
+            "new":    "Created: Ignore file.",
+            "done":   "  Done.",
+            "add":    "Adding @%s to the ignore.",
+            "remove": "Removing @%s from the ignore."
         },
         "corona": {
-            "old":     "Loading: Corona file...",
-            "new":     "Created: Corona file.",
-            "done":    "  Done."
+            "old":  "Loading: Corona file...",
+            "new":  "Created: Corona file.",
+            "done": "  Done."
         },
         "live": {
-            "old":     "Loading: Live file...",
-            "new":     "Created: Live file.",
-            "done":    "  Done."
+            "old":  "Loading: Live file...",
+            "new":  "Created: Live file.",
+            "done": "  Done."
         },
         "eeg": {
-            "old":     "Loading: EEG file...",
-            "new":     "Created: EEG file.",
-            "done":    "  Done."
+            "old":  "Loading: EEG file...",
+            "new":  "Created: EEG file.",
+            "done": "  Done."
         },
         "timezones": {
-            "load":    "Loading: Timezone data...",
-            "done":    "  Done."
+            "load": "Loading: Timezone data...",
+            "done": "  Done."
         },
         "assaults": {
-            "load":    "Loading: Faction Assault announcements...",
-            "date":    "  Added: %s",
-            "done":    "  Done."
+            "load": "Loading: Faction Assault announcements...",
+            "date": "  Added: %s",
+            "done": "  Done."
         },
         "dailyavg": {
-            "load":    "Loading: Daily average checkpoints...",
-            "date":    "  Added: %s",
-            "done":    "  Done."
+            "load": "Loading: Daily average checkpoints...",
+            "date": "  Added: %s",
+            "done": "  Done."
         },
         "phases": {
-            "load":    "Loading: Moon phase announcements...",
-            "item":    "  - Loading phase date: %s - %s",
-            "done":    "  Done. Loaded: %s"
+            "load": "Loading: Moon phase announcements...",
+            "item": "  - Loading phase date: %s - %s",
+            "done": "  Done. Loaded: %s"
         },
         "brain": {
-            "start":   "Loading: Brain data...",
-            "prog":    "  %s/%s",
-            "old":     "  Loading: Brain \"%s\"...",
-            "new":     "  Created: Brain \"%s\".",
-            "done":    "    Done with \"%s\".",
-            "error":   "Error saving brain: %s",
-            "end":     "  Done."
+            "start": "Loading: Brain data...",
+            "prog":  "  %s/%s",
+            "old":   "  Loading: Brain \"%s\"...",
+            "new":   "  Created: Brain \"%s\".",
+            "done":  "    Done with \"%s\".",
+            "error": "Error saving brain: %s",
+            "end":   "  Done."
         },
         "seizure": {
-            "old":     "Loading: Seizure file...",
-            "new":     "Created: Seizure file.",
-            "done":    "  Done."
+            "old":  "Loading: Seizure file...",
+            "new":  "Created: Seizure file.",
+            "done": "  Done."
         },
         "blitzor": {
             "reconnect": "Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
@@ -814,10 +819,14 @@
             "spread":    "Spreading the lightning range from %s to %s.",
             "max":       "Spreading outside of range. Clamping to max range of %s."
         },
+        "seismo": {
+            "start": "Starting seizmograph UDP server...",
+            "done":  "  Done. Listening on: %s:%s"
+        },
         "backup": {
-            "start":   "Started a backup...",
-            "done":    "  Done. Total size of %s bytes. Sending it now.",
-            "error":   "  Error backing up: %s"
+            "start": "Started a backup...",
+            "done":  "  Done. Total size of %s bytes. Sending it now.",
+            "error": "  Error backing up: %s"
         },
         "varipass": {
             "load":    "I'm loading data from VariPass...",

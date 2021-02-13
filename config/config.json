@@ -320,6 +320,12 @@
         "path": "/var/www/node/data/corona.json",
         "county": "Osječko-baranjska"
     },
+    "seismo": {
+        "baseurl":   "http://maud.local/heli/RAC77_EHZ_AM_00.%s.gif",
+        "station":   "AM.RAC77",
+        "heliimage": "/var/www/node/data/heli.gif",
+        "udpPort":   8888
+    },
     "autoreact": {
         "channels": [
             "566782458528268288"

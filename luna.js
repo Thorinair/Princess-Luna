@@ -6,6 +6,7 @@ const http           = require("http");
 const url            = require('url');
 const exec           = require('child_process').exec;
 const WebSocket      = require('ws');
+const dgram          = require('dgram');
 
 // 3rd Party Modules
 const Discord        = require("discord.io");
@@ -66,6 +67,7 @@ require("tls").DEFAULT_ECDH_CURVE = "auto"
  *   CHANNEL AND DATA TRANSLATION
  *   STRING MANIPULATION AND GENERATION
  *   GEOGRAPHIC DATA PROCESSING
+ *   SEISMOGRAPH DATA PROCESSING
  *   STATUS MONITORING
  *   MISCELLANEOUS FUNCTIONS
  *
@@ -199,6 +201,7 @@ var isShowingLyrics = false;
 
 var hTrack = {};
 var corona;
+var udpServer;
 
 
 
@@ -727,7 +730,7 @@ comm.printer = function(data) {
         mention(data.userID)
     ), true);
 
-    download(printer.baseurl + printer.webcam, config.printer.webimg, function() {
+    download(printer.baseurl + printer.webcam, config.printer.webimg, function(code) {
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", printer.baseurl + config.printer.urls.job + printer.key, true);
@@ -795,7 +798,10 @@ comm.printer = function(data) {
 
                 message += strings.commands.printer.messageG;
 
-                embed(data.channelID, message, config.printer.webimg, "Nightmare Rarity Webcam.jpg", true, true);
+                if (code != 503)
+                    embed(data.channelID, message, config.printer.webimg, "Nightmare Rarity Webcam.jpg", true, true);
+                else
+                    send(data.channelID, message, true);
             }
         }
 
@@ -1225,6 +1231,45 @@ comm.spools = function(data) {
             mention(data.userID)
         ), true);
     }
+};
+
+// Command: !seismo
+comm.seismo = function(data) {
+    var dateNow = new Date();
+    var heliString = ""
+    heliString += dateNow.getFullYear();
+    var month = dateNow.getMonth() + 1;
+    if (month < 10)
+        heliString += "0" + month;
+    else
+        heliString += month;
+    var day = dateNow.getDate();
+    if (day < 10)
+        heliString += "0" + day;
+    else
+        heliString += day;
+    var hours = dateNow.getUTCHours();
+    if (day < 12)
+        heliString += "00";
+    else
+        heliString += "12";
+
+    send(data.channelID, util.format(
+        strings.commands.seismo.messageA, 
+        mention(data.userID)
+    ), true);
+
+    download(util.format(
+        config.seismo.baseurl,
+        heliString)
+    , config.seismo.heliimage, function(code) {
+        if (code != 404)
+            embed(data.channelID, strings.commands.seismo.messageB, config.seismo.heliimage, "Maud (" + config.seismo.station + ") Helicorder " + (new Date()) + ".gif", true, true);
+        else
+            send(data.channelID, strings.commands.seismo.error, true);
+    }, function() {
+        send(data.channelID, strings.commands.seismo.error, true);
+    }, 0);
 };
 
 // Command: !pop
@@ -4699,6 +4744,7 @@ function loadBot() {
             loadServer();
             loadSeizure();
             connectBlitzortung(false);
+            startSeizmoServer();
 
             loopLightning();
             loopNowPlaying();
@@ -6998,6 +7044,42 @@ function radToDeg(rad) {
 
 
 
+/*****************************
+ * GEOGRAPHIC DATA PROCESSING
+ *****************************/
+
+/*
+ * Begins listening to the periodic UDP seizmograph data.
+ */
+ function startSeizmoServer() {
+    console.log(strings.debug.seismo.start);
+
+    udpServer = dgram.createSocket("udp4");
+
+    udpServer.on("error", (err) => {
+        console.log("UDP Server Error:\n" + err.stack);
+        udpServer.close();
+    });
+
+    udpServer.on("message", (msg, rinfo) => {
+        statusGlobal.maud = Math.floor((new Date()) / 1000);
+        //console.log("server got: "+ msg + " from " + rinfo.address + ":" + rinfo.port);
+    });
+
+    udpServer.on("listening", () => {
+        const address = udpServer.address();
+        console.log(util.format(
+            strings.debug.seismo.done,
+            address.address,
+            address.port
+        ));
+    });
+
+    udpServer.bind(config.seismo.udpPort);
+ }
+
+
+
 /********************
  * STATUS MONITORING
  ********************/
@@ -7052,6 +7134,7 @@ function loopStatusPush() {
 
     data += generateStatus("tradfri", statusGlobal.tradfri, now);
     data += generateStatus("sparkle", statusGlobal.sparkle, now);
+    data += generateStatus("maud", statusGlobal.maud, now);
     data += generateStatus("lulu", statusGlobal.lulu, now);
 
     var payload = {
@@ -7797,8 +7880,11 @@ function finishPrint() {
         time.seconds        
     ), false);
 
-    download(printer.baseurl + printer.webcam, config.printer.webimg, function() {        
-        embed(channelNameToID(config.options.channels.printer), "", config.printer.webimg, "Nightmare Rarity Webcam.jpg", false, true);
+    download(printer.baseurl + printer.webcam, config.printer.webimg, function(code) {
+        if (code != 503)  
+            embed(channelNameToID(config.options.channels.printer), "", config.printer.webimg, "Nightmare Rarity Webcam.jpg", false, true);
+        else
+            send(channelNameToID(config.options.channels.printer), strings.announcements.tush.error, false);
     }, function() {
         send(channelNameToID(config.options.channels.printer), strings.announcements.tush.error, false);     
     }, 0);
@@ -7846,7 +7932,9 @@ var download = function(uri, filename, callbackDone, callbackErr, count, useJson
                         err
                     ));
                     download(uri, filename, callbackDone, callbackErr, count);
-                }).pipe(fs.createWriteStream(filename)).on("close", callbackDone);
+                }).pipe(fs.createWriteStream(filename)).on("close", function() {
+                    callbackDone(response.statusCode);
+                });
         });
     }
     else {
