@@ -1249,7 +1249,7 @@ comm.seismo = function(data) {
     else
         heliString += day;
     var hours = dateNow.getUTCHours();
-    if (day < 12)
+    if (hours < 12)
         heliString += "00";
     else
         heliString += "12";
