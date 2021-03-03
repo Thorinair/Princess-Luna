@@ -183,6 +183,7 @@ var statusTimeoutChrysalisIcecastPublic;
 var statusTimeoutChrysalisAnn;
 var statusTimeoutRarityLocal;
 var statusTimeoutRarityPublic;
+var statusTimeoutFluttershy;
 var statusTimeoutTantabusLocal;
 var statusTimeoutTantabusPublic;
 
@@ -202,6 +203,7 @@ var isShowingLyrics = false;
 var hTrack = {};
 var corona;
 var udpServer;
+var seizmoLatest = {};
 
 
 
@@ -1270,6 +1272,11 @@ comm.seismo = function(data) {
     }, function() {
         send(data.channelID, strings.commands.seismo.error, true);
     }, 0);
+};
+
+// Command: !seismolive
+comm.seismolive = function(data) {
+    send(data.channelID, JSON.stringify(seizmoLatest), true);
 };
 
 // Command: !pop
@@ -7063,6 +7070,7 @@ function radToDeg(rad) {
 
     udpServer.on("message", (msg, rinfo) => {
         statusGlobal.maud = Math.floor((new Date()) / 1000);
+        seizmoLatest = msg;
         //console.log("server got: "+ msg + " from " + rinfo.address + ":" + rinfo.port);
     });
 
@@ -7092,6 +7100,7 @@ function loopStatusPull() {
     statusLuna();
     statusChrysalis();
     statusRarity();
+    statusFluttershy();
     statusTantabus();
 
     setTimeout(loopStatusPull, config.options.statuspull * 1000);
@@ -7121,6 +7130,7 @@ function loopStatusPush() {
 
     data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
     data += generateStatus("rarity_public", statusGlobal.rarity_public, now);
+    data += generateStatus("fluttershy", statusGlobal.fluttershy, now);
     data += generateStatus("raritush", statusGlobal.raritush, now);
 
     data += generateStatus("tantabus_local", statusGlobal.tantabus_local, now);
@@ -7249,6 +7259,16 @@ function statusRarity() {
     getStatus(printer.baseurl + config.status.urls.rarity_public, statusTimeoutRarityPublic, function(r, s) {
         if (r == config.status.responses.rarity_public)
             statusGlobal.rarity_public = Math.floor((new Date()) / 1000);
+    });
+}
+
+/*
+ * Checks the status of Nightmare Fluttershy.
+ */
+function statusFluttershy() {
+    getStatus(config.status.simple.fluttershy, statusTimeoutFluttershy, function(r, s) {
+        if (s == 200)
+            statusGlobal.fluttershy = Math.floor((new Date()) / 1000);
     });
 }
 

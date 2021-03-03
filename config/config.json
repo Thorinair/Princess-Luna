@@ -307,8 +307,10 @@
 
             "tantabus_local":  "{\"error\": \"not found\"}",
             "tantabus_public": "{\"error\": \"not found\"}"
+        },
+        "simple": {
+            "fluttershy":  "http://fluttershy.local:8080/"
         }
-
     },
     "corona": {
         "enabled": true,
@@ -324,7 +326,7 @@
         "baseurl":   "http://maud.local/heli/RAC77_EHZ_AM_00.%s.gif",
         "station":   "AM.RAC77",
         "heliimage": "/var/www/node/data/heli.gif",
-        "udpPort":   8888
+        "udpPort":   28888
     },
     "autoreact": {
         "channels": [
