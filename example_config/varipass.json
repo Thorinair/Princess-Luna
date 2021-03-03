@@ -32,6 +32,8 @@
             "enc":            "0000AAAA",
             "weight":         "0000AAAA",
             "body":           "0000AAAA",
+            "unicorn_temp":   "0000AAAA",
+            "unicorn_humi":   "0000AAAA",
             "avgPressure":    "0000AAAA",
             "avgMagnitude":   "0000AAAA",
             "avgInclination": "0000AAAA",

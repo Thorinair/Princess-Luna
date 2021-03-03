@@ -5448,10 +5448,11 @@ function statusVariPass() {
             var vpData = JSON.parse(xhr.responseText);
 
             var timeOffset = Math.floor((new Date()) / 1000) - vpData.current;
-            statusGlobal.celly    = findVariable(vpData, varipass.main.ids.temperature).history[0].time + timeOffset;
-            statusGlobal.chryssy  = findVariable(vpData, varipass.main.ids.counts     ).history[0].time + timeOffset;
-            statusGlobal.dashie   = findVariable(vpData, varipass.main.ids.pm010      ).history[0].time + timeOffset;
-            statusGlobal.twilight = findVariable(vpData, varipass.main.ids.location   ).history[0].time + timeOffset;
+            statusGlobal.celly    = findVariable(vpData, varipass.main.ids.temperature ).history[0].time + timeOffset;
+            statusGlobal.chryssy  = findVariable(vpData, varipass.main.ids.counts      ).history[0].time + timeOffset;
+            statusGlobal.dashie   = findVariable(vpData, varipass.main.ids.pm010       ).history[0].time + timeOffset;
+            statusGlobal.unicorn  = findVariable(vpData, varipass.main.ids.unicorn_temp).history[0].time + timeOffset;
+            statusGlobal.twilight = findVariable(vpData, varipass.main.ids.location    ).history[0].time + timeOffset;
             
             // Geiger Calculation
             var vpDose = findVariable(vpData, varipass.main.ids.dose).history;
@@ -7140,6 +7141,7 @@ function loopStatusPush() {
     data += generateStatus("celly", statusGlobal.celly, now);
     data += generateStatus("chryssy", statusGlobal.chryssy, now);
     data += generateStatus("dashie", statusGlobal.dashie, now);
+    data += generateStatus("unicorn", statusGlobal.unicorn, now);
     data += generateStatus("twilight", statusGlobal.twilight, now);
 
     data += generateStatus("tradfri", statusGlobal.tradfri, now);
