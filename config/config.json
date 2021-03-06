@@ -326,7 +326,25 @@
         "baseurl":   "http://maud.local/heli/RAC77_EHZ_AM_00.%s.gif",
         "station":   "AM.RAC77",
         "heliimage": "/var/www/node/data/heli.gif",
-        "udpPort":   28888
+        "udpPort":   28888,
+        "data": {
+            "normalization": 673.744,
+            "samplerate":    100,
+            "rampupsamples": 1000,
+            "sampletotal":   1000,
+            "bandpass": {
+                "order": 1000,
+                "low":   0.1,
+                "high":  0.8
+            }
+        },
+        "detection": {
+            "threshold": 3000,
+            "hold":      15,
+            "notice":    5
+        },
+        "output": true,
+        "file":   "/var/www/node/data/seismo.txt"
     },
     "autoreact": {
         "channels": [

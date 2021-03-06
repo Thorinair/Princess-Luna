@@ -1,6 +1,6 @@
 {
     "name": "PrincessLuna",
-    "version": "2.21.4",
+    "version": "2.22.0",
     "description": "Princess Luna is a Discord bot designed for Thorinair's official Glory of The Night Discord server.",
     "main": "luna.js",
     "repository": {
@@ -25,6 +25,7 @@
         "archiver": "^2.0.0",
         "c0lor": "^0.1.0",
         "cron": "^1.2.1",
+        "fili": "^2.0.3",
         "discord.io": "github:izy521/discord.io",
         "jsmegahal": "github:Thorinair/jsmegahal",
         "moment-timezone": "^0.5.13",

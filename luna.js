@@ -20,6 +20,7 @@ const color          = require('c0lor');
 const jsmegahal      = require("jsmegahal");
 const tripwire       = require("tripwire");
 const blitzorapi     = require("@simonschick/blitzortungapi");
+const Fili           = require('fili');
 
 const package  = require("./package.json");
 
@@ -187,6 +188,19 @@ var statusTimeoutFluttershy;
 var statusTimeoutTantabusLocal;
 var statusTimeoutTantabusPublic;
 
+// Seismo
+var seismoLatest = {};
+var seismoSamplesBuf = [];
+var seismoSamples = [];
+var seismoFilter;
+var seismoReadyFilter = false;
+var seismoReadyEarthquake = false;
+var seismoSampleCounter = 0;
+var seismoQuakeStartTime;
+var seismoQuakePrevTime;
+var seismoIsShaking = false;
+var seismoAccu = [];
+
 // Miscellaneous
 var bot;
 var server;
@@ -203,7 +217,6 @@ var isShowingLyrics = false;
 var hTrack = {};
 var corona;
 var udpServer;
-var seizmoLatest = {};
 
 
 
@@ -1276,7 +1289,7 @@ comm.seismo = function(data) {
 
 // Command: !seismolive
 comm.seismolive = function(data) {
-    send(data.channelID, JSON.stringify(seizmoLatest), true);
+    send(data.channelID, JSON.stringify(seismoLatest), true);
 };
 
 // Command: !pop
@@ -7052,15 +7065,53 @@ function radToDeg(rad) {
 
 
 
-/*****************************
- * GEOGRAPHIC DATA PROCESSING
- *****************************/
+/******************************
+ * SEISMOGRAPH DATA PROCESSING
+ ******************************/
 
 /*
- * Begins listening to the periodic UDP seizmograph data.
+ * Prepares the bandpass filter for processing seismographic data.
+ */
+function setupSeismoFilter() {
+    var firCalculator = new Fili.FirCoeffs();
+
+    var firFilterCoeffs = firCalculator.bandpass({
+        order: config.seismo.data.bandpass.order,
+        Fs: config.seismo.data.samplerate,
+        F1: config.seismo.data.bandpass.low,
+        F2: config.seismo.data.bandpass.high
+    });
+
+    seismoFilter = new Fili.FirFilter(firFilterCoeffs);
+}
+
+/*
+ * Calculates the median value of a data array.
+ * @param  values  An array of values.
+ * @return         Median value.
+ */
+function median(values){
+    if(values.length === 0) return 0;
+
+    values.sort(function(a, b) {
+        return a - b;
+    });
+
+    var half = Math.floor(values.length / 2);
+
+    if (values.length % 2)
+        return values[half];
+
+    return (values[half - 1] + values[half]) / 2.0;
+}
+
+/*
+ * Begins listening to the periodic UDP seismograph data.
  */
  function startSeizmoServer() {
     console.log(strings.debug.seismo.start);
+
+    setupSeismoFilter();
 
     udpServer = dgram.createSocket("udp4");
 
@@ -7069,10 +7120,116 @@ function radToDeg(rad) {
         udpServer.close();
     });
 
-    udpServer.on("message", (msg, rinfo) => {
+    udpServer.on("message", (message, rinfo) => {
         statusGlobal.maud = Math.floor((new Date()) / 1000);
-        seizmoLatest = msg;
-        //console.log("server got: "+ msg + " from " + rinfo.address + ":" + rinfo.port);
+        seismoLatest = message.toString("utf8");
+        //console.log("server got: "+ seismoLatest + " from " + rinfo.address + ":" + rinfo.port);
+
+        if ((seismoReadyFilter && seismoSamplesBuf.length < config.seismo.data.samplerate) || 
+            (!seismoReadyFilter && seismoSamplesBuf.length < config.seismo.data.rampupsamples)) {
+            var sampleData = message.toString("utf8").replace("{", "").replace("}", "").split(", ");
+            for (var i = 2; i < sampleData.length; i++)
+                seismoSamplesBuf.push((parseInt(sampleData[i]) / config.seismo.data.normalization) * 1000);
+        }
+
+        if ((seismoReadyFilter && seismoSamplesBuf.length >= config.seismo.data.samplerate) || 
+            (!seismoReadyFilter && seismoSamplesBuf.length >= config.seismo.data.rampupsamples)) {
+
+            //var filteredSamples = seismoFilter.multiStep(seismoSamplesBuf);
+
+            var filtered = seismoFilter.multiStep(seismoSamplesBuf);
+            seismoSamplesBuf = [];
+
+            filtered.forEach(function(s) {
+                seismoSamples.push(Math.pow(s, 2));
+            })
+
+            while(seismoSamples.length > config.seismo.data.sampletotal) {
+                seismoSamples.shift();
+            }
+
+            if (!seismoReadyEarthquake) {
+                if (seismoSampleCounter < config.seismo.data.sampletotal / config.seismo.data.samplerate) {
+                    seismoSampleCounter++;
+                }
+                else {
+                    seismoReadyEarthquake = true;
+                    console.log(strings.debug.seismo.readye);
+                }
+            }
+
+            if (seismoReadyEarthquake) {
+                var samplesCopy = JSON.parse(JSON.stringify(seismoSamples));
+                var sampleMedian = median(samplesCopy);
+
+                //console.log("cnt: " + seismoSamples.length + " val: " + sampleMedian);
+
+                fs.appendFile(config.seismo.file, "\n" + (new Date()).toISOString() + "\t" + sampleMedian, function (err) {
+                    if (err)
+                        throw err;
+                });
+
+                var now = Math.floor((new Date()) / 1000);
+
+                if (!seismoIsShaking && sampleMedian > config.seismo.detection.threshold) {
+                    seismoIsShaking = true;
+                    seismoQuakeStartTime = now;
+
+                    var momentTime = moment.tz(new Date(), "UTC");
+
+                    send(channelNameToID(config.options.channels.home), util.format(
+                        strings.announcements.seismo.quake,
+                        momentTime.format("YYYY-MM-DD"),
+                        momentTime.format("HH:mm:ss (z)"),
+                        sampleMedian.toFixed(2)
+                    ), false);
+                    seismoQuakePrevTime = now;
+                }
+
+                if (seismoIsShaking && sampleMedian > config.seismo.detection.threshold && now - seismoQuakePrevTime <= config.seismo.detection.hold) {
+                    seismoQuakePrevTime = now;
+                    seismoAccu.push(sampleMedian);
+
+                    if (seismoAccu.length % config.seismo.detection.notice == 0) {                    
+                        send(channelNameToID(config.options.channels.home), util.format(
+                            strings.announcements.seismo.energy,
+                            sampleMedian.toFixed(2)
+                        ), false);
+                    }
+                }
+
+                if (seismoIsShaking && now - seismoQuakePrevTime > config.seismo.detection.hold) {
+                    seismoIsShaking = false;
+
+                    var diff = seismoQuakePrevTime - seismoQuakeStartTime + 1;
+
+                    seconds = Math.floor(diff % 60);
+                    diff = Math.floor(diff / 60);
+                    minutes = Math.floor(diff % 60);
+
+                    if (seconds < 10)
+                        seconds = "0" + seconds;
+
+                    var totalEnergy = 0;
+                    seismoAccu.forEach(function(s) {
+                        totalEnergy += s / seismoAccu.length;
+                    });
+                    seismoAccu = [];
+
+                    send(channelNameToID(config.options.channels.home), util.format(
+                        strings.announcements.seismo.end,
+                        minutes,
+                        seconds,
+                        totalEnergy.toFixed(2)
+                    ), false);
+                }
+            }
+
+            if (!seismoReadyFilter) {
+                seismoReadyFilter = true;
+                console.log(strings.debug.seismo.readyf);
+            }
+        }
     });
 
     udpServer.on("listening", () => {
