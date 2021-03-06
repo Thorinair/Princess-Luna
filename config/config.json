@@ -339,12 +339,12 @@
             }
         },
         "detection": {
-            "threshold": 5000,
+            "threshold": 15000,
             "hold":      15,
             "notice":    5
         },
         "output": true,
-        "file":   "/var/www/node/data/seismo.txt"
+        "file":   "/var/www/node/seismo/%s.txt"
     },
     "autoreact": {
         "channels": [

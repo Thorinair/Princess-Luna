@@ -87,7 +87,7 @@
         },
         {
             "command": "seismo",
-            "help":    "Ask me to send the latest helicorder image recorded by Maud.",
+            "help":    "Ask me to send the latest seismographic data and helicorder image recorded by Maud.",
             "type":    "public"
         },
         {

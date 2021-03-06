@@ -7173,8 +7173,12 @@ function median(values){
 
                 //console.log("cnt: " + seismoSamples.length + " val: " + sampleMedian);
 
+                var outDate = moment.tz(new Date(), "UTC");
                 if (config.seismo.output)
-                    fs.appendFile(config.seismo.file, "\n" + (new Date()).toISOString() + "\t" + sampleMedian, function (err) {
+                    fs.appendFile(util.format(
+                        config.seismo.file,
+                        outDate.format("YYYY-MM-DD")
+                    ), "\n" + outDate.format("YYYY-MM-DD") + " " + outDate.format("HH:mm:ss (z)") + "\t" + sampleMedian, function (err) {
                         if (err)
                             throw err;
                     });
