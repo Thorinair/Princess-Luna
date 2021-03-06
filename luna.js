@@ -200,6 +200,8 @@ var seismoQuakeStartTime;
 var seismoQuakePrevTime;
 var seismoIsShaking = false;
 var seismoAccu = [];
+var sampleMedian = 0;
+var lastQuake;
 
 // Miscellaneous
 var bot;
@@ -1269,27 +1271,34 @@ comm.seismo = function(data) {
     else
         heliString += "12";
 
-    send(data.channelID, util.format(
-        strings.commands.seismo.messageA, 
-        mention(data.userID)
-    ), true);
+    if (lastQuake != undefined)
+        send(data.channelID, util.format(
+            strings.commands.seismo.messageA, 
+            mention(data.userID),
+            lastQuake.format("YYYY-MM-DD"),
+            lastQuake.format("HH:mm:ss (z)"),
+            Math.sqrt(sampleMedian).toFixed(2),
+            sampleMedian.toFixed(2)
+        ), true);
+    else
+        send(data.channelID, util.format(
+            strings.commands.seismo.messageB, 
+            mention(data.userID),
+            Math.sqrt(sampleMedian).toFixed(2),
+            sampleMedian.toFixed(2)
+        ), true);
 
     download(util.format(
         config.seismo.baseurl,
         heliString)
     , config.seismo.heliimage, function(code) {
         if (code != 404)
-            embed(data.channelID, strings.commands.seismo.messageB, config.seismo.heliimage, "Maud (" + config.seismo.station + ") Helicorder " + (new Date()) + ".gif", true, true);
+            embed(data.channelID, strings.commands.seismo.messageC, config.seismo.heliimage, "Maud (" + config.seismo.station + ") Helicorder " + (new Date()) + ".gif", true, true);
         else
             send(data.channelID, strings.commands.seismo.error, true);
     }, function() {
         send(data.channelID, strings.commands.seismo.error, true);
     }, 0);
-};
-
-// Command: !seismolive
-comm.seismolive = function(data) {
-    send(data.channelID, JSON.stringify(seismoLatest), true);
 };
 
 // Command: !pop
@@ -7160,14 +7169,15 @@ function median(values){
 
             if (seismoReadyEarthquake) {
                 var samplesCopy = JSON.parse(JSON.stringify(seismoSamples));
-                var sampleMedian = median(samplesCopy);
+                sampleMedian = median(samplesCopy);
 
                 //console.log("cnt: " + seismoSamples.length + " val: " + sampleMedian);
 
-                fs.appendFile(config.seismo.file, "\n" + (new Date()).toISOString() + "\t" + sampleMedian, function (err) {
-                    if (err)
-                        throw err;
-                });
+                if (config.seismo.output)
+                    fs.appendFile(config.seismo.file, "\n" + (new Date()).toISOString() + "\t" + sampleMedian, function (err) {
+                        if (err)
+                            throw err;
+                    });
 
                 var now = Math.floor((new Date()) / 1000);
 
@@ -7175,12 +7185,13 @@ function median(values){
                     seismoIsShaking = true;
                     seismoQuakeStartTime = now;
 
-                    var momentTime = moment.tz(new Date(), "UTC");
+                    lastQuake = moment.tz(new Date(), "UTC");
 
                     send(channelNameToID(config.options.channels.home), util.format(
                         strings.announcements.seismo.quake,
-                        momentTime.format("YYYY-MM-DD"),
-                        momentTime.format("HH:mm:ss (z)"),
+                        lastQuake.format("YYYY-MM-DD"),
+                        lastQuake.format("HH:mm:ss (z)"),
+                        Math.sqrt(sampleMedian).toFixed(2),
                         sampleMedian.toFixed(2)
                     ), false);
                     seismoQuakePrevTime = now;
@@ -7193,6 +7204,7 @@ function median(values){
                     if (seismoAccu.length % config.seismo.detection.notice == 0) {                    
                         send(channelNameToID(config.options.channels.home), util.format(
                             strings.announcements.seismo.energy,
+                            Math.sqrt(sampleMedian).toFixed(2),
                             sampleMedian.toFixed(2)
                         ), false);
                     }
@@ -7220,6 +7232,7 @@ function median(values){
                         strings.announcements.seismo.end,
                         minutes,
                         seconds,
+                        Math.sqrt(totalEnergy).toFixed(2),
                         totalEnergy.toFixed(2)
                     ), false);
                 }

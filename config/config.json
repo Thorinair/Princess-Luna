@@ -339,7 +339,7 @@
             }
         },
         "detection": {
-            "threshold": 3000,
+            "threshold": 5000,
             "hold":      15,
             "notice":    5
         },
