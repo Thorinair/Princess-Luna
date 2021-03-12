@@ -199,6 +199,7 @@ var seismoSampleCounter = 0;
 var seismoQuakeStartTime;
 var seismoQuakePrevTime;
 var seismoIsShaking = false;
+var seismoLastMinute = -1;
 var seismoAccu = [];
 var sampleMedian = 0;
 var lastQuake;
@@ -7130,7 +7131,8 @@ function median(values){
     });
 
     udpServer.on("message", (message, rinfo) => {
-        statusGlobal.maud = Math.floor((new Date()) / 1000);
+        var now = new Date();
+        statusGlobal.maud = Math.floor(now / 1000);
         seismoLatest = message.toString("utf8");
         //console.log("server got: "+ seismoLatest + " from " + rinfo.address + ":" + rinfo.port);
 
@@ -7147,6 +7149,26 @@ function median(values){
             //var filteredSamples = seismoFilter.multiStep(seismoSamplesBuf);
 
             var filtered = seismoFilter.multiStep(seismoSamplesBuf);
+
+            var stringSeismoRaw = "";
+            var stringSeismoFlt = "";
+            var stringSeismoMed = "";
+            if (config.seismo.output) {
+                if (now.getMinutes() != seismoLastMinute) {
+                    seismoLastMinute = now.getMinutes();
+                    var outDate = moment.tz(now, "UTC");
+                    stringSeismoRaw += outDate.format("YYYY-MM-DD") + " " + outDate.format("HH:mm:ss (z)") + ":\n";
+                    stringSeismoFlt += outDate.format("YYYY-MM-DD") + " " + outDate.format("HH:mm:ss (z)") + ":\n";
+                    stringSeismoMed += outDate.format("YYYY-MM-DD") + " " + outDate.format("HH:mm:ss (z)") + ":\n";
+                }
+                seismoSamplesBuf.forEach(function(s) {
+                    stringSeismoRaw += s.toFixed(2) + "\n";
+                });
+                filtered.forEach(function(s) {
+                    stringSeismoFlt += s.toFixed(2) + "\n";
+                });
+            }
+
             seismoSamplesBuf = [];
 
             filtered.forEach(function(s) {
@@ -7173,23 +7195,44 @@ function median(values){
 
                 //console.log("cnt: " + seismoSamples.length + " val: " + sampleMedian);
 
-                var outDate = moment.tz(new Date(), "UTC");
-                if (config.seismo.output)
+                if (config.seismo.output) {
+                    stringSeismoMed += sampleMedian.toFixed(2) + "\n";
+
+                    var outDate = moment.tz(now, "UTC");
+
                     fs.appendFile(util.format(
                         config.seismo.file,
-                        outDate.format("YYYY-MM-DD")
-                    ), "\n" + outDate.format("YYYY-MM-DD") + " " + outDate.format("HH:mm:ss (z)") + "\t" + sampleMedian, function (err) {
+                        outDate.format("YYYY-MM-DD"),
+                        "raw"
+                    ), stringSeismoRaw, function (err) {
                         if (err)
                             throw err;
                     });
+                    fs.appendFile(util.format(
+                        config.seismo.file,
+                        outDate.format("YYYY-MM-DD"),
+                        "flt"
+                    ), stringSeismoFlt, function (err) {
+                        if (err)
+                            throw err;
+                    });
+                    fs.appendFile(util.format(
+                        config.seismo.file,
+                        outDate.format("YYYY-MM-DD"),
+                        "med"
+                    ), stringSeismoMed, function (err) {
+                        if (err)
+                            throw err;
+                    });
+                }
 
-                var now = Math.floor((new Date()) / 1000);
+                var nowS = Math.floor(now / 1000);
 
                 if (!seismoIsShaking && sampleMedian > config.seismo.detection.threshold) {
                     seismoIsShaking = true;
-                    seismoQuakeStartTime = now;
+                    seismoQuakeStartTime = nowS;
 
-                    lastQuake = moment.tz(new Date(), "UTC");
+                    lastQuake = moment.tz(now, "UTC");
 
                     send(channelNameToID(config.options.channels.home), util.format(
                         strings.announcements.seismo.quake,
@@ -7198,11 +7241,11 @@ function median(values){
                         Math.sqrt(sampleMedian).toFixed(2),
                         sampleMedian.toFixed(2)
                     ), false);
-                    seismoQuakePrevTime = now;
+                    seismoQuakePrevTime = nowS;
                 }
 
-                if (seismoIsShaking && sampleMedian > config.seismo.detection.threshold && now - seismoQuakePrevTime <= config.seismo.detection.hold) {
-                    seismoQuakePrevTime = now;
+                if (seismoIsShaking && sampleMedian > config.seismo.detection.threshold && nowS - seismoQuakePrevTime <= config.seismo.detection.hold) {
+                    seismoQuakePrevTime = nowS;
                     seismoAccu.push(sampleMedian);
 
                     if (seismoAccu.length % config.seismo.detection.notice == 0) {                    
@@ -7214,7 +7257,7 @@ function median(values){
                     }
                 }
 
-                if (seismoIsShaking && now - seismoQuakePrevTime > config.seismo.detection.hold) {
+                if (seismoIsShaking && nowS - seismoQuakePrevTime > config.seismo.detection.hold) {
                     seismoIsShaking = false;
 
                     var diff = seismoQuakePrevTime - seismoQuakeStartTime + 1;
