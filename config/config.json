@@ -339,9 +339,10 @@
             }
         },
         "detection": {
-            "threshold": 100000,
-            "hold":      20,
-            "notice":    5
+            "thresholdtrig": 100000,
+            "thresholdhold": 10000,
+            "hold":          20,
+            "notice":        5
         },
         "output": true,
         "file":   "/var/www/node/seismo/%s_%s.txt"

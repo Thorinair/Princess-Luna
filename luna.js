@@ -7228,7 +7228,7 @@ function median(values){
 
                 var nowS = Math.floor(now / 1000);
 
-                if (!seismoIsShaking && sampleMedian > config.seismo.detection.threshold) {
+                if (!seismoIsShaking && sampleMedian > config.seismo.detection.thresholdtrig) {
                     seismoIsShaking = true;
                     seismoQuakeStartTime = nowS;
 
@@ -7244,7 +7244,7 @@ function median(values){
                     seismoQuakePrevTime = nowS;
                 }
 
-                if (seismoIsShaking && sampleMedian > config.seismo.detection.threshold && nowS - seismoQuakePrevTime <= config.seismo.detection.hold) {
+                if (seismoIsShaking && sampleMedian > config.seismo.detection.thresholdhold && nowS - seismoQuakePrevTime <= config.seismo.detection.hold) {
                     seismoQuakePrevTime = nowS;
                     seismoAccu.push(sampleMedian);
 
