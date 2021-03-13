@@ -38,6 +38,7 @@
         "reboottime":    10,
         "starttime":     60,
         "reconnecttime": 10,
+        "reconnectmax":  600,
         "htimeout":      1800,
         "hmessage":      1,
         "phasetimeout":  30,

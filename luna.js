@@ -211,6 +211,7 @@ var server;
 var startTime;
 var waifuTimeout;
 var cameraTimeout;
+var reconnectTime = 0;
 
 var rebooting       = false;
 var isLive          = false;
@@ -3190,7 +3191,7 @@ comm.wake = function(data) {
 
 
 // Command: !reboot
-comm.reboot = function(data) {  
+comm.reboot = function(data) {
     rebooting = true;
 
     Object.keys(nptoggles).forEach(function(n, i) {
@@ -4749,6 +4750,7 @@ function loadBot() {
     });
      
     bot.on("ready", function() {
+        reconnectTime = 0;
         bot.setPresence({
             "game": {
                 "name": config.options.game
@@ -5064,10 +5066,28 @@ function loadBot() {
 
     bot.on("disconnect", function(erMsg, code) {
         console.error(strings.debug.disconnected);
-        // Wait for reconnect to prevent spamming.
-        setTimeout(function() {
-            bot.connect();
-        }, config.options.reconnecttime * 1000);        
+        if (reconnectTime < config.options.reconnectmax) {
+            reconnectTime += config.options.reconnecttime;
+            // Wait for reconnect to prevent spamming.
+            setTimeout(function() {
+                bot.connect();
+            }, config.options.reconnecttime * 1000);
+        }
+        else {
+            rebooting = true;
+            console.log(util.format(
+                strings.debug.fullreconnect,
+                reconnectTime
+            ));
+
+            saveAllBrains();
+            blitzorws.close();
+
+            setTimeout(function() {
+                console.log(strings.debug.stopped);
+                process.exit();
+            }, config.options.reboottime * 1000);
+        }    
     });
 }
 

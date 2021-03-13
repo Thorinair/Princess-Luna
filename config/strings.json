@@ -700,7 +700,9 @@
         "started":       "<STARTED>",
         "stopped":       "<STOPPED>",
         "startedtime":   "Started at %s.",
+        "join":          "Joined Discord. My name is \"%s\" with ID #%s.",
         "disconnected":  "Disconnected from Discord... Reconnecting.",
+        "fullreconnect": "Disconnected for over %s seconds. Rebooting bot.",
         "failedm":       "Error sending message. Retrying...",
         "failgiveup":    "Max retries exceeded.",
         "failedr":       "Error reacting. Retrying...",
@@ -709,7 +711,6 @@
         "welcomefail":   "Error assigning role: %s",
         "reactrolefail": "Error adjusting role: %s on server: %s",
         "reactroleerr":  "Error reading react role message. No access to channel #%s or unknown message ID.",
-        "join":          "Joined Discord. My name is \"%s\" with ID #%s.",
         "eegerror":      "Error saving EEG data: %s",
         "download": {
             "start":  "Downloading file: %s",
