@@ -348,17 +348,17 @@
         "emojigraph": {
             "low": {
                 "max": 1000,
-                "seg": 10,
+                "seg": 5,
                 "emoji": "🟩"
             },
             "medium": {
                 "max": 10000,
-                "seg": 10,
+                "seg": 5,
                 "emoji": "🟨"
             },
             "high": {
                 "max": 50000,
-                "seg": 10,
+                "seg": 5,
                 "emoji": "🟥"
             },
             "overload": "🚫"
