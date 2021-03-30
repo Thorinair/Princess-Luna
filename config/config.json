@@ -340,12 +340,31 @@
             }
         },
         "detection": {
-            "thresholdtrig": 100000,
-            "thresholdhold": 10000,
+            "thresholdtrig": 300,
+            "thresholdhold": 100,
             "hold":          20,
             "notice":        5
         },
-        "output": true,
+        "emojigraph": {
+            "low": {
+                "max": 1000,
+                "seg": 10,
+                "emoji": "🟩"
+            },
+            "medium": {
+                "max": 10000,
+                "seg": 10,
+                "emoji": "🟨"
+            },
+            "high": {
+                "max": 50000,
+                "seg": 10,
+                "emoji": "🟥"
+            },
+            "overload": "🚫"
+        },
+        "outputterm": false,
+        "outputfile": false,
         "file":   "/var/www/node/seismo/%s_%s.txt"
     },
     "autoreact": {

@@ -569,9 +569,9 @@
             "expire": "@everyone, I have not detected any lightning activity in a while. The danger has potentially passed."
         },
         "seismo": {
-            "quake":  "@everyone, 💥 **WARNING** 💥 I have detected a start of an earthquake. I will be posting velocity and energy levels periodically below throughout the duration.\nTime: **%s %s**\nVelocity: **%s um/s**, Energy: **%s**",
-            "energy": "Velocity: **%s um/s**, Energy: **%s**",
-            "end":    "The earthquake seems to be over.\nMeasured duration: **%s:%s**\nAverage velocity: **%s um/s**\nAverage energy: **%s**"
+            "quake":  "@everyone, 💥 **WARNING** 💥 I have detected a start of an earthquake. I will be posting velocity levels periodically below throughout the duration.\nTime: **%s %s**\n%s **%s um/s**",
+            "energy": "%s **%s um/s**",
+            "end":    "The earthquake seems to be over.\nMeasured duration: **%s:%s**\nAverage velocity: **%s um/s**\nAverage energy: **%s**\nPeak velocity: **%s um/s**\nPeak energy: **%s**"
         },
         "chase": {
             "strike": "🌩 **BOOM!** 🌩 Lightning activity detected near your location!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",

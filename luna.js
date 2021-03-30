@@ -7120,7 +7120,7 @@ function setupSeismoFilter() {
  * @param  values  An array of values.
  * @return         Median value.
  */
-function median(values){
+function median(values) {
     if(values.length === 0) return 0;
 
     values.sort(function(a, b) {
@@ -7133,6 +7133,60 @@ function median(values){
         return values[half];
 
     return (values[half - 1] + values[half]) / 2.0;
+}
+
+/*
+ * Generates an emoji string for quake intensity.
+ * @param  velocity  The velocity value of the quake.
+ * @return           A string of emojis representing quake intensity.
+ */
+function generateEmojigraph(velocity) {
+    var emojis = "";
+
+    var lowCnt    = 0;
+    var mediumCnt = 0;
+    var highCnt   = 0;
+
+    if (velocity < config.seismo.emojigraph.low.max) {
+        for (var i = 0; i < velocity; i += (config.seismo.emojigraph.low.max / config.seismo.emojigraph.low.seg))
+            lowCnt++;
+    }
+    else {
+        lowCnt = config.seismo.emojigraph.low.seg;
+
+        if (velocity < config.seismo.emojigraph.medium.max) {
+            var tempVelocity = velocity - config.seismo.emojigraph.low.max;
+
+            for (var i = 0; i < tempVelocity; i += ((config.seismo.emojigraph.medium.max - config.seismo.emojigraph.low.max) / config.seismo.emojigraph.medium.seg))
+                mediumCnt++;
+        }
+        else {
+            mediumCnt = config.seismo.emojigraph.medium.seg;
+
+            if (velocity < config.seismo.emojigraph.high.max) {
+                var tempVelocity = velocity - config.seismo.emojigraph.medium.max;
+
+                for (var i = 0; i < tempVelocity; i += ((config.seismo.emojigraph.high.max - config.seismo.emojigraph.medium.max) / config.seismo.emojigraph.high.seg))
+                    highCnt++;
+            }
+            else {
+                highCnt = config.seismo.emojigraph.high.seg;
+            }
+        }
+    }
+
+    for (var i = 0; i < lowCnt; i++)
+        emojis += config.seismo.emojigraph.low.emoji;
+    for (var i = 0; i < mediumCnt; i++)
+        emojis += config.seismo.emojigraph.medium.emoji;
+    for (var i = 0; i < highCnt; i++)
+        emojis += config.seismo.emojigraph.high.emoji;
+
+    if (velocity >= config.seismo.emojigraph.high.max) {
+        emojis += config.seismo.emojigraph.overload;
+    }
+
+    return emojis;
 }
 
 /*
@@ -7173,7 +7227,7 @@ function median(values){
             var stringSeismoRaw = "";
             var stringSeismoFlt = "";
             var stringSeismoMed = "";
-            if (config.seismo.output) {
+            if (config.seismo.outputfile) {
                 if (now.getMinutes() != seismoLastMinute) {
                     seismoLastMinute = now.getMinutes();
                     var outDate = moment.tz(now, "UTC");
@@ -7213,9 +7267,12 @@ function median(values){
                 var samplesCopy = JSON.parse(JSON.stringify(seismoSamples));
                 sampleMedian = median(samplesCopy);
 
+                var nowS = Math.floor(now / 1000);
+                var velocity = Math.sqrt(sampleMedian);
+
                 //console.log("cnt: " + seismoSamples.length + " val: " + sampleMedian);
 
-                if (config.seismo.output) {
+                if (config.seismo.outputfile) {
                     stringSeismoMed += sampleMedian.toFixed(2) + "\n";
 
                     var outDate = moment.tz(now, "UTC");
@@ -7246,9 +7303,11 @@ function median(values){
                     });
                 }
 
-                var nowS = Math.floor(now / 1000);
+                if (config.seismo.outputterm) {
+                    console.log(velocity.toFixed(2) + " um/s");
+                }
 
-                if (!seismoIsShaking && sampleMedian > config.seismo.detection.thresholdtrig) {
+                if (!seismoIsShaking && velocity > config.seismo.detection.thresholdtrig) {
                     seismoIsShaking = true;
                     seismoQuakeStartTime = nowS;
 
@@ -7258,21 +7317,21 @@ function median(values){
                         strings.announcements.seismo.quake,
                         lastQuake.format("YYYY-MM-DD"),
                         lastQuake.format("HH:mm:ss (z)"),
-                        Math.sqrt(sampleMedian).toFixed(2),
-                        sampleMedian.toFixed(2)
+                        generateEmojigraph(velocity),
+                        velocity.toFixed(2)
                     ), false);
                     seismoQuakePrevTime = nowS;
                 }
 
-                if (seismoIsShaking && sampleMedian > config.seismo.detection.thresholdhold && nowS - seismoQuakePrevTime <= config.seismo.detection.hold) {
+                if (seismoIsShaking && velocity > config.seismo.detection.thresholdhold && nowS - seismoQuakePrevTime <= config.seismo.detection.hold) {
                     seismoQuakePrevTime = nowS;
                     seismoAccu.push(sampleMedian);
 
                     if (seismoAccu.length % config.seismo.detection.notice == 0) {                    
                         send(channelNameToID(config.options.channels.home), util.format(
                             strings.announcements.seismo.energy,
-                            Math.sqrt(sampleMedian).toFixed(2),
-                            sampleMedian.toFixed(2)
+                            generateEmojigraph(velocity),
+                            velocity.toFixed(2)
                         ), false);
                     }
                 }
@@ -7293,6 +7352,11 @@ function median(values){
                     seismoAccu.forEach(function(s) {
                         totalEnergy += s / seismoAccu.length;
                     });
+                    seismoAccu.sort(function(a, b) {
+                        return b - a;
+                    });
+                    var peakEnergy = seismoAccu[0];
+
                     seismoAccu = [];
 
                     send(channelNameToID(config.options.channels.home), util.format(
@@ -7300,7 +7364,9 @@ function median(values){
                         minutes,
                         seconds,
                         Math.sqrt(totalEnergy).toFixed(2),
-                        totalEnergy.toFixed(2)
+                        totalEnergy.toFixed(2),
+                        Math.sqrt(peakEnergy).toFixed(2),
+                        peakEnergy.toFixed(2)
                     ), false);
                 }
             }
