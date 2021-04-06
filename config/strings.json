@@ -25,7 +25,7 @@
             "error":    "%s, I am unable to show the image of the Moon at this time..."
         },
         "room": {
-            "message":  "%s, here is the status of Thorinair's room. Radiation data was measured by Chryssy, particle data was measured by Dashie, and the rest of the data was measured by Celly.\n```\nCelly (%s ago):\n  Temperature:          %s °C\n  Humidity:             %s %\n  Pressure:             %s hPa\n  CO2 Concentration:    %s ppm\n  VOC Concentration:    %s ppb\n  Ambient Light:        %s\n  Magnetic Magnitude:   %s uT\n  Magnetic Inclination: %s °\n  Vibrations X:         %s\n  Vibrations Y:         %s\n  Vibrations Z:         %s\n  Gravity X:            %s m/s2\n  Gravity Y:            %s m/s2\n  Gravity Z:            %s m/s2\n```\n```Chryssy (%s ago):\n  Radiation Dose EMA: %s uSv/h\n  Geiger Counts:      %s CPM\n```\n```Dashie (%s ago):\n  PM1.0 Concentration:   %s ug/m3\n  PM2.5 Concentration:   %s ug/m3\n  PM10.0 Concentration:  %s ug/m3\n  Particles 0.3-0.5 um:  %s pcs/L\n  Particles 0.5-1.0 um:  %s pcs/L\n  Particles 1.0-2.5 um:  %s pcs/L\n  Particles 2.5-5.0 um:  %s pcs/L\n  Particles 5.0-10.0 um: %s pcs/L\n  Particles >10.0 um:    %s pcs/L```",
+            "message":  "%s, here is the status of Thorinair's room. Radiation data was measured by Chryssy, particle data was measured by Dashie, and the rest of the data was measured by Celly.\n```\nCelly (%s ago):\n  Temperature:          %s °C\n  Humidity:             %s %\n  Pressure:             %s hPa\n  CO2 Concentration:    %s ppm\n  VOC Concentration:    %s ppb\n  Ambient Light:        %s\n  Magnetic Magnitude:   %s uT\n  Magnetic Inclination: %s °\n  Vibrations X:         %s\n  Vibrations Y:         %s\n  Vibrations Z:         %s\n  Gravity X:            %s m/s2\n  Gravity Y:            %s m/s2\n  Gravity Z:            %s m/s2\n```\n```Chryssy (%s ago):\n  Radiation Dose EMA: %s uSv/h\n  Geiger Counts:      %s CPM\n```\n```Dashie (%s ago):\n  PM1.0 Concentration:   %s ug/m3\n  PM2.5 Concentration:   %s ug/m3\n  PM10.0 Concentration:  %s ug/m3\n  Particles 0.3-0.5 µm:  %s pcs/L\n  Particles 0.5-1.0 µm:  %s pcs/L\n  Particles 1.0-2.5 µm:  %s pcs/L\n  Particles 2.5-5.0 µm:  %s pcs/L\n  Particles 5.0-10.0 µm: %s pcs/L\n  Particles >10.0 µm:    %s pcs/L```",
             "error":    "%s, I am having trouble connecting to VariPass. Please try again later..."
         },
         "power": {
@@ -103,8 +103,8 @@
             "error":    "%s, no filament spool weights have been added yet."
         },
         "seismo": {
-            "messageA": "%s, latest detected earthquake event was at **%s %s**. Latest velocity is **%s um/s** and energy is **%s**. Give me a moment...",
-            "messageB": "%s, I havent yet detected an earthquake event. Latest velocity is **%s um/s** and energy is **%s**. Give me a moment...",
+            "messageA": "%s, latest detected earthquake event was at **%s %s**. Latest velocity is **%s µm/s** and energy is **%s**. Give me a moment...",
+            "messageB": "%s, I havent yet detected an earthquake event. Latest velocity is **%s µm/s** and energy is **%s**. Give me a moment...",
             "messageC": "Here is also the latest helicorder image recorded by Maud.",
             "error":    "I was unable to fetch the latest helicorder image. Please try again later..."
         },
@@ -569,9 +569,9 @@
             "expire": "@everyone, I have not detected any lightning activity in a while. The danger has potentially passed."
         },
         "seismo": {
-            "quake":  "@everyone, 💥 **WARNING** 💥 I have detected a start of an earthquake. I will be posting velocity levels periodically below throughout the duration.\nTime: **%s %s**\n%s **%s um/s**",
-            "energy": "%s **%s um/s**",
-            "end":    "The earthquake seems to be over.\nMeasured duration: **%s:%s**\nAverage velocity: **%s um/s**\nAverage energy: **%s**\nPeak velocity: **%s um/s**\nPeak energy: **%s**"
+            "quake":  "@everyone, 💥 **WARNING** 💥 I have detected a start of an earthquake. I will be posting velocity levels periodically below throughout the duration.\nTime: **%s %s**\n%s %s µm/s",
+            "energy": "%s %s µm/s",
+            "end":    "The earthquake seems to be over.\nMeasured duration: **%s:%s**\nAverage velocity: **%s µm/s**\nAverage energy: **%s**\nPeak velocity: **%s µm/s**\nPeak energy: **%s**"
         },
         "chase": {
             "strike": "🌩 **BOOM!** 🌩 Lightning activity detected near your location!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
