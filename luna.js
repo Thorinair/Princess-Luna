@@ -4997,7 +4997,7 @@ function loadBot() {
                                 "userID": data.d.user_id,
                                 "roleID": m.map[r]
                             }, function(err, response) {
-                                bot.createDMChannel(data.userID, function(){});
+                                bot.createDMChannel(data.d.user_id, function(){});
                                 if (err) {
                                     console.error(util.format(
                                         strings.debug.reactrolefail, 
@@ -5038,8 +5038,8 @@ function loadBot() {
                                 "userID": data.d.user_id,
                                 "roleID": m.map[r]
                             }, function(err, response) {
+                                bot.createDMChannel(data.d.user_id, function(){});
                                 if (err) {
-                                    bot.createDMChannel(data.userID, function(){});
                                     console.error(util.format(
                                         strings.debug.reactrolefail, 
                                         m.map[r],
@@ -5119,7 +5119,9 @@ function send(id, message, typing, retry=0) {
                         if (err != undefined) {
                             retry++;
                             console.log(strings.debug.failedm);
-                            send(id, message, typing, retry);
+                            setTimeout(function() {
+                                send(id, message, typing, retry);
+                            }, 1000);
                         }
                     });
                 }, config.options.typetime * 1000); 
@@ -5134,7 +5136,9 @@ function send(id, message, typing, retry=0) {
                     if (err != undefined) {
                         retry++;
                         console.log(strings.debug.failedm);
-                        send(id, message, typing, retry);
+                        setTimeout(function() {
+                            send(id, message, typing, retry);
+                        }, 1000);
                     }
                 });
             }
