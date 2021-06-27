@@ -166,9 +166,9 @@
             "self":     "*Opens two magical portals and uses them to give herself a kiss on the cheek.*"
         },
         "boop": {
-            "single":   "*Gives %s a boop on the snout.*",
-            "multiple": "*Gives %s boops on their snouts.*",
-            "self":     "*Boops her own snout and makes a confused face.*"
+            "single":   "*Gives %s a boop on the snoot.*",
+            "multiple": "*Gives %s boops on their snoots.*",
+            "self":     "*Boops her own snoot and makes a confused face.*"
         },
         "glomp": {
             "single":   "*Jumps at %s and glomps them.*",

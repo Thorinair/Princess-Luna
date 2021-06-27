@@ -32,7 +32,7 @@
         "mytimezone":    "Europe/Zagreb",
         "dailyavg":      "00:00",
         "serverport":    80,
-        "maxlength":     2000,
+        "maxlength":     1500,
         "typetime":      2,
         "sendretry":     5,
         "reboottime":    10,

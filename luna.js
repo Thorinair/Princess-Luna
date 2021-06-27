@@ -1648,7 +1648,7 @@ comm.help = function(data) {
     var reply = strings.commands.help.messageA;
 
     commands.list.forEach(function(c, i) {
-        if (i < 10)
+        if (i < 8)
             if (c.type == "public")
                 reply += util.format(
                     strings.commands.help.messageB, 
@@ -1666,7 +1666,7 @@ comm.help = function(data) {
         var reply = "";
 
         commands.list.forEach(function(c, i) {
-            if (i >= 10)
+            if (i >= 8 && i < 16)
                 if (c.type == "public")
                     reply += util.format(
                         strings.commands.help.messageB, 
@@ -1678,6 +1678,23 @@ comm.help = function(data) {
 
         send(data.userID, reply, true);
     }, 1000);
+
+    setTimeout(function() {
+        var reply = "";
+
+        commands.list.forEach(function(c, i) {
+            if (i >= 16)
+                if (c.type == "public")
+                    reply += util.format(
+                        strings.commands.help.messageB, 
+                        config.options.commandsymbol,
+                        c.command,
+                        c.help
+                    );
+        });
+
+        send(data.userID, reply, true);
+    }, 2000);
 
 
     setTimeout(function() {
@@ -1714,7 +1731,7 @@ comm.help = function(data) {
         reply += strings.commands.help.messageF;
 
         send(data.userID, reply, true);
-    }, 2000);
+    }, 3000);
 
     if (bot.channels[data.channelID] != undefined)  
         send(data.channelID, util.format(
