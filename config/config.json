@@ -340,7 +340,7 @@
             }
         },
         "detection": {
-            "thresholdtrig": 300,
+            "thresholdtrig": 500,
             "thresholdhold": 100,
             "hold":          20,
             "notice":        5
