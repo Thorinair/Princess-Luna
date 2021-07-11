@@ -1,7 +1,7 @@
 # Princess Luna
 Princess Luna is a Discord bot designed for Thorinair's official Glory of The Night Discord server. The bot features multiple different commands, automatic announcements, server role management, now playing information during Thorinair's show and a chatbot.
 
-![alt text](http://dl.thorinair.net/MLP/pbpl_logo_small.png "Powered by Princess Luna")
+![alt text](https://raw.githubusercontent.com/Thorinair/Princess-Luna/master/pbpl_logo_small.png "Powered by Princess Luna")
 
 ## Features
 * Announces the upcoming show airtime and when the show ends.
