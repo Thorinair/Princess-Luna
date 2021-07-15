@@ -196,9 +196,11 @@ var seismoFilter;
 var seismoReadyFilter = false;
 var seismoReadyEarthquake = false;
 var seismoSampleCounter = 0;
+var seismoQuakeStartTimeTemp;
 var seismoQuakeStartTime;
 var seismoQuakePrevTime;
 var seismoIsShaking = false;
+var seismoIsQuake = false;
 var seismoLastMinute = -1;
 var seismoAccu = [];
 var sampleMedian = 0;
@@ -7328,12 +7330,29 @@ function generateEmojigraph(velocity) {
                     console.log(velocity.toFixed(2) + " um/s");
                 }
 
-                if (!seismoIsShaking && velocity > config.seismo.detection.thresholdtrig) {
+                if (!seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdtrig) {
                     seismoIsShaking = true;
-                    seismoQuakeStartTime = nowS;
+                    seismoQuakePrevTime = nowS;
+                    seismoQuakeStartTimeTemp = nowS;
 
-                    lastQuake = moment.tz(now, "UTC");
+                    console.log(util.format(
+                        strings.debug.seismo.qstartpr,
+                        velocity.toFixed(2)
+                    ));
+                }
 
+                if (seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdtrig && nowS - seismoQuakePrevTime <= config.seismo.detection.wait) {
+                    console.log(util.format(
+                        strings.debug.seismo.qtickpr,
+                        velocity.toFixed(2)
+                    ));
+                }
+                else if (seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdtrig && nowS - seismoQuakePrevTime > config.seismo.detection.wait) {
+                    seismoIsQuake = true;
+                    seismoQuakePrevTime = nowS;
+                    seismoQuakeStartTime = seismoQuakeStartTimeTemp;
+
+                    lastQuake = moment.tz(now, "UTC");                    
                     send(channelNameToID(config.options.channels.home), util.format(
                         strings.announcements.seismo.quake,
                         lastQuake.format("YYYY-MM-DD"),
@@ -7341,10 +7360,14 @@ function generateEmojigraph(velocity) {
                         generateEmojigraph(velocity),
                         velocity.toFixed(2)
                     ), false);
-                    seismoQuakePrevTime = nowS;
+
+                    console.log(util.format(
+                        strings.debug.seismo.qstartrl,
+                        velocity.toFixed(2)
+                    ));
                 }
 
-                if (seismoIsShaking && velocity > config.seismo.detection.thresholdhold && nowS - seismoQuakePrevTime <= config.seismo.detection.hold) {
+                if (seismoIsShaking && seismoIsQuake && velocity > config.seismo.detection.thresholdhold && nowS - seismoQuakePrevTime <= config.seismo.detection.hold) {
                     seismoQuakePrevTime = nowS;
                     seismoAccu.push(sampleMedian);
 
@@ -7355,10 +7378,16 @@ function generateEmojigraph(velocity) {
                             velocity.toFixed(2)
                         ), false);
                     }
+
+                    console.log(util.format(
+                        strings.debug.seismo.qtickrl,
+                        velocity.toFixed(2)
+                    ));
                 }
 
-                if (seismoIsShaking && nowS - seismoQuakePrevTime > config.seismo.detection.hold) {
+                if (seismoIsShaking && seismoIsQuake && nowS - seismoQuakePrevTime > config.seismo.detection.hold) {
                     seismoIsShaking = false;
+                    seismoIsQuake = false;
 
                     var diff = seismoQuakePrevTime - seismoQuakeStartTime + 1;
 
@@ -7389,6 +7418,13 @@ function generateEmojigraph(velocity) {
                         Math.sqrt(peakEnergy).toFixed(2),
                         peakEnergy.toFixed(2)
                     ), false);
+
+                    console.log(strings.debug.seismo.qendrl);
+                }
+                else if (seismoIsShaking && !seismoIsQuake && nowS - seismoQuakePrevTime > config.seismo.detection.hold) {
+                    seismoIsShaking = false;
+
+                    console.log(strings.debug.seismo.qendpr);
                 }
             }
 

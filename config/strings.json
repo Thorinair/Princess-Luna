@@ -827,10 +827,16 @@
             "max":       "Spreading outside of range. Clamping to max range of %s."
         },
         "seismo": {
-            "start":  "Starting earthquake detection system...",
-            "done":   "  UDP server started. Listening on: %s:%s. Preparing filter...",
-            "readyf": "  Filter ready. Accumulating data...",
-            "readye": "  Earthquake detection ready."
+            "start":    "Starting earthquake detection system...",
+            "done":     "  UDP server started. Listening on: %s:%s. Preparing filter...",
+            "readyf":   "  Filter ready. Accumulating data...",
+            "readye":   "  Earthquake detection ready.",
+            "qstartpr": "Quake: Preliminary start: %s um/s",
+            "qstartrl": "Quake: Real start: %s um/s",
+            "qtickpr":  "  Quake: Preliminary tick: %s um/s",
+            "qtickrl":  "  Quake: Real tick: %s um/s",
+            "qendpr":   "Quake: Preliminary stopped.",
+            "qendrl":   "Quake: Real stopped."
         },
         "backup": {
             "start": "Started a backup...",
