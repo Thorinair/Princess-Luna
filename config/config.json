@@ -343,6 +343,7 @@
         },
         "detection": {
             "thresholdtrig": 400,
+            "thresholdprel": 200,
             "thresholdhold": 100,
             "wait":          10,
             "hold":          20,

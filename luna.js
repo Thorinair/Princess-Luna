@@ -5996,6 +5996,8 @@ function connectBlitzortung(reconnect) {
 
     blitzorws = new blitzorapi.Client({
         make(address) {
+            if (blitzor.debugconnect)
+                console.log("  " + address);
             return new WebSocket(address);
         }
     });
@@ -7341,13 +7343,13 @@ function generateEmojigraph(velocity) {
                     ));
                 }
 
-                if (seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdtrig && nowS - seismoQuakePrevTime <= config.seismo.detection.wait) {
+                if (seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdprel && nowS - seismoQuakePrevTime <= config.seismo.detection.wait) {
                     console.log(util.format(
                         strings.debug.seismo.qtickpr,
                         velocity.toFixed(2)
                     ));
                 }
-                else if (seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdtrig && nowS - seismoQuakePrevTime > config.seismo.detection.wait) {
+                else if (seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdprel && nowS - seismoQuakePrevTime > config.seismo.detection.wait) {
                     seismoIsQuake = true;
                     seismoQuakePrevTime = nowS;
                     seismoQuakeStartTime = seismoQuakeStartTimeTemp;
