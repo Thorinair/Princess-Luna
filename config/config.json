@@ -293,7 +293,7 @@
             "rarity_public": "api/job",
 
             "tantabus_local":  "http://tantabus.local/api",
-            "tantabus_public": "http://tantabus.thorinair.net/api"
+            "tantabus_public": "https://tantabus.thorinair.net/api"
         },
         "responses": {
             "luna_local":  "pong",
@@ -312,7 +312,8 @@
             "tantabus_public": "{\"error\": \"not found\"}"
         },
         "simple": {
-            "fluttershy":  "http://fluttershy.local:8080/"
+            "fluttershy_local": "http://fluttershy.local:8080/",
+            "moon_local":       "http://192.168.200.198/"
         }
     },
     "corona": {

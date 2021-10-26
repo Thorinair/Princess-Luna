@@ -12,5 +12,6 @@
     },
     "auth": "000000000000000000000x0000",
     "debugstrikes": true,
-    "debugconnect": false
+    "debugconnect": false,
+    "usecert":      true
 }

@@ -184,7 +184,8 @@ var statusTimeoutChrysalisIcecastPublic;
 var statusTimeoutChrysalisAnn;
 var statusTimeoutRarityLocal;
 var statusTimeoutRarityPublic;
-var statusTimeoutFluttershy;
+var statusTimeoutFluttershyLocal;
+var statusTimeoutMoonLocal;
 var statusTimeoutTantabusLocal;
 var statusTimeoutTantabusPublic;
 
@@ -4799,7 +4800,7 @@ function loadBot() {
 
             loopLightning();
             loopNowPlaying();
-            loopCorona();
+            //loopCorona();
             loopStatusPull();
             loopStatusPush();
             setTimeout(loopBrainSave, config.brain.saveloop * 1000);
@@ -5511,147 +5512,153 @@ function statusVariPass() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             statusGlobal.varipass = Math.floor((new Date()) / 1000);
 
-            var vpData = JSON.parse(xhr.responseText);
-
-            var timeOffset = Math.floor((new Date()) / 1000) - vpData.current;
-            statusGlobal.celly    = findVariable(vpData, varipass.main.ids.temperature ).history[0].time + timeOffset;
-            statusGlobal.chryssy  = findVariable(vpData, varipass.main.ids.counts      ).history[0].time + timeOffset;
-            statusGlobal.dashie   = findVariable(vpData, varipass.main.ids.pm010       ).history[0].time + timeOffset;
-            statusGlobal.unicorn  = findVariable(vpData, varipass.main.ids.unicorn_temp).history[0].time + timeOffset;
-            statusGlobal.twilight = findVariable(vpData, varipass.main.ids.location    ).history[0].time + timeOffset;
-            
-            // Geiger Calculation
-            var vpDose = findVariable(vpData, varipass.main.ids.dose).history;
-            var vpDoseEMA = findVariable(vpData, varipass.main.ids.doseema).history;
-
-            if (!(vpTimeDose != undefined && vpDose[0].time <= vpTimeDose)) {
-                vpTimeDose = vpDose[0].time;
-
-                var alpha = parseFloat(1.0 / config.varipass.geiger.samples);
-                var value = alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value;
-                sendDoseEMA(value);
-
-                if (value <= config.varipass.geiger.okay) {
-                    if (doseWasWarned) {
-                        doseWasWarned = false;
-                        send(channelNameToID(config.options.channels.home), util.format(
-                            strings.announcements.varipass.doseokay,
-                            value.toFixed(4),
-                            config.varipass.geiger.okay
-                        ), false);
-                    }
-                }
-                else if (value >= config.varipass.geiger.warning) {
-                    if (!doseWasWarned) {
-                        doseWasWarned = true;
-                        send(channelNameToID(config.options.channels.home), util.format(
-                            strings.announcements.varipass.dosewarning,
-                            config.varipass.geiger.warning,
-                            value.toFixed(4)
-                        ), false);
-                    }
-                }
+            var vpData;
+            try {
+                vpData = JSON.parse(xhr.responseText);
             }
+            catch(error) {
+            }
+            if (vpData != undefined) {
+                var timeOffset = Math.floor((new Date()) / 1000) - vpData.current;
+                statusGlobal.celly    = findVariable(vpData, varipass.main.ids.temperature ).history[0].time + timeOffset;
+                statusGlobal.chryssy  = findVariable(vpData, varipass.main.ids.counts      ).history[0].time + timeOffset;
+                statusGlobal.dashie   = findVariable(vpData, varipass.main.ids.pm010       ).history[0].time + timeOffset;
+                statusGlobal.unicorn  = findVariable(vpData, varipass.main.ids.unicorn_temp).history[0].time + timeOffset;
+                statusGlobal.twilight = findVariable(vpData, varipass.main.ids.location    ).history[0].time + timeOffset;
+                
+                // Geiger Calculation
+                var vpDose = findVariable(vpData, varipass.main.ids.dose).history;
+                var vpDoseEMA = findVariable(vpData, varipass.main.ids.doseema).history;
 
-            // Pressure Alerts
-            var vpPressure = findVariable(vpData, varipass.main.ids.pressure).history;
+                if (!(vpTimeDose != undefined && vpDose[0].time <= vpTimeDose)) {
+                    vpTimeDose = vpDose[0].time;
 
-            if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure)) {
-                vpTimePressure = vpPressure[0].time;
+                    var alpha = parseFloat(1.0 / config.varipass.geiger.samples);
+                    var value = alpha * vpDose[0].value + (1.0 - alpha) * vpDoseEMA[0].value;
+                    sendDoseEMA(value);
 
-                if (vpPressure[1].value != undefined) {
-                    if (vpPressure[0].time - vpPressure[1].time <= config.varipass.pressure.pause) {
-                        var value = vpPressure[0].value - vpPressure[1].value;
-                        if (Math.abs(value) >= config.varipass.pressure.warning) {
+                    if (value <= config.varipass.geiger.okay) {
+                        if (doseWasWarned) {
+                            doseWasWarned = false;
                             send(channelNameToID(config.options.channels.home), util.format(
-                                strings.announcements.varipass.pressure,
-                                value.toFixed(2)
+                                strings.announcements.varipass.doseokay,
+                                value.toFixed(4),
+                                config.varipass.geiger.okay
+                            ), false);
+                        }
+                    }
+                    else if (value >= config.varipass.geiger.warning) {
+                        if (!doseWasWarned) {
+                            doseWasWarned = true;
+                            send(channelNameToID(config.options.channels.home), util.format(
+                                strings.announcements.varipass.dosewarning,
+                                config.varipass.geiger.warning,
+                                value.toFixed(4)
                             ), false);
                         }
                     }
                 }
-            }
 
-            // Particle Alerts
-            var vpPM025 = findVariable(vpData, varipass.main.ids.pm025).history[0].value;
+                // Pressure Alerts
+                var vpPressure = findVariable(vpData, varipass.main.ids.pressure).history;
 
-            if (vpPM025 <= config.varipass.pm025.okay) {
-                if (pm025WasWarned) {
-                    pm025WasWarned = false;
-                    send(channelNameToID(config.options.channels.debug), util.format(
-                        strings.announcements.varipass.pm025okay,
-                        mention(config.options.adminid),
-                        strings.announcements.varipass.pm025okayname,
-                        vpPM025.toFixed(2)
-                    ), false);
-                }
-            }
-            else if (vpPM025 >= config.varipass.pm025.warning) {
-                if (!pm025WasWarned) {
-                    pm025WasWarned = true;
-                    send(channelNameToID(config.options.channels.debug), util.format(
-                        strings.announcements.varipass.pm025warning,
-                        mention(config.options.adminid),
-                        strings.announcements.varipass.pm025warningname,
-                        vpPM025.toFixed(2)
-                    ), false);
-                }
-            }
+                if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure)) {
+                    vpTimePressure = vpPressure[0].time;
 
-            // Light Control Features
-            var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
-
-            refreshTradfriDevices(function(result) {
-                if (result) {
-                    statusGlobal.tradfri = Math.floor((new Date()) / 1000);
-
-                    // Day Lamp Off
-                    if (vpLight >= config.varipass.daylight.threshold) {
-                        config.varipass.daylight.bulbs.forEach(function(b) {
-                            tDevices.forEach(function(d) {  
-                                if (d.name == b && d.on == true) {
-                                    hub.toggleDevice(d.id);
-                                    send(channelNameToID(config.options.channels.debug), util.format(
-                                        strings.announcements.varipass.daylightoff,
-                                        mention(config.options.adminid),
-                                        b
-                                    ), false);
-                                }
-                            });
-                        });
-                    }
-
-                    // Night Lamp Off
-                    var controlOn = false;
-                    tDevices.forEach(function(d) {  
-                        if (d.name == config.varipass.nightlight.control && d.on == true) {
-                            controlOn = true;
+                    if (vpPressure[1].value != undefined) {
+                        if (vpPressure[0].time - vpPressure[1].time <= config.varipass.pressure.pause) {
+                            var value = vpPressure[0].value - vpPressure[1].value;
+                            if (Math.abs(value) >= config.varipass.pressure.warning) {
+                                send(channelNameToID(config.options.channels.home), util.format(
+                                    strings.announcements.varipass.pressure,
+                                    value.toFixed(2)
+                                ), false);
+                            }
                         }
-                    });                 
-                    if (vpLight > config.varipass.nightlight.value - config.varipass.nightlight.delta &&
-                        vpLight < config.varipass.nightlight.value + config.varipass.nightlight.delta &&
-                        !controlOn) {
-                        nightLightCount++;
+                    }
+                }
 
-                        if (nightLightCount >= config.varipass.nightlight.count)
-                            config.varipass.nightlight.bulbs.forEach(function(b) {
+                // Particle Alerts
+                var vpPM025 = findVariable(vpData, varipass.main.ids.pm025).history[0].value;
+
+                if (vpPM025 <= config.varipass.pm025.okay) {
+                    if (pm025WasWarned) {
+                        pm025WasWarned = false;
+                        send(channelNameToID(config.options.channels.debug), util.format(
+                            strings.announcements.varipass.pm025okay,
+                            mention(config.options.adminid),
+                            strings.announcements.varipass.pm025okayname,
+                            vpPM025.toFixed(2)
+                        ), false);
+                    }
+                }
+                else if (vpPM025 >= config.varipass.pm025.warning) {
+                    if (!pm025WasWarned) {
+                        pm025WasWarned = true;
+                        send(channelNameToID(config.options.channels.debug), util.format(
+                            strings.announcements.varipass.pm025warning,
+                            mention(config.options.adminid),
+                            strings.announcements.varipass.pm025warningname,
+                            vpPM025.toFixed(2)
+                        ), false);
+                    }
+                }
+
+                // Light Control Features
+                var vpLight = findVariable(vpData, varipass.main.ids.light).history[0].value;
+
+                refreshTradfriDevices(function(result) {
+                    if (result) {
+                        statusGlobal.tradfri = Math.floor((new Date()) / 1000);
+
+                        // Day Lamp Off
+                        if (vpLight >= config.varipass.daylight.threshold) {
+                            config.varipass.daylight.bulbs.forEach(function(b) {
                                 tDevices.forEach(function(d) {  
                                     if (d.name == b && d.on == true) {
                                         hub.toggleDevice(d.id);
                                         send(channelNameToID(config.options.channels.debug), util.format(
-                                            strings.announcements.varipass.nightlightoff,
+                                            strings.announcements.varipass.daylightoff,
                                             mention(config.options.adminid),
                                             b
                                         ), false);
                                     }
                                 });
                             });
+                        }
+
+                        // Night Lamp Off
+                        var controlOn = false;
+                        tDevices.forEach(function(d) {  
+                            if (d.name == config.varipass.nightlight.control && d.on == true) {
+                                controlOn = true;
+                            }
+                        });                 
+                        if (vpLight > config.varipass.nightlight.value - config.varipass.nightlight.delta &&
+                            vpLight < config.varipass.nightlight.value + config.varipass.nightlight.delta &&
+                            !controlOn) {
+                            nightLightCount++;
+
+                            if (nightLightCount >= config.varipass.nightlight.count)
+                                config.varipass.nightlight.bulbs.forEach(function(b) {
+                                    tDevices.forEach(function(d) {  
+                                        if (d.name == b && d.on == true) {
+                                            hub.toggleDevice(d.id);
+                                            send(channelNameToID(config.options.channels.debug), util.format(
+                                                strings.announcements.varipass.nightlightoff,
+                                                mention(config.options.adminid),
+                                                b
+                                            ), false);
+                                        }
+                                    });
+                                });
+                        }
+                        else {
+                            nightLightCount = 0;
+                        }
                     }
-                    else {
-                        nightLightCount = 0;
-                    }
-                }
-            });
+                });
+            }
         }
     }
     xhr.onerror = function(err) {
@@ -5998,7 +6005,9 @@ function connectBlitzortung(reconnect) {
         make(address) {
             if (blitzor.debugconnect)
                 console.log("  " + address);
-            return new WebSocket(address);
+            return new WebSocket(address, {
+                rejectUnauthorized: blitzor.usecert
+            });
         }
     });
 
@@ -6101,7 +6110,9 @@ function connectChase(reconnect) {
 
             chasews = new blitzorapi.Client({
                 make(address) {
-                    return new WebSocket(address);
+                    return new WebSocket(address, {
+                        rejectUnauthorized: blitzor.usecert
+                    });
                 }
             });
 
@@ -7464,6 +7475,7 @@ function loopStatusPull() {
     statusChrysalis();
     statusRarity();
     statusFluttershy();
+    statusMoon();
     statusTantabus();
 
     setTimeout(loopStatusPull, config.options.statuspull * 1000);
@@ -7493,7 +7505,8 @@ function loopStatusPush() {
 
     data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
     data += generateStatus("rarity_public", statusGlobal.rarity_public, now);
-    data += generateStatus("fluttershy", statusGlobal.fluttershy, now);
+    data += generateStatus("fluttershy_local", statusGlobal.fluttershy_local, now);
+    data += generateStatus("moon_local", statusGlobal.moon_local, now);
     data += generateStatus("raritush", statusGlobal.raritush, now);
 
     data += generateStatus("tantabus_local", statusGlobal.tantabus_local, now);
@@ -7630,9 +7643,19 @@ function statusRarity() {
  * Checks the status of Nightmare Fluttershy.
  */
 function statusFluttershy() {
-    getStatus(config.status.simple.fluttershy, statusTimeoutFluttershy, function(r, s) {
+    getStatus(config.status.simple.fluttershy_local, statusTimeoutFluttershyLocal, function(r, s) {
         if (s == 200)
-            statusGlobal.fluttershy = Math.floor((new Date()) / 1000);
+            statusGlobal.fluttershy_local = Math.floor((new Date()) / 1000);
+    });
+}
+
+/*
+ * Checks the status of Nightmare Moon.
+ */
+function statusMoon() {
+    getStatus(config.status.simple.moon_local, statusTimeoutMoonLocal, function(r, s) {
+        if (s == 200)
+            statusGlobal.moon_local = Math.floor((new Date()) / 1000);
     });
 }
 
