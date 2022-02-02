@@ -4718,10 +4718,10 @@ function processJsonStoryArt(res) {
         if (art[np.nowplaying] != undefined)
             data.art = art[np.nowplaying];
         else
-            data.art = [];
+            data.art = "";
     }
     else {
-        data.art = [];
+        data.art = "";
     }
 
     var json = JSON.stringify(data);
