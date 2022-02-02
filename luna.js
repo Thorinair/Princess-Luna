@@ -106,6 +106,7 @@ var np        = {};
 var npradio   = {};
 var npstarted = false;
 var nppaused  = false;
+var npover    = {};
 
 // EEG Data
 var eegValues;
@@ -220,6 +221,8 @@ var rebooting       = false;
 var isLive          = false;
 var isplushie       = false;
 var isShowingLyrics = false;
+var isShowingStory  = false;
+var isShowingArt    = false;
 
 var hTrack = {};
 var corona;
@@ -1990,73 +1993,11 @@ comm.npo = function(data) {
         ), false);
 
         isShowingLyrics = false;
+        isShowingStory  = false;
+        isShowingArt    = false;
         np.nowplaying = track;
 
-        Object.keys(nptoggles).forEach(function(n, i) {
-            if (nptoggles[n])
-                if (np.nowplaying != undefined) {
-
-                    if (story[np.nowplaying] != undefined) {
-
-                        // Post story
-                        send(n, story[np.nowplaying], true);
-
-                        // Post art
-                        if (art[np.nowplaying] != undefined) {
-                            setTimeout(function() {
-                                var parts = art[np.nowplaying].split(".");
-                                var artimg = util.format(
-                                    config.options.artimg,
-                                    n,
-                                    parts[parts.length-1]
-                                );
-                                download(art[np.nowplaying], artimg, function() {
-                                    console.log(strings.debug.download.stop);
-                                    embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
-                                }, function() {
-                                }, 0);
-                            }, config.options.nptstoryart * 1000);
-                        }
-
-                        // Post track name with delay
-                        setTimeout(function() {
-                            send(n, util.format(
-                                strings.announcements.nowplaying,
-                                np.nowplaying
-                            ), true);
-                        }, config.options.nptstorytrack * 1000);
-
-                    }
-                    else {
-
-                        // Post track name normally
-                        send(n, util.format(
-                            strings.announcements.nowplaying,
-                            np.nowplaying
-                        ), true);
-
-                        // Post art
-                        if (art[np.nowplaying] != undefined) {
-                            setTimeout(function() {
-                                var parts = art[np.nowplaying].split(".");
-                                var artimg = util.format(
-                                    config.options.artimg,
-                                    n,
-                                    parts[parts.length-1]
-                                );
-                                download(art[np.nowplaying], artimg, function() {
-                                    console.log(strings.debug.download.stop);
-                                    embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
-                                }, function() {
-                                }, 0);
-                            }, config.options.nptstoryart * 1000);
-                        }
-
-                    }
-                }
-                else
-                    send(n, strings.announcements.nperror, true);
-        });     
+        processNowPlayingChange();
     }
 };
 
@@ -3982,8 +3923,9 @@ var processRequest = function(req, res) {
                 case "l":      processResL(res);      return; break;
                 case "lq":     processResLQ(res);     return; break;
                 // JSON Rquests
-                case "np":     processJsonNp(res);     return; break;
-                case "lyrics": processJsonLyrics(res); return; break;
+                case "np":       processJsonNp(res);       return; break;
+                case "lyrics":   processJsonLyrics(res);   return; break;
+                case "storyart": processJsonStoryArt(res); return; break;
             }
         }
     }
@@ -4711,7 +4653,7 @@ function processResLQ(res) {
 function processJsonNp(res) {
     statusGlobal.overlay_np = Math.floor((new Date()) / 1000);
 
-    var json = JSON.stringify(np);
+    var json = JSON.stringify(npover);
 
     res.writeHead(200, [
         ["Access-Control-Allow-Origin", "*"],
@@ -4739,6 +4681,47 @@ function processJsonLyrics(res) {
     }
     else {
         data.lyrics = [];
+    }
+
+    var json = JSON.stringify(data);
+
+    res.writeHead(200, [
+        ["Access-Control-Allow-Origin", "*"],
+        ["Content-Type", "application/json; charset=UTF-8"],
+        ["Content-Length", Buffer.byteLength(json, "utf8")]
+            ]);
+    res.write(json);
+    
+    res.end();
+}
+
+/*
+ * Responds to the "storyart" request.
+ * @param  res  The response object.
+ */
+function processJsonStoryArt(res) {
+    statusGlobal.overlay_storyart = Math.floor((new Date()) / 1000);
+
+    var data = {}
+
+    if(isShowingStory) {
+        if (story[np.nowplaying] != undefined)
+            data.story = story[np.nowplaying].split("\n");
+        else
+            data.story = [];
+    }
+    else {
+        data.story = [];
+    }
+
+    if(isShowingArt) {
+        if (art[np.nowplaying] != undefined)
+            data.art = art[np.nowplaying];
+        else
+            data.art = [];
+    }
+    else {
+        data.art = [];
     }
 
     var json = JSON.stringify(data);
@@ -7501,6 +7484,7 @@ function loopStatusPush() {
     data += generateStatus("pvfm", statusGlobal.pvfm, now);
     data += generateStatus("overlay_np", statusGlobal.overlay_np, now);
     data += generateStatus("overlay_lyrics", statusGlobal.overlay_lyrics, now);
+    data += generateStatus("overlay_storyart", statusGlobal.overlay_storyart, now);
     data += generateStatus("exclaml", statusGlobal.exclaml, now);
 
     data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
@@ -7735,6 +7719,110 @@ function generateStatus(key, val, now) {
  * MISCELLANEOUS FUNCTIONS
  **************************/
 
+ /*
+ * Processes the change to now plying data.
+ */
+function processNowPlayingChange() {
+    Object.keys(nptoggles).forEach(function(n, i) {
+        if (nptoggles[n])
+            if (np.nowplaying != undefined) {
+
+                if (story[np.nowplaying] != undefined) {
+
+                    // Post story
+                    send(n, story[np.nowplaying], true);
+
+                    // Post art
+                    if (art[np.nowplaying] != undefined) {
+                        setTimeout(function() {
+                            var parts = art[np.nowplaying].split(".");
+                            var artimg = util.format(
+                                config.options.artimg,
+                                n,
+                                parts[parts.length-1]
+                            );
+                            download(art[np.nowplaying], artimg, function() {
+                                console.log(strings.debug.download.stop);
+                                embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                            }, function() {
+                            }, 0);
+                        }, config.options.nptstoryart * 1000);
+                    }
+
+                    // Post track name with delay
+                    setTimeout(function() {
+                        send(n, util.format(
+                            strings.announcements.nowplaying,
+                            np.nowplaying
+                        ), true);
+                    }, config.options.nptstorytrack * 1000);
+                }
+                else {
+
+                    // Post track name normally
+                    send(n, util.format(
+                        strings.announcements.nowplaying,
+                        np.nowplaying
+                    ), true);
+
+                    // Post art
+                    if (art[np.nowplaying] != undefined) {
+                        setTimeout(function() {
+                            var parts = art[np.nowplaying].split(".");
+                            var artimg = util.format(
+                                config.options.artimg,
+                                n,
+                                parts[parts.length-1]
+                            );
+                            download(art[np.nowplaying], artimg, function() {
+                                console.log(strings.debug.download.stop);
+                                embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
+                            }, function() {
+                            }, 0);
+                        }, config.options.nptstoryart * 1000);
+                    }
+                }
+            }
+            else
+                send(n, strings.announcements.nperror, true);
+    });
+
+    if (np.nowplaying != undefined) {
+
+        if (story[np.nowplaying] != undefined) {
+
+            // Show story
+            isShowingStory = true;
+
+            // Show art
+            if (art[np.nowplaying] != undefined) {
+                setTimeout(function() {
+                    isShowingArt = true;
+                }, config.options.nptstoryart * 1000);
+            }
+
+            // Show track name with delay
+            setTimeout(function() {
+                npover = JSON.parse(JSON.stringify(np));
+            }, config.options.nptstorytrack * 1000);
+
+        }
+        else {
+            // Show track name normally
+            npover = JSON.parse(JSON.stringify(np));
+
+            // Show art
+            if (art[np.nowplaying] != undefined) {
+                setTimeout(function() {
+                    isShowingArt = true;
+                }, config.options.nptstoryart * 1000);
+            }
+        }
+    }
+    else
+        send(n, strings.announcements.nperror, true);
+}
+
 /*
  * Loops to continuously retrieve now playing data.
  */
@@ -7774,72 +7862,7 @@ function loopNowPlaying() {
                             np.nowplaying = np.title;
 
                         if (npstarted)
-                            Object.keys(nptoggles).forEach(function(n, i) {
-                                if (nptoggles[n])
-                                    if (np.nowplaying != undefined) {
-
-                                        if (story[np.nowplaying] != undefined) {
-
-                                            // Post story
-                                            send(n, story[np.nowplaying], true);
-
-                                            // Post art
-                                            if (art[np.nowplaying] != undefined) {
-                                                setTimeout(function() {
-                                                    var parts = art[np.nowplaying].split(".");
-                                                    var artimg = util.format(
-                                                        config.options.artimg,
-                                                        n,
-                                                        parts[parts.length-1]
-                                                    );
-                                                    download(art[np.nowplaying], artimg, function() {
-                                                        console.log(strings.debug.download.stop);
-                                                        embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
-                                                    }, function() {
-                                                    }, 0);
-                                                }, config.options.nptstoryart * 1000);
-                                            }
-
-                                            // Post track name with delay
-                                            setTimeout(function() {
-                                                send(n, util.format(
-                                                    strings.announcements.nowplaying,
-                                                    np.nowplaying
-                                                ), true);
-                                            }, config.options.nptstorytrack * 1000);
-
-                                        }
-                                        else {
-
-                                            // Post track name normally
-                                            send(n, util.format(
-                                                strings.announcements.nowplaying,
-                                                np.nowplaying
-                                            ), true);
-
-                                            // Post art
-                                            if (art[np.nowplaying] != undefined) {
-                                                setTimeout(function() {
-                                                    var parts = art[np.nowplaying].split(".");
-                                                    var artimg = util.format(
-                                                        config.options.artimg,
-                                                        n,
-                                                        parts[parts.length-1]
-                                                    );
-                                                    download(art[np.nowplaying], artimg, function() {
-                                                        console.log(strings.debug.download.stop);
-                                                        embed(n, "", artimg, np.nowplaying + "." + parts[parts.length-1], true, true);
-                                                    }, function() {
-                                                    }, 0);
-                                                }, config.options.nptstoryart * 1000);
-                                            }
-
-                                        }
-
-                                    }
-                                    else
-                                        send(n, strings.announcements.nperror, true);
-                            });
+                            processNowPlayingChange();                            
                         else
                             npstarted = true;
                     }
