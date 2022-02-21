@@ -1992,9 +1992,6 @@ comm.npo = function(data) {
             track
         ), false);
 
-        isShowingLyrics = false;
-        isShowingStory  = false;
-        isShowingArt    = false;
         np.nowplaying = track;
 
         processNowPlayingChange();
@@ -7723,6 +7720,10 @@ function generateStatus(key, val, now) {
  * Processes the change to now plying data.
  */
 function processNowPlayingChange() {
+    isShowingLyrics = false;
+    isShowingStory  = false;
+    isShowingArt    = false;
+        
     Object.keys(nptoggles).forEach(function(n, i) {
         if (nptoggles[n])
             if (np.nowplaying != undefined) {
@@ -7845,15 +7846,13 @@ function loopNowPlaying() {
                     response.icestats != undefined && 
                     response.icestats.source != undefined
                     ) {
-                    if (npradio == undefined || npradio.title != response.icestats.source.title || npradio.artist != response.icestats.source.artist) {             
-                        npradio = JSON.parse(xhr.responseText).icestats.source;
+                    if (npradio == undefined || npradio.title != response.icestats.source.title || npradio.artist != response.icestats.source.artist) {
 
-                        isShowingLyrics = false;
+                        npradio = JSON.parse(xhr.responseText).icestats.source;
                         if (npradio.artist != undefined)
                             npradio.nowplaying = npradio.artist + config.separators.track + npradio.title;
                         else
                             npradio.nowplaying = npradio.title;
-
 
                         np = JSON.parse(xhr.responseText).icestats.source;
                         if (np.artist != undefined)
