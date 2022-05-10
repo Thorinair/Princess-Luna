@@ -6323,6 +6323,11 @@ function refreshTradfriDevices(callback) {
         console.log(strings.debug.tradfri.connect);
 
     hub.getDevices().then((result) => {
+    }).catch((error) => {
+        loadTradfri();
+    });
+
+    hub.getDevices().then((result) => {
 
         tBulbs = result.filter(function(d) {
             return d.color != undefined;
