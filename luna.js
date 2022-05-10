@@ -5993,9 +5993,9 @@ function connectBlitzortung(reconnect) {
 
     blitzorws.connect();
     blitzorws.on("error", console.error);
-    blitzorws.on("connect", () => {
-        blitzorws.setArea(area);
-    });
+    //blitzorws.on("connect", () => {
+    //    blitzorws.setArea(area);
+    //});
     blitzorws.on("data", strike => {
         var distance = earthDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
 
@@ -6098,9 +6098,9 @@ function connectChase(reconnect) {
 
             chasews.connect();
             chasews.on("error", console.error);
-            chasews.on("connect", () => {
-                chasews.setArea(area);
-            });
+            //chasews.on("connect", () => {
+            //    chasews.setArea(area);
+            //});
             chasews.on("data", strike => {
                 var distance = earthDistance(chaseThoriLat, chaseThoriLng, strike.location.latitude, strike.location.longitude);
 
