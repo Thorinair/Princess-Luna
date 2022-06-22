@@ -7733,7 +7733,7 @@ function processNowPlayingChange() {
         if (nptoggles[n])
             if (np.nowplaying != undefined) {
 
-                if (story[np.nowplaying] != undefined) {
+                if (config.options.storymode && story[np.nowplaying] != undefined) {
 
                     // Post story
                     send(n, story[np.nowplaying], true);
