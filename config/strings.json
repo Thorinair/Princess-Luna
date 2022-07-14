@@ -606,6 +606,7 @@
         "schedule":   "As scheduled, I am toggling the following bulbs to **%s**: *%s*\nMotion detection may trigger!",
         "nowplaying": "**Now playing:** %s",
         "nperror":    "There appears to be a new track playing, but I was unable to read what it is.",
+        "nperrorv":   "There appears to be a new track playing, but I was unable to read what it is.\n```%s```",
         "npreboot":   "I need to go for a reboot... I'm sorry if I miss any tracks!",
         "npback":     "Hey, I'm back! Now back to track posting..."
     },  

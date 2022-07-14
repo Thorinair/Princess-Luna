@@ -7827,7 +7827,10 @@ function processNowPlayingChange() {
         }
     }
     else
-        send(channelNameToID(config.options.channels.debug), strings.announcements.nperror, true);
+        send(channelNameToID(config.options.channels.debug), util.format(
+            strings.announcements.nperrorv,
+            np.response
+        ), false);
 }
 
 /*
@@ -7847,6 +7850,7 @@ function loopNowPlaying() {
                 catch(error) {
                 }
                 statusGlobal.pvfm = Math.floor((new Date()) / 1000);
+                np.response = response;
                 if (
                     response != undefined && 
                     response.icestats != undefined && 
