@@ -7730,7 +7730,7 @@ function processNowPlayingChange() {
     isShowingArt    = false;
         
     Object.keys(nptoggles).forEach(function(n, i) {
-        if (nptoggles[n])
+        if (nptoggles[n]) {
             if (np.nowplaying != undefined) {
 
                 if (config.options.storymode && story[np.nowplaying] != undefined) {
@@ -7791,6 +7791,7 @@ function processNowPlayingChange() {
             }
             else
                 send(n, strings.announcements.nperror, true);
+        }
     });
 
     if (np.nowplaying != undefined) {
@@ -7826,7 +7827,7 @@ function processNowPlayingChange() {
         }
     }
     else
-        send(n, strings.announcements.nperror, true);
+        send(channelNameToID(config.options.channels.debug), strings.announcements.nperror, true);
 }
 
 /*
