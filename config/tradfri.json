@@ -180,6 +180,52 @@
         },
 
         {
+            "name": "talos",
+            "bulbs": [
+                {
+                    "name": "desk",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.65,
+                        "colorY":         0.325,
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "bed",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.62,
+                        "colorY":         0.5,
+                        "brightness":     0.8,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topa",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.64,
+                        "colorY":         0.5,
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                },
+                {
+                    "name": "topb",
+                    "config": {
+                        "state":          "on",
+                        "colorX":         0.65,
+                        "colorY":         0.325,
+                        "brightness":     1.0,
+                        "transitionTime": 2
+                    }
+                }
+            ]
+        },
+
+        {
             "name": "off",
             "bulbs": [
                 {
