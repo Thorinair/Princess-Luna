@@ -5065,7 +5065,10 @@ function loadBot() {
     });
 
     bot.on("disconnect", function(erMsg, code) {
-        console.error(strings.debug.disconnected);
+        console.error(util.format(
+                strings.debug.disconnected,
+                erMsg
+            ));
         if (reconnectTime < config.options.reconnectmax) {
             reconnectTime += config.options.reconnecttime;
             // Wait for reconnect to prevent spamming.

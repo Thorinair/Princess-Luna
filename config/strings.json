@@ -702,7 +702,7 @@
         "stopped":       "<STOPPED>",
         "startedtime":   "Started at %s.",
         "join":          "Joined Discord. My name is \"%s\" with ID #%s.",
-        "disconnected":  "Disconnected from Discord... Reconnecting.",
+        "disconnected":  "Disconnected from Discord... Error: \"%s\", reconnecting.",
         "fullreconnect": "Disconnected for over %s seconds. Rebooting bot.",
         "failedm":       "Error sending message. Retrying...",
         "failgiveup":    "Max retries exceeded.",
