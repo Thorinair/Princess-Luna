@@ -344,26 +344,26 @@
             }
         },
         "detection": {
-            "thresholdtrig": 400,
-            "thresholdprel": 200,
-            "thresholdhold": 100,
+            "thresholdtrig": 0.4,
+            "thresholdprel": 0.2,
+            "thresholdhold": 0.1,
             "wait":          10,
             "hold":          20,
             "notice":        5
         },
         "emojigraph": {
             "low": {
-                "max": 1000,
+                "max": 1,
                 "seg": 5,
                 "emoji": "🟩"
             },
             "medium": {
-                "max": 10000,
+                "max": 10,
                 "seg": 5,
                 "emoji": "🟨"
             },
             "high": {
-                "max": 50000,
+                "max": 50,
                 "seg": 5,
                 "emoji": "🟥"
             },

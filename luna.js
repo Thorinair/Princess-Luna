@@ -7260,10 +7260,10 @@ function generateEmojigraph(velocity) {
                     stringSeismoMed += outDate.format("YYYY-MM-DD") + " " + outDate.format("HH:mm:ss (z)") + ":\n";
                 }
                 seismoSamplesBuf.forEach(function(s) {
-                    stringSeismoRaw += s.toFixed(2) + "\n";
+                    stringSeismoRaw += s.toFixed(3) + "\n";
                 });
                 filtered.forEach(function(s) {
-                    stringSeismoFlt += s.toFixed(2) + "\n";
+                    stringSeismoFlt += s.toFixed(3) + "\n";
                 });
             }
 
@@ -7297,7 +7297,7 @@ function generateEmojigraph(velocity) {
                 //console.log("cnt: " + seismoSamples.length + " val: " + sampleMedian);
 
                 if (config.seismo.outputfile) {
-                    stringSeismoMed += sampleMedian.toFixed(2) + "\n";
+                    stringSeismoMed += sampleMedian.toFixed(3) + "\n";
 
                     var outDate = moment.tz(now, "UTC");
 
@@ -7328,7 +7328,7 @@ function generateEmojigraph(velocity) {
                 }
 
                 if (config.seismo.outputterm) {
-                    console.log(velocity.toFixed(2) + " um/s");
+                    console.log(velocity.toFixed(3) + " um/s");
                 }
 
                 if (!seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdtrig) {
@@ -7338,14 +7338,14 @@ function generateEmojigraph(velocity) {
 
                     console.log(util.format(
                         strings.debug.seismo.qstartpr,
-                        velocity.toFixed(2)
+                        velocity.toFixed(3)
                     ));
                 }
 
                 if (seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdprel && nowS - seismoQuakePrevTime <= config.seismo.detection.wait) {
                     console.log(util.format(
                         strings.debug.seismo.qtickpr,
-                        velocity.toFixed(2)
+                        velocity.toFixed(3)
                     ));
                 }
                 else if (seismoIsShaking && !seismoIsQuake && velocity > config.seismo.detection.thresholdprel && nowS - seismoQuakePrevTime > config.seismo.detection.wait) {
@@ -7359,12 +7359,12 @@ function generateEmojigraph(velocity) {
                         lastQuake.format("YYYY-MM-DD"),
                         lastQuake.format("HH:mm:ss (z)"),
                         generateEmojigraph(velocity),
-                        velocity.toFixed(2)
+                        velocity.toFixed(3)
                     ), false);
 
                     console.log(util.format(
                         strings.debug.seismo.qstartrl,
-                        velocity.toFixed(2)
+                        velocity.toFixed(3)
                     ));
                 }
 
@@ -7376,13 +7376,13 @@ function generateEmojigraph(velocity) {
                         send(channelNameToID(config.options.channels.home), util.format(
                             strings.announcements.seismo.energy,
                             generateEmojigraph(velocity),
-                            velocity.toFixed(2)
+                            velocity.toFixed(3)
                         ), false);
                     }
 
                     console.log(util.format(
                         strings.debug.seismo.qtickrl,
-                        velocity.toFixed(2)
+                        velocity.toFixed(3)
                     ));
                 }
 
@@ -7414,10 +7414,10 @@ function generateEmojigraph(velocity) {
                         strings.announcements.seismo.end,
                         minutes,
                         seconds,
-                        Math.sqrt(totalEnergy).toFixed(2),
-                        totalEnergy.toFixed(2),
-                        Math.sqrt(peakEnergy).toFixed(2),
-                        peakEnergy.toFixed(2)
+                        Math.sqrt(totalEnergy).toFixed(3),
+                        totalEnergy.toFixed(3),
+                        Math.sqrt(peakEnergy).toFixed(3),
+                        peakEnergy.toFixed(3)
                     ), false);
 
                     console.log(strings.debug.seismo.qendrl);
