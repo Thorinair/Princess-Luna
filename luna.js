@@ -6325,10 +6325,10 @@ function refreshTradfriDevices(callback) {
     if (tradfri.debug)
         console.log(strings.debug.tradfri.connect);
 
-    hub.getDevices().then((result) => {
-    }).catch((error) => {
-        loadTradfri();
-    });
+    //hub.getDevices().then((result) => {
+    //}).catch((error) => {
+    //    loadTradfri();
+    //});
 
     hub.getDevices().then((result) => {
 
@@ -6380,13 +6380,15 @@ function refreshTradfriDevices(callback) {
         callback(true);
 
     }).catch((error) => {
+        loadTradfri();
+
+        hubRetry++;
         if (hubRetry >= tradfri.retries)
             console.log(util.format(
                 strings.debug.tradfri.errorA,
                 hubRetry
             ));
 
-        hubRetry++;
         callback(false);
     });
 }
