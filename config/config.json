@@ -353,17 +353,17 @@
         },
         "emojigraph": {
             "low": {
-                "max": 1,
+                "max": 1000,
                 "seg": 5,
                 "emoji": "🟩"
             },
             "medium": {
-                "max": 10,
+                "max": 10000,
                 "seg": 5,
                 "emoji": "🟨"
             },
             "high": {
-                "max": 50,
+                "max": 50000,
                 "seg": 5,
                 "emoji": "🟥"
             },
