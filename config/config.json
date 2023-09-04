@@ -139,8 +139,12 @@
         "debug":   false
     },
     "nowplaying": {
-        "url":     "http://dj.bronyradio.com:8000/status-json.xsl?mount=/pvfm1.ogg",
-        "timeout": 5
+        "url":     "http://dj.bronyradio.com:9090/getmeta",
+        "timeout": 5,
+        "ignore": {
+            "artist": "PonyvilleFM",
+            "title": "PonyvilleFM - Are you ready for the night?"
+        }
     },
     "wow": {
         "assault": {

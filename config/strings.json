@@ -745,12 +745,13 @@
             "done": "  Done."
         },
         "nptoggles": {
-            "old":    "Loading: Now Playing file...",
-            "new":    "Created: Now Playing file.",
-            "done":   "  Done.",
-            "add":    "Subscribing #%s (%s) to Now Playing announcements.",
-            "remove": "Unsubscribing #%s (%s) from Now Playing announcements.",
-            "autoon": "Thori, I am **enabling** the automatic posting of Now Playing info."
+            "old":         "Loading: Now Playing file...",
+            "new":         "Created: Now Playing file.",
+            "done":        "  Done.",
+            "add":         "Subscribing #%s (%s) to Now Playing announcements.",
+            "remove":      "Unsubscribing #%s (%s) from Now Playing announcements.",
+            "instability": "Tag instability detected:\n  Artist: %s\n  Title: %s",
+            "autoon":      "Thori, I am **enabling** the automatic posting of Now Playing info."
         },
         "ann": {
             "old":  "Loading: ANN file...",

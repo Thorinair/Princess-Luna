@@ -7856,29 +7856,33 @@ function loopNowPlaying() {
                 }
                 statusGlobal.pvfm = Math.floor((new Date()) / 1000);
                 np.response = response;
-                if (
-                    response != undefined && 
-                    response.icestats != undefined && 
-                    response.icestats.source != undefined
-                    ) {
-                    if (npradio == undefined || npradio.title != response.icestats.source.title || npradio.artist != response.icestats.source.artist) {
+                if (response != undefined) {
+                    if (npradio == undefined || npradio.title != response.title || npradio.artist != response.artist) {
+                        if (response.artist == config.nowplaying.ignore.artist && response.title == config.nowplaying.ignore.title) {
+                            console.log(util.format(
+                                strings.debug.nptoggles.instability,
+                                response.artist,
+                                response.title
+                            ));                            
+                        }
+                        else {
+                            npradio = response;
+                            if (npradio.artist != undefined)
+                                npradio.nowplaying = npradio.artist + config.separators.track + npradio.title;
+                            else
+                                npradio.nowplaying = npradio.title;
 
-                        npradio = JSON.parse(xhr.responseText).icestats.source;
-                        if (npradio.artist != undefined)
-                            npradio.nowplaying = npradio.artist + config.separators.track + npradio.title;
-                        else
-                            npradio.nowplaying = npradio.title;
+                            np = response;
+                            if (np.artist != undefined)
+                                np.nowplaying = np.artist + config.separators.track + np.title;
+                            else
+                                np.nowplaying = np.title;
 
-                        np = JSON.parse(xhr.responseText).icestats.source;
-                        if (np.artist != undefined)
-                            np.nowplaying = np.artist + config.separators.track + np.title;
-                        else
-                            np.nowplaying = np.title;
-
-                        if (npstarted)
-                            processNowPlayingChange();                            
-                        else
-                            npstarted = true;
+                            if (npstarted)
+                                processNowPlayingChange();
+                            else
+                                npstarted = true;
+                    }
                     }
                 }
             }
