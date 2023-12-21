@@ -28,7 +28,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!power` Lists the status of the mains power. The bot will keep running of a UPS if power goes out.
     - `!eeg` Writes out the latest brainwave data gathered using Thorinair's hacked MindFlex EEG headset.
     - `!printer` Lists the status of Thorinair's Nightmare Rarity 3D printer. Also sends a photo of the printer's webcam.
-    - `!token` Lists the the current price of the \[WoW Token\].
+    - `!devices` Writes details and sends a picture about all the different devices which are part of Thorinair's Lunar Infrastructure. Use the command without parameters to get a list, and then with the device name as parameter to get more detailed info.
     - `!blacklist` Adds the user to a blacklist so their messages are not saved for training purposes.
     - `!coin` Flips a coin which may land either heads or tails.
     - `!minesweeper` Creates a minesweeper grid using Discord spoiler tags. Set the difficulty by adding a number 1, 2 or 3 after the command.

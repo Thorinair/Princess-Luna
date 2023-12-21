@@ -51,7 +51,8 @@
         "nptstoryart":   10,
         "nptstorytrack": 20,
         "popcount":      96,
-        "reactroleretr": 1, 
+        "reactroleretr": 1,
+        "timestamptype": "F",
         "channels": {
             "debug":     "debug",
             "printer":   "printer",

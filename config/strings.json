@@ -8,7 +8,8 @@
             "error":    "%s, I don't know when the next episode of My Little Pony: Friendship is Magic airs."
         },
         "time": {
-            "message":  "%s, current date and time is **%s** at **%s**. The unix timestamp is: `%s`."
+            "message":   "%s, current date and time is **%s**. The unix timestamp is: `%s`.",
+            "messagetz": "%s, current date and time is **%s** at **%s**. The unix timestamp is: `%s`."
         },
         "np": {
             "message":  "%s, the track currently playing on PonyvilleFM is:\n*%s*",
@@ -133,9 +134,10 @@
             "errorB":   "%s, I was unable to retrieve Thorinair's body temperature."
         },
         "stats": {
-            "message":  "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
-            "learnyes": "I am able to normally learn everything from this specific chatroom.",
-            "learnno":  "I am unable to learn anything from this specific chatroom."
+            "message":   "%s, my current version is v%s. Last time I've been rebooted was %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
+            "messagetz": "%s, my current version is v%s. Last time I've been rebooted was %s at %s, which was %s and %s seconds ago.\nInternally, this chatroom is defined as `%s` and the brain I am using here is called `%s`. The brain has **%s** lines of data saved from messages. %s",
+            "learnyes":  "I am able to normally learn everything from this specific chatroom.",
+            "learnno":   "I am unable to learn anything from this specific chatroom."
         },
         "status": {
             "message":  "%s, you can check the current status of Thorinair's Lunar Infrastructure on the following link: %s\nPlease note that I am the one who performs the status checks, and I do so every minute for various systems and devices."
@@ -422,7 +424,7 @@
         "schedulestart": {
             "messageA": "Thori, I have scheduled automatic bulb control for the next %s days. Here are all of the times I have scheduled:",
             "messageB": "\n\nDay %s:",
-            "messageC": "\n• %s - **%s** - %s at %s",
+            "messageC": "\n• %s - **%s** - %s",
             "errorA":   "Thori, you need to specify the number of days after the command.",
             "errorB":   "Thori, there is already a schedule running. Please stop is first using the `!schedulestop`."
         },
@@ -618,7 +620,9 @@
         "noadmin":      "I am sorry %s, but only Thorinair is allowed to use this command.",
         "tradfrierror": "Thori, I am having trouble connecting to the Tradfri hub. Please try again later.",
         "toolong":      "I won't even bother writing a reply to that.",
-        "left":         "%s on %s at %s",
+        "left":         "%s on %s",
+        "lefttz":       "%s on %s at %s",
+        "timestamp":    "<t:%s:%s>",
         "gold":         "%sg %ss %sc",
         "voicetag":     "`[voice]` ",
         "h":            "h",

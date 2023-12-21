@@ -243,10 +243,10 @@ comm.gotn = function(data) {
     var found = false;
 
     var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-    if (timezone == "" || timezone == config.options.commandsymbol + data.command)
-        timezone = "UTC";
+    if (timezone == config.options.commandsymbol + data.command)
+        timezone = "";
 
-    if (moment.tz.zone(timezone)) {
+    if (moment.tz.zone(timezone) || timezone == "") {
         gotn.dates.forEach(function(d) {
             if (!found) {
                 var partsDate = d.split(config.separators.date);
@@ -278,10 +278,10 @@ comm.mlp = function(data) {
     var found = false;
 
     var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-    if (timezone == "" || timezone == config.options.commandsymbol + data.command)
-        timezone = "UTC";
+    if (timezone == config.options.commandsymbol + data.command)
+        timezone = "";
 
-    if (moment.tz.zone(timezone)) {
+    if (moment.tz.zone(timezone) || timezone == "") {
         mlp.episodes.forEach(function(e) {
             if (!found) {
                 var partsDate = e.date.split(config.separators.date);
@@ -332,15 +332,15 @@ comm.time = function(data) {
         timezone == "Equestria/Cloudsdale"
         )
 
-    if (timezone == "" || timezone == config.options.commandsymbol + data.command || useEq)
-        timezone = "UTC";
+    if (timezone == config.options.commandsymbol + data.command || useEq)
+        timezone = "";
 
-    if (moment.tz.zone(timezone)) {
+    if (moment.tz.zone(timezone) || timezone == "") {
 
         if (useEq) {
             var momentTime = moment.tz(now / 8760 + 93*365*24*60*60*1000 + 11*60*60*1000, timezone);
             send(data.channelID, util.format(
-                strings.commands.time.message, 
+                strings.commands.time.messagetz, 
                 mention(data.userID),
                 momentTime.format("ddd MMM DD, YYYY"),
                 momentTime.format("HH:mm:ss") + " (QST)",
@@ -348,14 +348,24 @@ comm.time = function(data) {
             ), true);
         }
         else {
-            var momentTime = moment.tz(now, timezone);
-            send(data.channelID, util.format(
-                strings.commands.time.message, 
-                mention(data.userID),
-                momentTime.format("ddd MMM DD, YYYY"),
-                momentTime.format("HH:mm:ss (z)"),
-                Math.round(momentTime / 1000)
-            ), true);
+            if (timezone == "") {
+                send(data.channelID, util.format(
+                    strings.commands.time.message, 
+                    mention(data.userID),
+                    getDiscordTimestamp(now),
+                    Math.round(now.getTime() / 1000)
+                ), true);
+            }
+            else {
+                var momentTime = moment.tz(now, timezone);
+                send(data.channelID, util.format(
+                    strings.commands.time.messagetz, 
+                    mention(data.userID),
+                    momentTime.format("ddd MMM DD, YYYY"),
+                    momentTime.format("HH:mm:ss (z)"),
+                    Math.round(now / 1000)
+                ), true);
+            }
         }
     }
     else {
@@ -388,10 +398,10 @@ comm.phase = function(data) {
     var phaseNext;
 
     var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
-    if (timezone == "" || timezone == config.options.commandsymbol + data.command)
-        timezone = "UTC";
+    if (timezone == config.options.commandsymbol + data.command)
+        timezone = "";
 
-    if (moment.tz.zone(timezone)) {
+    if (moment.tz.zone(timezone) || timezone == "") {
 
         var found = false;
         phases.forEach(function(p) {
@@ -904,8 +914,8 @@ comm.assault = function(data) {
                 strings.commands.assault.messageA, 
                 mention(data.userID),
                 region,
-                getTimeLeft(dateNow, ending, "CET"),
-                getTimeLeft(dateNow, dueTime, "CET")
+                getTimeLeft(dateNow, new Date(ending), ""),
+                getTimeLeft(dateNow, new Date(dueTime), "")
             ), true);
         }
         else {
@@ -913,7 +923,7 @@ comm.assault = function(data) {
                 strings.commands.assault.messageB, 
                 mention(data.userID),
                 region,
-                getTimeLeft(dateNow, dueTime, "CET")
+                getTimeLeft(dateNow, new Date(dueTime), "")
             ), true);
         }
     }
@@ -1585,9 +1595,9 @@ comm.stats = function(data) {
 
     var timezone = data.message.replace(config.options.commandsymbol + data.command + " ", "");
     if (timezone == "" || timezone == config.options.commandsymbol + data.command)
-        timezone = "UTC";
+        timezone = "";
 
-    if (moment.tz.zone(timezone)) {
+    if (moment.tz.zone(timezone) || timezone == "") {
 
         var diff = (dateNow - startTime) / 1000;
         var time = {};
@@ -1607,20 +1617,33 @@ comm.stats = function(data) {
         else
             canLearn = strings.commands.stats.learnno;
 
-        send(data.channelID, util.format(
-            strings.commands.stats.message,
-            mention(data.userID),
-            package.version,
-            momentTime.format("ddd MMM DD, YYYY"),
-            momentTime.format("HH:mm (z)"),
-            getTimeString(time),
-            time.seconds,
-            channelIDToName(data.channelID),
-            channelIDToBrain(data.channelID),
-            messages[channelIDToBrain(data.channelID)].length,
-            canLearn
-        ), true);
-
+        if (timezone == "")
+            send(data.channelID, util.format(
+                strings.commands.stats.message,
+                mention(data.userID),
+                package.version,
+                getDiscordTimestamp(startTime),
+                getTimeString(time),
+                time.seconds,
+                channelIDToName(data.channelID),
+                channelIDToBrain(data.channelID),
+                messages[channelIDToBrain(data.channelID)].length,
+                canLearn
+            ), true);
+        else
+            send(data.channelID, util.format(
+                strings.commands.stats.messagetz,
+                mention(data.userID),
+                package.version,
+                momentTime.format("ddd MMM DD, YYYY"),
+                momentTime.format("HH:mm (z)"),
+                getTimeString(time),
+                time.seconds,
+                channelIDToName(data.channelID),
+                channelIDToBrain(data.channelID),
+                messages[channelIDToBrain(data.channelID)].length,
+                canLearn
+            ), true);
     }
     else {
         send(data.channelID, util.format(
@@ -2783,13 +2806,11 @@ comm.schedulestart = function(data) {
                     );
                 }
 
-                var momentTime = moment.tz(e.date, config.options.mytimezone);
                 message += util.format(
                     strings.commands.schedulestart.messageC, 
                     e.name,
                     e.toggle,
-                    momentTime.format("ddd MMM DD, YYYY"),
-                    momentTime.format("HH:mm (z)")
+                    getDiscordTimestamp(e.date)
                 );
 
                 var job = new CronJob(e.date, function() {
@@ -5472,6 +5493,18 @@ function prepareReactroleMessages() {
     });
 }
 
+/*
+ * Prepared a Discord compatible timestamp string.
+ * @param  timestamp  Timestamp in unix format.
+ */
+function getDiscordTimestamp(timestamp) {
+    return util.format(
+        strings.misc.timestamp,
+        Math.round(timestamp.getTime() / 1000),
+        config.options.timestamptype
+    );
+}
+
 
 
 /*************************
@@ -6781,13 +6814,19 @@ function getTimeLeft(start, stop, timezone) {
     time.days = Math.floor(diff / 24);
 
     var momentTime = moment.tz(stop, timezone);
-
-    return util.format(
-        strings.misc.left, 
-        getTimeString(time),  
-        momentTime.format("ddd MMM DD, YYYY"),
-        momentTime.format("HH:mm (z)")
-    );
+    if (timezone == "")
+        return util.format(
+            strings.misc.left, 
+            getTimeString(time),
+            getDiscordTimestamp(stop)
+        );
+    else
+        return util.format(
+            strings.misc.lefttz, 
+            getTimeString(time),
+            momentTime.format("ddd MMM DD, YYYY"),
+            momentTime.format("HH:mm (z)")
+        );
 }
 
 /*
@@ -8214,7 +8253,7 @@ function prepareAssaultAnnounce() {
         setTimeout(function() {
             send(channelNameToID(config.options.channels.home), util.format(
                 strings.announcements.wow.assault,
-                getTimeLeft((new Date()) - 2000, new Date(getAssault("EU")), "CET")
+                getTimeLeft((new Date()) - 2000, new Date(getAssault("EU")), "")
             ), true);
 
             prepareAssaultAnnounce();
