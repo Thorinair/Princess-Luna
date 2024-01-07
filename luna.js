@@ -5142,6 +5142,7 @@ function send(id, message, typing, retry=0) {
                     bot.sendMessage(msg, function(err) {
                         if (err != undefined) {
                             retry++;
+                            console.log(err)
                             console.log(strings.debug.failedm);
                             setTimeout(function() {
                                 send(id, message, typing, retry);
@@ -5159,6 +5160,7 @@ function send(id, message, typing, retry=0) {
                 bot.sendMessage(msg, function(err) {
                     if (err != undefined) {
                         retry++;
+                        console.log(err)
                         console.log(strings.debug.failedm);
                         setTimeout(function() {
                             send(id, message, typing, retry);
