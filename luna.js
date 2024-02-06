@@ -25,26 +25,27 @@ const Fili           = require('fili');
 const package  = require("./package.json");
 
 // Load file data
-var token     = require("./config/token.json");
-var config    = require("./config/config.json");
-var commands  = require("./config/commands.json");
-var custom    = require("./config/custom.json");
-var strings   = require("./config/strings.json");
-var gotn      = require("./config/gotn.json");
-var phases    = require("./config/phases.json");
-var mlp       = require("./config/mlp.json");
-var channels  = require("./config/channels.json");
-var varipass  = require("./config/varipass.json");
-var printer   = require("./config/printer.json");
-var dtls      = require("./config/dtls.json");
-var tradfri   = require("./config/tradfri.json");
-var schedule  = require("./config/schedule.json");
-var httpkey   = require("./config/httpkey.json");
-var mac       = require("./config/mac.json");
-var blitzor   = require("./config/blitzor.json");
-var thori     = require("./config/thori.json");
-var devices   = require("./config/devices.json");
-var reactrole = require("./config/reactrole.json");
+var token      = require("./config/token.json");
+var config     = require("./config/config.json");
+var commands   = require("./config/commands.json");
+var custom     = require("./config/custom.json");
+var strings    = require("./config/strings.json");
+var gotn       = require("./config/gotn.json");
+var phases     = require("./config/phases.json");
+var mlp        = require("./config/mlp.json");
+var channels   = require("./config/channels.json");
+var varipass   = require("./config/varipass.json");
+var printer    = require("./config/printer.json");
+var dtls       = require("./config/dtls.json");
+var tradfri    = require("./config/tradfri.json");
+var schedule   = require("./config/schedule.json");
+var httpkey    = require("./config/httpkey.json");
+var mac        = require("./config/mac.json");
+var blitzor    = require("./config/blitzor.json");
+var thori      = require("./config/thori.json");
+var devices    = require("./config/devices.json");
+var reactrole  = require("./config/reactrole.json");
+var talosmeets = require("./config/talosmeets.json");
 
 var moon = require(config.moon.lunamoon.pathdata);
 
@@ -3318,7 +3319,7 @@ function startupProcedure() {
     loadTimezones();
     loadTradfri();
     loadAssaults();
-    loadDailyAvg();
+    loadDailyCron();
     loadBrain();
 }
 
@@ -3668,14 +3669,14 @@ function loadAssaults() {
 }
 
 /*
- * Loads the daily averaging procedures.
+ * Loads the daily cron procedures.
  */
-function loadDailyAvg() {
-    console.log(strings.debug.dailyavg.load);
+function loadDailyCron() {
+    console.log(strings.debug.dailycron.load);
 
-    prepareDailyAvg();
+    prepareDailyCron();
 
-    console.log(strings.debug.dailyavg.done);
+    console.log(strings.debug.dailycron.done);
 }
 
 /*
@@ -4807,6 +4808,7 @@ function loadBot() {
             setTimeout(loopBrainSave, config.brain.saveloop * 1000);
 
             prepareReactroleMessages();
+            updateTalosMeets();
         }
     });
 
@@ -5142,11 +5144,16 @@ function send(id, message, typing, retry=0) {
                     bot.sendMessage(msg, function(err) {
                         if (err != undefined) {
                             retry++;
-                            console.log(err)
-                            console.log(strings.debug.failedm);
-                            setTimeout(function() {
-                                send(id, message, typing, retry);
-                            }, 1000);
+                            if (err.response.code != undefined && err.response.code == 50007) {
+                                console.log(strings.debug.failoff);
+                            }
+                            else {
+                                console.log(err);
+                                console.log(strings.debug.failedm);
+                                setTimeout(function() {
+                                    send(id, message, typing, retry);
+                                }, 1000);
+                            }
                         }
                     });
                 }, config.options.typetime * 1000); 
@@ -5160,11 +5167,16 @@ function send(id, message, typing, retry=0) {
                 bot.sendMessage(msg, function(err) {
                     if (err != undefined) {
                         retry++;
-                        console.log(err)
-                        console.log(strings.debug.failedm);
-                        setTimeout(function() {
-                            send(id, message, typing, retry);
-                        }, 1000);
+                        if (err.response.code != undefined && err.response.code == 50007) {
+                            console.log(strings.debug.failoff);
+                        }
+                        else {
+                            console.log(err);
+                            console.log(strings.debug.failedm);
+                            setTimeout(function() {
+                                send(id, message, typing, retry);
+                            }, 1000);
+                        }
                     }
                 });
             }
@@ -5269,6 +5281,72 @@ function embed(id, message, file, filename, typing, del) {
             fs.unlinkSync(file);
         }   
     }
+};
+
+/*
+ * Edits an existing message in a channel on Discord.
+ * @param  chaId    ID of the channel message is in.
+ * @param  msgId    ID of the message to edit.
+ * @param  message  New string for the message.
+ * @param  typing   Whether the typing delay should be added.
+ */
+function edit(chaId, msgId, message, typing, retry=0) {
+    if (retry < config.options.sendretry) {
+        if (message.length <= config.options.maxlength) {
+
+            var channel = channelIDToName(chaId);
+            var msg = {
+                "channelID": chaId,
+                "messageID": msgId,
+                "message": message
+            };
+
+            if (typing) {
+                bot.simulateTyping(chaId);
+                setTimeout(function() {
+                    console.log(util.format(
+                        strings.debug.edit,
+                        channel,
+                        message
+                    ));
+                    bot.editMessage(msg, function(err) {
+                        if (err != undefined) {
+                            retry++;
+                            console.log(err)
+                            console.log(strings.debug.failede);
+                            setTimeout(function() {
+                                edit(chaId, msgId, message, typing, retry);
+                            }, 1000);
+                        }
+                    });
+                }, config.options.typetime * 1000); 
+            }
+            else {
+                console.log(util.format(
+                    strings.debug.edit,
+                    channel,
+                    message
+                ));
+                bot.editMessage(msg, function(err) {
+                    if (err != undefined) {
+                        retry++;
+                        console.log(err)
+                        console.log(strings.debug.failede);
+                        setTimeout(function() {
+                            edit(chaId, msgId, message, typing, retry);
+                        }, 1000);
+                    }
+                });
+            }
+        }
+        else {
+            console.log(strings.debug.faillong);
+        }
+    }
+    else {
+        console.log(strings.debug.failgiveup);
+    }
+
 };
 
 /*
@@ -5499,11 +5577,11 @@ function prepareReactroleMessages() {
  * Prepared a Discord compatible timestamp string.
  * @param  timestamp  Timestamp in unix format.
  */
-function getDiscordTimestamp(timestamp) {
+function getDiscordTimestamp(timestamp, type=config.options.timestamptype) {
     return util.format(
         strings.misc.timestamp,
         Math.round(timestamp.getTime() / 1000),
-        config.options.timestamptype
+        type
     );
 }
 
@@ -8028,25 +8106,26 @@ function loopCorona() {
  * Reloads the configuration.
  */
 function reloadConfig() {  
-    token     = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
-    config    = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
-    commands  = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
-    custom    = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
-    strings   = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
-    gotn      = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
-    mlp       = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
-    channels  = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
-    varipass  = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
-    printer   = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
-    dtls      = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
-    tradfri   = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
-    schedule  = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
-    httpkey   = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
-    mac       = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
-    blitzor   = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
-    thori     = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
-    devices   = JSON.parse(fs.readFileSync(config.options.configpath + "devices.json", "utf8"));
-    reactrole = JSON.parse(fs.readFileSync(config.options.configpath + "reactrole.json", "utf8"));
+    token      = JSON.parse(fs.readFileSync(config.options.configpath + "token.json", "utf8"));
+    config     = JSON.parse(fs.readFileSync(config.options.configpath + "config.json", "utf8"));
+    commands   = JSON.parse(fs.readFileSync(config.options.configpath + "commands.json", "utf8"));
+    custom     = JSON.parse(fs.readFileSync(config.options.configpath + "custom.json", "utf8"));
+    strings    = JSON.parse(fs.readFileSync(config.options.configpath + "strings.json", "utf8"));
+    gotn       = JSON.parse(fs.readFileSync(config.options.configpath + "gotn.json", "utf8"));
+    mlp        = JSON.parse(fs.readFileSync(config.options.configpath + "mlp.json", "utf8"));
+    channels   = JSON.parse(fs.readFileSync(config.options.configpath + "channels.json", "utf8"));
+    varipass   = JSON.parse(fs.readFileSync(config.options.configpath + "varipass.json", "utf8"));
+    printer    = JSON.parse(fs.readFileSync(config.options.configpath + "printer.json", "utf8"));
+    dtls       = JSON.parse(fs.readFileSync(config.options.configpath + "dtls.json", "utf8"));
+    tradfri    = JSON.parse(fs.readFileSync(config.options.configpath + "tradfri.json", "utf8"));
+    schedule   = JSON.parse(fs.readFileSync(config.options.configpath + "schedule.json", "utf8"));
+    httpkey    = JSON.parse(fs.readFileSync(config.options.configpath + "httpkey.json", "utf8"));
+    mac        = JSON.parse(fs.readFileSync(config.options.configpath + "mac.json", "utf8"));
+    blitzor    = JSON.parse(fs.readFileSync(config.options.configpath + "blitzor.json", "utf8"));
+    thori      = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
+    devices    = JSON.parse(fs.readFileSync(config.options.configpath + "devices.json", "utf8"));
+    reactrole  = JSON.parse(fs.readFileSync(config.options.configpath + "reactrole.json", "utf8"));
+    talosmeets = JSON.parse(fs.readFileSync(config.options.configpath + "talosmeets.json", "utf8"));
 
     moon = JSON.parse(fs.readFileSync(config.moon.lunamoon.pathdata, "utf8"));
 
@@ -8073,6 +8152,7 @@ function reloadConfig() {
     }
 
     prepareReactroleMessages();
+    updateTalosMeets();
 }
 
 /*
@@ -8270,11 +8350,11 @@ function prepareAssaultAnnounce() {
 }
 
 /* 
- * Generates time for upcoming daily average procedure.
- * @return         Time of the procedure, as moment.
+ * Generates time for upcoming daily cron procedures.
+ * @return         Time of the procedures, as moment.
  */
-function getDailyAvgTime() {
-    var partsTime = config.options.dailyavg.split(config.separators.time);
+function getDailyCronTime() {
+    var partsTime = config.options.dailycron.split(config.separators.time);
 
     var parseDate = new Date();
     parseDate.setHours(partsTime[0]);
@@ -8291,22 +8371,105 @@ function getDailyAvgTime() {
 }
 
 /* 
- * Prepares a daily average procedure.
+ * Prepares a daily cron procedure.
  */
-function prepareDailyAvg() {
-    var dueTime = new Date(getDailyAvgTime());
+function prepareDailyCron() {
+    var dueTime = new Date(getDailyCronTime());
 
     var job = new CronJob(dueTime, function() {
+
+        // Daily cron events
         avgVariPass();
+        updateTalosMeets();
+
         setTimeout(function() {
-            prepareDailyAvg();
+            prepareDailyCron();
         }, 1000);
     }, function () {}, true);
 
     console.log(util.format(
-        strings.debug.dailyavg.date,
+        strings.debug.dailycron.date,
         dueTime
     ));  
+}
+
+/* 
+ * Prepares a daily cron procedure.
+ */
+function updateTalosMeets() {
+    var message = {};
+    message.channelID = channelNameToID(talosmeets.channel);
+    message.messageID = talosmeets.messageid;
+
+    bot.getMessage(message, function(err, msg) {
+        if (msg != undefined) {
+            console.log(strings.debug.talosmeets.start);
+
+            var text = strings.announcements.talosmeets.base;
+
+            var oneDay = 1000 * 60 * 60 * 24;
+            var partsStart = talosmeets.startday.split(config.separators.date);
+            var start = new Date(partsStart[0], parseInt(partsStart[1]) - 1, partsStart[2], 0, 0, 0, 0);
+            var now = new Date();
+            var nowBase = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+            console.log(nowBase.getFullYear() + "-" + (nowBase.getMonth() + 1) + "-" + now.getDate());
+            var dayFromStart = Math.floor((nowBase - start) / oneDay);
+            var dayInSet = dayFromStart % 14 + 1;
+
+            var maxshown = talosmeets.maxshown;
+            if (maxshown > talosmeets.schedule.length)
+                maxshown = talosmeets.schedule.length;
+            var count = 0;
+            for (i = 0; i < talosmeets.schedule.length; i++) {
+                if (talosmeets.schedule[i].day >= dayInSet && count < maxshown) {
+                    count++;
+                    text += createTalosMeetup(i, nowBase, dayInSet, oneDay);
+                }
+            }
+
+            for (i = 0; i < talosmeets.schedule.length; i++) {
+                if (count < maxshown) {
+                    count++;
+                    text += createTalosMeetup(i, nowBase, dayInSet - 14, oneDay);
+                }
+            }
+
+            console.log(strings.debug.talosmeets.done);
+
+            edit(channelNameToID(talosmeets.channel), talosmeets.messageid, text, false);
+        }
+        else {
+            send(channelNameToID(talosmeets.channel), strings.announcements.talosmeets.inital, false);
+        }
+    });
+}
+
+/* 
+ * Generates a string for a single Talos meetup.
+ * @param  i         ID of the meetup in the list.
+ * @param  nowBase   Date object of current day, at midnight.
+ * @param  dayInSet  Current day's number in the set.
+ * @param  oneDay    Length of one day.
+ * @return           Generated meetup string.
+ */
+function createTalosMeetup(i, nowBase, dayInSet, oneDay) {
+    var meetupDate = new Date(nowBase.getTime() + (talosmeets.schedule[i].day - dayInSet) * oneDay);
+    var partsMeetupTime = talosmeets.schedule[i].time.split(config.separators.time);
+    meetupDate.setHours(partsMeetupTime[0]);
+    meetupDate.setMinutes(partsMeetupTime[1]);
+    console.log(util.format(
+        strings.debug.talosmeets.add,
+        talosmeets.schedule[i].day,
+        talosmeets.schedule[i].name,
+        talosmeets.schedule[i].time,
+        meetupDate.toUTCString()
+    ));
+    return util.format(
+        strings.announcements.talosmeets.meetup,
+        getDiscordTimestamp(meetupDate),
+        getDiscordTimestamp(meetupDate, "R"),
+        talosmeets.schedule[i].name
+    );
 }
 
 /*

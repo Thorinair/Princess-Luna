@@ -30,7 +30,7 @@
         "defstation":    "one",
         "lyricformat":   "*",
         "mytimezone":    "Europe/Zagreb",
-        "dailyavg":      "00:00",
+        "dailycron":     "00:00",
         "storymode":     false,
         "serverport":    80,
         "maxlength":     1500,

@@ -601,6 +601,11 @@
             "total":  "**@everyone, New Total Croatia COVID-19 Data** (%s):\nNewly infected: **%s**\nNewly healed: **%s**\nNewly died: **%s**",
             "county": "**@everyone, New COVID-19 Data for %s County** (%s):\nNewly infected: **%s**\nNewly died: **%s**"
         },
+        "talosmeets": {
+            "inital": "Initial meetup schedule message.\nPlease copy the ID of this message and paste it into my config!",
+            "base":   "**You can view the upcoming meetups in the schedule list below.**\nThis list updates each day at midnight UTC time with the next upcoming meetup on top:",
+            "meetup": "\n* %s *(%s)* - **%s**"
+        },
         "camera":     "Thori, the device `%s` reports that the camera is now set to **%s**.",
         "dailyavg":   "Thori, I have calculated and pushed the daily sensor values to VariPass. You can see the values below.\n```24h Pressure:         %s\n24h Mag. Magnitude:   %s\n24h Mag. Inclination: %s\n24h Radiation Dose:   %s```",
         "motion":     "**@everyone, WARNING: Tantabus has detected motion on the camera \"%s\"! I am sending you the image now... Please check what's up!**",
@@ -701,6 +706,7 @@
     },
     "debug": {
         "message":       "=> #%s: \"%s\"",
+        "edit":          "EDIT => #%s: \"%s\"",
         "embed":         "=> #%s: \"%s\" with image \"%s\" and path \"%s\"",
         "started":       "<STARTED>",
         "stopped":       "<STOPPED>",
@@ -708,7 +714,10 @@
         "join":          "Joined Discord. My name is \"%s\" with ID #%s.",
         "disconnected":  "Disconnected from Discord... Error: \"%s\", reconnecting.",
         "fullreconnect": "Disconnected for over %s seconds. Rebooting bot.",
-        "failedm":       "Error sending message. Retrying...",
+        "failedm":       "Error sending message.",
+        "failede":       "Error editing message.",
+        "faillong":      "Message too long for edit.",
+        "failoff":       "User has messages disabled.",
         "failgiveup":    "Max retries exceeded.",
         "failedr":       "Error reacting. Retrying...",
         "chatting":      "<= @%s, #%s: \"%s\"",
@@ -800,8 +809,8 @@
             "date": "  Added: %s",
             "done": "  Done."
         },
-        "dailyavg": {
-            "load": "Loading: Daily average checkpoints...",
+        "dailycron": {
+            "load": "Loading: Daily cron checkpoints...",
             "date": "  Added: %s",
             "done": "  Done."
         },
@@ -883,6 +892,11 @@
             "rampC": "Unramping print.",
             "pause": "PAUSING PRINT!!!",
             "error": "Error connecting to printer. Attempts left: %s"
+        },
+        "talosmeets": {
+            "start": "Calculating meetup times...",
+            "add":   "  Added: %s, %s, %s (%s)",
+            "done":  "  Done."
         }
     }
 }
