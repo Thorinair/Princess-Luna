@@ -74,6 +74,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
     - `!mood` Changes the mood of a larger group of the Ikea Tradfri bulbs to one of the preset configurations available. Use without a mood name to list all available ones.
     - `!bulb` Changes the parameters of a single Ikea Tradfri bulb. Supports both HEX color codes and xyY color space. Use without parameters to list all available bulbs.
     - `!toggle` Toggles a single Ikea Tradfri bulb. Use without parameters to list all available bulbs.
+    - `!battery` Writes out a list of battery statuses from all Tradfri remotes.
     - `!schedulestart` Starts an automated schedule for toggling the lightbulbs. Specify number of days after the command.
     - `!schedulestop` Stops the active automated schedule for toggling the lightbulbs.
     - `!eegstart` Starts recording the brainwave data through the EEG system.

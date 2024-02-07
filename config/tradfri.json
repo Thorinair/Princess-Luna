@@ -1,6 +1,7 @@
 {
-    "debug":   false,
-    "retries": 1,
+    "debug":      false,
+    "retries":    1,
+    "lowbattery": 10,
     "moods": [
 
         {

@@ -372,6 +372,11 @@
             "type":    "private"
         },
         {
+            "command": "battery",
+            "help":    "",
+            "type":    "private"
+        },
+        {
             "command": "schedulestart",
             "help":    "",
             "type":    "private"

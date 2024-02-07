@@ -405,7 +405,7 @@
         },
         "bulb": {
             "messageA": "Thori, the bulbs I currently have access to are:",
-            "messageB": "\n:bulb: %s (#%s)",
+            "messageB": "\n* :bulb: **%s** (#%s)",
             "messageC": "Thori, I am setting the parameters now!",
             "errorA":   "Thori, you need to specify the parameters. The parameters should be written as shown below:",
             "errorB":   "\n```Color (HEX value)\nTransition Time (in seconds)```",
@@ -414,12 +414,19 @@
         },
         "toggle": {
             "messageA":    "Thori, the togglable devices I currently have access to are (bolded are **on**):",
-            "messageBon":  "\n%s **%s**",
-            "messageBoff": "\n%s %s",
+            "messageBon":  "\n* %s **%s**",
+            "messageBoff": "\n* %s %s",
             "messageC":    "Thori, I am toggling the device now!",
             "error":       "Thori, I don't know of any device with that name.",
-            "iconBulb":    ":bulb:",
-            "iconPlug":    ":electric_plug:"
+            "iconBulb":    "💡",
+            "iconPlug":    "🔌"
+        },
+        "battery": {
+            "messageA":    "Thori, here is a list of all Tradfri remotes and their battery status (bolded are low):",
+            "messageBHi":  "\n* %s %s% - %s",
+            "messageBLow": "\n* %s **%s% - %s**",
+            "iconBattHi":  "🔋",
+            "iconBattLow": "🪫"
         },
         "schedulestart": {
             "messageA": "Thori, I have scheduled automatic bulb control for the next %s days. Here are all of the times I have scheduled:",
@@ -565,6 +572,10 @@
             "pm025okayname":    "Good",
             "daylightoff":      "%s, it is day time, and you forgot to turn off the **%s** bulb, so I turned it off for you.",
             "nightlightoff":    "%s, it is night time, and you forgot to turn off the **%s** bulb, so I turned it off for you."
+        },
+        "tradfri": {
+            "batterystart": "%s, 🪫 **WARNING** 🪫 I have detected a low battery in one or more of the Tradfri remotes:",
+            "batteryentry": "\n* 🪫 **%s% - %s**"
         },
         "blitzor": {
             "strike": "@everyone, 🌩 **WARNING** 🌩 Lightning activity detected!\nDistance: **%s km**\nBearing: **%s** (%s°)\nLocation: **%s, %s**\nTime: **%s**",
@@ -871,9 +882,11 @@
             "errorA":  "Error connecting to Tradfri hub, retrying... (Attempt %s)",
             "errorB":  "Unable to set the bulb, trying again...",
             "doneb":   "  Done. Found bulb devices: %s",
-            "doned":   "  Done. Found togglable devices: %s",
-            "bulb":    "    %s\n      #%s\n      Type:   %s\n      Color:  #%s\n      Bright: %s\n      On:     %s",
-            "device":  "    %s\n      #%s\n      Type:   %s\n      On:     %s"
+            "donet":   "  Done. Found togglable devices: %s",
+            "doner":   "  Done. Found remote devices: %s",
+            "bulb":    "    %s\n       #%s\n      Type:    %s\n      Color:   #%s\n      Bright:  %s\n      On:      %s",
+            "toggle":  "    %s\n       #%s\n      Type:    %s\n      On:      %s",
+            "remote":  "    %s\n       #%s\n      Type:    %s\n      Battery: %s"
         },
         "chase": {
             "reconnect": "Storm Chasing! Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",

@@ -122,7 +122,8 @@ var eegConfig;
 // Tradfri
 var hub;
 var tBulbs;
-var tDevices;
+var tToggles;
+var tRemotes;
 var hubRetry        = 0;
 var scheduleEntries = [];
 var scheduleJobs    = [];
@@ -2718,8 +2719,7 @@ comm.toggle = function(data) {
         refreshTradfriDevices(function(result) {
             if (result) {
                 var message = strings.commands.toggle.messageA;
-                tDevices.forEach(function(d) {
-
+                tToggles.forEach(function(d) {
                     var type = strings.commands.toggle.iconPlug;
                     if (d.color != undefined)
                         type = strings.commands.toggle.iconBulb;
@@ -2747,7 +2747,7 @@ comm.toggle = function(data) {
     else {      
         var found = false;
 
-        tDevices.forEach(function(d) {       
+        tToggles.forEach(function(d) {       
             if (d.name == name) {
                 found = true;   
                 send(data.channelID, strings.commands.toggle.messageC, false);
@@ -2758,6 +2758,35 @@ comm.toggle = function(data) {
         if (!found)
             send(data.channelID, strings.commands.toggle.error, false);
     }
+};
+
+// Command: !battery
+comm.battery = function(data) {
+    refreshTradfriDevices(function(result) {
+        if (result) {
+            var message = strings.commands.battery.messageA;
+            tRemotes.forEach(function(d) {
+                if (d.battery <= tradfri.lowbattery)
+                    message += util.format(
+                        strings.commands.battery.messageBLow,
+                        strings.commands.battery.iconBattLow,
+                        d.battery,
+                        d.name
+                    );
+                else
+                    message += util.format(
+                        strings.commands.battery.messageBHi,
+                        strings.commands.battery.iconBattHi,
+                        d.battery,
+                        d.name
+                    );
+            });
+            send(data.channelID, message, false);
+        }
+        else {
+            send(data.channelID, strings.misc.tradfrierror, false);                
+        }
+    });
 };
 
 // Command: !schedulestart
@@ -2819,7 +2848,7 @@ comm.schedulestart = function(data) {
                         if (result) {
                             var message = "";
                             e.bulbs.forEach(function(b) {
-                                tDevices.forEach(function(d) {
+                                tToggles.forEach(function(d) {
                                     if (b == d.name) {
                                         if (e.toggle == "off" && d.on) {
                                             hub.toggleDevice(d.id);
@@ -4163,7 +4192,7 @@ function processReqToggle(query) {
             if (result) {
                 var found = false;
                 query.bulbs.split(",").forEach(function(b) {
-                    tDevices.forEach(function(d) {       
+                    tToggles.forEach(function(d) {       
                         if (d.name == b) {
                             hub.toggleDevice(d.id);
                             found = true;
@@ -4195,7 +4224,7 @@ function processReqState(query) {
             if (result) {
                 var found = false;
                 query.bulbs.split(",").forEach(function(b) {
-                    tDevices.forEach(function(d) {  
+                    tToggles.forEach(function(d) {  
                         if (d.name == b) {
                             if (d.on == true && query.state == "off") {
                                 hub.toggleDevice(d.id);
@@ -4809,6 +4838,7 @@ function loadBot() {
 
             prepareReactroleMessages();
             updateTalosMeets();
+            checkTradfriBatteries();
         }
     });
 
@@ -5710,7 +5740,7 @@ function statusVariPass() {
                         // Day Lamp Off
                         if (vpLight >= config.varipass.daylight.threshold) {
                             config.varipass.daylight.bulbs.forEach(function(b) {
-                                tDevices.forEach(function(d) {  
+                                tToggles.forEach(function(d) {  
                                     if (d.name == b && d.on == true) {
                                         hub.toggleDevice(d.id);
                                         send(channelNameToID(config.options.channels.debug), util.format(
@@ -5725,7 +5755,7 @@ function statusVariPass() {
 
                         // Night Lamp Off
                         var controlOn = false;
-                        tDevices.forEach(function(d) {  
+                        tToggles.forEach(function(d) {  
                             if (d.name == config.varipass.nightlight.control && d.on == true) {
                                 controlOn = true;
                             }
@@ -5737,7 +5767,7 @@ function statusVariPass() {
 
                             if (nightLightCount >= config.varipass.nightlight.count)
                                 config.varipass.nightlight.bulbs.forEach(function(b) {
-                                    tDevices.forEach(function(d) {  
+                                    tToggles.forEach(function(d) {  
                                         if (d.name == b && d.on == true) {
                                             hub.toggleDevice(d.id);
                                             send(channelNameToID(config.options.channels.debug), util.format(
@@ -6445,15 +6475,22 @@ function refreshTradfriDevices(callback) {
 
     hub.getDevices().then((result) => {
 
+        //console.log(result);
+
         tBulbs = result.filter(function(d) {
-            return d.color != undefined;
+            return d.type_id == 2;
         });
         tBulbs.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
-        tDevices = result.filter(function(d) {
-            return d.color != undefined || d.type == "TRADFRI control outlet";
+        tToggles = result.filter(function(d) {
+            return d.type_id == 2 || d.type_id == 3;
         });        
-        tDevices.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        tToggles.sort((a, b) => (a.name > b.name) ? 1 : -1);
+
+        tRemotes = result.filter(function(d) {
+            return d.type_id == 0;
+        });        
+        tRemotes.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
         if (tradfri.debug) {
             console.log(util.format(
@@ -6474,17 +6511,32 @@ function refreshTradfriDevices(callback) {
             });
 
             console.log(util.format(
-                strings.debug.tradfri.doned,
-                tBulbs.length
+                strings.debug.tradfri.donet,
+                tToggles.length
             ));
 
-            tDevices.forEach(function(d) {
+            tToggles.forEach(function(d) {
                 console.log(util.format(
-                    strings.debug.tradfri.device,
+                    strings.debug.tradfri.toggle,
                     d.name,
                     d.id,
                     d.type,
                     d.on
+                ));
+            });
+
+            console.log(util.format(
+                strings.debug.tradfri.doner,
+                tRemotes.length
+            ));
+
+            tRemotes.forEach(function(d) {
+                console.log(util.format(
+                    strings.debug.tradfri.remote,
+                    d.name,
+                    d.id,
+                    d.type,
+                    d.battery
                 ));
             });
         }
@@ -8381,6 +8433,7 @@ function prepareDailyCron() {
         // Daily cron events
         avgVariPass();
         updateTalosMeets();
+        checkTradfriBatteries();
 
         setTimeout(function() {
             prepareDailyCron();
@@ -8434,7 +8487,7 @@ function updateTalosMeets() {
                     text += createTalosMeetup(i, nowBase, dayInSet - talosmeets.cycledays, oneDay);
                 }
             }
-            
+
             text += util.format(
                 strings.announcements.talosmeets.footer,
                 getDiscordTimestamp(now, "R")
@@ -8446,6 +8499,38 @@ function updateTalosMeets() {
         }
         else {
             send(channelNameToID(talosmeets.channel), strings.announcements.talosmeets.inital, false);
+        }
+    });
+}
+
+/* 
+ * Checks status of Tradfri remote batteries.
+ */
+function checkTradfriBatteries() {
+    refreshTradfriDevices(function(result) {
+        if (result) {
+            var found = false;
+            var message = "";
+            tRemotes.forEach(function(d) {
+                if (d.battery <= tradfri.lowbattery) {
+                    if (!found) {
+                        found = true;
+                        message = util.format(
+                            strings.announcements.tradfri.batterystart,
+                            mention(config.options.adminid)       
+                        );
+                    }
+                    message += util.format(
+                        strings.announcements.tradfri.batteryentry,
+                        d.battery,
+                        d.name
+                    );
+                    send(channelNameToID(config.options.channels.debug), message, false);
+                }
+            });
+        }
+        else {
+            send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);
         }
     });
 }
