@@ -603,8 +603,9 @@
         },
         "talosmeets": {
             "inital": "Initial meetup schedule message.\nPlease copy the ID of this message and paste it into my config!",
-            "base":   "**You can view the upcoming meetups in the schedule list below.**\nThis list updates each day at midnight UTC time with the next upcoming meetup on top:",
-            "meetup": "\n* %s *(%s)* - **%s**"
+            "base":   "You can view the upcoming meetups in the schedule list below.\nThis list updates each day at midnight UTC time with the next upcoming meetup on top.\n\n**Upcoming Meetups:**",
+            "meetup": "\n* %s *(%s)* - **%s**",
+            "footer": "\n\n*(%s)*"
         },
         "camera":     "Thori, the device `%s` reports that the camera is now set to **%s**.",
         "dailyavg":   "Thori, I have calculated and pushed the daily sensor values to VariPass. You can see the values below.\n```24h Pressure:         %s\n24h Mag. Magnitude:   %s\n24h Mag. Inclination: %s\n24h Radiation Dose:   %s```",

@@ -8414,12 +8414,13 @@ function updateTalosMeets() {
             var nowBase = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
             console.log(nowBase.getFullYear() + "-" + (nowBase.getMonth() + 1) + "-" + now.getDate());
             var dayFromStart = Math.floor((nowBase - start) / oneDay);
-            var dayInSet = dayFromStart % 14 + 1;
+            var dayInSet = dayFromStart % talosmeets.cycledays + 1;
 
             var maxshown = talosmeets.maxshown;
             if (maxshown > talosmeets.schedule.length)
                 maxshown = talosmeets.schedule.length;
             var count = 0;
+
             for (i = 0; i < talosmeets.schedule.length; i++) {
                 if (talosmeets.schedule[i].day >= dayInSet && count < maxshown) {
                     count++;
@@ -8430,9 +8431,14 @@ function updateTalosMeets() {
             for (i = 0; i < talosmeets.schedule.length; i++) {
                 if (count < maxshown) {
                     count++;
-                    text += createTalosMeetup(i, nowBase, dayInSet - 14, oneDay);
+                    text += createTalosMeetup(i, nowBase, dayInSet - talosmeets.cycledays, oneDay);
                 }
             }
+            
+            text += util.format(
+                strings.announcements.talosmeets.footer,
+                getDiscordTimestamp(now, "R")
+            );
 
             console.log(strings.debug.talosmeets.done);
 

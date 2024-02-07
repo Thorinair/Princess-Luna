@@ -1,8 +1,9 @@
 {
-    "startday": "2024-01-08",
-    "channel": "talos_moderation",
+    "startday":  "2024-01-08",
+    "channel":   "talos_moderation",
     "messageid": "1204564730723827772",
-    "maxshown": 5,
+    "cycledays": 14,
+    "maxshown":  5,
     "schedule": [
         {
             "day": 2,
