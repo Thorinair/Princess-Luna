@@ -1,24 +1,19 @@
 {
     "startday":  "2024-01-08",
-    "channel":   "talos_moderation",
-    "messageid": "1204564730723827772",
+    "channel":   "talos_event-schedule",
+    "messageid": "1204808049056022568",
     "cycledays": 14,
-    "maxshown":  5,
+    "maxshown":  4,
     "schedule": [
         {
             "day": 2,
             "time": "17:00",
-            "name": "Regular Meetup"
-        },
-        {
-            "day": 5,
-            "time": "23:00",
-            "name": "Friday Meetup"
+            "name": "Chill Meetup"
         },
         {
             "day": 6,
             "time": "18:00",
-            "name": "Regular Meetup"
+            "name": "Chill Meetup"
         },
         {
             "day": 9,
