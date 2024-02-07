@@ -8465,7 +8465,7 @@ function updateTalosMeets() {
             var start = new Date(partsStart[0], parseInt(partsStart[1]) - 1, partsStart[2], 0, 0, 0, 0);
             var now = new Date();
             var nowBase = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-            console.log(nowBase.getFullYear() + "-" + (nowBase.getMonth() + 1) + "-" + now.getDate());
+            //console.log(nowBase.getFullYear() + "-" + (nowBase.getMonth() + 1) + "-" + now.getDate());
             var dayFromStart = Math.floor((nowBase - start) / oneDay);
             var dayInSet = dayFromStart % talosmeets.cycledays + 1;
 
