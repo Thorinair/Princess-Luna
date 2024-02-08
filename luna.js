@@ -81,7 +81,7 @@ require("tls").DEFAULT_ECDH_CURVE = "auto"
  * STATUS VARIABLES
  *******************/
 
-var started    = false;
+var started = false;
 
 // Loaded
 var jobsGOTN = [];
@@ -95,7 +95,7 @@ var blacklist;
 var ignore;
 
 // Phase Data
-var jobsPhases    = [];
+var jobsPhases = [];
 
 // Brain Data
 var brains    = {};
@@ -127,6 +127,7 @@ var tRemotes;
 var hubRetry        = 0;
 var scheduleEntries = [];
 var scheduleJobs    = [];
+var hubReady        = true;
 
 // VariPass
 var vpTimeDose;
@@ -213,6 +214,7 @@ var lastQuake;
 // Miscellaneous
 var bot;
 var server;
+var discordReqReconnect = false;
 
 var startTime;
 var waifuTimeout;
@@ -2174,7 +2176,7 @@ comm.purge = function(data) {
                     blitzorws.close();
 
                     setTimeout(function() {
-                        console.log(strings.debug.stopped);
+                        printStopMessage();
                         process.exit();
                     }, config.options.reboottime * 1000);
                 }
@@ -3213,7 +3215,7 @@ comm.reboot = function(data) {
     blitzorws.close();
 
     setTimeout(function() {
-        console.log(strings.debug.stopped);
+        printStopMessage();
         process.exit();
     }, config.options.reboottime * 1000);
 };
@@ -3301,7 +3303,7 @@ comm.system = function(data) {
                 blitzorws.close();
 
                 setTimeout(function() {
-                    console.log(strings.debug.stopped);
+                    printStopMessage();
 
                     exec("sudo /sbin/reboot");
 
@@ -3326,7 +3328,9 @@ comm.system = function(data) {
  */
 function startupProcedure() {
     startTime = new Date();
+    console.log(" ");
     console.log(strings.debug.started);
+    console.log(" ");
     console.log(util.format(
         strings.debug.startedtime,
         moment.tz(startTime, "UTC").format("YYYY-MM-DD, HH:mm")
@@ -4361,7 +4365,7 @@ function processReqReboot(query) {
             blitzorws.close();
 
             setTimeout(function() {
-                console.log(strings.debug.stopped);
+                printStopMessage();
                 process.exit();
             }, config.options.reboottime * 1000);
 
@@ -4807,11 +4811,17 @@ function loadBot() {
                 "name": config.options.game
             }
         });
-        console.log(util.format(
-            strings.debug.join,
-            bot.username,
-            bot.id
-        ));
+        if (!discordReqReconnect) {
+            console.log(util.format(
+                strings.debug.join,
+                bot.username,
+                bot.id
+            ));
+        }
+        else {
+            discordReqReconnect = false;
+            console.log(strings.debug.reconnect);
+        }
         if (!started) {
             started = true;
             send(channelNameToID(config.options.channels.debug), util.format(
@@ -5118,16 +5128,26 @@ function loadBot() {
     });
 
     bot.on("disconnect", function(erMsg, code) {
-        console.error(util.format(
-                strings.debug.disconnected,
-                erMsg
-            ));
+        if (erMsg != config.options.reconnectmsg) {            
+            console.error(util.format(
+                    strings.debug.disconnected,
+                    erMsg
+                ));
+        }
+        else {
+            discordReqReconnect = true;
+        }
         if (reconnectTime < config.options.reconnectmax) {
             reconnectTime += config.options.reconnecttime;
-            // Wait for reconnect to prevent spamming.
-            setTimeout(function() {
+            if (discordReqReconnect) {
                 bot.connect();
-            }, config.options.reconnecttime * 1000);
+            }
+            else {
+                // Wait for reconnect to prevent spamming.
+                setTimeout(function() {
+                    bot.connect();
+                }, config.options.reconnecttime * 1000);
+            }
         }
         else {
             rebooting = true;
@@ -5140,7 +5160,7 @@ function loadBot() {
             blitzorws.close();
 
             setTimeout(function() {
-                console.log(strings.debug.stopped);
+                printStopMessage();
                 process.exit();
             }, config.options.reboottime * 1000);
         }    
@@ -6548,12 +6568,17 @@ function refreshTradfriDevices(callback) {
         loadTradfri();
 
         hubRetry++;
-        if (hubRetry >= tradfri.retries)
-            console.log(util.format(
-                strings.debug.tradfri.errorA,
-                hubRetry
-            ));
-
+        if (hubRetry >= tradfri.retries) {
+            if (hubReady) {
+                console.log(util.format(
+                    strings.debug.tradfri.errorA,
+                    hubRetry
+                ));
+                if (hubRetry >= tradfri.rebootwhen) {
+                    rebootHub();
+                }
+            }
+        }
         callback(false);
     });
 }
@@ -6618,6 +6643,27 @@ function normalize(bulb) {
         newBulb.brightness = Math.round(newBulb.brightness * 254);
     }
     return newBulb;
+}
+
+/*
+ * Performs a reboot procedure of Tradfri hub by cutting USB power.
+ */
+function rebootHub() {
+    hubReady = false;
+    console.log(strings.debug.tradfri.reboot);
+    
+    // Run USB OFF command.
+    exec("sudo uhubctl -l 1-1 -p 2 -a 0");
+
+    setTimeout(function() {
+        // Run USB ON command.
+        exec("sudo uhubctl -l 1-1 -p 2 -a 1");        
+    }, tradfri.reboottime * 1000);
+
+    setTimeout(function() {
+        hubRetry = 0;
+        hubReady = true;
+    }, tradfri.rebootdone * 1000);
 }
 
 
@@ -8336,7 +8382,7 @@ function seizureReboot(channelID, userID, message) {
     blitzorws.close();
 
     setTimeout(function() {
-        console.log(strings.debug.stopped);
+        printStopMessage();
         process.exit();
     }, config.options.reboottime * 1000);
 }
@@ -8631,6 +8677,15 @@ function finishPrint() {
     }, function() {
         send(channelNameToID(config.options.channels.printer), strings.announcements.tush.error, false);     
     }, 0);
+}
+
+/*
+ * Prints stop message to console.
+ */
+function printStopMessage() {
+    console.log(" ");
+    console.log(strings.debug.stopped);
+    console.log(" ");
 }
 
 /*

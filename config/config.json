@@ -38,8 +38,6 @@
         "sendretry":     5,
         "reboottime":    10,
         "starttime":     60,
-        "reconnecttime": 10,
-        "reconnectmax":  600,
         "htimeout":      1800,
         "hmessage":      1,
         "phasetimeout":  30,
@@ -53,6 +51,9 @@
         "popcount":      96,
         "reactroleretr": 1,
         "timestamptype": "F",
+        "reconnecttime": 10,
+        "reconnectmax":  600,
+        "reconnectmsg":  "Reconnect requested by Discord",
         "channels": {
             "debug":     "debug",
             "printer":   "printer",
