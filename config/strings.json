@@ -880,8 +880,11 @@
         },
         "tradfri": {
             "connect": "Connecting to Tradfri hub...",
-            "errorA":  "Error connecting to Tradfri hub, retrying... (Attempt %s)",
+            "errorA":  "Error connecting to Tradfri hub. (Failure %s)",
             "errorB":  "Unable to set the bulb, trying again...",
+            "repeatA": "  Error in Tradfri hub connection, repeating (Attempt %s)...",
+            "repeatB": "  Reason: \"%s\"",
+            "reconn":  "Connected to Tradfri hub after %s attempts.",
             "reboot":  "Retries exceeded, rebooting Tradfri hub...",
             "doneb":   "  Done. Found bulb devices: %s",
             "donet":   "  Done. Found togglable devices: %s",

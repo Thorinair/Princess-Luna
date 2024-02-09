@@ -124,7 +124,7 @@ var hub;
 var tBulbs;
 var tToggles;
 var tRemotes;
-var hubRetry        = 0;
+var hubFails        = 0;
 var scheduleEntries = [];
 var scheduleJobs    = [];
 var hubReady        = true;
@@ -3673,6 +3673,9 @@ function loadTimezones() {
  * Initializes the Tradfri client.
  */
 function loadTradfri() {
+    //if (tradfri.debugconn)
+    //    console.log(strings.debug.tradfri.connect);
+
     hub = tradfrilib.create({
         "coapClientPath": config.options.coappath,
         "identity":       dtls.identity,
@@ -6483,19 +6486,10 @@ function spreadChase() {
 /*
  * Connects to the Tradfri hub and refreshes all devices.
  * @param  callback  Function called once processing is done. Returns true if successful.
+ * @param  repeats   Number of repeated attempts.
  */
-function refreshTradfriDevices(callback) {
-    if (tradfri.debug)
-        console.log(strings.debug.tradfri.connect);
-
-    //hub.getDevices().then((result) => {
-    //}).catch((error) => {
-    //    loadTradfri();
-    //});
-
+function refreshTradfriDevices(callback, repeats=0) {
     hub.getDevices().then((result) => {
-
-        //console.log(result);
 
         tBulbs = result.filter(function(d) {
             return d.type_id == 2;
@@ -6512,7 +6506,7 @@ function refreshTradfriDevices(callback) {
         });        
         tRemotes.sort((a, b) => (a.name > b.name) ? 1 : -1);
 
-        if (tradfri.debug) {
+        if (tradfri.debugdata) {
             console.log(util.format(
                 strings.debug.tradfri.doneb,
                 tBulbs.length
@@ -6561,25 +6555,43 @@ function refreshTradfriDevices(callback) {
             });
         }
 
-        hubRetry = 0;
+        if (repeats > 0)
+            console.log(util.format(
+                strings.debug.tradfri.reconn,
+                repeats+1
+            ));
+        hubFails = 0;
         callback(true);
 
     }).catch((error) => {
-        loadTradfri();
-
-        hubRetry++;
-        if (hubRetry >= tradfri.retries) {
-            if (hubReady) {
+        if (repeats < tradfri.maxrepeats) {
+            if (tradfri.debugconn) {
                 console.log(util.format(
-                    strings.debug.tradfri.errorA,
-                    hubRetry
+                    strings.debug.tradfri.repeatA,
+                    repeats+2
                 ));
-                if (hubRetry >= tradfri.rebootwhen) {
-                    rebootHub();
-                }
+                console.log(util.format(
+                    strings.debug.tradfri.repeatB,
+                    error
+                ));
             }
+            loadTradfri();
+            refreshTradfriDevices(callback, repeats+1);
         }
-        callback(false);
+        else {
+            hubFails++;
+            if (hubReady) {
+                if (tradfri.debugfails)
+                    console.log(util.format(
+                        strings.debug.tradfri.errorA,
+                        hubFails
+                    ));
+
+                if (hubFails >= tradfri.rebootwhen)
+                    rebootHub();
+            }
+            callback(false);
+        }
     });
 }
 
@@ -6661,7 +6673,7 @@ function rebootHub() {
     }, tradfri.reboottime * 1000);
 
     setTimeout(function() {
-        hubRetry = 0;
+        hubFails = 0;
         hubReady = true;
     }, tradfri.rebootdone * 1000);
 }

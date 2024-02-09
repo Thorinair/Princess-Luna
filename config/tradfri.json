@@ -1,7 +1,9 @@
 {
-    "debug":      false,
-    "retries":    1,
-    "rebootwhen": 2,
+    "debugdata":  false,
+    "debugconn":  true,
+    "debugfails": true,
+    "maxrepeats": 5,
+    "rebootwhen": 3,
     "reboottime": 5,
     "rebootdone": 180,
     "lowbattery": 10,
