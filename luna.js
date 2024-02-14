@@ -6555,7 +6555,7 @@ function refreshTradfriDevices(callback, repeats=0) {
             });
         }
 
-        if (repeats > 0)
+        if (tradfri.debugconn && repeats > 0)
             console.log(util.format(
                 strings.debug.tradfri.reconn,
                 repeats+1
@@ -6568,7 +6568,7 @@ function refreshTradfriDevices(callback, repeats=0) {
             if (tradfri.debugconn) {
                 console.log(util.format(
                     strings.debug.tradfri.repeatA,
-                    repeats+2
+                    repeats+1
                 ));
                 console.log(util.format(
                     strings.debug.tradfri.repeatB,
