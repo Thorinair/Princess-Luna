@@ -6,9 +6,9 @@
     "maxshown":  4,
     "schedule": [
         {
-            "day": 2,
+            "day": 4,
             "time": "17:00",
-            "name": "Chill Meetup"
+            "name": "Game Meetup"
         },
         {
             "day": 6,
@@ -16,9 +16,9 @@
             "name": "Chill Meetup"
         },
         {
-            "day": 9,
+            "day": 11,
             "time": "17:00",
-            "name": "Game Meetup"
+            "name": "Chill Meetup"
         },
         {
             "day": 13,

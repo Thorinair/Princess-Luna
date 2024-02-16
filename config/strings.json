@@ -739,6 +739,7 @@
         "reactrolefail": "Error adjusting role: %s on server: %s",
         "reactroleerr":  "Error reading react role message. No access to channel #%s or unknown message ID.",
         "eegerror":      "Error saving EEG data: %s",
+        "autopublish":   "=> Automatically publishing message in #%s",
         "download": {
             "start":  "Downloading file: %s",
             "error":  "  Error while downloading: \"%s\". Retrying...",

@@ -4886,6 +4886,20 @@ function loadBot() {
                 react(channelID, data.d.id, config.autoreact.reacts[i]);
         });
 
+        config.options.channels.autopublish.forEach(function(c, i) {
+            if (channelNameToID(c) == channelID) {
+                console.log(util.format(
+                    strings.debug.autopublish,
+                    channelIDToName(channelID)
+                ));
+                var msg = {
+                    "channelID": channelID,
+                    "messageID": data.d.id
+                };
+                bot.publishMessage(msg);
+            }
+        });
+
         if (message[0] == config.options.commandsymbol) {
 
             var nocommand = true;

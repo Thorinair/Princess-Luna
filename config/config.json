@@ -60,7 +60,7 @@
             "home":      "home_luna",
             "announceA": "announcements",
             "announceB": "pvfm_live-dj-chat",
-            "announceC":     [
+            "announceC": [
                 "466147926092283904",
                 "298642620849324035",
                 "453194204919627786",
@@ -70,14 +70,18 @@
                 "709064936072151070",
                 "330438197739782145",
                 "707919605062172773",
-                "858071459482435626"
+                "858071459482435626",
+                "1166770175941562519"
             ],
             "welcome":   "general",
             "phases":    "general",
-            "nowplaying":    [
+            "nowplaying": [
                 "live",
                 "gotn",
                 "pvfm_live-dj-chat"
+            ],
+            "autopublish": [
+                "talos_event-announcements"
             ]
         },
         "djroles": [
