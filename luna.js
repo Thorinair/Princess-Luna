@@ -5802,7 +5802,8 @@ function statusVariPass() {
                             !controlOn) {
                             nightLightCount++;
 
-                            if (nightLightCount >= config.varipass.nightlight.count)
+                            if (nightLightCount >= config.varipass.nightlight.count) {
+                                nightLightCount = 0;
                                 config.varipass.nightlight.bulbs.forEach(function(b) {
                                     tToggles.forEach(function(d) {  
                                         if (d.name == b && d.on == true) {
@@ -5814,7 +5815,8 @@ function statusVariPass() {
                                             ), false);
                                         }
                                     });
-                                });
+                                });                                
+                            }
                         }
                         else {
                             nightLightCount = 0;
