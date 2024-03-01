@@ -613,10 +613,11 @@
             "county": "**@everyone, New COVID-19 Data for %s County** (%s):\nNewly infected: **%s**\nNewly died: **%s**"
         },
         "talosmeets": {
-            "inital": "Initial meetup schedule message.\nPlease copy the ID of this message and paste it into my config!",
-            "base":   "You can view the upcoming meetups in the schedule list below.\nThis list updates each day at midnight UTC time with the next upcoming meetup on top.\n\n**Upcoming Meetups:**",
-            "meetup": "\n* %s *(%s)* - **%s**",
-            "footer": "\n\n*(Updated %s)*"
+            "inital":  "Initial meetup schedule message.\nPlease copy the ID of this message and paste it into my config!",
+            "base":    "You can view the upcoming meetups in the schedule list below.\nThis list updates each day at midnight UTC time with the next upcoming meetup on top.\n\n**Upcoming Meetups:**",
+            "meetup":  "\n* %s *(%s)* - **%s**",
+            "meetupc": "\n* ~~%s *(%s)* - **%s**~~ Cancelled",
+            "footer":  "\n\n*(Updated %s)*"
         },
         "camera":     "Thori, the device `%s` reports that the camera is now set to **%s**.",
         "dailyavg":   "Thori, I have calculated and pushed the daily sensor values to VariPass. You can see the values below.\n```24h Pressure:         %s\n24h Mag. Magnitude:   %s\n24h Mag. Inclination: %s\n24h Radiation Dose:   %s```",
@@ -915,7 +916,8 @@
         },
         "talosmeets": {
             "start": "Calculating meetup times...",
-            "add":   "  Added: %s, %s, %s (%s)",
+            "add":   "  Added:     %s, %s, %s (%s)",
+            "addc":  "  Cancelled: %s, %s, %s (%s)",
             "done":  "  Done."
         }
     }

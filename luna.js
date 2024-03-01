@@ -8622,19 +8622,45 @@ function createTalosMeetup(i, nowBase, dayInSet, oneDay) {
     var partsMeetupTime = talosmeets.schedule[i].time.split(config.separators.time);
     meetupDate.setHours(partsMeetupTime[0]);
     meetupDate.setMinutes(partsMeetupTime[1]);
-    console.log(util.format(
-        strings.debug.talosmeets.add,
-        talosmeets.schedule[i].day,
-        talosmeets.schedule[i].name,
-        talosmeets.schedule[i].time,
-        meetupDate.toUTCString()
-    ));
-    return util.format(
-        strings.announcements.talosmeets.meetup,
-        getDiscordTimestamp(meetupDate),
-        getDiscordTimestamp(meetupDate, "R"),
-        talosmeets.schedule[i].name
-    );
+    var isCancelled = false;
+    talosmeets.cancelled.forEach(function(c) {
+        cancelParts = c.split("-");
+        if (meetupDate.getUTCFullYear() == parseInt(cancelParts[0]) && 
+            (meetupDate.getUTCMonth()+1) == parseInt(cancelParts[1]) &&
+            meetupDate.getUTCDate() == parseInt(cancelParts[2]))
+            isCancelled = true;
+    });
+
+    if (isCancelled) {
+        console.log(util.format(
+            strings.debug.talosmeets.addc,
+            talosmeets.schedule[i].day,
+            talosmeets.schedule[i].name,
+            talosmeets.schedule[i].time,
+            meetupDate.toUTCString()
+        ));
+        return util.format(
+            strings.announcements.talosmeets.meetupc,
+            getDiscordTimestamp(meetupDate),
+            getDiscordTimestamp(meetupDate, "R"),
+            talosmeets.schedule[i].name
+        );
+    }
+    else {
+        console.log(util.format(
+            strings.debug.talosmeets.add,
+            talosmeets.schedule[i].day,
+            talosmeets.schedule[i].name,
+            talosmeets.schedule[i].time,
+            meetupDate.toUTCString()
+        ));
+        return util.format(
+            strings.announcements.talosmeets.meetup,
+            getDiscordTimestamp(meetupDate),
+            getDiscordTimestamp(meetupDate, "R"),
+            talosmeets.schedule[i].name
+        );
+    }
 }
 
 /*
