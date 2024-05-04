@@ -8785,7 +8785,7 @@ var download = function(uri, filename, callbackDone, callbackErr, count, useJson
                     ));
                     download(uri, filename, callbackDone, callbackErr, count);
                 }).pipe(fs.createWriteStream(filename)).on("close", function() {
-                    callbackDone(response.statusCode);
+                    callbackDone(res.statusCode);
                 });
         });
     }
