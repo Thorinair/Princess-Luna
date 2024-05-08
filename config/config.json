@@ -81,7 +81,8 @@
                 "pvfm_live-dj-chat"
             ],
             "autopublish": [
-                "talos_event-announcements"
+                "talos_event-announcements",
+                "avalon-harmonics_announcements"
             ]
         },
         "djroles": [
