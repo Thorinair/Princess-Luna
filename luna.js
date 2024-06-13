@@ -5775,51 +5775,55 @@ function statusVariPass() {
                         statusGlobal.tradfri = Math.floor((new Date()) / 1000);
 
                         // Day Lamp Off
-                        if (vpLight >= config.varipass.daylight.threshold) {
-                            config.varipass.daylight.bulbs.forEach(function(b) {
-                                tToggles.forEach(function(d) {  
-                                    if (d.name == b && d.on == true) {
-                                        hub.toggleDevice(d.id);
-                                        send(channelNameToID(config.options.channels.debug), util.format(
-                                            strings.announcements.varipass.daylightoff,
-                                            mention(config.options.adminid),
-                                            b
-                                        ), false);
-                                    }
-                                });
-                            });
-                        }
-
-                        // Night Lamp Off
-                        var controlOn = false;
-                        tToggles.forEach(function(d) {  
-                            if (d.name == config.varipass.nightlight.control && d.on == true) {
-                                controlOn = true;
-                            }
-                        });                 
-                        if (vpLight > config.varipass.nightlight.value - config.varipass.nightlight.delta &&
-                            vpLight < config.varipass.nightlight.value + config.varipass.nightlight.delta &&
-                            !controlOn) {
-                            nightLightCount++;
-
-                            if (nightLightCount >= config.varipass.nightlight.count) {
-                                nightLightCount = 0;
-                                config.varipass.nightlight.bulbs.forEach(function(b) {
+                        if (config.varipass.daylight.active) {
+                            if (vpLight >= config.varipass.daylight.threshold) {
+                                config.varipass.daylight.bulbs.forEach(function(b) {
                                     tToggles.forEach(function(d) {  
                                         if (d.name == b && d.on == true) {
                                             hub.toggleDevice(d.id);
                                             send(channelNameToID(config.options.channels.debug), util.format(
-                                                strings.announcements.varipass.nightlightoff,
+                                                strings.announcements.varipass.daylightoff,
                                                 mention(config.options.adminid),
                                                 b
                                             ), false);
                                         }
                                     });
-                                });                                
+                                });
                             }
                         }
-                        else {
-                            nightLightCount = 0;
+
+                        // Night Lamp Off
+                        if (config.varipass.nightlight.active) {
+                            var controlOn = false;
+                            tToggles.forEach(function(d) {  
+                                if (d.name == config.varipass.nightlight.control && d.on == true) {
+                                    controlOn = true;
+                                }
+                            });                 
+                            if (vpLight > config.varipass.nightlight.value - config.varipass.nightlight.delta &&
+                                vpLight < config.varipass.nightlight.value + config.varipass.nightlight.delta &&
+                                !controlOn) {
+                                nightLightCount++;
+
+                                if (nightLightCount >= config.varipass.nightlight.count) {
+                                    nightLightCount = 0;
+                                    config.varipass.nightlight.bulbs.forEach(function(b) {
+                                        tToggles.forEach(function(d) {  
+                                            if (d.name == b && d.on == true) {
+                                                hub.toggleDevice(d.id);
+                                                send(channelNameToID(config.options.channels.debug), util.format(
+                                                    strings.announcements.varipass.nightlightoff,
+                                                    mention(config.options.adminid),
+                                                    b
+                                                ), false);
+                                            }
+                                        });
+                                    });                                
+                                }
+                            }
+                            else {
+                                nightLightCount = 0;
+                            }
                         }
                     }
                 });
@@ -8599,9 +8603,9 @@ function checkTradfriBatteries() {
                         d.battery,
                         d.name
                     );
-                    send(channelNameToID(config.options.channels.debug), message, false);
                 }
             });
+            send(channelNameToID(config.options.channels.debug), message, false);
         }
         else {
             send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);

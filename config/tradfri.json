@@ -6,7 +6,7 @@
     "rebootwhen": 2,
     "reboottime": 5,
     "rebootdone": 180,
-    "lowbattery": 5,
+    "lowbattery": 20,
     "moods": [
 
         {
