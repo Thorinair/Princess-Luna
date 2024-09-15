@@ -45,7 +45,7 @@ var blitzor    = require("./config/blitzor.json");
 var thori      = require("./config/thori.json");
 var devices    = require("./config/devices.json");
 var reactrole  = require("./config/reactrole.json");
-var talosmeets = require("./config/talosmeets.json");
+var meetups    = require("./config/meetups.json");
 
 var moon = require(config.moon.lunamoon.pathdata);
 
@@ -4850,7 +4850,7 @@ function loadBot() {
             setTimeout(loopBrainSave, config.brain.saveloop * 1000);
 
             prepareReactroleMessages();
-            updateTalosMeets();
+            updateMeetups();
             checkTradfriBatteries();
         }
     });
@@ -5191,18 +5191,42 @@ function loadBot() {
  * @param  typing   Whether the typing delay should be added.
  */
 function send(id, message, typing, retry=0) {
-    if (retry < config.options.sendretry) {
-        if (message.length <= config.options.maxlength) {
+    if (message != "") {
+        if (retry < config.options.sendretry) {
+            if (message.length <= config.options.maxlength) {
 
-            var channel = channelIDToName(id);
-            var msg = {
-                "to": id,
-                "message": message
-            };
+                var channel = channelIDToName(id);
+                var msg = {
+                    "to": id,
+                    "message": message
+                };
 
-            if (typing) {
-                bot.simulateTyping(id);
-                setTimeout(function() {
+                if (typing) {
+                    bot.simulateTyping(id);
+                    setTimeout(function() {
+                        console.log(util.format(
+                            strings.debug.message,
+                            channel,
+                            message
+                        ));
+                        bot.sendMessage(msg, function(err) {
+                            if (err != undefined) {
+                                retry++;
+                                if (err.response.code != undefined && err.response.code == 50007) {
+                                    console.log(strings.debug.failoff);
+                                }
+                                else {
+                                    console.log(err);
+                                    console.log(strings.debug.failedm);
+                                    setTimeout(function() {
+                                        send(id, message, typing, retry);
+                                    }, 1000);
+                                }
+                            }
+                        });
+                    }, config.options.typetime * 1000); 
+                }
+                else {
                     console.log(util.format(
                         strings.debug.message,
                         channel,
@@ -5223,37 +5247,15 @@ function send(id, message, typing, retry=0) {
                             }
                         }
                     });
-                }, config.options.typetime * 1000); 
+                }
             }
             else {
-                console.log(util.format(
-                    strings.debug.message,
-                    channel,
-                    message
-                ));
-                bot.sendMessage(msg, function(err) {
-                    if (err != undefined) {
-                        retry++;
-                        if (err.response.code != undefined && err.response.code == 50007) {
-                            console.log(strings.debug.failoff);
-                        }
-                        else {
-                            console.log(err);
-                            console.log(strings.debug.failedm);
-                            setTimeout(function() {
-                                send(id, message, typing, retry);
-                            }, 1000);
-                        }
-                    }
-                });
+                send(id, strings.misc.toolong, typing);
             }
         }
         else {
-            send(id, strings.misc.toolong, typing);
+            console.log(strings.debug.failgiveup);
         }
-    }
-    else {
-        console.log(strings.debug.failgiveup);
     }
 };
 
@@ -8255,7 +8257,7 @@ function reloadConfig() {
     thori      = JSON.parse(fs.readFileSync(config.options.configpath + "thori.json", "utf8"));
     devices    = JSON.parse(fs.readFileSync(config.options.configpath + "devices.json", "utf8"));
     reactrole  = JSON.parse(fs.readFileSync(config.options.configpath + "reactrole.json", "utf8"));
-    talosmeets = JSON.parse(fs.readFileSync(config.options.configpath + "talosmeets.json", "utf8"));
+    meetups    = JSON.parse(fs.readFileSync(config.options.configpath + "meetups.json", "utf8"));
 
     moon = JSON.parse(fs.readFileSync(config.moon.lunamoon.pathdata, "utf8"));
 
@@ -8282,7 +8284,7 @@ function reloadConfig() {
     }
 
     prepareReactroleMessages();
-    updateTalosMeets();
+    updateMeetups();
 }
 
 /*
@@ -8510,7 +8512,7 @@ function prepareDailyCron() {
 
         // Daily cron events
         avgVariPass();
-        updateTalosMeets();
+        updateMeetups();
         checkTradfriBatteries();
 
         setTimeout(function() {
@@ -8525,60 +8527,123 @@ function prepareDailyCron() {
 }
 
 /* 
- * Prepares a daily cron procedure.
+ * Updates all meetups.
  */
-function updateTalosMeets() {
+function updateMeetups() {
+    meetups.list.forEach (function(meetup) {
+        updateMeetup(meetup);
+    });
+}
+
+/* 
+ * Updates single meetup.
+ */
+function updateMeetup(meetup) {
     var message = {};
-    message.channelID = channelNameToID(talosmeets.channel);
-    message.messageID = talosmeets.messageid;
+    message.channelID = channelNameToID(meetup.channel);
+    message.messageID = meetup.messageid;
 
     bot.getMessage(message, function(err, msg) {
         if (msg != undefined) {
-            console.log(strings.debug.talosmeets.start);
+            console.log(strings.debug.meetups.start);
 
-            var text = strings.announcements.talosmeets.base;
+            var text = strings.announcements.meetups.base;
 
             var oneDay = 1000 * 60 * 60 * 24;
-            var partsStart = talosmeets.startday.split(config.separators.date);
+            var partsStart = meetup.startday.split(config.separators.date);
             var start = new Date(partsStart[0], parseInt(partsStart[1]) - 1, partsStart[2], 0, 0, 0, 0);
             var now = new Date();
             var nowBase = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
             //console.log(nowBase.getFullYear() + "-" + (nowBase.getMonth() + 1) + "-" + now.getDate());
             var dayFromStart = Math.floor((nowBase - start) / oneDay);
-            var dayInSet = dayFromStart % talosmeets.cycledays + 1;
+            var dayInSet = dayFromStart % meetup.cycledays + 1;
 
-            var maxshown = talosmeets.maxshown;
-            if (maxshown > talosmeets.schedule.length)
-                maxshown = talosmeets.schedule.length;
+            var maxshown = meetup.maxshown;
+            if (maxshown > meetup.schedule.length)
+                maxshown = meetup.schedule.length;
             var count = 0;
 
-            for (i = 0; i < talosmeets.schedule.length; i++) {
-                if (talosmeets.schedule[i].day >= dayInSet && count < maxshown) {
+            for (i = 0; i < meetup.schedule.length; i++) {
+                if (meetup.schedule[i].day >= dayInSet && count < maxshown) {
                     count++;
-                    text += createTalosMeetup(i, nowBase, dayInSet, oneDay);
+                    text += createMeetup(meetup, i, nowBase, dayInSet, oneDay);
                 }
             }
 
-            for (i = 0; i < talosmeets.schedule.length; i++) {
+            for (i = 0; i < meetup.schedule.length; i++) {
                 if (count < maxshown) {
                     count++;
-                    text += createTalosMeetup(i, nowBase, dayInSet - talosmeets.cycledays, oneDay);
+                    text += createMeetup(meetup, i, nowBase, dayInSet - meetup.cycledays, oneDay);
                 }
             }
 
             text += util.format(
-                strings.announcements.talosmeets.footer,
+                strings.announcements.meetups.footer,
                 getDiscordTimestamp(now, "R")
             );
 
-            console.log(strings.debug.talosmeets.done);
+            console.log(strings.debug.meetups.done);
 
-            edit(channelNameToID(talosmeets.channel), talosmeets.messageid, text, false);
+            edit(channelNameToID(meetup.channel), meetup.messageid, text, false);
         }
         else {
-            send(channelNameToID(talosmeets.channel), strings.announcements.talosmeets.inital, false);
+            send(channelNameToID(meetup.channel), strings.announcements.meetups.inital, false);
         }
     });
+}
+
+/* 
+ * Generates a string for a single meetup.
+ * @param  i         ID of the meetup in the list.
+ * @param  nowBase   Date object of current day, at midnight.
+ * @param  dayInSet  Current day's number in the set.
+ * @param  oneDay    Length of one day.
+ * @return           Generated meetup string.
+ */
+function createMeetup(meetup, i, nowBase, dayInSet, oneDay) {
+    var meetupDate = new Date(nowBase.getTime() + (meetup.schedule[i].day - dayInSet) * oneDay);
+    var partsMeetupTime = meetup.schedule[i].time.split(config.separators.time);
+    meetupDate.setHours(partsMeetupTime[0]);
+    meetupDate.setMinutes(partsMeetupTime[1]);
+    var isCancelled = false;
+    meetup.cancelled.forEach(function(c) {
+        cancelParts = c.split("-");
+        if (meetupDate.getUTCFullYear() == parseInt(cancelParts[0]) && 
+            (meetupDate.getUTCMonth()+1) == parseInt(cancelParts[1]) &&
+            meetupDate.getUTCDate() == parseInt(cancelParts[2]))
+            isCancelled = true;
+    });
+
+    if (isCancelled) {
+        console.log(util.format(
+            strings.debug.meetups.addc,
+            meetup.schedule[i].day,
+            meetup.schedule[i].name,
+            meetup.schedule[i].time,
+            meetupDate.toUTCString()
+        ));
+        return util.format(
+            strings.announcements.meetups.meetupc,
+            getDiscordTimestamp(meetupDate),
+            getDiscordTimestamp(meetupDate, "R"),
+            meetup.schedule[i].name
+        );
+    }
+    else {
+        console.log(util.format(
+            strings.debug.meetups.add,
+            meetup.schedule[i].day,
+            meetup.schedule[i].name,
+            meetup.schedule[i].time,
+            meetupDate.toUTCString()
+        ));
+        return util.format(
+            strings.announcements.meetups.meetup,
+            getDiscordTimestamp(meetupDate),
+            getDiscordTimestamp(meetupDate, "R"),
+            meetup.schedule[i].name
+        );
+    }
 }
 
 /* 
@@ -8611,60 +8676,6 @@ function checkTradfriBatteries() {
             send(channelNameToID(config.options.channels.debug), strings.misc.tradfrierror, false);
         }
     });
-}
-
-/* 
- * Generates a string for a single Talos meetup.
- * @param  i         ID of the meetup in the list.
- * @param  nowBase   Date object of current day, at midnight.
- * @param  dayInSet  Current day's number in the set.
- * @param  oneDay    Length of one day.
- * @return           Generated meetup string.
- */
-function createTalosMeetup(i, nowBase, dayInSet, oneDay) {
-    var meetupDate = new Date(nowBase.getTime() + (talosmeets.schedule[i].day - dayInSet) * oneDay);
-    var partsMeetupTime = talosmeets.schedule[i].time.split(config.separators.time);
-    meetupDate.setHours(partsMeetupTime[0]);
-    meetupDate.setMinutes(partsMeetupTime[1]);
-    var isCancelled = false;
-    talosmeets.cancelled.forEach(function(c) {
-        cancelParts = c.split("-");
-        if (meetupDate.getUTCFullYear() == parseInt(cancelParts[0]) && 
-            (meetupDate.getUTCMonth()+1) == parseInt(cancelParts[1]) &&
-            meetupDate.getUTCDate() == parseInt(cancelParts[2]))
-            isCancelled = true;
-    });
-
-    if (isCancelled) {
-        console.log(util.format(
-            strings.debug.talosmeets.addc,
-            talosmeets.schedule[i].day,
-            talosmeets.schedule[i].name,
-            talosmeets.schedule[i].time,
-            meetupDate.toUTCString()
-        ));
-        return util.format(
-            strings.announcements.talosmeets.meetupc,
-            getDiscordTimestamp(meetupDate),
-            getDiscordTimestamp(meetupDate, "R"),
-            talosmeets.schedule[i].name
-        );
-    }
-    else {
-        console.log(util.format(
-            strings.debug.talosmeets.add,
-            talosmeets.schedule[i].day,
-            talosmeets.schedule[i].name,
-            talosmeets.schedule[i].time,
-            meetupDate.toUTCString()
-        ));
-        return util.format(
-            strings.announcements.talosmeets.meetup,
-            getDiscordTimestamp(meetupDate),
-            getDiscordTimestamp(meetupDate, "R"),
-            talosmeets.schedule[i].name
-        );
-    }
 }
 
 /*

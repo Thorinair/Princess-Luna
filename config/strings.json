@@ -612,7 +612,7 @@
             "total":  "**@everyone, New Total Croatia COVID-19 Data** (%s):\nNewly infected: **%s**\nNewly healed: **%s**\nNewly died: **%s**",
             "county": "**@everyone, New COVID-19 Data for %s County** (%s):\nNewly infected: **%s**\nNewly died: **%s**"
         },
-        "talosmeets": {
+        "meetups": {
             "inital":  "Initial meetup schedule message.\nPlease copy the ID of this message and paste it into my config!",
             "base":    "You can view the upcoming meetups in the schedule list below.\nThis list updates each day at midnight UTC time with the next upcoming meetup on top.\n\n**Upcoming Meetups:**",
             "meetup":  "\n* %s *(%s)* - **%s**",
@@ -914,7 +914,7 @@
             "pause": "PAUSING PRINT!!!",
             "error": "Error connecting to printer. Attempts left: %s"
         },
-        "talosmeets": {
+        "meetups": {
             "start": "Calculating meetup times...",
             "add":   "  Added:     %s, %s, %s (%s)",
             "addc":  "  Cancelled: %s, %s, %s (%s)",

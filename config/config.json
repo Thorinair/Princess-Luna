@@ -79,7 +79,9 @@
             ],
             "autopublish": [
                 "talos_event-announcements",
-                "avalon-harmonics_announcements"
+                "avalon-harmonics_announcements",
+                "taa_announcements",
+                "taa_meetup-announcements"
             ]
         },
         "djroles": [
