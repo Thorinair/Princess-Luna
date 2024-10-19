@@ -8238,6 +8238,8 @@ function loopCorona() {
 }
 
 function loopCarriers() {
+    setTimeout(loopCarriers, carriers.timeout * 60 * 1000);
+
     carriers.list.forEach(function (c) {
         exec("curl GET " + c.url, (error, stdout, stderr) => {
             if (error) {
@@ -8320,8 +8322,6 @@ function loopCarriers() {
             }
         });
     });
-
-    setTimeout(loopCarriers, carriers.timeout * 60 * 1000);
 }
 
 /*
