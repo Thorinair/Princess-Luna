@@ -8302,16 +8302,6 @@ function loopCarriers() {
                         ), false);
                     }
                 });
-
-
-
-                console.log("Star system: " + starSystemName);
-                console.log("Star system URL: " + starSystemUrl);
-                console.log("Distance: " + distanceValue);
-                console.log("Access: " + accessValue);
-                console.log("Location update: " + updateValue);
-                console.log("Owner: " + ownerName);
-                console.log("Owner URL: " + ownerUrl);
             }
             catch (error) {
                 console.log(util.format(
