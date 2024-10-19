@@ -21,6 +21,7 @@ const jsmegahal      = require("jsmegahal");
 const tripwire       = require("tripwire");
 const blitzorapi     = require("@simonschick/blitzortungapi");
 const Fili           = require('fili');
+const cheerio        = require('cheerio');
 
 const package  = require("./package.json");
 
@@ -46,6 +47,7 @@ var thori      = require("./config/thori.json");
 var devices    = require("./config/devices.json");
 var reactrole  = require("./config/reactrole.json");
 var meetups    = require("./config/meetups.json");
+var carriers   = require("./config/carriers.json");
 
 var moon = require(config.moon.lunamoon.pathdata);
 
@@ -4847,6 +4849,7 @@ function loadBot() {
             //loopCorona();
             loopStatusPull();
             loopStatusPush();
+            loopCarriers();
             setTimeout(loopBrainSave, config.brain.saveloop * 1000);
 
             prepareReactroleMessages();
@@ -8234,6 +8237,93 @@ function loopCorona() {
     setTimeout(loopCorona, config.corona.timeout * 1000);
 }
 
+function loopCarriers() {
+    carriers.list.forEach(function (c) {
+        exec("curl GET " + c.url, (error, stdout, stderr) => {
+            if (error) {
+                console.log(util.format(
+                    strings.debug.carriers.errorA,
+                    c.name,
+                    error
+                ));
+                return;
+            }
+            //console.log("Execution result: " + stdout);
+
+            try {
+                const $ = cheerio.load(stdout);
+
+                const ownerElement = $('.itempairlabel:contains("Owner")').next().children('a');
+                const ownerUrl = carriers.baseurl + ownerElement.attr('href');
+
+                const starSystemElement = $('.itempairlabel:contains("Star system")').next().find('a');
+                const starSystemName = starSystemElement.text().trim();
+                const starSystemUrl = carriers.baseurl + starSystemElement.attr('href');
+
+                const updateElement = $('.itempairlabel:contains("Location update")').next()
+                const updateValue = updateElement.text().trim();
+
+                const distanceElement = $('.itempairlabel:contains("Station distance")').next()
+                const distanceValue = distanceElement.text().trim();
+
+                const accessElement = $('.itempairlabel:contains("Docking access")').next()
+                const accessValue = accessElement.text().trim();
+
+                var message = {};
+                message.channelID = channelNameToID(c.channel);
+                message.messageID = c.messageid;
+
+                bot.getMessage(message, function(err, msg) {
+                    if (msg != undefined) {
+                        var now = new Date();
+                        var text = util.format(
+                            strings.announcements.carriers.message,
+                            c.name,
+                            c.url,
+                            c.callsign,
+                            c.owner,
+                            ownerUrl,
+                            starSystemName,
+                            starSystemUrl,
+                            updateValue,
+                            distanceValue,
+                            accessValue,
+                            getDiscordTimestamp(now, "R")
+                        );
+
+                        edit(channelNameToID(c.channel), c.messageid, text, false);
+                    }
+                    else {
+                        send(channelNameToID(c.channel), util.format(
+                            strings.announcements.carriers.inital,
+                            c.name
+                        ), false);
+                    }
+                });
+
+
+
+                console.log("Star system: " + starSystemName);
+                console.log("Star system URL: " + starSystemUrl);
+                console.log("Distance: " + distanceValue);
+                console.log("Access: " + accessValue);
+                console.log("Location update: " + updateValue);
+                console.log("Owner: " + ownerName);
+                console.log("Owner URL: " + ownerUrl);
+            }
+            catch (error) {
+                console.log(util.format(
+                    strings.debug.carriers.errorB,
+                    c.name,
+                    error
+                ));
+            }
+        });
+    });
+
+    setTimeout(loopCarriers, carriers.timeout * 60 * 1000);
+}
+
 /*
  * Reloads the configuration.
  */
@@ -8258,6 +8348,7 @@ function reloadConfig() {
     devices    = JSON.parse(fs.readFileSync(config.options.configpath + "devices.json", "utf8"));
     reactrole  = JSON.parse(fs.readFileSync(config.options.configpath + "reactrole.json", "utf8"));
     meetups    = JSON.parse(fs.readFileSync(config.options.configpath + "meetups.json", "utf8"));
+    carriers   = JSON.parse(fs.readFileSync(config.options.configpath + "carriers.json", "utf8"));
 
     moon = JSON.parse(fs.readFileSync(config.moon.lunamoon.pathdata, "utf8"));
 

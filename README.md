@@ -19,6 +19,7 @@ Princess Luna is a Discord bot designed for Thorinair's official Glory of The Ni
 * Blitzortung lightning data integration.
 * Support for defining react-roles in `config/reactrole.json`.
 * Support for handling automatic meetup scheduling.
+* Support for maintaining Elite Dangerous carrier info messages.
 * Automatically publishes messages in specified channels.
 * Features a variety of commands:
     - `!gotn` Lists the time left until the next Glory of The Night episode. You may also specify the timezone after the command.

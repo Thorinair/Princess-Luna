@@ -1,0 +1,14 @@
+{
+    "timeout": 15,
+    "baseurl": "https://",
+    "list": [
+        {
+            "name": "Carrier name",
+            "callsign": "AAA-AAA",
+            "url":  "https://",
+            "owner": "Owner",
+            "channel":   "channel_name",
+            "messageid": "0000000000000000000"
+        }
+    ]
+}

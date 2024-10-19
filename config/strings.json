@@ -619,6 +619,11 @@
             "meetupc": "\n* ~~%s *(%s)* - **%s**~~ Cancelled",
             "footer":  "\n\n*(Updated %s)*"
         },
+        "carriers": {
+            "inital":  "Initial carrier message for **%s**.\nPlease copy the ID of this message and paste it into my config!",
+            "message":  "## **[%s](<%s>)** (%s)\n* **Owner:** [%s](<%s>)\n* **Current System:** [%s](<%s>) (Updated %s)\n* **Distance:** %s\n* **Access:** %s\n\n*(Refreshed %s)*",
+            "error": "⚠️ **ERROR FETCHING DATA, CHECK CONSOLE** ⚠️"
+        },
         "camera":     "Thori, the device `%s` reports that the camera is now set to **%s**.",
         "dailyavg":   "Thori, I have calculated and pushed the daily sensor values to VariPass. You can see the values below.\n```24h Pressure:         %s\n24h Mag. Magnitude:   %s\n24h Mag. Inclination: %s\n24h Radiation Dose:   %s```",
         "motion":     "**@everyone, 📸 WARNING 📸 Tantabus has detected motion on the camera \"%s\"!**\nI am sending you the image now... Please check what's up!\n<https://tantabus.thorinair.net>",
@@ -919,6 +924,10 @@
             "add":   "  Added:     %s, %s, %s (%s)",
             "addc":  "  Cancelled: %s, %s, %s (%s)",
             "done":  "  Done."
+        },
+        "carriers": {
+            "errorA": "Error while getting data for carrier %s: %s",
+            "errorB": "Error while parsing carrier %s: %s"
         }
     }
 }
