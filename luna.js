@@ -8253,63 +8253,65 @@ function loopCarriers() {
                 }
                 //console.log("Execution result: " + stdout);
 
-                try {
-                    const $ = cheerio.load(stdout);
-
-                    const ownerElement = $('.itempairlabel:contains("Owner")').next().children('a');
-                    const ownerUrl = carriers.baseurl + ownerElement.attr('href');
-
-                    const starSystemElement = $('.itempairlabel:contains("Star system")').next().find('a');
-                    const starSystemName = starSystemElement.text().trim();
-                    const starSystemUrl = carriers.baseurl + starSystemElement.attr('href');
-
-                    const updateElement = $('.itempairlabel:contains("Location update")').next()
-                    const updateValue = updateElement.text().trim();
-
-                    const distanceElement = $('.itempairlabel:contains("Station distance")').next()
-                    const distanceValue = distanceElement.text().trim();
-
-                    const accessElement = $('.itempairlabel:contains("Docking access")').next()
-                    const accessValue = accessElement.text().trim();
-
-                    var message = {};
-                    message.channelID = channelNameToID(c.channel);
-                    message.messageID = c.messageid;
-
-                    bot.getMessage(message, function(err, msg) {
-                        if (msg != undefined) {
-                            var now = new Date();
-                            var text = util.format(
-                                strings.announcements.carriers.message,
-                                c.name,
-                                c.url,
-                                c.callsign,
-                                c.owner,
-                                ownerUrl,
-                                starSystemName,
-                                starSystemUrl,
-                                updateValue,
-                                distanceValue,
-                                accessValue,
-                                getDiscordTimestamp(now, "R")
-                            );
-
-                            edit(channelNameToID(c.channel), c.messageid, text, false);
-                        }
-                        else {
-                            send(channelNameToID(c.channel), util.format(
-                                strings.announcements.carriers.inital,
-                                c.name
-                            ), false);
-                        }
-                    });
+                if (c.messageid == "") {
+                    send(channelNameToID(c.channel), util.format(
+                        strings.announcements.carriers.inital,
+                        c.name
+                    ), false);
                 }
-                catch (error) {
-                    console.log(util.format(
-                        strings.debug.carriers.errorB,
-                        c.name,
-                        error
-                    ));
+                else {
+                    try {
+                        const $ = cheerio.load(stdout);
+
+                        const ownerElement = $('.itempairlabel:contains("Owner")').next().children('a');
+                        const ownerUrl = carriers.baseurl + ownerElement.attr('href');
+
+                        const starSystemElement = $('.itempairlabel:contains("Star system")').next().find('a');
+                        const starSystemName = starSystemElement.text().trim();
+                        const starSystemUrl = carriers.baseurl + starSystemElement.attr('href');
+
+                        const updateElement = $('.itempairlabel:contains("Location update")').next()
+                        const updateValue = updateElement.text().trim();
+
+                        const distanceElement = $('.itempairlabel:contains("Station distance")').next()
+                        const distanceValue = distanceElement.text().trim();
+
+                        const accessElement = $('.itempairlabel:contains("Docking access")').next()
+                        const accessValue = accessElement.text().trim();
+
+                        var message = {};
+                        message.channelID = channelNameToID(c.channel);
+                        message.messageID = c.messageid;
+
+                        bot.getMessage(message, function(err, msg) {
+                            if (msg != undefined) {
+                                var now = new Date();
+                                var text = util.format(
+                                    strings.announcements.carriers.message,
+                                    c.name,
+                                    c.url,
+                                    c.callsign,
+                                    c.owner,
+                                    ownerUrl,
+                                    starSystemName,
+                                    starSystemUrl,
+                                    updateValue,
+                                    distanceValue,
+                                    accessValue,
+                                    getDiscordTimestamp(now, "R")
+                                );
+
+                                edit(channelNameToID(c.channel), c.messageid, text, false);
+                            }
+                        });
+                    }
+                    catch (error) {
+                        console.log(util.format(
+                            strings.debug.carriers.errorB,
+                            c.name,
+                            error
+                        ));
+                    }
                 }
             });            
         }, i * carriers.waitmessage * 1000);
