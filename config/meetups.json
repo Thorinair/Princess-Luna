@@ -46,12 +46,12 @@
                 },
                 {
                     "day": 5,
-                    "time": "19:00",
+                    "time": "18:00",
                     "name": "Chill Meetup"
                 },
                 {
                     "day": 7,
-                    "time": "20:00",
+                    "time": "19:00",
                     "name": "Chill Meetup"
                 },
                 {
@@ -61,12 +61,12 @@
                 },
                 {
                     "day": 12,
-                    "time": "19:00",
+                    "time": "18:00",
                     "name": "Chill Meetup"
                 },
                 {
                     "day": 14,
-                    "time": "20:00",
+                    "time": "19:00",
                     "name": "Chill Meetup"
                 }
             ],
