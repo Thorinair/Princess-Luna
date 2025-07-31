@@ -28,6 +28,7 @@
         "chrysalisgit":  "https://github.com/Thorinair/Queen-Chrysalis",
         "game":          "with your dreams.",
         "defstation":    "one",
+        "lyricprefix":   "> ",
         "lyricformat":   "*",
         "mytimezone":    "Europe/Zagreb",
         "dailycron":     "00:00",

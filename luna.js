@@ -5276,10 +5276,15 @@ function sendLarge(id, list, message, format) {
 
     list.forEach(function(l, i) {
         var line = l;
-        if (format && line.length > 0) {
-            while (line[line.length - 1] == " ")
-                line = line.slice(0, -1);
-            line = config.options.lyricformat + line + config.options.lyricformat;
+        if (format && i < list.length - 1) {
+            if (line.length > 0) {
+                while (line[line.length - 1] == " ")
+                    line = line.slice(0, -1);
+                line = config.options.lyricprefix + config.options.lyricformat + line + config.options.lyricformat;
+            }
+            else {
+                line = config.options.lyricprefix;
+            }
         }
         line += "\n";
 
