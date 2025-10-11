@@ -81,6 +81,7 @@
             "autopublish": [
                 "talos_event-announcements",
                 "avalon-harmonics_announcements",
+                "avalon-harmonics_reviews-media",
                 "taa_announcements",
                 "taa_meetup-announcements"
             ]
