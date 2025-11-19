@@ -47,7 +47,7 @@
         },
         {
             "command": "printer",
-            "help":    "Ask me about the status of Thorinair's Nightmare Rarity 3D printer. I will also send a photo of the printer's webcam.",
+            "help":    "Ask me about the status of one of Thorinair's 3D printers. I will also send a photo of the printer's webcam. Specify `rarity` or `talos` after the command.",
             "type":    "public"
         },
         {

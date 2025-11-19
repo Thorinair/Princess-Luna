@@ -41,13 +41,15 @@
         },
         "printer": {
             "messageA": "%s, give me a moment...",
-            "messageB": "Nightmare Rarity is currently not printing anything.\n",
-            "messageC": "Nightmare Rarity has a paused print job of the file called `%s`.\n",
-            "messageD": "Nightmare Rarity is currently printing a file called `%s`, and the print is **%s%** done. It is estimated that the printing time will take around **%s** more.\n",
+            "messageB": "%s is currently not printing anything.\n",
+            "messageC": "%s has a paused print job of the file called `%s`.\n",
+            "messageD": "%s is currently printing a file called `%s`, and the print is **%s%** done. It is estimated that the printing time will take around **%s** more.\n",
             "messageE": "RariTUSH hasn't reported any data yet.\n",
             "messageF": "RariTUSH reports **%s g** of filament left with **%s left** and **%s right** encoder pulses. Last report was %s and %s seconds ago.\n",
             "messageG": "You can view the printing area on the webcam image below, unless the camera was turned off.",
-            "error":    "It looks like Nightmare Rarity is currently offline. Please try again later..."
+            "errorA":   "%s, please input the name of the printer you wish to see after the command. Currently available printers are `rarity` and `talos`.",
+            "errorB":   "%s, I don't know of any printer with that name.",
+            "errorC":   "It looks like %s is currently offline. Please try again later..."
         },
         "devices": {
             "messageA": "%s, below is a list of all the devices which are part of Thorinair's Lunar Infrastructure. Repeat this command with a device name as parameter to get a photo and more detailed explanation.",
@@ -594,8 +596,8 @@
             "assault": "@everyone, a new Faction Assault has begun! Next assault begins in %s."
         },
         "tush": {
-            "start":  "A new print has started. I will be monitoring the progress and spool health.",
-            "finish": "%s, the print has finished after %s and %s seconds.",
+            "start":  "A new print has started on %s. I will be monitoring the progress and spool health.",
+            "finish": "%s, the print on %s has finished after %s and %s seconds.",
             "error":  "There was an error while trying to fetch the image from the webcam.",
             "spoolstop": {
                 "warn": "%s, ⚠ **WARNING** ⚠ RariTUSH reports a **Spool STOP**. The encoders have done **%s pulses**. If the spool shows no movement within next %s seconds, I am pausing the print.",
@@ -854,12 +856,12 @@
             "done": "  Done."
         },
         "blitzor": {
-            "reconnect": "Reconnecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
-            "connect":   "Connecting to Blitzortung using coordinates: lati %s to %s, long %s to %s...",
+            "reconnect": "Reconnecting to Blitzortung Location %s using coordinates: lati %s to %s, long %s to %s...",
+            "connect":   "Connecting to Blitzortung Location %s using coordinates: lati %s to %s, long %s to %s...",
             "done":      "  Done.",
-            "strike":    "Lightning strike! dist: %s, lati: %s, long: %s",
-            "spread":    "Spreading the lightning range from %s to %s.",
-            "max":       "Spreading outside of range. Clamping to max range of %s."
+            "strike":    "Lightning strike on Location %s! dist: %s, lati: %s, long: %s",
+            "spread":    "Spreading the lightning range on Location %s from %s to %s.",
+            "max":       "Spreading outside of range on Location %s. Clamping to max range of %s."
         },
         "seismo": {
             "start":    "Starting earthquake detection system...",

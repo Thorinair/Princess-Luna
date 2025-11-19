@@ -148,14 +148,23 @@ var purgeEnd   = "";
 var powerStatus = null;
 
 // Blitzortung
-var blitzorws;
-var lightningRange = blitzor.range;
-var lightningNew   = blitzor.range;
-var lightningLat   = 0;
-var lightningLng   = 0;
-var lightningExpire;
-var lightningSpread;
-var lightningReconnect;
+var blitzorwsA;
+var lightningRangeA = blitzor.range;
+var lightningNewA   = blitzor.range;
+var lightningLatA   = 0;
+var lightningLngA   = 0;
+var lightningExpireA;
+var lightningSpreadA;
+var lightningReconnectA;
+
+var blitzorwsB;
+var lightningRangeB = blitzor.range;
+var lightningNewB   = blitzor.range;
+var lightningLatB   = 0;
+var lightningLngB   = 0;
+var lightningExpireB;
+var lightningSpreadB;
+var lightningReconnectB;
 
 // Blitzortung Storm Chasing
 var chasews;
@@ -179,6 +188,10 @@ var tushRaw;
 var tushPaused = false;
 var tushStart;
 
+// Nightmare Talos Data
+var talosStart;
+var talosStatusOld;
+
 // Status
 var statusGlobal = {};
 var statusTimeoutLunaLocal;
@@ -190,6 +203,8 @@ var statusTimeoutChrysalisIcecastPublic;
 var statusTimeoutChrysalisAnn;
 var statusTimeoutRarityLocal;
 var statusTimeoutRarityPublic;
+var statusTimeoutTalosLocal;
+var statusTimeoutTalosPublic;
 var statusTimeoutFluttershyLocal;
 var statusTimeoutMoonLocal;
 var statusTimeoutTantabusLocal;
@@ -765,103 +780,143 @@ comm.eeg = function(data) {
 
 // Command: !printer
 comm.printer = function(data) {
+    var found = false;
 
-    send(data.channelID, util.format(
-        strings.commands.printer.messageA, 
-        mention(data.userID)
-    ), true);
+    var printername = data.message.replace(config.options.commandsymbol + data.command + " ", "");
+    if (printername == config.options.commandsymbol + data.command)
+        printername = "";
 
-    download(printer.baseurl + printer.webcam, config.printer.webimg, function(code) {
+    if (printername == "") {
+        send(data.channelID, util.format(
+            strings.commands.printer.errorA, 
+            mention(data.userID)
+        ), true);
+    }
+    else if (printername != "rarity" && printername != "talos") {
+        send(data.channelID, util.format(
+            strings.commands.printer.errorB, 
+            mention(data.userID)
+        ), true);
+    }
+    else {
+        send(data.channelID, util.format(
+            strings.commands.printer.messageA, 
+            mention(data.userID)
+        ), true);
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", printer.baseurl + config.printer.urls.job + printer.key, true);
+        var baseurl = "";
+        var key = "";
+        var name = "";
+        if (printername == "rarity") {
+            baseurl = printer.baseurl_rarity;
+            key = printer.key_rarity;
+            name = "Nightmare Rarity";
+        }
+        else if (printername == "talos") {
+            baseurl = printer.baseurl_talos;
+            key = printer.key_talos;
+            name = "Nightmare Talos";
+        }
 
-        xhr.onreadystatechange = function () { 
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                var response = JSON.parse(xhr.responseText);
+        download(baseurl + printer.webcam, config.printer.webimg, function(code) {
 
-                var message = "";
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", baseurl + config.printer.urls.job + key, true);
 
-                // Nightmare Rarity
-                if (response.progress.completion != null && response.state == "Printing") {
+            xhr.onreadystatechange = function () { 
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
 
-                    var left = response.progress.printTimeLeft;
-                    var time = {};
+                    var message = "";
 
-                    time.seconds = Math.floor(left % 60);
-                    left = Math.floor(left / 60);
-                    time.minutes = Math.floor(left % 60);
-                    left = Math.floor(left / 60);
-                    time.hours = Math.floor(left % 24);
-                    time.days = Math.floor(left / 24);
+                    // Printer
+                    if (response.progress.completion != null && response.state == "Printing") {
 
-                    message += util.format(
-                        strings.commands.printer.messageD, 
-                        response.job.file.name,
-                        response.progress.completion.toFixed(1),
-                        getTimeString(time)
-                    );
+                        var left = response.progress.printTimeLeft;
+                        var time = {};
+
+                        time.seconds = Math.floor(left % 60);
+                        left = Math.floor(left / 60);
+                        time.minutes = Math.floor(left % 60);
+                        left = Math.floor(left / 60);
+                        time.hours = Math.floor(left % 24);
+                        time.days = Math.floor(left / 24);
+
+                        message += util.format(
+                            strings.commands.printer.messageD, 
+                            name,
+                            response.job.file.name,
+                            response.progress.completion.toFixed(1),
+                            getTimeString(time)
+                        );
+                    }
+                    else if (response.state == "Paused") {
+                        message += util.format(
+                            strings.commands.printer.messageC,
+                            name,
+                            response.job.file.name
+                        );
+                    }
+                    else {
+                        message += util.format(
+                            strings.commands.printer.messageB,
+                            name
+                        );
+                    }
+
+                    if (printername == "rarity") {
+                        // RariTUSH
+                        if (tushEncL != undefined && tushEncR != undefined && tushWeight != undefined && tushRaw != undefined) {
+                            var age = Math.floor((new Date()) / 1000) - statusGlobal.raritush;
+                            var time = {};
+
+                            time.seconds = Math.floor(age % 60);
+                            age = Math.floor(age / 60);
+                            time.minutes = Math.floor(age % 60);
+                            age = Math.floor(age / 60);
+                            time.hours = Math.floor(age % 24);
+                            time.days = Math.floor(age / 24);
+
+                            message += util.format(
+                                strings.commands.printer.messageF, 
+                                tushWeight.toFixed(1),
+                                tushEncL,
+                                tushEncR,
+                                getTimeString(time),
+                                time.seconds
+                            );
+                        }
+                        else {
+                            message += strings.commands.printer.messageE;
+                        }
+                    }
+
+                    message += strings.commands.printer.messageG;
+
+                    if (code != 503)
+                        embed(data.channelID, message, config.printer.webimg, name + " Webcam.jpg", true, true);
+                    else
+                        send(data.channelID, message, true);
                 }
-                else if (response.state == "Paused") {
-                    message += util.format(
-                        strings.commands.printer.messageC, 
-                        response.job.file.name
-                    );
-                }
-                else {
-                    message += strings.commands.printer.messageB;
-                }
-
-                // RariTUSH
-                if (tushEncL != undefined && tushEncR != undefined && tushWeight != undefined && tushRaw != undefined) {
-                    var age = Math.floor((new Date()) / 1000) - statusGlobal.raritush;
-                    var time = {};
-
-                    time.seconds = Math.floor(age % 60);
-                    age = Math.floor(age / 60);
-                    time.minutes = Math.floor(age % 60);
-                    age = Math.floor(age / 60);
-                    time.hours = Math.floor(age % 24);
-                    time.days = Math.floor(age / 24);
-
-                    message += util.format(
-                        strings.commands.printer.messageF, 
-                        tushWeight.toFixed(1),
-                        tushEncL,
-                        tushEncR,
-                        getTimeString(time),
-                        time.seconds
-                    );
-                }
-                else {
-                    message += strings.commands.printer.messageE;
-                }
-
-                message += strings.commands.printer.messageG;
-
-                if (code != 503)
-                    embed(data.channelID, message, config.printer.webimg, "Nightmare Rarity Webcam.jpg", true, true);
-                else
-                    send(data.channelID, message, true);
             }
-        }
 
-        xhr.onerror = function(err) {
-            send(data.channelID, strings.commands.printer.error, true);
-            xhr.abort();
-        }
-        xhr.ontimeout = function() {
-            send(data.channelID, strings.commands.printer.error, true);
-            xhr.abort();
-        }
+            xhr.onerror = function(err) {
+                send(data.channelID, strings.commands.printer.errorC, true);
+                xhr.abort();
+            }
+            xhr.ontimeout = function() {
+                send(data.channelID, strings.commands.printer.errorC, true);
+                xhr.abort();
+            }
 
-        xhr.send();
+            xhr.send();
 
-    }, function() {
+        }, function() {
 
-        send(data.channelID, strings.commands.printer.error, true);
-        
-    }, 0);
+            send(data.channelID, strings.commands.printer.errorC, true);
+            
+        }, 0);        
+    }
 };
 
 // Command: !devices
@@ -2175,7 +2230,8 @@ comm.purge = function(data) {
                     });
 
                     saveAllBrains();
-                    blitzorws.close();
+                    blitzorwsA.close();
+                    blitzorwsB.close();
 
                     setTimeout(function() {
                         printStopMessage();
@@ -3214,7 +3270,8 @@ comm.reboot = function(data) {
     send(data.channelID, strings.commands.reboot.message, false);
 
     saveAllBrains();
-    blitzorws.close();
+    blitzorwsA.close();
+    blitzorwsB.close();
 
     setTimeout(function() {
         printStopMessage();
@@ -3302,7 +3359,8 @@ comm.system = function(data) {
                 send(data.channelID, strings.commands.system.mreboot, false);
 
                 saveAllBrains();
-                blitzorws.close();
+                blitzorwsA.close();
+                blitzorwsB.close();
 
                 setTimeout(function() {
                     printStopMessage();
@@ -4022,7 +4080,7 @@ function processReqPower(query) {
             powerStatus = 3;
 
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", printer.baseurl + config.printer.urls.job + printer.key, true);
+            xhr.open("GET", printer.baseurl_rarity + config.printer.urls.job + printer.key_rarity, true);
 
             xhr.onreadystatechange = function () { 
                 if (xhr.readyState == 4 && xhr.status == 200) {
@@ -4367,7 +4425,8 @@ function processReqReboot(query) {
             send(channelNameToID(config.options.channels.debug), strings.misc.voicetag + strings.commands.reboot.message, false);
 
             saveAllBrains();
-            blitzorws.close();
+            blitzorwsA.close();
+            blitzorwsB.close();
 
             setTimeout(function() {
                 printStopMessage();
@@ -4445,7 +4504,7 @@ function processReqTush(query) {
                 var tempRaw = parseFloat(query.raw);
 
                 var xhr = new XMLHttpRequest();
-                xhr.open("GET", printer.baseurl + config.printer.urls.printer + printer.key, true);
+                xhr.open("GET", printer.baseurl_rarity + config.printer.urls.printer + printer.key_rarity, true);
 
                 xhr.onreadystatechange = function () { 
                     if (xhr.readyState == 4 && xhr.status == 200) {
@@ -4560,7 +4619,10 @@ function processReqTush(query) {
                             else {
                                 if (tushStep == 0) {
                                     tushStart = Math.floor((new Date()) / 1000);
-                                    send(channelNameToID(config.options.channels.printer), strings.announcements.tush.start, false);  
+                                    send(channelNameToID(config.options.channels.printer), util.format(
+                                        strings.announcements.tush.start,
+                                        "Nightmare Rarity"
+                                    ), false);  
                                 }
                                 tushStep++;
                                 if (tushStep >= config.printer.constraints.rampup)
@@ -4578,7 +4640,7 @@ function processReqTush(query) {
                         else {
                             if (!tushPaused) {
                                 if (tushStep > 0)
-                                    finishPrint(); 
+                                    finishPrintRarity(); 
                                 tushStep = 0;                               
                             }
                         }
@@ -4587,7 +4649,7 @@ function processReqTush(query) {
                     if (xhr.readyState == 4) {
                         if (xhr.status != 200 && !tushPaused) {
                             if (tushStep > 0)
-                                finishPrint();
+                                finishPrintRarity();
                             tushStep = 0;
                         }
 
@@ -4615,6 +4677,38 @@ function processReqTush(query) {
                 }
 
                 xhr.send();
+
+                var xhr2 = new XMLHttpRequest();
+                xhr2.open("GET", printer.baseurl_talos + config.printer.urls.printer + printer.key_talos, true);
+
+                xhr2.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var response = JSON.parse(xhr.responseText);
+
+                        if (response.state.text == "Printing" && talosStatusOld != "Printing") {
+                            talosStatusOld = response.state.text;
+                            talosStart = Math.floor((new Date()) / 1000);
+                            send(channelNameToID(config.options.channels.printer), util.format(
+                                strings.announcements.tush.start,
+                                "Nightmare Talos"
+                            ), false);
+                        }
+                        else if (response.state.text != "Printing" && talosStatusOld == "Printing") {
+                            talosStatusOld = response.state.text;
+                            send(channelNameToID(config.options.channels.printer), util.format(
+                                strings.announcements.tush.start,
+                                "Nightmare Rarity"
+                            ), false);
+                        }
+                    }
+                }
+
+                xhr2.onerror = function(err) {
+                    xhr.abort();
+                }
+                xhr2.ontimeout = function() {
+                    xhr.abort();
+                }
             }
         }
     }
@@ -4841,7 +4935,8 @@ function loadBot() {
 
             loadServer();
             loadSeizure();
-            connectBlitzortung(false);
+            connectBlitzortungA(false);
+            connectBlitzortungB(false);
             startSeizmoServer();
 
             loopLightning();
@@ -5177,7 +5272,8 @@ function loadBot() {
             ));
 
             saveAllBrains();
-            blitzorws.close();
+            blitzorwsA.close();
+            blitzorwsB.close();
 
             setTimeout(function() {
                 printStopMessage();
@@ -5735,7 +5831,7 @@ function statusVariPass() {
                 // Pressure Alerts
                 var vpPressure = findVariable(vpData, varipass.main.ids.pressure).history;
 
-                if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure)) {
+                if (!(vpTimePressure != undefined && vpPressure[0].time <= vpTimePressure) && vpPressure.length > 1) {
                     vpTimePressure = vpPressure[0].time;
 
                     if (vpPressure[1].value != undefined) {
@@ -6151,21 +6247,22 @@ function findVariable(data, id) {
  ****************************/
 
 /*
- * Connects to the Blitzortung API.
+ * Connects to the Blitzortung API for location A.
  * @param  reconnect  Whether this is an automatic reconnect.
  */
-function connectBlitzortung(reconnect) {
+function connectBlitzortungA(reconnect) {
     var area = {};    
     area.from = {};
-    area.from.latitude = blitzor.location.latitude + blitzor.expand;
-    area.from.longitude = blitzor.location.longitude - blitzor.expand;
+    area.from.latitude = blitzor.locationA.latitude + blitzor.expand;
+    area.from.longitude = blitzor.locationA.longitude - blitzor.expand;
     area.to = {};
-    area.to.latitude = blitzor.location.latitude - blitzor.expand;
-    area.to.longitude = blitzor.location.longitude + blitzor.expand;
+    area.to.latitude = blitzor.locationA.latitude - blitzor.expand;
+    area.to.longitude = blitzor.locationA.longitude + blitzor.expand;
 
     if (reconnect && blitzor.debugconnect)
         console.log(util.format(
             strings.debug.blitzor.reconnect,
+            blitzor.locationA.name,
             area.from.latitude,
             area.to.latitude,
             area.from.longitude,
@@ -6174,13 +6271,14 @@ function connectBlitzortung(reconnect) {
     else if (!reconnect)
         console.log(util.format(
             strings.debug.blitzor.connect,
+            blitzor.locationA.name,
             area.from.latitude,
             area.to.latitude,
             area.from.longitude,
             area.to.longitude
         ));
 
-    blitzorws = new blitzorapi.Client({
+    blitzorwsA = new blitzorapi.Client({
         make(address) {
             if (blitzor.debugconnect)
                 console.log("  " + address);
@@ -6190,22 +6288,23 @@ function connectBlitzortung(reconnect) {
         }
     });
 
-    blitzorws.connect();
-    blitzorws.on("error", console.error);
-    //blitzorws.on("connect", () => {
-    //    blitzorws.setArea(area);
+    blitzorwsA.connect();
+    blitzorwsA.on("error", console.error);
+    //blitzorwsA.on("connect", () => {
+    //    blitzorwsA.setArea(area);
     //});
-    blitzorws.on("data", strike => {
-        var distance = earthDistance(blitzor.location.latitude, blitzor.location.longitude, strike.location.latitude, strike.location.longitude);
+    blitzorwsA.on("data", strike => {
+        var distance = earthDistance(blitzor.locationA.latitude, blitzor.locationA.longitude, strike.location.latitude, strike.location.longitude);
 
-        if (distance < lightningNew) {
-            lightningNew = distance;
-            lightningLat = strike.location.latitude;
-            lightningLng = strike.location.longitude;
+        if (distance < lightningNewA) {
+            lightningNewA = distance;
+            lightningLatA = strike.location.latitude;
+            lightningLngA = strike.location.longitude;
 
             if (!blitzor.debugstrikes)
                 console.log(util.format(
                     strings.debug.blitzor.strike,
+                    blitzor.locationA.name,
                     distance,
                     strike.location.latitude,
                     strike.location.longitude                
@@ -6214,15 +6313,101 @@ function connectBlitzortung(reconnect) {
         if (blitzor.debugstrikes)
             console.log(util.format(
                 strings.debug.blitzor.strike,
+                blitzor.locationA.name,
                 distance,
                 strike.location.latitude,
                 strike.location.longitude                
             ));
     });
 
-    lightningReconnect = setTimeout(function() {
-        blitzorws.close();
-        connectBlitzortung(true);
+    lightningReconnectA = setTimeout(function() {
+        blitzorwsA.close();
+        connectBlitzortungA(true);
+    }, blitzor.reconnect * 1000);
+
+    if (reconnect && blitzor.debugconnect)
+        console.log(strings.debug.blitzor.done);
+    else if (!reconnect)
+        console.log(strings.debug.blitzor.done);
+}
+
+/*
+ * Connects to the Blitzortung API for location B.
+ * @param  reconnect  Whether this is an automatic reconnect.
+ */
+function connectBlitzortungB(reconnect) {
+    var area = {};    
+    area.from = {};
+    area.from.latitude = blitzor.locationB.latitude + blitzor.expand;
+    area.from.longitude = blitzor.locationB.longitude - blitzor.expand;
+    area.to = {};
+    area.to.latitude = blitzor.locationB.latitude - blitzor.expand;
+    area.to.longitude = blitzor.locationB.longitude + blitzor.expand;
+
+    if (reconnect && blitzor.debugconnect)
+        console.log(util.format(
+            strings.debug.blitzor.reconnect,
+            blitzor.locationB.name,
+            area.from.latitude,
+            area.to.latitude,
+            area.from.longitude,
+            area.to.longitude
+        ));
+    else if (!reconnect)
+        console.log(util.format(
+            strings.debug.blitzor.connect,
+            blitzor.locationB.name,
+            area.from.latitude,
+            area.to.latitude,
+            area.from.longitude,
+            area.to.longitude
+        ));
+
+    blitzorwsB = new blitzorapi.Client({
+        make(address) {
+            if (blitzor.debugconnect)
+                console.log("  " + address);
+            return new WebSocket(address, {
+                rejectUnauthorized: blitzor.usecert
+            });
+        }
+    });
+
+    blitzorwsB.connect();
+    blitzorwsB.on("error", console.error);
+    //blitzorwsA.on("connect", () => {
+    //    blitzorwsA.setArea(area);
+    //});
+    blitzorwsB.on("data", strike => {
+        var distance = earthDistance(blitzor.locationB.latitude, blitzor.locationB.longitude, strike.location.latitude, strike.location.longitude);
+
+        if (distance < lightningNewB) {
+            lightningNewB = distance;
+            lightningLatB = strike.location.latitude;
+            lightningLngB = strike.location.longitude;
+
+            if (!blitzor.debugstrikes)
+                console.log(util.format(
+                    strings.debug.blitzor.strike,
+                    blitzor.locationB.name,
+                    distance,
+                    strike.location.latitude,
+                    strike.location.longitude                
+                ));
+        }
+        if (blitzor.debugstrikes)
+            console.log(util.format(
+                strings.debug.blitzor.strike,
+                blitzor.locationB.name,
+                distance,
+                strike.location.latitude,
+                strike.location.longitude                
+            ));
+    });
+
+    lightningReconnectB = setTimeout(function() {
+        blitzorwsB.close();
+        connectBlitzortungB(true);
     }, blitzor.reconnect * 1000);
 
     if (reconnect && blitzor.debugconnect)
@@ -6273,6 +6458,7 @@ function connectChase(reconnect) {
             if (reconnect && blitzor.debugconnect)
                 console.log(util.format(
                     strings.debug.chase.reconnect,
+                    "Chase",
                     area.from.latitude,
                     area.to.latitude,
                     area.from.longitude,
@@ -6281,6 +6467,7 @@ function connectChase(reconnect) {
             else if (!reconnect)
                 console.log(util.format(
                     strings.debug.chase.connect,
+                    "Chase",
                     area.from.latitude,
                     area.to.latitude,
                     area.from.longitude,
@@ -6311,6 +6498,7 @@ function connectChase(reconnect) {
                     if (!blitzor.debugstrikes)
                         console.log(util.format(
                             strings.debug.chase.strike,
+                            "Chase",
                             distance,
                             strike.location.latitude,
                             strike.location.longitude                
@@ -6319,6 +6507,7 @@ function connectChase(reconnect) {
                 if (blitzor.debugstrikes)
                     console.log(util.format(
                         strings.debug.chase.strike,
+                        "Chase",
                         distance,
                         strike.location.latitude,
                         strike.location.longitude                
@@ -6352,22 +6541,69 @@ function connectChase(reconnect) {
  * Performs the lightning data checking in a loop.
  */
 function loopLightning() {
-    if (lightningNew < lightningRange) {
-        lightningRange = lightningNew;
+    if (lightningNewA < lightningRangeA) {
+        lightningRangeA = lightningNewA;
 
-        clearTimeout(lightningSpread);
-        lightningSpread = setTimeout(spreadLightning, blitzor.spread * 1000);
+        clearTimeout(lightningSpreadA);
+        lightningSpreadA = setTimeout(spreadLightningA, blitzor.spread * 1000);
 
-        clearTimeout(lightningExpire);
-        lightningExpire = setTimeout(function() {
+        clearTimeout(lightningExpireA);
+        lightningExpireA = setTimeout(function() {
+            send(channelNameToID(config.options.channels.homeold), strings.announcements.blitzor.expire, false);
+        }, blitzor.expire * 1000);
+
+        var time = moment.tz(new Date(), "Europe/Zagreb").format("HH:mm:ss");
+        var rng = lightningRangeA;
+        var lat = lightningLatA;
+        var lng = lightningLngA;
+        var b  = earthBearing(blitzor.locationA.latitude, blitzor.locationA.longitude, lat, lng);
+
+        var bear = "N";
+             if (b >  11.25 && b <  33.75) bear = "NNE";
+        else if (b >  33.75 && b <  56.25) bear = "NE";
+        else if (b >  56.25 && b <  78.75) bear = "ENE";
+        else if (b >  78.75 && b < 101.25) bear = "E";
+        else if (b > 101.25 && b < 123.75) bear = "ESE";
+        else if (b > 123.75 && b < 146.25) bear = "SE";
+        else if (b > 146.25 && b < 168.75) bear = "SSE";
+        else if (b > 168.75 && b < 191.25) bear = "S";
+        else if (b > 191.25 && b < 213.75) bear = "SSW";
+        else if (b > 213.75 && b < 236.25) bear = "SW";
+        else if (b > 236.25 && b < 258.75) bear = "WSW";
+        else if (b > 258.75 && b < 281.25) bear = "W";
+        else if (b > 281.25 && b < 303.75) bear = "WNW";
+        else if (b > 303.75 && b < 326.25) bear = "NW";
+        else if (b > 326.25 && b < 348.75) bear = "NNW";
+        
+        getLocationInfo(function(locInfo) {
+            send(channelNameToID(config.options.channels.homeold), util.format(
+                strings.announcements.blitzor.strike,
+                rng.toFixed(2),
+                bear,
+                b.toFixed(2),
+                locInfo.town,
+                locInfo.country,
+                time
+            ), false);
+        }, lat, lng);
+    }
+
+    if (lightningNewB < lightningRangeB) {
+        lightningRangeB = lightningNewB;
+
+        clearTimeout(lightningSpreadB);
+        lightningSpreadB = setTimeout(spreadLightningB, blitzor.spread * 1000);
+
+        clearTimeout(lightningExpireB);
+        lightningExpireB = setTimeout(function() {
             send(channelNameToID(config.options.channels.home), strings.announcements.blitzor.expire, false);
         }, blitzor.expire * 1000);
 
         var time = moment.tz(new Date(), "Europe/Zagreb").format("HH:mm:ss");
-        var rng = lightningRange;
-        var lat = lightningLat;
-        var lng = lightningLng;
-        var b  = earthBearing(blitzor.location.latitude, blitzor.location.longitude, lat, lng);
+        var rng = lightningRangeB;
+        var lat = lightningLatB;
+        var lng = lightningLngB;
+        var b  = earthBearing(blitzor.locationB.latitude, blitzor.locationB.longitude, lat, lng);
 
         var bear = "N";
              if (b >  11.25 && b <  33.75) bear = "NNE";
@@ -6452,29 +6688,62 @@ function loopLightning() {
 /*
  * Spread the lightning range when there is no new lightning.
  */
-function spreadLightning() {
+function spreadLightningA() {
     var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
     if (blitzor.debugstrikes)
         console.log(util.format(
             strings.debug.blitzor.spread,
-            lightningRange,
-            lightningRange + rangeSpread
+            blitzor.locationA.name,
+            lightningRangeA,
+            lightningRangeA + rangeSpread
         ));
 
-    lightningRange = lightningRange + rangeSpread;
-    lightningNew   = lightningNew + rangeSpread;
+    lightningRangeA = lightningRangeA + rangeSpread;
+    lightningNewA   = lightningNewA + rangeSpread;
 
-    if (lightningRange > blitzor.range) {
+    if (lightningRangeA > blitzor.range) {
         if (blitzor.debugstrikes)
             console.log(util.format(
                 strings.debug.blitzor.max,
+                blitzor.locationA.name,
                 blitzor.range
             ));
-        lightningRange = blitzor.range;
-        lightningNew = blitzor.range;
+        lightningRangeA = blitzor.range;
+        lightningNewA = blitzor.range;
     }
     else {
-        lightningSpread = setTimeout(spreadLightning, blitzor.spread * 1000);
+        lightningSpreadA = setTimeout(spreadLightning, blitzor.spread * 1000);
+    }
+}
+
+/*
+ * Spread the lightning range when there is no new lightning.
+ */
+function spreadLightningB() {
+    var rangeSpread = blitzor.range / (blitzor.expire / blitzor.spread);
+    if (blitzor.debugstrikes)
+        console.log(util.format(
+            strings.debug.blitzor.spread,
+            blitzor.locationB.name,
+            lightningRangeB,
+            lightningRangeB + rangeSpread
+        ));
+
+    lightningRangeB = lightningRangeB + rangeSpread;
+    lightningNewB   = lightningNewB + rangeSpread;
+
+    if (lightningRangeB > blitzor.range) {
+        if (blitzor.debugstrikes)
+            console.log(util.format(
+                strings.debug.blitzor.max,
+                blitzor.locationB.name,
+                blitzor.range
+            ));
+        lightningRangeB = blitzor.range;
+        lightningNewB = blitzor.range;
+    }
+    else {
+        lightningSpreadB = setTimeout(spreadLightning, blitzor.spread * 1000);
     }
 }
 
@@ -6486,6 +6755,7 @@ function spreadChase() {
     if (blitzor.debugstrikes)
         console.log(util.format(
             strings.debug.chase.spread,
+            "Chase",
             chaseRange,
             chaseRange + rangeSpread
         ));
@@ -6497,6 +6767,7 @@ function spreadChase() {
         if (blitzor.debugstrikes)
             console.log(util.format(
                 strings.debug.chase.max,
+                "Chase",
                 blitzor.range
             ));
         chaseRange = blitzor.range;
@@ -7723,6 +7994,7 @@ function loopStatusPull() {
     statusLuna();
     statusChrysalis();
     statusRarity();
+    statusTalos();
     statusFluttershy();
     statusMoon();
     statusTantabus();
@@ -7755,6 +8027,8 @@ function loopStatusPush() {
 
     data += generateStatus("rarity_local", statusGlobal.rarity_local, now);
     data += generateStatus("rarity_public", statusGlobal.rarity_public, now);
+    data += generateStatus("talos_local", statusGlobal.talos_local, now);
+    data += generateStatus("talos_public", statusGlobal.talos_public, now);
     data += generateStatus("fluttershy_local", statusGlobal.fluttershy_local, now);
     data += generateStatus("moon_local", statusGlobal.moon_local, now);
     data += generateStatus("raritush", statusGlobal.raritush, now);
@@ -7883,9 +8157,24 @@ function statusRarity() {
             statusGlobal.rarity_local = Math.floor((new Date()) / 1000);
     });
 
-    getStatus(printer.baseurl + config.status.urls.rarity_public, statusTimeoutRarityPublic, function(r, s) {
+    getStatus(printer.baseurl_rarity + config.status.urls.rarity_public, statusTimeoutRarityPublic, function(r, s) {
         if (r == config.status.responses.rarity_public)
             statusGlobal.rarity_public = Math.floor((new Date()) / 1000);
+    });
+}
+
+/*
+ * Checks the status of Nightmare Talos.
+ */
+function statusTalos() {
+    getStatus(config.status.urls.talos_local, statusTimeoutTalosLocal, function(r, s) {
+        if (r == config.status.responses.talos_local)
+            statusGlobal.talos_local = Math.floor((new Date()) / 1000);
+    });
+
+    getStatus(printer.baseurl_talos + config.status.urls.talos_public, statusTimeoutTalosPublic, function(r, s) {
+        if (r == config.status.responses.talos_public)
+            statusGlobal.talos_public = Math.floor((new Date()) / 1000);
     });
 }
 
@@ -8351,15 +8640,18 @@ function reloadConfig() {
 
     moon = JSON.parse(fs.readFileSync(config.moon.lunamoon.pathdata, "utf8"));
 
-    clearTimeout(lightningReconnect);
-    blitzorws.close();
+    clearTimeout(lightningReconnectA);
+    clearTimeout(lightningReconnectB);
+    blitzorwsA.close();
+    blitzorwsB.close();
 
-    if (lightningRange > blitzor.range) {
-        lightningRange = blitzor.range;
-        lightningNew = blitzor.range;
+    if (lightningRangeA > blitzor.range) {
+        lightningRangeA = blitzor.range;
+        lightningNewA = blitzor.range;
     }
 
-    connectBlitzortung(false);
+    connectBlitzortungA(false);
+    connectBlitzortungB(false);
 
     if (isChasing) {
         clearTimeout(chaseReconnect);
@@ -8503,7 +8795,8 @@ function seizureReboot(channelID, userID, message) {
     fs.writeFileSync(config.options.seizurepath, JSON.stringify(seizure), "utf-8");
 
     saveAllBrains();
-    blitzorws.close();
+    blitzorwsA.close();
+    blitzorwsB.close();
 
     setTimeout(function() {
         printStopMessage();
@@ -8780,7 +9073,7 @@ function pausePrint(retry) {
             };
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", printer.baseurl + config.printer.urls.job + printer.key, true);
+        xhr.open("POST", printer.baseurl_rarity + config.printer.urls.job + printer.key_rarity, true);
         xhr.setRequestHeader("Content-Type", "application/json");
 
         xhr.onerror = function(err) {
@@ -8805,9 +9098,9 @@ function pausePrint(retry) {
 }
 
 /*
- * Called when print is detected as finished. May also be called on cancelled.
+ * Called when print is detected as finished on Nightmare Rarity. May also be called on cancelled.
  */
-function finishPrint() {  
+function finishPrintRarity() {  
     console.log(strings.debug.printer.rampC);
 
     var dateNow = Math.floor((new Date()) / 1000);
@@ -8824,13 +9117,48 @@ function finishPrint() {
     send(channelNameToID(config.options.channels.printer), util.format(
         strings.announcements.tush.finish,
         mention(config.options.adminid),
+        "Nightmare Rarity",
         getTimeString(time),
         time.seconds        
     ), false);
 
-    download(printer.baseurl + printer.webcam, config.printer.webimg, function(code) {
+    download(printer.baseurl_rarity + printer.webcam, config.printer.webimg, function(code) {
         if (code != 503)  
             embed(channelNameToID(config.options.channels.printer), "", config.printer.webimg, "Nightmare Rarity Webcam.jpg", false, true);
+        else
+            send(channelNameToID(config.options.channels.printer), strings.announcements.tush.error, false);
+    }, function() {
+        send(channelNameToID(config.options.channels.printer), strings.announcements.tush.error, false);     
+    }, 0);
+}
+
+/*
+ * Called when print is detected as finished on Nightmare Talos. May also be called on cancelled.
+ */
+function finishPrintTalos() {  
+
+    var dateNow = Math.floor((new Date()) / 1000);
+    var diff = dateNow - talosStart;
+    var time = {};
+
+    time.seconds = Math.floor(diff % 60);
+    diff = Math.floor(diff / 60);
+    time.minutes = Math.floor(diff % 60);
+    diff = Math.floor(diff / 60);
+    time.hours = Math.floor(diff % 24);
+    time.days = Math.floor(diff / 24);
+
+    send(channelNameToID(config.options.channels.printer), util.format(
+        strings.announcements.tush.finish,
+        mention(config.options.adminid),
+        "Nightmare Talos",
+        getTimeString(time),
+        time.seconds        
+    ), false);
+
+    download(printer.baseurl_talos + printer.webcam, config.printer.webimg, function(code) {
+        if (code != 503)  
+            embed(channelNameToID(config.options.channels.printer), "", config.printer.webimg, "Nightmare Talos Webcam.jpg", false, true);
         else
             send(channelNameToID(config.options.channels.printer), strings.announcements.tush.error, false);
     }, function() {

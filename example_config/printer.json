@@ -1,5 +1,7 @@
 {
-    "key":        "0000000000000000AAAAAAAAAAAAAAAA",
-    "baseurl":    "http://your.website.com/",
-    "webcam":     "webcam/?action=snapshot&0000000000000"
+    "key_rarity":     "0000000000000000AAAAAAAAAAAAAAAA",
+    "key_talos":      "0000000000000000AAAAAAAAAAAAAAAA",
+    "baseurl_rarity": "http://your.website.com/",
+    "baseurl_talos":  "http://your.website.com/",
+    "webcam":         "webcam/?action=snapshot"
 }

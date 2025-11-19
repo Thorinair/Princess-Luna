@@ -58,7 +58,8 @@
         "channels": {
             "debug":     "debug",
             "printer":   "printer",
-            "home":      "home_luna",
+            "homeold":   "home_luna-hr",
+            "home":      "home_luna-de",
             "announceA": "announcements",
             "announceB": "pvfm_live-dj-chat",
             "announceC": [
@@ -307,6 +308,9 @@
             "rarity_local":  "http://rarity.local/api/job",
             "rarity_public": "api/job",
 
+            "talos_local":  "http://talos.local/api/job",
+            "talos_public": "api/job",
+
             "tantabus_local":  "http://tantabus.local/api",
             "tantabus_public": "https://tantabus.thorinair.net/api"
         },
@@ -322,6 +326,9 @@
 
             "rarity_local":  "No API key provided",
             "rarity_public": "No API key provided",
+
+            "talos_local":  "No API key provided",
+            "talos_public": "No API key provided",
 
             "tantabus_local":  "{\"error\": \"not found\"}",
             "tantabus_public": "{\"error\": \"not found\"}"

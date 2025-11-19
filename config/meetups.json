@@ -8,14 +8,24 @@
             "maxshown":  4,
             "schedule": [
                 {
+                    "day": 4,
+                    "time": "19:00",
+                    "name": "Game Meetup"
+                },
+                {
                     "day": 6,
                     "time": "18:00",
                     "name": "Chill Meetup"
                 },
                 {
+                    "day": 11,
+                    "time": "19:00",
+                    "name": "Chill Meetup"
+                },
+                {
                     "day": 13,
                     "time": "21:00",
-                    "name": "Chill Meetup"
+                    "name": "Glory of The Night Meetup"
                 }
             ],
             "cancelled": [
