@@ -7885,8 +7885,15 @@ function generateEmojigraph(velocity) {
                     seismoQuakePrevTime = nowS;
                     seismoQuakeStartTime = seismoQuakeStartTimeTemp;
 
-                    lastQuake = moment.tz(now, "UTC");                    
+                    lastQuake = moment.tz(now, "UTC");
                     send(channelNameToID(config.options.channels.home), util.format(
+                        strings.announcements.seismo.quake,
+                        lastQuake.format("YYYY-MM-DD"),
+                        lastQuake.format("HH:mm:ss (z)"),
+                        generateEmojigraph(velocity),
+                        velocity.toFixed(3)
+                    ), false);
+                    send(channelNameToID(config.options.channels.homeold), util.format(
                         strings.announcements.seismo.quake,
                         lastQuake.format("YYYY-MM-DD"),
                         lastQuake.format("HH:mm:ss (z)"),
@@ -7904,8 +7911,13 @@ function generateEmojigraph(velocity) {
                     seismoQuakePrevTime = nowS;
                     seismoAccu.push(sampleMedian);
 
-                    if (seismoAccu.length % config.seismo.detection.notice == 0) {                    
+                    if (seismoAccu.length % config.seismo.detection.notice == 0) {
                         send(channelNameToID(config.options.channels.home), util.format(
+                            strings.announcements.seismo.energy,
+                            generateEmojigraph(velocity),
+                            velocity.toFixed(3)
+                        ), false);
+                        send(channelNameToID(config.options.channels.homeold), util.format(
                             strings.announcements.seismo.energy,
                             generateEmojigraph(velocity),
                             velocity.toFixed(3)
@@ -7943,6 +7955,15 @@ function generateEmojigraph(velocity) {
                     seismoAccu = [];
 
                     send(channelNameToID(config.options.channels.home), util.format(
+                        strings.announcements.seismo.end,
+                        minutes,
+                        seconds,
+                        Math.sqrt(totalEnergy).toFixed(3),
+                        totalEnergy.toFixed(3),
+                        Math.sqrt(peakEnergy).toFixed(3),
+                        peakEnergy.toFixed(3)
+                    ), false);
+                    send(channelNameToID(config.options.channels.homeold), util.format(
                         strings.announcements.seismo.end,
                         minutes,
                         seconds,
