@@ -596,7 +596,8 @@
             "assault": "@everyone, a new Faction Assault has begun! Next assault begins in %s."
         },
         "tush": {
-            "start":  "A new print has started on %s. I will be monitoring the progress and spool health.",
+            "startnr":  "A new print with name `%s` has started on %s. I will be monitoring the progress and spool health.",
+            "startnt":  "A new print with name `%s` has started on %s. I will be monitoring the progress.",
             "finish": "%s, the print on %s has finished after %s and %s seconds.",
             "error":  "There was an error while trying to fetch the image from the webcam.",
             "spoolstop": {

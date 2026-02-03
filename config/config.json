@@ -26,7 +26,7 @@
         "eegpath":       "/var/www/node/data/eeg.json",
         "coappath":      "/home/luna/libcoap/examples/coap-client",
         "chrysalisgit":  "https://github.com/Thorinair/Queen-Chrysalis",
-        "game":          "with your dreams.",
+        "game":          "Playing with your dreams.",
         "defstation":    "one",
         "lyricprefix":   "> ",
         "lyricformat":   "*",

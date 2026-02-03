@@ -4505,7 +4505,6 @@ function processReqTush(query) {
 
                 var xhr = new XMLHttpRequest();
                 xhr.open("GET", printer.baseurl_rarity + config.printer.urls.printer + printer.key_rarity, true);
-
                 xhr.onreadystatechange = function () { 
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         var response = JSON.parse(xhr.responseText);
@@ -4619,10 +4618,26 @@ function processReqTush(query) {
                             else {
                                 if (tushStep == 0) {
                                     tushStart = Math.floor((new Date()) / 1000);
-                                    send(channelNameToID(config.options.channels.printer), util.format(
-                                        strings.announcements.tush.start,
-                                        "Nightmare Rarity"
-                                    ), false);  
+
+                                    var xhrjob = new XMLHttpRequest();
+                                    xhrjob.open("GET", printer.baseurl_rarity + config.printer.urls.job + printer.key_rarity, true);
+                                    xhrjob.onreadystatechange = function () {
+                                        if (xhrjob.readyState == 4 && xhrjob.status == 200) {
+                                            var responsejob = JSON.parse(xhrjob.responseText);
+                                            send(channelNameToID(config.options.channels.printer), util.format(
+                                                strings.announcements.tush.startnr,
+                                                responsejob.job.file.name,
+                                                "Nightmare Rarity"
+                                            ), false);
+                                        }
+                                    }
+                                    xhrjob.onerror = function(err) {
+                                        xhrjob.abort();
+                                    }
+                                    xhrjob.ontimeout = function() {
+                                        xhrjob.abort();
+                                    }
+                                    xhrjob.send();
                                 }
                                 tushStep++;
                                 if (tushStep >= config.printer.constraints.rampup)
@@ -4668,47 +4683,60 @@ function processReqTush(query) {
                         }
                     }
                 }
-
                 xhr.onerror = function(err) {
                     xhr.abort();
                 }
                 xhr.ontimeout = function() {
                     xhr.abort();
                 }
-
                 xhr.send();
 
                 var xhr2 = new XMLHttpRequest();
                 xhr2.open("GET", printer.baseurl_talos + config.printer.urls.printer + printer.key_talos, true);
-
                 xhr2.onreadystatechange = function () {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
-                        var response = JSON.parse(xhr.responseText);
+                    if (xhr2.readyState == 4 && xhr2.status == 200) {
+                        var response = JSON.parse(xhr2.responseText);
 
                         if (response.state.text == "Printing" && talosStatusOld != "Printing") {
                             talosStatusOld = response.state.text;
                             talosStart = Math.floor((new Date()) / 1000);
-                            send(channelNameToID(config.options.channels.printer), util.format(
-                                strings.announcements.tush.start,
-                                "Nightmare Talos"
-                            ), false);
+
+                            var xhrjob = new XMLHttpRequest();
+                            xhrjob.open("GET", printer.baseurl_talos + config.printer.urls.job + printer.key_talos, true);
+                            xhrjob.onreadystatechange = function () {
+                                if (xhrjob.readyState == 4 && xhrjob.status == 200) {
+                                    var responsejob = JSON.parse(xhrjob.responseText);
+                                    send(channelNameToID(config.options.channels.printer), util.format(
+                                        strings.announcements.tush.startnt,
+                                        responsejob.job.file.name,
+                                        "Nightmare Talos"
+                                    ), false);
+                                }
+                            }
+                            xhrjob.onerror = function(err) {
+                                xhrjob.abort();
+                            }
+                            xhrjob.ontimeout = function() {
+                                xhrjob.abort();
+                            }
+                            xhrjob.send();
                         }
                         else if (response.state.text != "Printing" && talosStatusOld == "Printing") {
                             talosStatusOld = response.state.text;
                             send(channelNameToID(config.options.channels.printer), util.format(
-                                strings.announcements.tush.start,
-                                "Nightmare Rarity"
+                                strings.announcements.tush.finish,
+                                "Nightmare Talos"
                             ), false);
                         }
                     }
                 }
-
                 xhr2.onerror = function(err) {
-                    xhr.abort();
+                    xhr2.abort();
                 }
                 xhr2.ontimeout = function() {
-                    xhr.abort();
+                    xhr2.abort();
                 }
+                xhr2.send();
             }
         }
     }
