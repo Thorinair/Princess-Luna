@@ -4723,10 +4723,7 @@ function processReqTush(query) {
                         }
                         else if (response.state.text != "Printing" && talosStatusOld == "Printing") {
                             talosStatusOld = response.state.text;
-                            send(channelNameToID(config.options.channels.printer), util.format(
-                                strings.announcements.tush.finish,
-                                "Nightmare Talos"
-                            ), false);
+                            finishPrintTalos();
                         }
                     }
                 }
