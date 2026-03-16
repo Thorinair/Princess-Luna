@@ -6737,7 +6737,7 @@ function spreadLightningA() {
         lightningNewA = blitzor.range;
     }
     else {
-        lightningSpreadA = setTimeout(spreadLightning, blitzor.spread * 1000);
+        lightningSpreadA = setTimeout(spreadLightningA, blitzor.spread * 1000);
     }
 }
 
@@ -6768,7 +6768,7 @@ function spreadLightningB() {
         lightningNewB = blitzor.range;
     }
     else {
-        lightningSpreadB = setTimeout(spreadLightning, blitzor.spread * 1000);
+        lightningSpreadB = setTimeout(spreadLightningB, blitzor.spread * 1000);
     }
 }
 
