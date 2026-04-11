@@ -5336,15 +5336,17 @@ function send(id, message, typing, retry=0) {
                         bot.sendMessage(msg, function(err) {
                             if (err != undefined) {
                                 retry++;
-                                if (err.response.code != undefined && err.response.code == 50007) {
+                                if (err.response != undefined && err.response.code != undefined && err.response.code == 50007) {
                                     console.log(strings.debug.failoff);
                                 }
                                 else {
                                     console.log(err);
                                     console.log(strings.debug.failedm);
-                                    setTimeout(function() {
-                                        send(id, message, typing, retry);
-                                    }, 1000);
+                                    if (err.response != undefined) {
+                                        setTimeout(function() {
+                                            send(id, message, typing, retry);
+                                        }, 1000);
+                                    }
                                 }
                             }
                         });
@@ -5359,15 +5361,17 @@ function send(id, message, typing, retry=0) {
                     bot.sendMessage(msg, function(err) {
                         if (err != undefined) {
                             retry++;
-                            if (err.response.code != undefined && err.response.code == 50007) {
+                            if (err.response != undefined && err.response.code != undefined && err.response.code == 50007) {
                                 console.log(strings.debug.failoff);
                             }
                             else {
                                 console.log(err);
                                 console.log(strings.debug.failedm);
-                                setTimeout(function() {
-                                    send(id, message, typing, retry);
-                                }, 1000);
+                                if (err.response != undefined) {
+                                    setTimeout(function() {
+                                        send(id, message, typing, retry);
+                                    }, 1000);
+                                }
                             }
                         }
                     });
