@@ -8,19 +8,9 @@
             "maxshown":  4,
             "schedule": [
                 {
-                    "day": 4,
-                    "time": "19:00",
-                    "name": "Chill Meetup"
-                },
-                {
                     "day": 6,
                     "time": "18:00",
                     "name": "Chill Meetup"
-                },
-                {
-                    "day": 11,
-                    "time": "19:00",
-                    "name": "Game Meetup"
                 },
                 {
                     "day": 13,
@@ -33,41 +23,21 @@
             ]
         },
         {
-            "startday":  "2024-10-21",
-            "channel":   "taa_meetup-schedule",
-            "messageid": "1297952854635577354",
+            "startday":  "2026-07-20",
+            "channel":   "talos_star-citizen-info",
+            "messageid": "1529548297860022473",
             "cycledays": 14,
-            "maxshown":  3,
+            "maxshown":  2,
             "schedule": [
                 {
-                    "day": 2,
-                    "time": "17:00",
-                    "name": "Chill Meetup"
-                },
-                {
                     "day": 5,
-                    "time": "18:00",
-                    "name": "Chill Meetup"
-                },
-                {
-                    "day": 7,
-                    "time": "19:00",
-                    "name": "Chill Meetup"
-                },
-                {
-                    "day": 9,
-                    "time": "17:00",
-                    "name": "Chill Meetup"
+                    "time": "15:00",
+                    "name": "Star Citizen Org Business"
                 },
                 {
                     "day": 12,
-                    "time": "18:00",
-                    "name": "Chill Meetup"
-                },
-                {
-                    "day": 14,
-                    "time": "19:00",
-                    "name": "Chill Meetup"
+                    "time": "15:00",
+                    "name": "Star Citizen Org Business"
                 }
             ],
             "cancelled": [
